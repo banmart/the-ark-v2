@@ -3,16 +3,28 @@ import { Link } from 'react-router-dom';
 import { toast } from "@/components/ui/use-toast";
 import { Sparkles, Copy, ExternalLink } from "lucide-react";
 import { useContractData } from '../hooks/useContractData';
+
 const Index = () => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [account, setAccount] = useState<string | null>(null);
+  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+  
   const {
     data: contractData,
     loading: contractLoading
   } = useContractData();
+
   useEffect(() => {
     checkWalletConnection();
+    
+    // Preload background image and trigger fade-in
+    const img = new Image();
+    img.onload = () => {
+      setBackgroundLoaded(true);
+    };
+    img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
   }, []);
+
   const checkWalletConnection = async () => {
     if (window.ethereum) {
       try {
@@ -33,6 +45,7 @@ const Index = () => {
       }
     }
   };
+
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
@@ -61,6 +74,7 @@ const Index = () => {
       });
     }
   };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
@@ -68,17 +82,11 @@ const Index = () => {
       description: "Contract address copied to clipboard"
     });
   };
-  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
-  return <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900/50 to-black"></div>
-        <div className="absolute inset-0 bg-grid animate-[grid-move_20s_linear_infinite] opacity-20"></div>
-        <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite] [animation-delay:3s]"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl animate-[float_8s_ease-in-out_infinite] [animation-delay:1.5s]"></div>
-      </div>
 
+  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+
+  return (
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -100,9 +108,23 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section with 3D Token */}
-      <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 py-[240px]">
-        <div className="max-w-7xl mx-auto">
+      {/* Hero Section with Background Image */}
+      <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center">
+        {/* Background Image with Fade-in Effect */}
+        <div 
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
+            backgroundLoaded ? 'opacity-30' : 'opacity-0'
+          }`}
+          style={{
+            backgroundImage: 'url(https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg)'
+          }}
+        ></div>
+        
+        {/* Gradient Overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
+        
+        {/* Content */}
+        <div className="max-w-7xl mx-auto w-full relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Text */}
             <div>
@@ -649,6 +671,8 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
