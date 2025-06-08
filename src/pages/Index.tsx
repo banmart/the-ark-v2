@@ -107,7 +107,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
-              ARK
+              ARK ❍
             </div>
             <div className="hidden md:flex items-center gap-8">
               <a href="#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</a>
@@ -654,7 +654,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
-                ARK
+                ARK ❍
               </div>
               <p className="text-gray-400 text-sm">
                 Salvation from the crypto flood. Join the ARK and be saved.
