@@ -5,9 +5,11 @@ import { Sparkles, Copy, ExternalLink, ArrowRight } from "lucide-react";
 import { useContractData } from '../hooks/useContractData';
 import { useWallet } from '../hooks/useWallet';
 import { useSwap } from '../hooks/useSwap';
+import OnboardingModal from '../components/OnboardingModal';
 
 const Index = () => {
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const {
     data: contractData,
@@ -41,6 +43,21 @@ const Index = () => {
       setBackgroundLoaded(true);
     };
     img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
+  }, []);
+
+  useEffect(() => {
+    // Check if user has seen onboarding before
+    const hasSeenOnboarding = localStorage.getItem('ark-onboarding-seen');
+    
+    if (!hasSeenOnboarding) {
+      // Set timer to show onboarding after 10 seconds
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+      }, 10000);
+
+      // Cleanup timer if component unmounts
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const handleConnectWallet = async () => {
@@ -88,6 +105,12 @@ const Index = () => {
   const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
 
   return <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Onboarding Modal */}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
+
       {/* Animated Background System */}
       <div className="fixed w-full h-full top-0 left-0 z-0 overflow-hidden">
         {/* Base gradient background */}
@@ -151,9 +174,12 @@ const Index = () => {
                   Buy ARK
                   <ArrowRight size={18} />
                 </button>
-                <a href="#features" className="border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/10 hover:scale-105 transition-all text-center backdrop-blur-sm">
+                <button 
+                  onClick={() => setShowOnboarding(true)}
+                  className="border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/10 hover:scale-105 transition-all text-center backdrop-blur-sm"
+                >
                   Learn More
-                </a>
+                </button>
               </div>
             </div>
 
