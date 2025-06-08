@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from "@/components/ui/use-toast";
-import { Sparkles, Copy, ExternalLink } from "lucide-react";
+import { Sparkles, Copy, ExternalLink, ArrowRight } from "lucide-react";
 import { useContractData } from '../hooks/useContractData';
 
 const Index = () => {
@@ -109,42 +109,84 @@ const Index = () => {
 
       {/* Hero Section with Background Image */}
       <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center">
-        {/* Background Image with Enhanced Cinematic Fade-in Effect */}
-        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ${backgroundLoaded ? 'opacity-80' : 'opacity-0'}`} style={{
+        {/* Background Image with Reduced Opacity */}
+        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ${backgroundLoaded ? 'opacity-20' : 'opacity-0'}`} style={{
         backgroundImage: 'url(https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg)'
       }}></div>
-        
-        {/* Removed gradient overlay for maximum background visibility */}
         
         {/* Content */}
         <div className="max-w-7xl mx-auto w-full relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left side - Text with enhanced shadows for readability */}
+            {/* Left side - Text without shadows */}
             <div>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out] drop-shadow-2xl" style={{textShadow: '0 0 20px rgba(0,0,0,0.8)'}}>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
                 THE ARK
               </h1>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-300 animate-[fade-in_1s_ease-out_0.2s_both] drop-shadow-xl" style={{textShadow: '0 0 15px rgba(0,0,0,0.8)'}}>
-                The flood is coming
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white animate-[fade-in_1s_ease-out_0.2s_both]">
+                Salvation from the flood
               </h2>
-              <p className="text-xl md:text-2xl text-gray-400 mb-8 animate-[fade-in_1s_ease-out_0.4s_both] drop-shadow-lg" style={{textShadow: '0 0 10px rgba(0,0,0,0.9)'}}>
-                While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?
+              <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
+                While others drown in market chaos, THE ARK saves those who board early. Built on revolutionary tokenomics that reward the faithful and punish the weak.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
                 <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
-                  <Copy size={18} />
-                  Copy Contract
-                </button>
-                <a href="#swap" className="bg-black/50 border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-black/60 hover:scale-105 transition-transform text-center backdrop-blur-sm">
                   Buy ARK
+                  <ArrowRight size={18} />
+                </button>
+                <a href="#features" className="border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/10 hover:scale-105 transition-all text-center backdrop-blur-sm">
+                  Learn More
                 </a>
               </div>
             </div>
 
-            {/* Right side - 3D Token */}
+            {/* Right side - ❍ Symbol with Glowing Ring Effects */}
             <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
               <div className="relative w-96 h-96 flex items-center justify-center">
-                <div className="text-[24rem] font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[rotate-3d_15s_linear_infinite]">
+                {/* Outer Glow Ring */}
+                <div className="absolute w-[30rem] h-[30rem] rounded-full border border-cyan-400/20 animate-pulse"
+                     style={{
+                       boxShadow: `
+                         0 0 50px rgba(34, 211, 238, 0.1),
+                         0 0 100px rgba(34, 211, 238, 0.05),
+                         inset 0 0 50px rgba(34, 211, 238, 0.02)
+                       `
+                     }}></div>
+                
+                {/* Middle Glow Ring */}
+                <div className="absolute w-[25rem] h-[25rem] rounded-full border border-cyan-400/30"
+                     style={{
+                       boxShadow: `
+                         0 0 40px rgba(34, 211, 238, 0.15),
+                         0 0 80px rgba(34, 211, 238, 0.08),
+                         inset 0 0 40px rgba(34, 211, 238, 0.05)
+                       `,
+                       animation: 'pulse 3s ease-in-out infinite'
+                     }}></div>
+                
+                {/* Inner Glow Ring */}
+                <div className="absolute w-[20rem] h-[20rem] rounded-full border border-cyan-400/40"
+                     style={{
+                       boxShadow: `
+                         0 0 30px rgba(34, 211, 238, 0.2),
+                         0 0 60px rgba(34, 211, 238, 0.1),
+                         inset 0 0 30px rgba(34, 211, 238, 0.08)
+                       `,
+                       animation: 'pulse 2s ease-in-out infinite'
+                     }}></div>
+
+                {/* Core Intense Glow */}
+                <div className="absolute w-[15rem] h-[15rem] rounded-full border border-teal-400/50"
+                     style={{
+                       boxShadow: `
+                         0 0 20px rgba(20, 184, 166, 0.3),
+                         0 0 40px rgba(20, 184, 166, 0.15),
+                         inset 0 0 20px rgba(20, 184, 166, 0.1)
+                       `,
+                       animation: 'pulse 1.5s ease-in-out infinite'
+                     }}></div>
+
+                {/* ❍ Symbol - Keep exactly as is */}
+                <div className="text-[24rem] font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[rotate-3d_15s_linear_infinite] relative z-10">
                   ❍
                 </div>
               </div>
