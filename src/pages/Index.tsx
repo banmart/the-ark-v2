@@ -86,8 +86,22 @@ const Index = () => {
   const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
 
   return <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
+      {/* Animated Background System */}
+      <div className="fixed w-full h-full top-0 left-0 z-0 overflow-hidden">
+        {/* Base gradient background */}
+        <div className="absolute inset-0 bg-gradient-radial from-blue-900/20 via-black to-black"></div>
+        
+        {/* Animated Grid Pattern */}
+        <div className="pulse-grid"></div>
+        
+        {/* Floating Orbs */}
+        <div className="floating-orb orb1"></div>
+        <div className="floating-orb orb2"></div>
+        <div className="floating-orb orb3"></div>
+      </div>
+
+      {/* Navigation with Enhanced Glassmorphism */}
+      <nav className="fixed top-0 w-full glass-nav z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
@@ -107,12 +121,10 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Clear Background Image */}
-      <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center">
-        {/* Background Image - Full Visibility */}
-        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ${backgroundLoaded ? 'opacity-100' : 'opacity-0'}`} style={{
-        backgroundImage: 'url(https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg)'
-      }}></div>
+      {/* Hero Section with Fixed Background */}
+      <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg" style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
+      }}>
         
         {/* Content */}
         <div className="max-w-7xl mx-auto w-full relative z-20">
@@ -152,17 +164,17 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contract Address Section */}
+      {/* Contract Address Section with Enhanced Glass */}
       <section className="relative z-10 py-12 px-6 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-2xl font-bold mb-4 text-cyan-400">Smart Contract Address</h3>
-          <div className="bg-black/50 border border-cyan-500/30 rounded-xl p-6 flex items-center justify-between">
+          <div className="glass-strong rounded-xl p-6 flex items-center justify-between shadow-2xl">
             <code className="text-sm md:text-base text-gray-300 font-mono">{contractAddress}</code>
             <div className="flex gap-2">
-              <button onClick={() => copyToClipboard(contractAddress)} className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-colors">
+              <button onClick={() => copyToClipboard(contractAddress)} className="p-2 glass-card hover:glass-strong rounded-lg transition-all">
                 <Copy size={18} />
               </button>
-              <button className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-colors">
+              <button className="p-2 glass-card hover:glass-strong rounded-lg transition-all">
                 <ExternalLink size={18} />
               </button>
             </div>
@@ -170,23 +182,23 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Swap Section */}
+      {/* Swap Section with Enhanced Glassmorphism */}
       <section id="swap" className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             Swap PLS for ARK
           </h2>
-          <div className="bg-white/5 border border-cyan-500/30 rounded-2xl p-8 backdrop-blur-sm">
+          <div className="glass-strong rounded-2xl p-8 shadow-2xl">
             <div className="space-y-6">
               {/* From Token */}
-              <div className="bg-black/30 rounded-xl p-4">
+              <div className="glass-card rounded-xl p-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-400">From</span>
                   <span className="text-sm text-gray-400">Balance: 0.0 PLS</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <input type="number" placeholder="0.0" className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" />
-                  <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
+                  <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-lg">
                     <div className="w-6 h-6 bg-red-500 rounded-full"></div>
                     <span className="font-semibold">PLS</span>
                   </div>
@@ -195,7 +207,7 @@ const Index = () => {
 
               {/* Swap Icon */}
               <div className="flex justify-center">
-                <button className="p-3 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-full transition-colors rotate-0 hover:rotate-180 duration-300">
+                <button className="p-3 glass-card hover:glass-strong rounded-full transition-all rotate-0 hover:rotate-180 duration-300">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                   </svg>
@@ -203,14 +215,14 @@ const Index = () => {
               </div>
 
               {/* To Token */}
-              <div className="bg-black/30 rounded-xl p-4">
+              <div className="glass-card rounded-xl p-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-400">To</span>
                   <span className="text-sm text-gray-400">Balance: 0.0 ARK</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <input type="number" placeholder="0.0" className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" readOnly />
-                  <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
+                  <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-lg">
                     <div className="w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
                     <span className="font-semibold">ARK</span>
                   </div>
@@ -223,7 +235,7 @@ const Index = () => {
               </button>
 
               {/* Swap Info */}
-              <div className="bg-black/20 rounded-xl p-4 text-sm space-y-2">
+              <div className="glass-card rounded-xl p-4 text-sm space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Rate</span>
                   <span>1 PLS = 100 ARK</span>
@@ -242,7 +254,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Stats Section with Real Contract Data */}
+      {/* Stats Section with Enhanced Glass Cards */}
       <section id="stats" className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -250,7 +262,7 @@ const Index = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Market Cap */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 Market Cap</h3>
               <p className="text-3xl font-black text-white mb-2">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : `$${contractData.marketCap}`}
@@ -259,7 +271,7 @@ const Index = () => {
             </div>
 
             {/* Total Supply */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">💎 Total Supply</h3>
               <p className="text-3xl font-black text-white mb-2">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : `${contractData.totalSupply} ARK`}
@@ -268,7 +280,7 @@ const Index = () => {
             </div>
 
             {/* Holders */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">👥 Holders</h3>
               <p className="text-3xl font-black text-white mb-2">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : contractData.holders}
@@ -279,25 +291,25 @@ const Index = () => {
 
           {/* Contract Fees Info */}
           <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all">
               <h4 className="text-lg font-bold text-cyan-400 mb-2">🔥 Burn Fee</h4>
               <p className="text-2xl font-bold">
                 {contractLoading ? '...' : `${contractData.currentFees.burn}%`}
               </p>
             </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all">
               <h4 className="text-lg font-bold text-cyan-400 mb-2">🫂 Reflection Fee</h4>
               <p className="text-2xl font-bold">
                 {contractLoading ? '...' : `${contractData.currentFees.reflection}%`}
               </p>
             </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all">
               <h4 className="text-lg font-bold text-cyan-400 mb-2">💧 Liquidity Fee</h4>
               <p className="text-2xl font-bold">
                 {contractLoading ? '...' : `${contractData.currentFees.liquidity}%`}
               </p>
             </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all">
               <h4 className="text-lg font-bold text-cyan-400 mb-2">🔒 Locker Fee</h4>
               <p className="text-2xl font-bold">
                 {contractLoading ? '...' : `${contractData.currentFees.locker}%`}
@@ -307,7 +319,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section - The Four Pillars */}
+      {/* Features Section with Scan Effects */}
       <section id="features" className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -318,7 +330,7 @@ const Index = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Scarcity */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
               <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🔥</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Scarcity</h3>
               <p className="text-gray-300 text-center">
@@ -327,7 +339,7 @@ const Index = () => {
             </div>
 
             {/* Rewards */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
               <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">💰</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Rewards</h3>
               <p className="text-gray-300 text-center">
@@ -336,7 +348,7 @@ const Index = () => {
             </div>
 
             {/* Community */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
               <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🫂</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Community</h3>
               <p className="text-gray-300 text-center">
@@ -345,7 +357,7 @@ const Index = () => {
             </div>
 
             {/* Security */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
               <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🛡️</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Security</h3>
               <p className="text-gray-300 text-center">
@@ -507,14 +519,14 @@ const Index = () => {
 
           {/* Locker Rewards Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
+            <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all">
               <h4 className="text-lg font-bold text-cyan-400 mb-4">💰 Pending Locker Rewards</h4>
               <p className="text-2xl font-black text-green-400">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : `${contractData.lockerRewards.pending} ARK`}
               </p>
               <p className="text-sm text-gray-400 mt-2">Ready for distribution</p>
             </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
+            <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all">
               <h4 className="text-lg font-bold text-cyan-400 mb-4">🎁 Total Distributed</h4>
               <p className="text-2xl font-black text-blue-400">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : `${contractData.lockerRewards.distributed} ARK`}
@@ -541,7 +553,7 @@ const Index = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* The Flood */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
               <div className="text-4xl mb-4 text-center">🌊</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Flood</h3>
               <p className="text-gray-300 text-center">
@@ -550,7 +562,7 @@ const Index = () => {
             </div>
 
             {/* The Chosen */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
               <div className="text-4xl mb-4 text-center">⚡</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Chosen</h3>
               <p className="text-gray-300 text-center">
@@ -559,7 +571,7 @@ const Index = () => {
             </div>
 
             {/* New World */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
               <div className="text-4xl mb-4 text-center">🕊️</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">New World</h3>
               <p className="text-gray-300 text-center">
@@ -577,19 +589,19 @@ const Index = () => {
             The Great Flood Approaches
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+            <div className="glass-card rounded-xl p-4">
               <div className="text-3xl font-black text-cyan-400">07</div>
               <div className="text-sm text-gray-400">Days</div>
             </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+            <div className="glass-card rounded-xl p-4">
               <div className="text-3xl font-black text-cyan-400">14</div>
               <div className="text-sm text-gray-400">Hours</div>
             </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+            <div className="glass-card rounded-xl p-4">
               <div className="text-3xl font-black text-cyan-400">32</div>
               <div className="text-sm text-gray-400">Minutes</div>
             </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+            <div className="glass-card rounded-xl p-4">
               <div className="text-3xl font-black text-cyan-400">18</div>
               <div className="text-sm text-gray-400">Seconds</div>
             </div>
@@ -604,7 +616,7 @@ const Index = () => {
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             $ARK Price Chart
           </h2>
-          <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8 min-h-[400px] flex items-center justify-center">
+          <div className="glass-card rounded-xl p-8 min-h-[400px] flex items-center justify-center">
             <div className="text-center">
               <div className="text-6xl mb-4">📈</div>
               <h3 className="text-2xl font-bold text-cyan-400 mb-4">Interactive Chart Coming Soon</h3>
