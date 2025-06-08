@@ -82,7 +82,7 @@ const Index = () => {
       <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
               ARK
             </div>
             <div className="hidden md:flex items-center gap-8">
@@ -91,7 +91,7 @@ const Index = () => {
               <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
               <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
               <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
-              <button onClick={connectWallet} className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform">
+              <button onClick={connectWallet} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform">
                 {walletConnected ? `${account?.slice(0, 6)}...${account?.slice(-4)}` : 'Connect Wallet'}
               </button>
             </div>
@@ -107,24 +107,24 @@ const Index = () => {
       }}></div>
         
         {/* Gradient Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/0 to-black/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/0 to-black/5"></div>
         
         {/* Content */}
         <div className="max-w-7xl mx-auto w-full relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Text */}
             <div>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
                 THE ARK
               </h1>
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-300 animate-[fade-in_1s_ease-out_0.2s_both]">
-                Salvation from the Flood
+                The flood is coming
               </h2>
               <p className="text-xl md:text-2xl text-gray-400 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
-                Board THE ARK and be saved from the crypto flood. Deflationary tokenomics with burns, reflections, and vault rewards.
+                While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?
               </p>
               <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
-                <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
+                <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
                   <Copy size={18} />
                   Copy Contract
                 </button>
@@ -137,13 +137,11 @@ const Index = () => {
             {/* Right side - 3D Token */}
             <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
               <div className="relative w-80 h-80">
-                <div className="absolute inset-0 bg-gradient-conic from-cyan-500 via-blue-500 to-purple-500 rounded-full animate-[spin_20s_linear_infinite] opacity-20"></div>
-                <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite]">
-                  <div className="text-6xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    ARK
+                <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-teal-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite] shadow-2xl shadow-cyan-500/20">
+                  <div className="text-6xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
+                    ❍
                   </div>
                 </div>
-                <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
