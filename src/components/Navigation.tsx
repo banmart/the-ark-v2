@@ -14,7 +14,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
     <nav className="fixed top-0 w-full glass-nav z-50">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
-          <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
+          <div className="text-2xl megrim-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
             ARK ❍
           </div>
           <div className="hidden md:flex items-center gap-8">
