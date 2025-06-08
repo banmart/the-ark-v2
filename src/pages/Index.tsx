@@ -107,7 +107,7 @@ const Index = () => {
       }}></div>
         
         {/* Gradient Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/0 to-black/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/1 via-black/0 to-black/1"></div>
         
         {/* Content */}
         <div className="max-w-7xl mx-auto w-full relative z-20">
@@ -138,7 +138,7 @@ const Index = () => {
             <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
               <div className="relative w-80 h-80">
                 <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-teal-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite] shadow-2xl shadow-cyan-500/20">
-                  <div className="text-6xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
+                  <div className="text-[12rem] font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
                     ❍
                   </div>
                 </div>
