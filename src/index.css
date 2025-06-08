@@ -101,6 +101,20 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Global heading styles with Megrim font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Megrim", system-ui;
+    font-weight: 400;
+    font-style: normal;
+  }
+}
+
+/* Megrim font utility class */
+.megrim-regular {
+  font-family: "Megrim", system-ui;
+  font-weight: 400;
+  font-style: normal;
 }
 
 /* Custom Animations and Effects */
