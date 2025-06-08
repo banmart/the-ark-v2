@@ -101,26 +101,25 @@ const Index = () => {
 
       {/* Hero Section with Background Image */}
       <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center">
-        {/* Background Image with Fade-in Effect */}
-        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${backgroundLoaded ? 'opacity-30' : 'opacity-0'}`} style={{
+        {/* Background Image with Enhanced Cinematic Fade-in Effect */}
+        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ${backgroundLoaded ? 'opacity-80' : 'opacity-0'}`} style={{
         backgroundImage: 'url(https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg)'
       }}></div>
         
-        {/* Gradient Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/1 via-black/0 to-black/1"></div>
+        {/* Removed gradient overlay for maximum background visibility */}
         
         {/* Content */}
         <div className="max-w-7xl mx-auto w-full relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left side - Text */}
+            {/* Left side - Text with enhanced shadows for readability */}
             <div>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out] drop-shadow-2xl" style={{textShadow: '0 0 20px rgba(0,0,0,0.8)'}}>
                 THE ARK
               </h1>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-300 animate-[fade-in_1s_ease-out_0.2s_both]">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-300 animate-[fade-in_1s_ease-out_0.2s_both] drop-shadow-xl" style={{textShadow: '0 0 15px rgba(0,0,0,0.8)'}}>
                 The flood is coming
               </h2>
-              <p className="text-xl md:text-2xl text-gray-400 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
+              <p className="text-xl md:text-2xl text-gray-400 mb-8 animate-[fade-in_1s_ease-out_0.4s_both] drop-shadow-lg" style={{textShadow: '0 0 10px rgba(0,0,0,0.9)'}}>
                 While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?
               </p>
               <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
@@ -128,7 +127,7 @@ const Index = () => {
                   <Copy size={18} />
                   Copy Contract
                 </button>
-                <a href="#swap" className="bg-black/30 border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-black/50 hover:scale-105 transition-transform text-center">
+                <a href="#swap" className="bg-black/50 border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-black/60 hover:scale-105 transition-transform text-center backdrop-blur-sm">
                   Buy ARK
                 </a>
               </div>
