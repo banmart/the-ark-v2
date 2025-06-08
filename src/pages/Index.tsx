@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { toast } from "@/components/ui/use-toast";
 import { Sparkles, Copy, ExternalLink, ArrowRight } from "lucide-react";
 import { useContractData } from '../hooks/useContractData';
+import { useWallet } from '../hooks/useWallet';
+import { useSwap } from '../hooks/useSwap';
 
 const Index = () => {
-  const [walletConnected, setWalletConnected] = useState(false);
-  const [account, setAccount] = useState<string | null>(null);
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
 
   const {
@@ -14,9 +14,27 @@ const Index = () => {
     loading: contractLoading
   } = useContractData();
 
-  useEffect(() => {
-    checkWalletConnection();
+  const {
+    isConnected,
+    account,
+    plsBalance,
+    arkBalance,
+    isConnecting,
+    connectWallet,
+  } = useWallet();
 
+  const {
+    fromAmount,
+    toAmount,
+    isLoading: swapLoading,
+    slippage,
+    setFromAmount,
+    setSlippage,
+    executeSwap,
+    canSwap,
+  } = useSwap();
+
+  useEffect(() => {
     // Preload background image and trigger fade-in
     const img = new Image();
     img.onload = () => {
@@ -25,52 +43,36 @@ const Index = () => {
     img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
   }, []);
 
-  const checkWalletConnection = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({
-          method: 'eth_accounts'
-        });
-        if (accounts.length > 0) {
-          setWalletConnected(true);
-          setAccount(accounts[0]);
-        } else {
-          setWalletConnected(false);
-          setAccount(null);
-        }
-      } catch (error) {
-        console.error("Error checking wallet connection:", error);
-        setWalletConnected(false);
-        setAccount(null);
-      }
+  const handleConnectWallet = async () => {
+    try {
+      await connectWallet();
+      toast({
+        title: "Connected!",
+        description: `Wallet connected successfully`
+      });
+    } catch (error: any) {
+      console.error("Error connecting wallet:", error);
+      toast({
+        variant: "destructive",
+        title: "Connection Failed",
+        description: error.message || "Failed to connect wallet"
+      });
     }
   };
 
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({
-          method: 'eth_requestAccounts'
-        });
-        setWalletConnected(true);
-        setAccount(accounts[0]);
-        toast({
-          title: "Connected!",
-          description: `Wallet connected with account ${accounts[0]}`
-        });
-      } catch (error: any) {
-        console.error("Error connecting wallet:", error);
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: error.message
-        });
-      }
-    } else {
+  const handleSwap = async () => {
+    try {
+      const result = await executeSwap();
+      toast({
+        title: "Swap Successful!",
+        description: `Transaction hash: ${result.hash.slice(0, 10)}...`
+      });
+    } catch (error: any) {
+      console.error("Swap error:", error);
       toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Please install Metamask!"
+        title: "Swap Failed",
+        description: error.message || "Failed to execute swap"
       });
     }
   };
@@ -113,8 +115,12 @@ const Index = () => {
               <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
               <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
               <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
-              <button onClick={connectWallet} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform">
-                {walletConnected ? `${account?.slice(0, 6)}...${account?.slice(-4)}` : 'Connect Wallet'}
+              <button 
+                onClick={handleConnectWallet} 
+                disabled={isConnecting}
+                className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform disabled:opacity-50"
+              >
+                {isConnecting ? 'Connecting...' : isConnected ? `${account?.slice(0, 6)}...${account?.slice(-4)}` : 'Connect Wallet'}
               </button>
             </div>
           </div>
@@ -182,7 +188,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Swap Section with Enhanced Glassmorphism */}
+      {/* Enhanced Swap Section */}
       <section id="swap" className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -194,10 +200,16 @@ const Index = () => {
               <div className="glass-card rounded-xl p-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-400">From</span>
-                  <span className="text-sm text-gray-400">Balance: 0.0 PLS</span>
+                  <span className="text-sm text-gray-400">Balance: {parseFloat(plsBalance).toFixed(4)} PLS</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <input type="number" placeholder="0.0" className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" />
+                  <input 
+                    type="number" 
+                    placeholder="0.0" 
+                    value={fromAmount}
+                    onChange={(e) => setFromAmount(e.target.value)}
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" 
+                  />
                   <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-lg">
                     <div className="w-6 h-6 bg-red-500 rounded-full"></div>
                     <span className="font-semibold">PLS</span>
@@ -218,10 +230,16 @@ const Index = () => {
               <div className="glass-card rounded-xl p-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-400">To</span>
-                  <span className="text-sm text-gray-400">Balance: 0.0 ARK</span>
+                  <span className="text-sm text-gray-400">Balance: {parseFloat(arkBalance).toFixed(2)} ARK</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <input type="number" placeholder="0.0" className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" readOnly />
+                  <input 
+                    type="number" 
+                    placeholder="0.0" 
+                    value={toAmount}
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" 
+                    readOnly 
+                  />
                   <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-lg">
                     <div className="w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
                     <span className="font-semibold">ARK</span>
@@ -230,8 +248,12 @@ const Index = () => {
               </div>
 
               {/* Swap Button */}
-              <button disabled={!walletConnected} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg">
-                {walletConnected ? 'Swap Tokens' : 'Connect Wallet First'}
+              <button 
+                onClick={handleSwap}
+                disabled={!canSwap || swapLoading}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg"
+              >
+                {swapLoading ? 'Swapping...' : !isConnected ? 'Connect Wallet First' : !canSwap ? 'Enter Amount' : 'Swap Tokens'}
               </button>
 
               {/* Swap Info */}
@@ -242,7 +264,7 @@ const Index = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Slippage</span>
-                  <span>2%</span>
+                  <span>{slippage}%</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Network Fee</span>
