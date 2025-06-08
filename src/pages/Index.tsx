@@ -1,17 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from "@/components/ui/use-toast"
-import { Sparkles } from "lucide-react"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import { Sparkles, Copy, ExternalLink } from "lucide-react"
+import { useContractData } from '../hooks/useContractData';
 
 const Index = () => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [account, setAccount] = useState<string | null>(null);
+  const { data: contractData, loading: contractLoading } = useContractData();
 
   useEffect(() => {
     checkWalletConnection();
@@ -63,14 +60,25 @@ const Index = () => {
     }
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: "Contract address copied to clipboard",
+    });
+  };
+
+  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900/50 to-black"></div>
-        <div className="absolute inset-0 bg-grid animate-grid-move opacity-20"></div>
-        <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '5s' }}></div>
+        <div className="absolute inset-0 bg-grid animate-[grid-move_20s_linear_infinite] opacity-20"></div>
+        <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite]"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite] [animation-delay:3s]"></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl animate-[float_8s_ease-in-out_infinite] [animation-delay:1.5s]"></div>
       </div>
 
       {/* Navigation */}
@@ -90,162 +98,164 @@ const Index = () => {
                 onClick={connectWallet}
                 className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform"
               >
-                {walletConnected ? 'Disconnect' : 'Connect Wallet'}
+                {walletConnected ? `${account?.slice(0,6)}...${account?.slice(-4)}` : 'Connect Wallet'}
               </button>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section with 3D Token */}
       <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent animate-heroFadeIn">
-            THE ARK: Salvation from the Flood
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 animate-heroFadeIn" style={{ animationDelay: '0.2s' }}>
-            Board THE ARK and be saved from the crypto flood. Deflationary tokenomics with burns, reflections, and vault rewards.
-          </p>
-          <div className="flex justify-center gap-6 animate-heroFadeIn" style={{ animationDelay: '0.4s' }}>
-            <a href="#contract" className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30">
-              Explore Contract
-            </a>
-            <a href="#swap" className="bg-black/30 border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-black/50 hover:scale-105 transition-transform">
-              Buy ARK
-            </a>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Text */}
+            <div>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
+                THE ARK
+              </h1>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-300 animate-[fade-in_1s_ease-out_0.2s_both]">
+                Salvation from the Flood
+              </h2>
+              <p className="text-xl md:text-2xl text-gray-400 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
+                Board THE ARK and be saved from the crypto flood. Deflationary tokenomics with burns, reflections, and vault rewards.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
+                <button
+                  onClick={() => copyToClipboard(contractAddress)}
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2"
+                >
+                  <Copy size={18} />
+                  Copy Contract
+                </button>
+                <a href="#swap" className="bg-black/30 border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-black/50 hover:scale-105 transition-transform text-center">
+                  Buy ARK
+                </a>
+              </div>
+            </div>
+
+            {/* Right side - 3D Token */}
+            <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
+              <div className="relative w-80 h-80">
+                <div className="absolute inset-0 bg-gradient-conic from-cyan-500 via-blue-500 to-purple-500 rounded-full animate-[spin_20s_linear_infinite] opacity-20"></div>
+                <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite]">
+                  <div className="text-6xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                    ARK
+                  </div>
+                </div>
+                <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent rounded-full animate-pulse"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contract Section */}
-      <section id="contract" className="relative z-10 py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            The Genesis Contract
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Deflationary Tokenomics */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">🔥 Deflationary Tokenomics</h3>
-              <p className="text-gray-300 mb-4">
-                Every transaction helps reduce supply and increase value.
-              </p>
-              <ul className="list-disc list-inside text-sm text-gray-400">
-                <li>Burns on each transaction</li>
-                <li>Redistribution to holders</li>
-                <li>Automated liquidity boosts</li>
-              </ul>
-            </div>
-
-            {/* Vault Rewards */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 Vault Rewards</h3>
-              <p className="text-gray-300 mb-4">
-                Lock your tokens in the vault and earn rewards from transaction fees.
-              </p>
-              <ul className="list-disc list-inside text-sm text-gray-400">
-                <li>Earn passive income</li>
-                <li>Support the ecosystem</li>
-                <li>Increase your holdings</li>
-              </ul>
-            </div>
-
-            {/* Community Reflections */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">🫂 Community Reflections</h3>
-              <p className="text-gray-300 mb-4">
-                Holders are rewarded through reflections, increasing their token balance.
-              </p>
-              <ul className="list-disc list-inside text-sm text-gray-400">
-                <li>Automatic reflections</li>
-                <li>No staking required</li>
-                <li>Directly to your wallet</li>
-              </ul>
-            </div>
-
-            {/* Secure & Transparent */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">🛡️ Secure & Transparent</h3>
-              <p className="text-gray-300 mb-4">
-                The contract is designed with security and transparency in mind.
-              </p>
-              <ul className="list-disc list-inside text-sm text-gray-400">
-                <li>Audited contract code</li>
-                <li>Open-source and verifiable</li>
-                <li>Community-driven governance</li>
-              </ul>
+      {/* Contract Address Section */}
+      <section className="relative z-10 py-12 px-6 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent">
+        <div className="max-w-4xl mx-auto text-center">
+          <h3 className="text-2xl font-bold mb-4 text-cyan-400">Smart Contract Address</h3>
+          <div className="bg-black/50 border border-cyan-500/30 rounded-xl p-6 flex items-center justify-between">
+            <code className="text-sm md:text-base text-gray-300 font-mono">{contractAddress}</code>
+            <div className="flex gap-2">
+              <button
+                onClick={() => copyToClipboard(contractAddress)}
+                className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-colors"
+              >
+                <Copy size={18} />
+              </button>
+              <button className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-colors">
+                <ExternalLink size={18} />
+              </button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Swap Section */}
-      <section id="swap" className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
-        <div className="max-w-7xl mx-auto">
+      <section id="swap" className="relative z-10 py-20 px-6">
+        <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            Swap and Acquire $ARK
+            Swap PLS for ARK
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Centralized Exchange */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">🏦 Centralized Exchange</h3>
-              <p className="text-gray-300 mb-4">
-                Trade ARK on leading centralized exchanges for maximum liquidity.
-              </p>
-              <a href="#" className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform block text-center">
-                Trade on Binance
-              </a>
-            </div>
+          <div className="bg-white/5 border border-cyan-500/30 rounded-2xl p-8 backdrop-blur-sm">
+            <div className="space-y-6">
+              {/* From Token */}
+              <div className="bg-black/30 rounded-xl p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-400">From</span>
+                  <span className="text-sm text-gray-400">Balance: 0.0 PLS</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="number"
+                    placeholder="0.0"
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none"
+                  />
+                  <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
+                    <div className="w-6 h-6 bg-red-500 rounded-full"></div>
+                    <span className="font-semibold">PLS</span>
+                  </div>
+                </div>
+              </div>
 
-            {/* Decentralized Exchange */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💱 Decentralized Exchange</h3>
-              <p className="text-gray-300 mb-4">
-                Swap for ARK on decentralized exchanges with complete control over your assets.
-              </p>
-              <a href="#" className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform block text-center">
-                Swap on PancakeSwap
-              </a>
+              {/* Swap Icon */}
+              <div className="flex justify-center">
+                <button className="p-3 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-full transition-colors rotate-0 hover:rotate-180 duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* To Token */}
+              <div className="bg-black/30 rounded-xl p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-400">To</span>
+                  <span className="text-sm text-gray-400">Balance: 0.0 ARK</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="number"
+                    placeholder="0.0"
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none"
+                    readOnly
+                  />
+                  <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
+                    <div className="w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
+                    <span className="font-semibold">ARK</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Swap Button */}
+              <button
+                disabled={!walletConnected}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg"
+              >
+                {walletConnected ? 'Swap Tokens' : 'Connect Wallet First'}
+              </button>
+
+              {/* Swap Info */}
+              <div className="bg-black/20 rounded-xl p-4 text-sm space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Rate</span>
+                  <span>1 PLS = 100 ARK</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Slippage</span>
+                  <span>2%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Network Fee</span>
+                  <span>~$0.01</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Prophecy Section */}
-      <section className="relative z-10 py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            The Prophecy of $ARK
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Vision */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">🔮 Vision</h3>
-              <p className="text-gray-300 mb-4">
-                To create a safe haven in the crypto space, rewarding long-term holders.
-              </p>
-            </div>
-
-            {/* Mission */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">🎯 Mission</h3>
-              <p className="text-gray-300 mb-4">
-                To build a strong, loyal community that benefits from the token's success.
-              </p>
-            </div>
-
-            {/* Values */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💎 Values</h3>
-              <p className="text-gray-300 mb-4">
-                Transparency, security, and community-driven growth.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
+      {/* Stats Section with Real Contract Data */}
       <section id="stats" className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -255,32 +265,75 @@ const Index = () => {
             {/* Market Cap */}
             <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 Market Cap</h3>
-              <p className="text-gray-300 mb-4">
-                $12,500,000
+              <p className="text-3xl font-black text-white mb-2">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  `$${contractData.marketCap}`
+                )}
               </p>
+              <p className="text-sm text-gray-400">Real-time valuation</p>
             </div>
 
             {/* Total Supply */}
             <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">💎 Total Supply</h3>
-              <p className="text-gray-300 mb-4">
-                100,000,000 ARK
+              <p className="text-3xl font-black text-white mb-2">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  `${contractData.totalSupply} ARK`
+                )}
               </p>
+              <p className="text-sm text-gray-400">From smart contract</p>
             </div>
 
             {/* Holders */}
             <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">👥 Holders</h3>
-              <p className="text-gray-300 mb-4">
-                12,500
+              <p className="text-3xl font-black text-white mb-2">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  contractData.holders
+                )}
+              </p>
+              <p className="text-sm text-gray-400">Unique addresses</p>
+            </div>
+          </div>
+
+          {/* Contract Fees Info */}
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <h4 className="text-lg font-bold text-cyan-400 mb-2">🔥 Burn Fee</h4>
+              <p className="text-2xl font-bold">
+                {contractLoading ? '...' : `${contractData.currentFees.burn}%`}
+              </p>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <h4 className="text-lg font-bold text-cyan-400 mb-2">🫂 Reflection Fee</h4>
+              <p className="text-2xl font-bold">
+                {contractLoading ? '...' : `${contractData.currentFees.reflection}%`}
+              </p>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <h4 className="text-lg font-bold text-cyan-400 mb-2">💧 Liquidity Fee</h4>
+              <p className="text-2xl font-bold">
+                {contractLoading ? '...' : `${contractData.currentFees.liquidity}%`}
+              </p>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <h4 className="text-lg font-bold text-cyan-400 mb-2">🔒 Locker Fee</h4>
+              <p className="text-2xl font-bold">
+                {contractLoading ? '...' : `${contractData.currentFees.locker}%`}
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-6">
+      {/* Features Section - The Four Pillars */}
+      <section id="features" className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             The Four Pillars of Salvation
@@ -290,45 +343,45 @@ const Index = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Scarcity */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <div className="text-4xl mb-4 text-cyan-400 text-center">🔥</div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🔥</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Scarcity</h3>
               <p className="text-gray-300 text-center">
-                Limited supply with continuous burns on transactions.
+                Limited supply with continuous burns on transactions creating deflationary pressure.
               </p>
             </div>
 
             {/* Rewards */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <div className="text-4xl mb-4 text-cyan-400 text-center">💰</div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">💰</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Rewards</h3>
               <p className="text-gray-300 text-center">
-                Vault rewards and reflections for loyal holders.
+                Vault rewards and reflections for loyal holders who believe in the mission.
               </p>
             </div>
 
             {/* Community */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <div className="text-4xl mb-4 text-cyan-400 text-center">🫂</div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🫂</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Community</h3>
               <p className="text-gray-300 text-center">
-                A strong, supportive community driving the project forward.
+                A strong, supportive community driving the project forward together.
               </p>
             </div>
 
             {/* Security */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <div className="text-4xl mb-4 text-cyan-400 text-center">🛡️</div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🛡️</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Security</h3>
               <p className="text-gray-300 text-center">
-                Audited contract ensuring safety and transparency.
+                Audited contract ensuring safety and transparency for all passengers.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Updated Locker Vault Section */}
+      {/* Updated 6-Tier Locker Section */}
       <section className="py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -336,10 +389,14 @@ const Index = () => {
           </h2>
           <p className="text-xl text-gray-300 text-center max-w-4xl mx-auto mb-16">
             Lock your ARK tokens and ascend through divine tiers. The longer you lock, the greater your blessings. 
-            2% of every transaction flows to the vault, rewarding the faithful.
+            {contractLoading ? (
+              <span className="animate-pulse">Loading rewards...</span>
+            ) : (
+              `${contractData.currentFees.locker}% of every transaction flows to the vault, rewarding the faithful.`
+            )}
           </p>
           
-          {/* Updated 6-tier system */}
+          {/* 6-tier system */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             
             {/* Bronze Tier */}
@@ -495,49 +552,169 @@ const Index = () => {
             </div>
           </div>
 
+          {/* Locker Rewards Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
+              <h4 className="text-lg font-bold text-cyan-400 mb-4">💰 Pending Locker Rewards</h4>
+              <p className="text-2xl font-black text-green-400">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  `${contractData.lockerRewards.pending} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 mt-2">Ready for distribution</p>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
+              <h4 className="text-lg font-bold text-cyan-400 mb-4">🎁 Total Distributed</h4>
+              <p className="text-2xl font-black text-blue-400">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  `${contractData.lockerRewards.distributed} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 mt-2">All-time rewards paid</p>
+            </div>
+          </div>
+
           {/* Call to Action */}
           <div className="text-center">
             <Link
               to="/locker"
               className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30"
             >
+              <Sparkles className="inline w-5 h-5 mr-2" />
               Enter The Sacred Locker
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Flood Timer Section */}
+      {/* Noah's Prophecy Section */}
       <section className="relative z-10 py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            The Great Flood Approaches
+            The Prophecy of Noah's ARK
           </h2>
-          <div className="text-center text-gray-300 text-2xl">
-            Time until the next major crypto correction: <span className="font-bold text-cyan-400">7 days, 14 hours, 32 minutes</span>
-          </div>
-        </div>
-      </section>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* The Flood */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <div className="text-4xl mb-4 text-center">🌊</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Flood</h3>
+              <p className="text-gray-300 text-center">
+                As the crypto waters rise and projects sink, only those aboard the ARK shall survive the great cleansing.
+              </p>
+            </div>
 
-      {/* Chart Section */}
-      <section id="chart" className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            $ARK Price Chart
-          </h2>
-          <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
-            {/* Placeholder for chart */}
-            <div className="text-center text-gray-300">
-              [Interactive chart will be displayed here]
+            {/* The Chosen */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <div className="text-4xl mb-4 text-center">⚡</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Chosen</h3>
+              <p className="text-gray-300 text-center">
+                ARK holders are the chosen ones, guided by divine tokenomics to weather any storm in the crypto seas.
+              </p>
+            </div>
+
+            {/* New World */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <div className="text-4xl mb-4 text-center">🕊️</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">New World</h3>
+              <p className="text-gray-300 text-center">
+                When the waters recede, ARK passengers will rebuild the crypto world, stronger and more united than before.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer Section */}
+      {/* Countdown Timer */}
+      <section className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl font-black mb-8 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            The Great Flood Approaches
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+              <div className="text-3xl font-black text-cyan-400">07</div>
+              <div className="text-sm text-gray-400">Days</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+              <div className="text-3xl font-black text-cyan-400">14</div>
+              <div className="text-sm text-gray-400">Hours</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+              <div className="text-3xl font-black text-cyan-400">32</div>
+              <div className="text-sm text-gray-400">Minutes</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+              <div className="text-3xl font-black text-cyan-400">18</div>
+              <div className="text-sm text-gray-400">Seconds</div>
+            </div>
+          </div>
+          <p className="text-gray-300 mt-6">Until the next major crypto correction. Board the ARK now!</p>
+        </div>
+      </section>
+
+      {/* Chart Section */}
+      <section id="chart" className="relative z-10 py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            $ARK Price Chart
+          </h2>
+          <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8 min-h-[400px] flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-6xl mb-4">📈</div>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-4">Interactive Chart Coming Soon</h3>
+              <p className="text-gray-300">Real-time price data and trading view integration</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
       <footer className="relative z-10 py-12 px-6 border-t border-cyan-500/20">
-        <div className="max-w-7xl mx-auto text-center text-gray-400">
-          &copy; 2024 THE ARK. All rights reserved.
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
+                ARK
+              </div>
+              <p className="text-gray-400 text-sm">
+                Salvation from the crypto flood. Join the ARK and be saved.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-bold text-cyan-400 mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#swap" className="hover:text-cyan-400 transition-colors">Swap</a></li>
+                <li><Link to="/locker" className="hover:text-cyan-400 transition-colors">Locker</Link></li>
+                <li><a href="#stats" className="hover:text-cyan-400 transition-colors">Stats</a></li>
+                <li><a href="#chart" className="hover:text-cyan-400 transition-colors">Chart</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-cyan-400 mb-4">Community</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Discord</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Telegram</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Twitter</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Medium</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-cyan-400 mb-4">Resources</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Whitepaper</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Audit</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Documentation</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Support</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-cyan-500/20 mt-8 pt-8 text-center text-gray-400 text-sm">
+            &copy; 2024 THE ARK. All rights reserved. Built for the faithful.
+          </div>
         </div>
       </footer>
     </div>
