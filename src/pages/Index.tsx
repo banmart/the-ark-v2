@@ -3,20 +3,17 @@ import { Link } from 'react-router-dom';
 import { toast } from "@/components/ui/use-toast";
 import { Sparkles, Copy, ExternalLink } from "lucide-react";
 import { useContractData } from '../hooks/useContractData';
-
 const Index = () => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [account, setAccount] = useState<string | null>(null);
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
-  
   const {
     data: contractData,
     loading: contractLoading
   } = useContractData();
-
   useEffect(() => {
     checkWalletConnection();
-    
+
     // Preload background image and trigger fade-in
     const img = new Image();
     img.onload = () => {
@@ -24,7 +21,6 @@ const Index = () => {
     };
     img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
   }, []);
-
   const checkWalletConnection = async () => {
     if (window.ethereum) {
       try {
@@ -45,7 +41,6 @@ const Index = () => {
       }
     }
   };
-
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
@@ -74,7 +69,6 @@ const Index = () => {
       });
     }
   };
-
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
@@ -82,11 +76,8 @@ const Index = () => {
       description: "Contract address copied to clipboard"
     });
   };
-
   const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
-
-  return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+  return <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -111,17 +102,12 @@ const Index = () => {
       {/* Hero Section with Background Image */}
       <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center">
         {/* Background Image with Fade-in Effect */}
-        <div 
-          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
-            backgroundLoaded ? 'opacity-30' : 'opacity-0'
-          }`}
-          style={{
-            backgroundImage: 'url(https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg)'
-          }}
-        ></div>
+        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${backgroundLoaded ? 'opacity-30' : 'opacity-0'}`} style={{
+        backgroundImage: 'url(https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg)'
+      }}></div>
         
         {/* Gradient Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/5 to-black/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/0 to-black/20"></div>
         
         {/* Content */}
         <div className="max-w-7xl mx-auto w-full relative z-20">
@@ -151,11 +137,13 @@ const Index = () => {
             {/* Right side - 3D Token */}
             <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
               <div className="relative w-80 h-80">
+                <div className="absolute inset-0 bg-gradient-conic from-cyan-500 via-blue-500 to-purple-500 rounded-full animate-[spin_20s_linear_infinite] opacity-20"></div>
                 <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite]">
                   <div className="text-6xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                     ARK
                   </div>
                 </div>
+                <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -669,8 +657,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
