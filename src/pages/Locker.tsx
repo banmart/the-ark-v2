@@ -1,369 +1,291 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Lock, Unlock, Trophy, Clock, Coins, Users, TrendingUp, ArrowLeft } from "lucide-react";
-import { toast } from "sonner";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-const LOCK_TIERS = [
-  { name: "Bronze", minDays: 30, maxDays: 89, multiplier: "1x", color: "bg-amber-600" },
-  { name: "Silver", minDays: 90, maxDays: 179, multiplier: "1.5x", color: "bg-gray-400" },
-  { name: "Gold", minDays: 180, maxDays: 364, multiplier: "2x", color: "bg-yellow-500" },
-  { name: "Diamond", minDays: 365, maxDays: 1094, multiplier: "3x", color: "bg-blue-400" },
-  { name: "Platinum", minDays: 1095, maxDays: 1459, multiplier: "5x", color: "bg-purple-400" },
-  { name: "Legendary", minDays: 1460, maxDays: 1826, multiplier: "8x", color: "bg-red-500" }
-];
-
-const DURATION_OPTIONS = [
-  { label: "30 Days", value: 30, tier: "Bronze" },
-  { label: "90 Days", value: 90, tier: "Silver" },
-  { label: "180 Days", value: 180, tier: "Gold" },
-  { label: "1 Year", value: 365, tier: "Diamond" },
-  { label: "3 Years", value: 1095, tier: "Platinum" },
-  { label: "5 Years", value: 1826, tier: "Legendary" }
-];
+interface LockPosition {
+  id: number;
+  amount: number;
+  lockTime: number;
+  unlockTime: number;
+  tier: string;
+  active: boolean;
+  totalRewards: number;
+}
 
 const Locker = () => {
-  const [lockAmount, setLockAmount] = useState("");
-  const [lockDuration, setLockDuration] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [lockAmount, setLockAmount] = useState('');
+  const [lockDuration, setLockDuration] = useState(30);
+  const [userLocks, setUserLocks] = useState<LockPosition[]>([]);
+  const [pendingRewards, setPendingRewards] = useState(0);
 
-  // Mock data for demonstration
-  const userStats = {
-    totalLocked: "1,000,000",
-    pendingRewards: "50,000",
-    totalRewardsEarned: "250,000",
-    activeLocksCount: 3
-  };
-
-  const protocolStats = {
-    totalLockedTokens: "10,000,000",
-    totalRewardsDistributed: "2,500,000",
-    totalActiveLockers: 1250
-  };
-
-  const userLocks = [
-    {
-      id: 1,
-      amount: "500,000",
-      tier: "Gold",
-      unlockTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      progress: 75,
-      rewards: "25,000"
-    },
-    {
-      id: 2,
-      amount: "300,000",
-      tier: "Silver",
-      unlockTime: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
-      progress: 50,
-      rewards: "15,000"
-    },
-    {
-      id: 3,
-      amount: "200,000",
-      tier: "Diamond",
-      unlockTime: new Date(Date.now() + 200 * 24 * 60 * 60 * 1000),
-      progress: 25,
-      rewards: "10,000"
-    }
+  const lockTiers = [
+    { name: 'Bronze', duration: 30, multiplier: '1x', color: '#CD7F32', minDays: 30, maxDays: 89 },
+    { name: 'Silver', duration: 90, multiplier: '1.5x', color: '#C0C0C0', minDays: 90, maxDays: 179 },
+    { name: 'Gold', duration: 180, multiplier: '2x', color: '#FFD700', minDays: 180, maxDays: 364 },
+    { name: 'Diamond', duration: 365, multiplier: '3x', color: '#B9F2FF', minDays: 365, maxDays: 1094 },
+    { name: 'Platinum', duration: 1095, multiplier: '5x', color: '#E5E4E2', minDays: 1095, maxDays: 1459 },
+    { name: 'Legendary', duration: 1460, multiplier: '8x', color: '#FF6B35', minDays: 1460, maxDays: 1826 }
   ];
 
-  const handleLock = () => {
-    if (!isConnected) {
-      toast.error("Please connect your wallet first");
-      return;
-    }
-    if (!lockAmount || !lockDuration) {
-      toast.error("Please enter amount and select duration");
-      return;
-    }
-    toast.success("Lock transaction submitted!");
+  const getCurrentTier = (days: number) => {
+    return lockTiers.find(tier => days >= tier.minDays && days <= tier.maxDays) || lockTiers[0];
   };
 
-  const handleUnlock = (lockId: number) => {
-    toast.success(`Unlock transaction submitted for lock #${lockId}`);
+  const calculatePenalty = (lockTime: number, unlockTime: number, amount: number) => {
+    const now = Date.now() / 1000;
+    if (now >= unlockTime) return { penalty: 0, userReceives: amount };
+    
+    const timeRemaining = unlockTime - now;
+    const totalLockTime = unlockTime - lockTime;
+    const penaltyRate = (50 * timeRemaining) / totalLockTime; // 50% max penalty
+    const penalty = (amount * penaltyRate) / 100;
+    
+    return { penalty, userReceives: amount - penalty };
   };
-
-  const handleClaimRewards = () => {
-    if (!isConnected) {
-      toast.error("Please connect your wallet first");
-      return;
-    }
-    toast.success("Rewards claimed successfully!");
-  };
-
-  const getTierByDuration = (days: number) => {
-    return LOCK_TIERS.find(tier => days >= tier.minDays && days <= tier.maxDays);
-  };
-
-  const selectedTier = lockDuration ? getTierByDuration(parseInt(lockDuration)) : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0 bg-grid opacity-20 animate-pulse" />
-      
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900/50 to-black"></div>
+        <div className="absolute inset-0 bg-grid animate-grid-move opacity-20"></div>
+        <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '5s' }}></div>
+      </div>
+
       {/* Navigation */}
-      <nav className="relative z-10 p-6 border-b border-white/10 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent hover:from-cyan-300 hover:to-blue-300 transition-all">
-            <ArrowLeft className="w-5 h-5" />
-            Back to THE ARK
-          </Link>
-          
-          <Button 
-            variant={isConnected ? "secondary" : "default"}
-            onClick={() => setIsConnected(!isConnected)}
-            className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400"
-          >
-            {isConnected ? "Wallet Connected" : "Connect Wallet"}
-          </Button>
+      <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <Link to="/" className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              ARK
+            </Link>
+            <div className="flex items-center gap-8">
+              <Link to="/#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</Link>
+              <Link to="/locker" className="text-cyan-400 font-semibold">Locker</Link>
+              <Link to="/#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</Link>
+              <button 
+                onClick={() => setWalletConnected(!walletConnected)}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform"
+              >
+                {walletConnected ? 'Disconnect' : 'Connect Wallet'}
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
 
-      <div className="relative z-10 max-w-7xl mx-auto p-6 space-y-8">
+      <div className="relative z-10 pt-24">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-            ARK Token Locker
+        <div className="text-center py-12">
+          <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            🔒 THE ARK LOCKER 🔒
           </h1>
-          <p className="text-xl text-gray-300">
-            Lock your ARK tokens to earn rewards and increase your multiplier
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Lock your ARK tokens and ascend through divine tiers. The longer you lock, the greater your blessings.
           </p>
         </div>
 
-        <Tabs defaultValue="lock" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-black/20 backdrop-blur-sm">
-            <TabsTrigger value="lock">Lock Tokens</TabsTrigger>
-            <TabsTrigger value="locks">My Locks</TabsTrigger>
-            <TabsTrigger value="rewards">Rewards</TabsTrigger>
-            <TabsTrigger value="stats">Stats</TabsTrigger>
-          </TabsList>
+        <div className="max-w-7xl mx-auto px-6 pb-20">
+          {/* Protocol Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <div className="text-3xl mb-2">🏛️</div>
+              <div className="text-cyan-400 text-sm uppercase tracking-wider mb-2">Total Locked</div>
+              <div className="text-2xl font-bold">12.5M ARK</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <div className="text-3xl mb-2">👥</div>
+              <div className="text-cyan-400 text-sm uppercase tracking-wider mb-2">Active Lockers</div>
+              <div className="text-2xl font-bold">2,847</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <div className="text-3xl mb-2">💰</div>
+              <div className="text-cyan-400 text-sm uppercase tracking-wider mb-2">Rewards Pool</div>
+              <div className="text-2xl font-bold">850K ARK</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <div className="text-3xl mb-2">📈</div>
+              <div className="text-cyan-400 text-sm uppercase tracking-wider mb-2">APY Range</div>
+              <div className="text-2xl font-bold">15-150%</div>
+            </div>
+          </div>
 
-          {/* Lock Tokens Tab */}
-          <TabsContent value="lock" className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              {/* Lock Interface */}
-              <Card className="p-6 bg-black/20 backdrop-blur-sm border-white/10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Lock Interface */}
+            <div className="space-y-8">
+              <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8">
+                <h2 className="text-2xl font-bold mb-6 text-cyan-400">Lock Tokens</h2>
+                
                 <div className="space-y-6">
-                  <div className="flex items-center gap-2">
-                    <Lock className="w-5 h-5 text-cyan-400" />
-                    <h3 className="text-xl font-semibold">Lock ARK Tokens</h3>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Amount to Lock</label>
+                    <input
+                      type="number"
+                      value={lockAmount}
+                      onChange={(e) => setLockAmount(e.target.value)}
+                      placeholder="0.0"
+                      className="w-full bg-black/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none"
+                    />
                   </div>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="amount">Amount to Lock</Label>
-                      <Input
-                        id="amount"
-                        placeholder="Enter ARK amount"
-                        value={lockAmount}
-                        onChange={(e) => setLockAmount(e.target.value)}
-                        className="bg-black/30 border-white/20"
-                      />
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Lock Duration (Days)</label>
+                    <input
+                      type="range"
+                      min="30"
+                      max="1826"
+                      value={lockDuration}
+                      onChange={(e) => setLockDuration(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                    <div className="flex justify-between text-sm text-gray-400 mt-2">
+                      <span>30 days</span>
+                      <span className="text-cyan-400 font-bold">{lockDuration} days</span>
+                      <span>5 years</span>
                     </div>
-                    
-                    <div>
-                      <Label htmlFor="duration">Lock Duration</Label>
-                      <Select value={lockDuration} onValueChange={setLockDuration}>
-                        <SelectTrigger className="bg-black/30 border-white/20">
-                          <SelectValue placeholder="Select duration" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {DURATION_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value.toString()}>
-                              {option.label} ({option.tier})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    {selectedTier && (
-                      <div className="p-4 bg-black/30 rounded-lg border border-white/10">
-                        <div className="flex items-center justify-between">
-                          <span>Selected Tier:</span>
-                          <Badge className={`${selectedTier.color} text-white`}>
-                            {selectedTier.name} - {selectedTier.multiplier}
-                          </Badge>
+                  </div>
+
+                  {/* Current Tier Display */}
+                  <div className="bg-black/30 rounded-lg p-4 border" style={{ borderColor: getCurrentTier(lockDuration).color }}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-lg font-bold" style={{ color: getCurrentTier(lockDuration).color }}>
+                          {getCurrentTier(lockDuration).name} Tier
+                        </div>
+                        <div className="text-sm text-gray-400">
+                          {getCurrentTier(lockDuration).multiplier} reward multiplier
                         </div>
                       </div>
-                    )}
-                    
-                    <Button 
-                      onClick={handleLock}
-                      className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400"
-                    >
-                      Lock Tokens
-                    </Button>
+                      <div className="text-2xl">
+                        {getCurrentTier(lockDuration).name === 'Bronze' && '⛵'}
+                        {getCurrentTier(lockDuration).name === 'Silver' && '🛡️'}
+                        {getCurrentTier(lockDuration).name === 'Gold' && '👑'}
+                        {getCurrentTier(lockDuration).name === 'Diamond' && '💎'}
+                        {getCurrentTier(lockDuration).name === 'Platinum' && '⭐'}
+                        {getCurrentTier(lockDuration).name === 'Legendary' && '⚡'}
+                      </div>
+                    </div>
                   </div>
+
+                  <button
+                    disabled={!walletConnected || !lockAmount}
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+                  >
+                    {!walletConnected ? 'Connect Wallet First' : 'Lock Tokens'}
+                  </button>
                 </div>
-              </Card>
+              </div>
 
               {/* Tier Information */}
-              <Card className="p-6 bg-black/20 backdrop-blur-sm border-white/10">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                    <h3 className="text-xl font-semibold">Lock Tiers</h3>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {LOCK_TIERS.map((tier) => (
-                      <div key={tier.name} className="flex items-center justify-between p-3 bg-black/30 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${tier.color}`} />
-                          <span className="font-medium">{tier.name}</span>
-                        </div>
-                        <div className="text-right text-sm">
-                          <div>{tier.minDays}-{tier.maxDays} days</div>
-                          <div className="text-cyan-400">{tier.multiplier} rewards</div>
-                        </div>
+              <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8">
+                <h3 className="text-xl font-bold mb-6 text-cyan-400">Lock Tier Benefits</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {lockTiers.map((tier, index) => (
+                    <div key={index} className="bg-black/30 rounded-lg p-4 border border-gray-600">
+                      <div className="text-sm font-bold mb-1" style={{ color: tier.color }}>
+                        {tier.name}
                       </div>
-                    ))}
-                  </div>
+                      <div className="text-xs text-gray-400 mb-1">
+                        {tier.minDays}-{tier.maxDays} days
+                      </div>
+                      <div className="text-sm font-bold text-white">
+                        {tier.multiplier} rewards
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </Card>
+              </div>
             </div>
-          </TabsContent>
 
-          {/* My Locks Tab */}
-          <TabsContent value="locks" className="space-y-6">
-            <div className="grid gap-4">
-              {userLocks.map((lock) => (
-                <Card key={lock.id} className="p-6 bg-black/20 backdrop-blur-sm border-white/10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <Lock className="w-5 h-5 text-cyan-400" />
-                      <div>
-                        <div className="font-semibold">Lock #{lock.id}</div>
-                        <div className="text-sm text-gray-400">{lock.amount} ARK</div>
-                      </div>
-                    </div>
-                    <Badge variant="outline" className={LOCK_TIERS.find(t => t.name === lock.tier)?.color}>
-                      {lock.tier}
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span>Progress</span>
-                      <span>{lock.progress}%</span>
-                    </div>
-                    <Progress value={lock.progress} className="h-2" />
-                    
-                    <div className="flex justify-between items-center">
-                      <div className="text-sm">
-                        <div>Unlocks: {lock.unlockTime.toLocaleDateString()}</div>
-                        <div className="text-cyan-400">Rewards: {lock.rewards} ARK</div>
-                      </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleUnlock(lock.id)}
-                      >
-                        <Unlock className="w-4 h-4 mr-2" />
-                        Unlock
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Rewards Tab */}
-          <TabsContent value="rewards" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-6 bg-black/20 backdrop-blur-sm border-white/10">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Coins className="w-5 h-5 text-yellow-400" />
-                    <h3 className="text-xl font-semibold">Pending Rewards</h3>
-                  </div>
-                  <div className="text-3xl font-bold text-cyan-400">
-                    {userStats.pendingRewards} ARK
-                  </div>
-                  <Button 
-                    onClick={handleClaimRewards}
-                    className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400"
+            {/* User Dashboard */}
+            <div className="space-y-8">
+              {/* Pending Rewards */}
+              <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-cyan-400">Pending Rewards</h2>
+                  <button
+                    disabled={!walletConnected || pendingRewards === 0}
+                    className="bg-gradient-to-r from-green-500 to-emerald-600 text-black font-bold px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
                   >
-                    Claim Rewards
-                  </Button>
+                    Claim
+                  </button>
                 </div>
-              </Card>
-              
-              <Card className="p-6 bg-black/20 backdrop-blur-sm border-white/10">
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold">Reward Stats</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span>Total Earned:</span>
-                      <span className="text-cyan-400">{userStats.totalRewardsEarned} ARK</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Active Locks:</span>
-                      <span>{userStats.activeLocksCount}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Total Locked:</span>
-                      <span>{userStats.totalLocked} ARK</span>
-                    </div>
-                  </div>
+                <div className="text-3xl font-black text-green-400">
+                  {walletConnected ? `${pendingRewards.toLocaleString()} ARK` : 'Connect wallet'}
                 </div>
-              </Card>
-            </div>
-          </TabsContent>
+              </div>
 
-          {/* Stats Tab */}
-          <TabsContent value="stats" className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="p-6 bg-black/20 backdrop-blur-sm border-white/10">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-green-400" />
-                    <span className="text-sm text-gray-400">Total Locked</span>
+              {/* Active Locks */}
+              <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8">
+                <h2 className="text-2xl font-bold mb-6 text-cyan-400">Your Active Locks</h2>
+                
+                {!walletConnected ? (
+                  <div className="text-center py-8 text-gray-400">
+                    Connect your wallet to view your locks
                   </div>
-                  <div className="text-2xl font-bold text-cyan-400">
-                    {protocolStats.totalLockedTokens} ARK
+                ) : userLocks.length === 0 ? (
+                  <div className="text-center py-8 text-gray-400">
+                    No active locks found. Lock some tokens to get started!
                   </div>
-                </div>
-              </Card>
-              
-              <Card className="p-6 bg-black/20 backdrop-blur-sm border-white/10">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Coins className="w-5 h-5 text-yellow-400" />
-                    <span className="text-sm text-gray-400">Rewards Distributed</span>
+                ) : (
+                  <div className="space-y-4">
+                    {userLocks.map((lock) => {
+                      const now = Date.now() / 1000;
+                      const isUnlocked = now >= lock.unlockTime;
+                      const penalty = calculatePenalty(lock.lockTime, lock.unlockTime, lock.amount);
+                      
+                      return (
+                        <div key={lock.id} className="bg-black/30 rounded-lg p-4 border border-gray-600">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <div className="text-lg font-bold text-white">
+                                {lock.amount.toLocaleString()} ARK
+                              </div>
+                              <div className="text-sm text-cyan-400 font-medium">
+                                {lock.tier} Tier
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-sm text-gray-400">
+                                {isUnlocked ? 'Ready to unlock' : `${Math.ceil((lock.unlockTime - now) / 86400)} days left`}
+                              </div>
+                              <div className="text-sm text-green-400">
+                                +{lock.totalRewards.toLocaleString()} ARK earned
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {!isUnlocked && penalty.penalty > 0 && (
+                            <div className="bg-red-900/20 border border-red-500/30 rounded p-2 mb-3">
+                              <div className="text-xs text-red-400">
+                                Early unlock penalty: {penalty.penalty.toFixed(2)} ARK
+                              </div>
+                              <div className="text-xs text-gray-400">
+                                You would receive: {penalty.userReceives.toFixed(2)} ARK
+                              </div>
+                            </div>
+                          )}
+                          
+                          <button
+                            className={`w-full py-2 rounded font-bold text-sm transition-transform hover:scale-105 ${
+                              isUnlocked 
+                                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-black' 
+                                : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
+                            }`}
+                          >
+                            {isUnlocked ? 'Unlock Tokens' : 'Early Unlock (Penalty)'}
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <div className="text-2xl font-bold text-cyan-400">
-                    {protocolStats.totalRewardsDistributed} ARK
-                  </div>
-                </div>
-              </Card>
-              
-              <Card className="p-6 bg-black/20 backdrop-blur-sm border-white/10">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-blue-400" />
-                    <span className="text-sm text-gray-400">Active Lockers</span>
-                  </div>
-                  <div className="text-2xl font-bold text-cyan-400">
-                    {protocolStats.totalActiveLockers.toLocaleString()}
-                  </div>
-                </div>
-              </Card>
+                )}
+              </div>
             </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </div>
     </div>
   );

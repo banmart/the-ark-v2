@@ -1,411 +1,720 @@
 
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, AreaChart, Area } from "recharts";
-import { ArrowDown, TrendingUp, Users, DollarSign, Lock, Zap, Shield, Copy, ExternalLink, Timer, Gift } from "lucide-react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { toast } from "@/components/ui/use-toast"
+import { Sparkles, Copy, ExternalLink } from "lucide-react"
+import { useContractData } from '../hooks/useContractData';
 
 const Index = () => {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 15,
-    hours: 8,
-    minutes: 42,
-    seconds: 30
-  });
-
-  const [currentPrice, setCurrentPrice] = useState(0.0234);
-  const [swapAmount, setSwapAmount] = useState("");
-  const [outputAmount, setOutputAmount] = useState("");
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [account, setAccount] = useState<string | null>(null);
+  const { data: contractData, loading: contractLoading } = useContractData();
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        } else if (prev.days > 0) {
-          return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
-        }
-        return prev;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
+    checkWalletConnection();
   }, []);
 
-  const contractAddress = "0x1234567890123456789012345678901234567890";
-
-  const copyAddress = () => {
-    navigator.clipboard.writeText(contractAddress);
+  const checkWalletConnection = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        if (accounts.length > 0) {
+          setWalletConnected(true);
+          setAccount(accounts[0]);
+        } else {
+          setWalletConnected(false);
+          setAccount(null);
+        }
+      } catch (error) {
+        console.error("Error checking wallet connection:", error);
+        setWalletConnected(false);
+        setAccount(null);
+      }
+    }
   };
 
+  const connectWallet = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setWalletConnected(true);
+        setAccount(accounts[0]);
+        toast({
+          title: "Connected!",
+          description: `Wallet connected with account ${accounts[0]}`,
+        })
+      } catch (error: any) {
+        console.error("Error connecting wallet:", error);
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.message,
+        })
+      }
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Please install Metamask!",
+      })
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: "Contract address copied to clipboard",
+    });
+  };
+
+  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900/50 to-black"></div>
+        <div className="absolute inset-0 bg-grid animate-[grid-move_20s_linear_infinite] opacity-20"></div>
+        <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite]"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite] [animation-delay:3s]"></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl animate-[float_8s_ease-in-out_infinite] [animation-delay:1.5s]"></div>
+      </div>
+
       {/* Navigation */}
-      <nav className="p-6 border-b border-white/10 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-              THE ARK
+      <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              ARK
             </div>
-            <div className="hidden md:flex space-x-6">
-              <a href="#swap" className="hover:text-cyan-400 transition-colors">Swap</a>
-              <a href="#vault" className="hover:text-cyan-400 transition-colors">Vault</a>
-              <a href="#stats" className="hover:text-cyan-400 transition-colors">Stats</a>
-              <a href="#features" className="hover:text-cyan-400 transition-colors">Features</a>
-              <Link to="/locker" className="hover:text-cyan-400 transition-colors">Locker</Link>
-              <a href="#chart" className="hover:text-cyan-400 transition-colors">Chart</a>
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</a>
+              <Link to="/locker" className="text-gray-300 hover:text-cyan-400 transition-colors">Locker</Link>
+              <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
+              <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
+              <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
+              <button 
+                onClick={connectWallet}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform"
+              >
+                {walletConnected ? `${account?.slice(0,6)}...${account?.slice(-4)}` : 'Connect Wallet'}
+              </button>
             </div>
           </div>
-          <Button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400">
-            Connect Wallet
-          </Button>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="max-w-7xl mx-auto p-6 md:p-12 lg:p-24">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <h1 className="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
-              THE ARK
-            </h1>
-            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
-              The flood is coming. While others drown in inflation and rug pulls, THE ARK saves those who board early. Deflationary tokenomics with burns, reflections, and vault rewards protect the chosen few.
-            </p>
-            <div className="space-x-4">
-              <Button size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400">
-                Buy ARK →
-              </Button>
-              <Button variant="outline" size="lg">
-                Learn More
-              </Button>
+      {/* Hero Section with 3D Token */}
+      <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Text */}
+            <div>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
+                THE ARK
+              </h1>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-300 animate-[fade-in_1s_ease-out_0.2s_both]">
+                Salvation from the Flood
+              </h2>
+              <p className="text-xl md:text-2xl text-gray-400 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
+                Board THE ARK and be saved from the crypto flood. Deflationary tokenomics with burns, reflections, and vault rewards.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
+                <button
+                  onClick={() => copyToClipboard(contractAddress)}
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2"
+                >
+                  <Copy size={18} />
+                  Copy Contract
+                </button>
+                <a href="#swap" className="bg-black/30 border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-black/50 hover:scale-105 transition-transform text-center">
+                  Buy ARK
+                </a>
+              </div>
             </div>
-          </div>
-          <div className="hidden lg:block">
-            <div className="w-64 h-64 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 opacity-20 animate-pulse"></div>
-          </div>
-        </div>
-      </section>
 
-      {/* Sacred Contract Section */}
-      <section className="max-w-7xl mx-auto p-6 md:p-12">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-4">🔒 The Sacred Contract 🔒</h2>
-          <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg p-6 max-w-2xl mx-auto">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-gray-400">Contract Address:</span>
-              <Button onClick={copyAddress} size="sm" variant="outline">
-                <Copy className="w-4 h-4 mr-2" />
-                Copy
-              </Button>
-            </div>
-            <div className="font-mono text-sm bg-white/5 p-3 rounded border break-all">
-              {contractAddress}
-            </div>
-            <div className="flex space-x-4 mt-4">
-              <Button variant="outline" size="sm">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                View on PulseScan
-              </Button>
-              <Button variant="outline" size="sm">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                View on DexScreener
-              </Button>
-            </div>
-            <p className="text-xs text-yellow-400 mt-4">
-              ⚠️ Always verify the contract address before interacting
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Board THE ARK Swap Section */}
-      <section id="swap" className="max-w-7xl mx-auto p-6 md:p-12">
-        <h2 className="text-3xl font-bold text-center mb-8">Board THE ARK</h2>
-        <div className="max-w-md mx-auto">
-          <Card className="bg-black/20 backdrop-blur-sm border-white/10">
-            <CardHeader>
-              <CardTitle className="text-center">Swap</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <label className="text-sm text-gray-400">From</label>
-                  <span className="text-sm text-gray-400">Balance: 0.0</span>
+            {/* Right side - 3D Token */}
+            <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
+              <div className="relative w-80 h-80">
+                <div className="absolute inset-0 bg-gradient-conic from-cyan-500 via-blue-500 to-purple-500 rounded-full animate-[spin_20s_linear_infinite] opacity-20"></div>
+                <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite]">
+                  <div className="text-6xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                    ARK
+                  </div>
                 </div>
-                <div className="flex space-x-2">
+                <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contract Address Section */}
+      <section className="relative z-10 py-12 px-6 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent">
+        <div className="max-w-4xl mx-auto text-center">
+          <h3 className="text-2xl font-bold mb-4 text-cyan-400">Smart Contract Address</h3>
+          <div className="bg-black/50 border border-cyan-500/30 rounded-xl p-6 flex items-center justify-between">
+            <code className="text-sm md:text-base text-gray-300 font-mono">{contractAddress}</code>
+            <div className="flex gap-2">
+              <button
+                onClick={() => copyToClipboard(contractAddress)}
+                className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-colors"
+              >
+                <Copy size={18} />
+              </button>
+              <button className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-colors">
+                <ExternalLink size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Swap Section */}
+      <section id="swap" className="relative z-10 py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            Swap PLS for ARK
+          </h2>
+          <div className="bg-white/5 border border-cyan-500/30 rounded-2xl p-8 backdrop-blur-sm">
+            <div className="space-y-6">
+              {/* From Token */}
+              <div className="bg-black/30 rounded-xl p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-400">From</span>
+                  <span className="text-sm text-gray-400">Balance: 0.0 PLS</span>
+                </div>
+                <div className="flex items-center gap-4">
                   <input
                     type="number"
                     placeholder="0.0"
-                    value={swapAmount}
-                    onChange={(e) => {
-                      setSwapAmount(e.target.value);
-                      setOutputAmount((Number(e.target.value) * 0.95).toFixed(4));
-                    }}
-                    className="flex-1 bg-white/10 border border-white/20 rounded-md px-3 py-2 text-white placeholder-gray-500"
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none"
                   />
-                  <Badge variant="outline" className="px-3 py-2">PLS</Badge>
+                  <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
+                    <div className="w-6 h-6 bg-red-500 rounded-full"></div>
+                    <span className="font-semibold">PLS</span>
+                  </div>
                 </div>
               </div>
-              
+
+              {/* Swap Icon */}
               <div className="flex justify-center">
-                <Button size="icon" variant="outline" className="rounded-full">
-                  <ArrowDown className="w-4 h-4" />
-                </Button>
+                <button className="p-3 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-full transition-colors rotate-0 hover:rotate-180 duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                  </svg>
+                </button>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <label className="text-sm text-gray-400">To</label>
-                  <span className="text-sm text-gray-400">Balance: 0.0</span>
+              {/* To Token */}
+              <div className="bg-black/30 rounded-xl p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-400">To</span>
+                  <span className="text-sm text-gray-400">Balance: 0.0 ARK</span>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex items-center gap-4">
                   <input
                     type="number"
                     placeholder="0.0"
-                    value={outputAmount}
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none"
                     readOnly
-                    className="flex-1 bg-white/10 border border-white/20 rounded-md px-3 py-2 text-white placeholder-gray-500"
                   />
-                  <Badge variant="outline" className="px-3 py-2 text-cyan-400 border-cyan-400/50">ARK</Badge>
+                  <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
+                    <div className="w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
+                    <span className="font-semibold">ARK</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-2 text-sm text-gray-400">
+              {/* Swap Button */}
+              <button
+                disabled={!walletConnected}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg"
+              >
+                {walletConnected ? 'Swap Tokens' : 'Connect Wallet First'}
+              </button>
+
+              {/* Swap Info */}
+              <div className="bg-black/20 rounded-xl p-4 text-sm space-y-2">
                 <div className="flex justify-between">
-                  <span>Rate:</span>
-                  <span>1 PLS = 42.7 ARK</span>
+                  <span className="text-gray-400">Rate</span>
+                  <span>1 PLS = 100 ARK</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Slippage Tolerance:</span>
-                  <span>0.5%</span>
+                  <span className="text-gray-400">Slippage</span>
+                  <span>2%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Total Fees:</span>
+                  <span className="text-gray-400">Network Fee</span>
                   <span>~$0.01</span>
                 </div>
               </div>
-
-              <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400">
-                Connect Wallet
-              </Button>
-
-              <div className="text-center space-y-2">
-                <p className="text-xs text-gray-400">Audited & Safe</p>
-                <div className="flex justify-center space-x-4">
-                  <Button variant="outline" size="sm">PulseX</Button>
-                  <Button variant="outline" size="sm">Piteas</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* The Prophecy of Wealth */}
-      <section className="max-w-7xl mx-auto p-6 md:p-12">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-6">⛵ The Prophecy of Wealth ⛵</h2>
-          <blockquote className="text-xl text-cyan-400 italic mb-6">
-            "For 40 days and 40 nights, the markets shall flood with worthless tokens. But those who board THE ARK shall be saved, and their wealth shall multiply as the waters recede."
-          </blockquote>
-          <p className="text-gray-300 mb-8 max-w-3xl mx-auto">
-            THE ARK isn't just another token—it's salvation from the crypto flood. Our deflationary mechanics ensure that as others lose value, ARK holders are protected and rewarded.
-          </p>
-          <div className="bg-green-900/20 border border-green-400/30 rounded-lg p-6 max-w-2xl mx-auto">
-            <h3 className="text-green-400 font-semibold mb-4">Divine Protection Features:</h3>
-            <ul className="text-left space-y-2 text-sm">
-              <li>• Automatic burns reduce supply permanently</li>
-              <li>• Reflections reward all holders passively</li>
-              <li>• Vault locking multiplies your rewards</li>
-              <li>• Anti-whale mechanisms protect the community</li>
-            </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section id="stats" className="max-w-7xl mx-auto p-6 md:p-12">
-        <h2 className="text-3xl font-bold text-center mb-12">ARK Statistics</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { label: "Total Supply", value: "1,000,000,000", unit: "ARK" },
-            { label: "Tokens Burned", value: "125,000,000", unit: "ARK", change: "+2.5%" },
-            { label: "Total Value Locked", value: "$12.5M", unit: "", change: "+8.2%" },
-            { label: "Holders", value: "15,420", unit: "", change: "+12.1%" },
-            { label: "Reflections Distributed", value: "$890K", unit: "", change: "+22.3%" },
-            { label: "Locker Rewards", value: "$450K", unit: "", change: "+15.7%" }
-          ].map((stat, index) => (
-            <Card key={index} className="bg-black/20 backdrop-blur-sm border-white/10">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                  {stat.change && (
-                    <Badge className="bg-green-500/20 text-green-400 border-green-400/50">
-                      {stat.change}
-                    </Badge>
-                  )}
-                </div>
-                <div className="text-gray-400 text-sm">{stat.label}</div>
-                {stat.unit && <div className="text-xs text-gray-500">{stat.unit}</div>}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {/* Stats Section with Real Contract Data */}
+      <section id="stats" className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            $ARK By The Numbers
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Market Cap */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 Market Cap</h3>
+              <p className="text-3xl font-black text-white mb-2">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  `$${contractData.marketCap}`
+                )}
+              </p>
+              <p className="text-sm text-gray-400">Real-time valuation</p>
+            </div>
 
-      {/* The Flood Approaches Countdown */}
-      <section className="max-w-7xl mx-auto p-6 md:p-12 text-center">
-        <h2 className="text-3xl font-bold mb-4">🌊 The Flood Approaches 🌊</h2>
-        <p className="text-gray-300 mb-8">Next major burn event countdown</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-          {[
-            { label: "Days", value: timeLeft.days },
-            { label: "Hours", value: timeLeft.hours },
-            { label: "Minutes", value: timeLeft.minutes },
-            { label: "Seconds", value: timeLeft.seconds }
-          ].map((item, index) => (
-            <Card key={item.label} className="bg-black/20 backdrop-blur-sm border-white/10">
-              <CardContent className="p-4">
-                <div className="text-2xl md:text-3xl font-bold text-cyan-400">{item.value.toString().padStart(2, '0')}</div>
-                <div className="text-gray-400 text-sm">{item.label}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+            {/* Total Supply */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💎 Total Supply</h3>
+              <p className="text-3xl font-black text-white mb-2">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  `${contractData.totalSupply} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400">From smart contract</p>
+            </div>
 
-      {/* The Chosen Vault */}
-      <section id="vault" className="max-w-7xl mx-auto p-6 md:p-12">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-4">🔒 The Chosen Vault 🔒</h2>
-          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Lock your ARK tokens in our sacred vault and earn divine rewards. The longer you lock, the greater your blessing.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { label: "Total Locked", value: "250M ARK" },
-              { label: "Vault Members", value: "3,420" },
-              { label: "Rewards Pool", value: "$2.1M" },
-              { label: "APY Range", value: "15-150%" }
-            ].map((stat, index) => (
-              <Card key={index} className="bg-black/20 backdrop-blur-sm border-white/10">
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl font-bold text-cyan-400 mb-2">{stat.value}</div>
-                  <div className="text-gray-400 text-sm">{stat.label}</div>
-                </CardContent>
-              </Card>
-            ))}
+            {/* Holders */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400">👥 Holders</h3>
+              <p className="text-3xl font-black text-white mb-2">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  contractData.holders
+                )}
+              </p>
+              <p className="text-sm text-gray-400">Unique addresses</p>
+            </div>
+          </div>
+
+          {/* Contract Fees Info */}
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <h4 className="text-lg font-bold text-cyan-400 mb-2">🔥 Burn Fee</h4>
+              <p className="text-2xl font-bold">
+                {contractLoading ? '...' : `${contractData.currentFees.burn}%`}
+              </p>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <h4 className="text-lg font-bold text-cyan-400 mb-2">🫂 Reflection Fee</h4>
+              <p className="text-2xl font-bold">
+                {contractLoading ? '...' : `${contractData.currentFees.reflection}%`}
+              </p>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <h4 className="text-lg font-bold text-cyan-400 mb-2">💧 Liquidity Fee</h4>
+              <p className="text-2xl font-bold">
+                {contractLoading ? '...' : `${contractData.currentFees.liquidity}%`}
+              </p>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
+              <h4 className="text-lg font-bold text-cyan-400 mb-2">🔒 Locker Fee</h4>
+              <p className="text-2xl font-bold">
+                {contractLoading ? '...' : `${contractData.currentFees.locker}%`}
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Lock Tiers */}
-      <section className="max-w-7xl mx-auto p-6 md:p-12">
-        <h2 className="text-3xl font-bold text-center mb-12">Lock Tiers & Divine Rewards</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { 
-              name: "Believer", 
-              duration: "7 days", 
-              apy: "15%", 
-              color: "orange",
-              benefits: ["Basic reflections", "Entry level rewards"]
-            },
-            { 
-              name: "Apostle", 
-              duration: "30 days", 
-              apy: "50%", 
-              color: "gray",
-              benefits: ["Enhanced reflections", "Priority support"]
-            },
-            { 
-              name: "Prophet", 
-              duration: "90 days", 
-              apy: "100%", 
-              color: "yellow",
-              benefits: ["Maximum reflections", "VIP access", "Bonus rewards"]
-            },
-            { 
-              name: "Noah", 
-              duration: "180 days", 
-              apy: "150%", 
-              color: "cyan",
-              benefits: ["Divine reflections", "Exclusive access", "Maximum rewards"],
-              badge: "HIGHEST TIER"
-            }
-          ].map((tier, index) => (
-            <Card key={index} className={`bg-black/20 backdrop-blur-sm border-${tier.color}-400/50 relative`}>
-              {tier.badge && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-cyan-500 text-white">{tier.badge}</Badge>
+      {/* Features Section - The Four Pillars */}
+      <section id="features" className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            The Four Pillars of Salvation
+          </h2>
+          <p className="text-xl text-gray-300 text-center max-w-3xl mx-auto mb-16">
+            $ARK is built upon four core principles, ensuring a stable and rewarding ecosystem for its holders.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Scarcity */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🔥</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Scarcity</h3>
+              <p className="text-gray-300 text-center">
+                Limited supply with continuous burns on transactions creating deflationary pressure.
+              </p>
+            </div>
+
+            {/* Rewards */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">💰</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Rewards</h3>
+              <p className="text-gray-300 text-center">
+                Vault rewards and reflections for loyal holders who believe in the mission.
+              </p>
+            </div>
+
+            {/* Community */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🫂</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Community</h3>
+              <p className="text-gray-300 text-center">
+                A strong, supportive community driving the project forward together.
+              </p>
+            </div>
+
+            {/* Security */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
+              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🛡️</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Security</h3>
+              <p className="text-gray-300 text-center">
+                Audited contract ensuring safety and transparency for all passengers.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Updated 6-Tier Locker Section */}
+      <section className="py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            🔒 The Sacred Locker Tiers 🔒
+          </h2>
+          <p className="text-xl text-gray-300 text-center max-w-4xl mx-auto mb-16">
+            Lock your ARK tokens and ascend through divine tiers. The longer you lock, the greater your blessings. 
+            {contractLoading ? (
+              <span className="animate-pulse">Loading rewards...</span>
+            ) : (
+              `${contractData.currentFees.locker}% of every transaction flows to the vault, rewarding the faithful.`
+            )}
+          </p>
+          
+          {/* 6-tier system */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            
+            {/* Bronze Tier */}
+            <div className="bg-gradient-to-br from-yellow-600/10 via-yellow-700/5 to-transparent border-2 border-yellow-600/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-600/20 to-transparent blur-2xl"></div>
+              <div className="relative z-10">
+                <div className="text-4xl text-center mb-4">⛵</div>
+                <h4 className="text-xl font-bold text-yellow-600 text-center mb-4">BRONZE</h4>
+                <div className="text-center mb-6">
+                  <div className="text-lg font-semibold text-yellow-600">30-89 Days</div>
+                  <div className="text-3xl font-black text-yellow-400 my-2">1x Multiplier</div>
                 </div>
-              )}
-              <CardHeader>
-                <CardTitle className={`text-${tier.color}-400 text-center`}>{tier.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center space-y-4">
-                <div>
-                  <div className="text-2xl font-bold">{tier.apy}</div>
-                  <div className="text-sm text-gray-400">APY</div>
-                </div>
-                <div>
-                  <div className="text-lg font-semibold">{tier.duration}</div>
-                  <div className="text-sm text-gray-400">Lock Period</div>
-                </div>
-                <ul className="text-sm space-y-1">
-                  {tier.benefits.map((benefit, i) => (
-                    <li key={i} className="text-gray-300">• {benefit}</li>
-                  ))}
+                <ul className="space-y-2 text-sm text-gray-300 mb-6">
+                  <li>✓ Entry level blessing</li>
+                  <li>✓ Share in vault rewards</li>
+                  <li>✓ Bronze role in community</li>
+                  <li>✓ Protected from the flood</li>
                 </ul>
-                <Button className={`w-full bg-${tier.color}-500 hover:bg-${tier.color}-400`}>
-                  Lock Now
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                <Link
+                  to="/locker"
+                  className="block w-full bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
+                >
+                  Enter Bronze Tier
+                </Link>
+              </div>
+            </div>
+
+            {/* Silver Tier */}
+            <div className="bg-gradient-to-br from-gray-400/10 via-gray-500/5 to-transparent border-2 border-gray-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-gray-400/20 to-transparent blur-2xl"></div>
+              <div className="relative z-10">
+                <div className="text-4xl text-center mb-4">🛡️</div>
+                <h4 className="text-xl font-bold text-gray-400 text-center mb-4">SILVER</h4>
+                <div className="text-center mb-6">
+                  <div className="text-lg font-semibold text-gray-400">90-179 Days</div>
+                  <div className="text-3xl font-black text-gray-300 my-2">1.5x Multiplier</div>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-300 mb-6">
+                  <li>✓ 1.5x rewards multiplier</li>
+                  <li>✓ Enhanced vault share</li>
+                  <li>✓ Silver role & privileges</li>
+                  <li>✓ Priority support</li>
+                </ul>
+                <Link
+                  to="/locker"
+                  className="block w-full bg-gradient-to-r from-gray-400 to-gray-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
+                >
+                  Ascend to Silver
+                </Link>
+              </div>
+            </div>
+
+            {/* Gold Tier */}
+            <div className="bg-gradient-to-br from-yellow-400/10 via-yellow-500/5 to-transparent border-2 border-yellow-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-400/20 to-transparent blur-2xl"></div>
+              <div className="relative z-10">
+                <div className="text-4xl text-center mb-4">👑</div>
+                <h4 className="text-xl font-bold text-yellow-400 text-center mb-4">GOLD</h4>
+                <div className="text-center mb-6">
+                  <div className="text-lg font-semibold text-yellow-400">180-364 Days</div>
+                  <div className="text-3xl font-black text-yellow-300 my-2">2x Multiplier</div>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-300 mb-6">
+                  <li>✓ 2x rewards multiplier</li>
+                  <li>✓ Gold tier benefits</li>
+                  <li>✓ Governance participation</li>
+                  <li>✓ Exclusive features access</li>
+                </ul>
+                <Link
+                  to="/locker"
+                  className="block w-full bg-gradient-to-r from-yellow-400 to-yellow-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
+                >
+                  Claim Gold Status
+                </Link>
+              </div>
+            </div>
+
+            {/* Diamond Tier */}
+            <div className="bg-gradient-to-br from-cyan-400/10 via-cyan-500/5 to-transparent border-2 border-cyan-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-cyan-400/20 to-transparent blur-2xl"></div>
+              <div className="relative z-10">
+                <div className="text-4xl text-center mb-4">💎</div>
+                <h4 className="text-xl font-bold text-cyan-400 text-center mb-4">DIAMOND</h4>
+                <div className="text-center mb-6">
+                  <div className="text-lg font-semibold text-cyan-400">1-3 Years</div>
+                  <div className="text-3xl font-black text-cyan-300 my-2">3x Multiplier</div>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-300 mb-6">
+                  <li>✓ 3x rewards multiplier</li>
+                  <li>✓ Diamond hand status</li>
+                  <li>✓ VIP community access</li>
+                  <li>✓ Special event invites</li>
+                </ul>
+                <Link
+                  to="/locker"
+                  className="block w-full bg-gradient-to-r from-cyan-400 to-cyan-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
+                >
+                  Achieve Diamond
+                </Link>
+              </div>
+            </div>
+
+            {/* Platinum Tier */}
+            <div className="bg-gradient-to-br from-purple-400/10 via-purple-500/5 to-transparent border-2 border-purple-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-purple-400/20 to-transparent blur-2xl"></div>
+              <div className="relative z-10">
+                <div className="text-4xl text-center mb-4">⭐</div>
+                <h4 className="text-xl font-bold text-purple-400 text-center mb-4">PLATINUM</h4>
+                <div className="text-center mb-6">
+                  <div className="text-lg font-semibold text-purple-400">3-4 Years</div>
+                  <div className="text-3xl font-black text-purple-300 my-2">5x Multiplier</div>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-300 mb-6">
+                  <li>✓ 5x rewards multiplier</li>
+                  <li>✓ Platinum elite status</li>
+                  <li>✓ Development influence</li>
+                  <li>✓ Maximum benefits tier</li>
+                </ul>
+                <Link
+                  to="/locker"
+                  className="block w-full bg-gradient-to-r from-purple-400 to-purple-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
+                >
+                  Reach Platinum
+                </Link>
+              </div>
+            </div>
+
+            {/* Legendary Tier */}
+            <div className="bg-gradient-to-br from-orange-500/10 via-red-500/5 to-transparent border-2 border-orange-500/50 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform shadow-2xl shadow-orange-500/20">
+              <div className="absolute top-2 right-2 bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-bold">LEGENDARY</div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-orange-500/30 to-transparent blur-2xl"></div>
+              <div className="relative z-10">
+                <div className="text-4xl text-center mb-4 animate-pulse">⚡</div>
+                <h4 className="text-xl font-bold text-orange-400 text-center mb-4">LEGENDARY</h4>
+                <div className="text-center mb-6">
+                  <div className="text-lg font-semibold text-orange-400">4-5 Years</div>
+                  <div className="text-3xl font-black bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent my-2">8x Multiplier</div>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-300 mb-6">
+                  <li>✓ 8x rewards multiplier</li>
+                  <li>✓ Legendary ARK status</li>
+                  <li>✓ Ultimate vault rewards</li>
+                  <li>✓ True Noah privileges</li>
+                  <li>✓ Lead the new world</li>
+                </ul>
+                <Link
+                  to="/locker"
+                  className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform shadow-lg shadow-orange-500/30"
+                >
+                  Become Legendary
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Locker Rewards Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
+              <h4 className="text-lg font-bold text-cyan-400 mb-4">💰 Pending Locker Rewards</h4>
+              <p className="text-2xl font-black text-green-400">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  `${contractData.lockerRewards.pending} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 mt-2">Ready for distribution</p>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
+              <h4 className="text-lg font-bold text-cyan-400 mb-4">🎁 Total Distributed</h4>
+              <p className="text-2xl font-black text-blue-400">
+                {contractLoading ? (
+                  <span className="animate-pulse">Loading...</span>
+                ) : (
+                  `${contractData.lockerRewards.distributed} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 mt-2">All-time rewards paid</p>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <Link
+              to="/locker"
+              className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30"
+            >
+              <Sparkles className="inline w-5 h-5 mr-2" />
+              Enter The Sacred Locker
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Your Sacred Locks */}
-      <section className="max-w-7xl mx-auto p-6 md:p-12">
-        <h2 className="text-3xl font-bold text-center mb-8">Your Sacred Locks</h2>
-        <Card className="bg-black/20 backdrop-blur-sm border-white/10">
-          <CardContent className="p-8 text-center">
-            <Lock className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <p className="text-gray-400">Connect your wallet to view your locked tokens and rewards</p>
-            <Button className="mt-4 bg-gradient-to-r from-cyan-500 to-blue-500">
-              Connect Wallet
-            </Button>
-          </CardContent>
-        </Card>
+      {/* Noah's Prophecy Section */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            The Prophecy of Noah's ARK
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* The Flood */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <div className="text-4xl mb-4 text-center">🌊</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Flood</h3>
+              <p className="text-gray-300 text-center">
+                As the crypto waters rise and projects sink, only those aboard the ARK shall survive the great cleansing.
+              </p>
+            </div>
+
+            {/* The Chosen */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <div className="text-4xl mb-4 text-center">⚡</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Chosen</h3>
+              <p className="text-gray-300 text-center">
+                ARK holders are the chosen ones, guided by divine tokenomics to weather any storm in the crypto seas.
+              </p>
+            </div>
+
+            {/* New World */}
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
+              <div className="text-4xl mb-4 text-center">🕊️</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">New World</h3>
+              <p className="text-gray-300 text-center">
+                When the waters recede, ARK passengers will rebuild the crypto world, stronger and more united than before.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Countdown Timer */}
+      <section className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl font-black mb-8 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            The Great Flood Approaches
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+              <div className="text-3xl font-black text-cyan-400">07</div>
+              <div className="text-sm text-gray-400">Days</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+              <div className="text-3xl font-black text-cyan-400">14</div>
+              <div className="text-sm text-gray-400">Hours</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+              <div className="text-3xl font-black text-cyan-400">32</div>
+              <div className="text-sm text-gray-400">Minutes</div>
+            </div>
+            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
+              <div className="text-3xl font-black text-cyan-400">18</div>
+              <div className="text-sm text-gray-400">Seconds</div>
+            </div>
+          </div>
+          <p className="text-gray-300 mt-6">Until the next major crypto correction. Board the ARK now!</p>
+        </div>
+      </section>
+
+      {/* Chart Section */}
+      <section id="chart" className="relative z-10 py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            $ARK Price Chart
+          </h2>
+          <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8 min-h-[400px] flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-6xl mb-4">📈</div>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-4">Interactive Chart Coming Soon</h3>
+              <p className="text-gray-300">Real-time price data and trading view integration</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="p-6 md:p-12 border-t border-white/10 mt-24">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-4">
-            THE ARK
+      <footer className="relative z-10 py-12 px-6 border-t border-cyan-500/20">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
+                ARK
+              </div>
+              <p className="text-gray-400 text-sm">
+                Salvation from the crypto flood. Join the ARK and be saved.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-bold text-cyan-400 mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#swap" className="hover:text-cyan-400 transition-colors">Swap</a></li>
+                <li><Link to="/locker" className="hover:text-cyan-400 transition-colors">Locker</Link></li>
+                <li><a href="#stats" className="hover:text-cyan-400 transition-colors">Stats</a></li>
+                <li><a href="#chart" className="hover:text-cyan-400 transition-colors">Chart</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-cyan-400 mb-4">Community</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Discord</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Telegram</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Twitter</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Medium</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-cyan-400 mb-4">Resources</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Whitepaper</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Audit</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Documentation</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors">Support</a></li>
+              </ul>
+            </div>
           </div>
-          <p className="text-gray-400 text-sm mb-6">
-            Salvation from the crypto flood. Built for the chosen few.
-          </p>
-          <div className="flex justify-center space-x-6 mb-6">
-            <a href="#" className="text-gray-400 hover:text-cyan-400">Twitter</a>
-            <a href="#" className="text-gray-400 hover:text-cyan-400">Discord</a>
-            <a href="#" className="text-gray-400 hover:text-cyan-400">Telegram</a>
+          <div className="border-t border-cyan-500/20 mt-8 pt-8 text-center text-gray-400 text-sm">
+            &copy; 2024 THE ARK. All rights reserved. Built for the faithful.
           </div>
-          <p className="text-gray-500 text-xs">
-            &copy; 2023 THE ARK. All rights reserved.
-          </p>
         </div>
       </footer>
     </div>
