@@ -5,20 +5,24 @@ import { Sparkles, Copy, ExternalLink, ArrowRight } from "lucide-react";
 import { useContractData } from '../hooks/useContractData';
 import { useWallet } from '../hooks/useWallet';
 import { useSwap } from '../hooks/useSwap';
+
 const Index = () => {
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+
   const {
     data: contractData,
     loading: contractLoading
   } = useContractData();
+
   const {
     isConnected,
     account,
     plsBalance,
     arkBalance,
     isConnecting,
-    connectWallet
+    connectWallet,
   } = useWallet();
+
   const {
     fromAmount,
     toAmount,
@@ -27,8 +31,9 @@ const Index = () => {
     setFromAmount,
     setSlippage,
     executeSwap,
-    canSwap
+    canSwap,
   } = useSwap();
+
   useEffect(() => {
     // Preload background image and trigger fade-in
     const img = new Image();
@@ -37,6 +42,7 @@ const Index = () => {
     };
     img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
   }, []);
+
   const handleConnectWallet = async () => {
     try {
       await connectWallet();
@@ -53,6 +59,7 @@ const Index = () => {
       });
     }
   };
+
   const handleSwap = async () => {
     try {
       const result = await executeSwap();
@@ -69,6 +76,7 @@ const Index = () => {
       });
     }
   };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
@@ -76,7 +84,9 @@ const Index = () => {
       description: "Contract address copied to clipboard"
     });
   };
+
   const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+
   return <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Animated Background System */}
       <div className="fixed w-full h-full top-0 left-0 z-0 overflow-hidden">
@@ -97,7 +107,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
-              ARK
+              ARK ❍
             </div>
             <div className="hidden md:flex items-center gap-8">
               <a href="#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</a>
@@ -105,7 +115,11 @@ const Index = () => {
               <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
               <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
               <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
-              <button onClick={handleConnectWallet} disabled={isConnecting} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform disabled:opacity-50">
+              <button 
+                onClick={handleConnectWallet} 
+                disabled={isConnecting}
+                className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform disabled:opacity-50"
+              >
                 {isConnecting ? 'Connecting...' : isConnected ? `${account?.slice(0, 6)}...${account?.slice(-4)}` : 'Connect Wallet'}
               </button>
             </div>
@@ -115,8 +129,8 @@ const Index = () => {
 
       {/* Hero Section with Fixed Background */}
       <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg" style={{
-      backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
-    }}>
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
+      }}>
         
         {/* Content */}
         <div className="max-w-7xl mx-auto w-full relative z-20">
@@ -126,8 +140,12 @@ const Index = () => {
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
                 THE ARK
               </h1>
-              
-              <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">The flood is coming. While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white animate-[fade-in_1s_ease-out_0.2s_both]">
+                Salvation from the flood
+              </h2>
+              <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
+                While others drown in market chaos, THE ARK saves those who board early. Built on revolutionary tokenomics that reward the faithful and punish the weak.
+              </p>
               <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
                 <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
                   Buy ARK
@@ -185,7 +203,13 @@ const Index = () => {
                   <span className="text-sm text-gray-400">Balance: {parseFloat(plsBalance).toFixed(4)} PLS</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <input type="number" placeholder="0.0" value={fromAmount} onChange={e => setFromAmount(e.target.value)} className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" />
+                  <input 
+                    type="number" 
+                    placeholder="0.0" 
+                    value={fromAmount}
+                    onChange={(e) => setFromAmount(e.target.value)}
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" 
+                  />
                   <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-lg">
                     <div className="w-6 h-6 bg-red-500 rounded-full"></div>
                     <span className="font-semibold">PLS</span>
@@ -209,7 +233,13 @@ const Index = () => {
                   <span className="text-sm text-gray-400">Balance: {parseFloat(arkBalance).toFixed(2)} ARK</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <input type="number" placeholder="0.0" value={toAmount} className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" readOnly />
+                  <input 
+                    type="number" 
+                    placeholder="0.0" 
+                    value={toAmount}
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none" 
+                    readOnly 
+                  />
                   <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-lg">
                     <div className="w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
                     <span className="font-semibold">ARK</span>
@@ -218,7 +248,11 @@ const Index = () => {
               </div>
 
               {/* Swap Button */}
-              <button onClick={handleSwap} disabled={!canSwap || swapLoading} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg">
+              <button 
+                onClick={handleSwap}
+                disabled={!canSwap || swapLoading}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg"
+              >
                 {swapLoading ? 'Swapping...' : !isConnected ? 'Connect Wallet First' : !canSwap ? 'Enter Amount' : 'Swap Tokens'}
               </button>
 
@@ -620,7 +654,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
-                ARK
+                ARK ❍
               </div>
               <p className="text-gray-400 text-sm">
                 Salvation from the crypto flood. Join the ARK and be saved.
@@ -661,4 +695,5 @@ const Index = () => {
       </footer>
     </div>;
 };
+
 export default Index;
