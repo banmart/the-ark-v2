@@ -105,8 +105,8 @@
 
 /* Custom Animations and Effects */
 @layer utilities {
-  /* Z-Index Utilities */
-  .z-background { z-index: 0; }
+  /* Fixed Z-Index Utilities */
+  .z-background { z-index: -10; }
   .z-content { z-index: 10; }
   .z-interactive { z-index: 20; }
   .z-nav { z-index: 50; }

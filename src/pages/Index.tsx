@@ -77,7 +77,7 @@ const Index = () => {
   const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
 
   return <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Animated Background System */}
+      {/* Animated Background System - BEHIND EVERYTHING */}
       <div className="fixed w-full h-full top-0 left-0 z-background overflow-hidden">
         {/* Base gradient background */}
         <div className="absolute inset-0 bg-gradient-radial from-blue-900/20 via-black to-black"></div>
@@ -91,26 +91,26 @@ const Index = () => {
         <div className="floating-orb orb3"></div>
       </div>
 
-      {/* Bottom-to-Top Gradient Overlay */}
+      {/* Bottom-to-Top Gradient Overlay - BEHIND CONTENT */}
       <div className="fixed inset-0 bg-gradient-to-t from-black via-black/80 to-transparent z-background pointer-events-none"></div>
 
       {/* Navigation with Enhanced Glassmorphism */}
       <nav className="fixed top-0 w-full glass-nav z-nav">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
+            <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent relative z-nav">
               ARK
             </div>
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</a>
-              <Link to="/locker" className="text-gray-300 hover:text-cyan-400 transition-colors">Locker</Link>
-              <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
-              <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
-              <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
+            <div className="hidden md:flex items-center gap-8 relative z-nav">
+              <a href="#swap" className="text-gray-300 hover:text-cyan-400 transition-colors relative z-interactive">Swap</a>
+              <Link to="/locker" className="text-gray-300 hover:text-cyan-400 transition-colors relative z-interactive">Locker</Link>
+              <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors relative z-interactive">Stats</a>
+              <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors relative z-interactive">Features</a>
+              <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors relative z-interactive">Chart</a>
               <button 
                 onClick={handleConnectWallet} 
                 disabled={isConnecting}
-                className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform disabled:opacity-50 z-interactive relative"
+                className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform disabled:opacity-50 relative z-interactive"
               >
                 {isConnecting ? 'Connecting...' : isConnected ? `${account?.slice(0, 6)}...${account?.slice(-4)}` : 'Connect Wallet'}
               </button>
@@ -125,7 +125,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto w-full relative z-content">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Text */}
-            <div className="z-content">
+            <div className="relative z-content">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
                 THE ARK
               </h1>
@@ -135,19 +135,19 @@ const Index = () => {
               <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
                 While others drown in market chaos, THE ARK saves those who board early. Built on revolutionary tokenomics that reward the faithful and punish the weak.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both] z-interactive relative">
-                <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2 z-interactive relative">
+              <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both] relative z-interactive">
+                <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2 relative z-interactive">
                   Buy ARK
                   <ArrowRight size={18} />
                 </button>
-                <a href="#features" className="border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/10 hover:scale-105 transition-all text-center backdrop-blur-sm z-interactive relative">
+                <a href="#features" className="border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/10 hover:scale-105 transition-all text-center backdrop-blur-sm relative z-interactive">
                   Learn More
                 </a>
               </div>
             </div>
 
             {/* Right side - Clean ❍ Symbol */}
-            <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both] z-content">
+            <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both] relative z-content">
               <div className="relative w-96 h-96 flex items-center justify-center">
                 {/* Clean ❍ Symbol - Keep exactly as is */}
                 <div className="text-[24rem] font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[rotate-3d_15s_linear_infinite] relative z-content">
@@ -163,13 +163,13 @@ const Index = () => {
       <section className="relative z-content py-12 px-6 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-2xl font-bold mb-4 text-cyan-400">Smart Contract Address</h3>
-          <div className="glass-strong rounded-xl p-6 flex items-center justify-between shadow-2xl z-content">
+          <div className="glass-strong rounded-xl p-6 flex items-center justify-between shadow-2xl relative z-content">
             <code className="text-sm md:text-base text-gray-300 font-mono">{contractAddress}</code>
-            <div className="flex gap-2 z-interactive relative">
-              <button onClick={() => copyToClipboard(contractAddress)} className="p-2 glass-card hover:glass-strong rounded-lg transition-all z-interactive relative">
+            <div className="flex gap-2 relative z-interactive">
+              <button onClick={() => copyToClipboard(contractAddress)} className="p-2 glass-card hover:glass-strong rounded-lg transition-all relative z-interactive">
                 <Copy size={18} />
               </button>
-              <button className="p-2 glass-card hover:glass-strong rounded-lg transition-all z-interactive relative">
+              <button className="p-2 glass-card hover:glass-strong rounded-lg transition-all relative z-interactive">
                 <ExternalLink size={18} />
               </button>
             </div>
@@ -183,7 +183,7 @@ const Index = () => {
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             Swap PLS for ARK
           </h2>
-          <div className="glass-strong rounded-2xl p-8 shadow-2xl z-content">
+          <div className="glass-strong rounded-2xl p-8 shadow-2xl relative z-content">
             <div className="space-y-6">
               {/* From Token */}
               <div className="glass-card rounded-xl p-4">
@@ -197,7 +197,7 @@ const Index = () => {
                     placeholder="0.0" 
                     value={fromAmount}
                     onChange={(e) => setFromAmount(e.target.value)}
-                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none z-interactive relative" 
+                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none relative z-interactive" 
                   />
                   <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-lg">
                     <div className="w-6 h-6 bg-red-500 rounded-full"></div>
@@ -208,7 +208,7 @@ const Index = () => {
 
               {/* Swap Icon */}
               <div className="flex justify-center">
-                <button className="p-3 glass-card hover:glass-strong rounded-full transition-all rotate-0 hover:rotate-180 duration-300 z-interactive relative">
+                <button className="p-3 glass-card hover:glass-strong rounded-full transition-all rotate-0 hover:rotate-180 duration-300 relative z-interactive">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                   </svg>
@@ -240,7 +240,7 @@ const Index = () => {
               <button 
                 onClick={handleSwap}
                 disabled={!canSwap || swapLoading}
-                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg z-interactive relative"
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg relative z-interactive"
               >
                 {swapLoading ? 'Swapping...' : !isConnected ? 'Connect Wallet First' : !canSwap ? 'Enter Amount' : 'Swap Tokens'}
               </button>
@@ -266,14 +266,14 @@ const Index = () => {
       </section>
 
       {/* Stats Section with Enhanced Glass Cards */}
-      <section id="stats" className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
+      <section id="stats" className="relative z-content py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             $ARK By The Numbers
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Market Cap */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all relative z-content">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 Market Cap</h3>
               <p className="text-3xl font-black text-white mb-2">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : `$${contractData.marketCap}`}
@@ -282,7 +282,7 @@ const Index = () => {
             </div>
 
             {/* Total Supply */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all relative z-content">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">💎 Total Supply</h3>
               <p className="text-3xl font-black text-white mb-2">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : `${contractData.totalSupply} ARK`}
@@ -291,7 +291,7 @@ const Index = () => {
             </div>
 
             {/* Holders */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all relative z-content">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">👥 Holders</h3>
               <p className="text-3xl font-black text-white mb-2">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : contractData.holders}
@@ -302,25 +302,25 @@ const Index = () => {
 
           {/* Contract Fees Info */}
           <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all relative z-content">
               <h4 className="text-lg font-bold text-cyan-400 mb-2">🔥 Burn Fee</h4>
               <p className="text-2xl font-bold">
                 {contractLoading ? '...' : `${contractData.currentFees.burn}%`}
               </p>
             </div>
-            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all relative z-content">
               <h4 className="text-lg font-bold text-cyan-400 mb-2">🫂 Reflection Fee</h4>
               <p className="text-2xl font-bold">
                 {contractLoading ? '...' : `${contractData.currentFees.reflection}%`}
               </p>
             </div>
-            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all relative z-content">
               <h4 className="text-lg font-bold text-cyan-400 mb-2">💧 Liquidity Fee</h4>
               <p className="text-2xl font-bold">
                 {contractLoading ? '...' : `${contractData.currentFees.liquidity}%`}
               </p>
             </div>
-            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 text-center hover:glass-strong transition-all relative z-content">
               <h4 className="text-lg font-bold text-cyan-400 mb-2">🔒 Locker Fee</h4>
               <p className="text-2xl font-bold">
                 {contractLoading ? '...' : `${contractData.currentFees.locker}%`}
@@ -331,7 +331,7 @@ const Index = () => {
       </section>
 
       {/* Features Section with Scan Effects */}
-      <section id="features" className="py-20 px-6">
+      <section id="features" className="py-20 px-6 relative z-content">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             The Four Pillars of Salvation
@@ -341,7 +341,7 @@ const Index = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Scarcity */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden z-content">
               <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🔥</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Scarcity</h3>
               <p className="text-gray-300 text-center">
@@ -350,7 +350,7 @@ const Index = () => {
             </div>
 
             {/* Rewards */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden z-content">
               <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">💰</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Rewards</h3>
               <p className="text-gray-300 text-center">
@@ -359,7 +359,7 @@ const Index = () => {
             </div>
 
             {/* Community */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden z-content">
               <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🫂</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Community</h3>
               <p className="text-gray-300 text-center">
@@ -368,7 +368,7 @@ const Index = () => {
             </div>
 
             {/* Security */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden z-content">
               <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🛡️</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Security</h3>
               <p className="text-gray-300 text-center">
@@ -380,7 +380,7 @@ const Index = () => {
       </section>
 
       {/* Updated 6-Tier Locker Section */}
-      <section className="py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
+      <section className="py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent relative z-content">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             🔒 The Sacred Locker Tiers 🔒
@@ -394,7 +394,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             
             {/* Bronze Tier */}
-            <div className="bg-gradient-to-br from-yellow-600/10 via-yellow-700/5 to-transparent border-2 border-yellow-600/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+            <div className="bg-gradient-to-br from-yellow-600/10 via-yellow-700/5 to-transparent border-2 border-yellow-600/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform z-content">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-600/20 to-transparent blur-2xl"></div>
               <div className="relative z-10">
                 <div className="text-4xl text-center mb-4">⛵</div>
@@ -409,14 +409,14 @@ const Index = () => {
                   <li>✓ Bronze role in community</li>
                   <li>✓ Protected from the flood</li>
                 </ul>
-                <Link to="/locker" className="block w-full bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+                <Link to="/locker" className="block w-full bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-interactive">
                   Enter Bronze Tier
                 </Link>
               </div>
             </div>
 
             {/* Silver Tier */}
-            <div className="bg-gradient-to-br from-gray-400/10 via-gray-500/5 to-transparent border-2 border-gray-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+            <div className="bg-gradient-to-br from-gray-400/10 via-gray-500/5 to-transparent border-2 border-gray-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform z-content">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-gray-400/20 to-transparent blur-2xl"></div>
               <div className="relative z-10">
                 <div className="text-4xl text-center mb-4">🛡️</div>
@@ -431,14 +431,14 @@ const Index = () => {
                   <li>✓ Silver role & privileges</li>
                   <li>✓ Priority support</li>
                 </ul>
-                <Link to="/locker" className="block w-full bg-gradient-to-r from-gray-400 to-gray-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+                <Link to="/locker" className="block w-full bg-gradient-to-r from-gray-400 to-gray-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-interactive">
                   Ascend to Silver
                 </Link>
               </div>
             </div>
 
             {/* Gold Tier */}
-            <div className="bg-gradient-to-br from-yellow-400/10 via-yellow-500/5 to-transparent border-2 border-yellow-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+            <div className="bg-gradient-to-br from-yellow-400/10 via-yellow-500/5 to-transparent border-2 border-yellow-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform z-content">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-400/20 to-transparent blur-2xl"></div>
               <div className="relative z-10">
                 <div className="text-4xl text-center mb-4">👑</div>
@@ -453,14 +453,14 @@ const Index = () => {
                   <li>✓ Governance participation</li>
                   <li>✓ Exclusive features access</li>
                 </ul>
-                <Link to="/locker" className="block w-full bg-gradient-to-r from-yellow-400 to-yellow-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+                <Link to="/locker" className="block w-full bg-gradient-to-r from-yellow-400 to-yellow-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-interactive">
                   Claim Gold Status
                 </Link>
               </div>
             </div>
 
             {/* Diamond Tier */}
-            <div className="bg-gradient-to-br from-cyan-400/10 via-cyan-500/5 to-transparent border-2 border-cyan-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+            <div className="bg-gradient-to-br from-cyan-400/10 via-cyan-500/5 to-transparent border-2 border-cyan-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform z-content">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-cyan-400/20 to-transparent blur-2xl"></div>
               <div className="relative z-10">
                 <div className="text-4xl text-center mb-4">💎</div>
@@ -475,14 +475,14 @@ const Index = () => {
                   <li>✓ VIP community access</li>
                   <li>✓ Special event invites</li>
                 </ul>
-                <Link to="/locker" className="block w-full bg-gradient-to-r from-cyan-400 to-cyan-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+                <Link to="/locker" className="block w-full bg-gradient-to-r from-cyan-400 to-cyan-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-interactive">
                   Achieve Diamond
                 </Link>
               </div>
             </div>
 
             {/* Platinum Tier */}
-            <div className="bg-gradient-to-br from-purple-400/10 via-purple-500/5 to-transparent border-2 border-purple-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
+            <div className="bg-gradient-to-br from-purple-400/10 via-purple-500/5 to-transparent border-2 border-purple-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform z-content">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-purple-400/20 to-transparent blur-2xl"></div>
               <div className="relative z-10">
                 <div className="text-4xl text-center mb-4">⭐</div>
@@ -497,14 +497,14 @@ const Index = () => {
                   <li>✓ Development influence</li>
                   <li>✓ Maximum benefits tier</li>
                 </ul>
-                <Link to="/locker" className="block w-full bg-gradient-to-r from-purple-400 to-purple-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+                <Link to="/locker" className="block w-full bg-gradient-to-r from-purple-400 to-purple-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-interactive">
                   Reach Platinum
                 </Link>
               </div>
             </div>
 
             {/* Legendary Tier */}
-            <div className="bg-gradient-to-br from-orange-500/10 via-red-500/5 to-transparent border-2 border-orange-500/50 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform shadow-2xl shadow-orange-500/20">
+            <div className="bg-gradient-to-br from-orange-500/10 via-red-500/5 to-transparent border-2 border-orange-500/50 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform shadow-2xl shadow-orange-500/20 z-content">
               <div className="absolute top-2 right-2 bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-bold">LEGENDARY</div>
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-orange-500/30 to-transparent blur-2xl"></div>
               <div className="relative z-10">
@@ -521,7 +521,7 @@ const Index = () => {
                   <li>✓ True Noah privileges</li>
                   <li>✓ Lead the new world</li>
                 </ul>
-                <Link to="/locker" className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform shadow-lg shadow-orange-500/30">
+                <Link to="/locker" className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform shadow-lg shadow-orange-500/30 relative z-interactive">
                   Become Legendary
                 </Link>
               </div>
@@ -530,14 +530,14 @@ const Index = () => {
 
           {/* Locker Rewards Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all relative z-content">
               <h4 className="text-lg font-bold text-cyan-400 mb-4">💰 Pending Locker Rewards</h4>
               <p className="text-2xl font-black text-green-400">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : `${contractData.lockerRewards.pending} ARK`}
               </p>
               <p className="text-sm text-gray-400 mt-2">Ready for distribution</p>
             </div>
-            <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all relative z-content">
               <h4 className="text-lg font-bold text-cyan-400 mb-4">🎁 Total Distributed</h4>
               <p className="text-2xl font-black text-blue-400">
                 {contractLoading ? <span className="animate-pulse">Loading...</span> : `${contractData.lockerRewards.distributed} ARK`}
@@ -548,7 +548,7 @@ const Index = () => {
 
           {/* Call to Action */}
           <div className="text-center">
-            <Link to="/locker" className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30">
+            <Link to="/locker" className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 relative z-interactive">
               <Sparkles className="inline w-5 h-5 mr-2" />
               Enter The Sacred Locker
             </Link>
@@ -557,14 +557,14 @@ const Index = () => {
       </section>
 
       {/* Noah's Prophecy Section */}
-      <section className="relative z-10 py-20 px-6">
+      <section className="relative z-content py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             The Prophecy of Noah's ARK
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* The Flood */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all relative z-content">
               <div className="text-4xl mb-4 text-center">🌊</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Flood</h3>
               <p className="text-gray-300 text-center">
@@ -573,7 +573,7 @@ const Index = () => {
             </div>
 
             {/* The Chosen */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all relative z-content">
               <div className="text-4xl mb-4 text-center">⚡</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Chosen</h3>
               <p className="text-gray-300 text-center">
@@ -582,7 +582,7 @@ const Index = () => {
             </div>
 
             {/* New World */}
-            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
+            <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all relative z-content">
               <div className="text-4xl mb-4 text-center">🕊️</div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">New World</h3>
               <p className="text-gray-300 text-center">
@@ -594,7 +594,7 @@ const Index = () => {
       </section>
 
       {/* Countdown Timer */}
-      <section className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
+      <section className="relative z-content py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl font-black mb-8 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             The Great Flood Approaches
@@ -622,12 +622,12 @@ const Index = () => {
       </section>
 
       {/* Chart Section */}
-      <section id="chart" className="relative z-10 py-20 px-6">
+      <section id="chart" className="relative z-content py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             $ARK Price Chart
           </h2>
-          <div className="glass-card rounded-xl p-8 min-h-[400px] flex items-center justify-center">
+          <div className="glass-card rounded-xl p-8 min-h-[400px] flex items-center justify-center relative z-content">
             <div className="text-center">
               <div className="text-6xl mb-4">📈</div>
               <h3 className="text-2xl font-bold text-cyan-400 mb-4">Interactive Chart Coming Soon</h3>
@@ -638,7 +638,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 py-12 px-6 border-t border-cyan-500/20">
+      <footer className="relative z-content py-12 px-6 border-t border-cyan-500/20">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -652,28 +652,28 @@ const Index = () => {
             <div>
               <h4 className="font-bold text-cyan-400 mb-4">Quick Links</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#swap" className="hover:text-cyan-400 transition-colors">Swap</a></li>
-                <li><Link to="/locker" className="hover:text-cyan-400 transition-colors">Locker</Link></li>
-                <li><a href="#stats" className="hover:text-cyan-400 transition-colors">Stats</a></li>
-                <li><a href="#chart" className="hover:text-cyan-400 transition-colors">Chart</a></li>
+                <li><a href="#swap" className="hover:text-cyan-400 transition-colors relative z-interactive">Swap</a></li>
+                <li><Link to="/locker" className="hover:text-cyan-400 transition-colors relative z-interactive">Locker</Link></li>
+                <li><a href="#stats" className="hover:text-cyan-400 transition-colors relative z-interactive">Stats</a></li>
+                <li><a href="#chart" className="hover:text-cyan-400 transition-colors relative z-interactive">Chart</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold text-cyan-400 mb-4">Community</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Discord</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Telegram</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Medium</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors relative z-interactive">Discord</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors relative z-interactive">Telegram</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors relative z-interactive">Twitter</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors relative z-interactive">Medium</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold text-cyan-400 mb-4">Resources</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Whitepaper</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Audit</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Support</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors relative z-interactive">Whitepaper</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors relative z-interactive">Audit</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors relative z-interactive">Documentation</a></li>
+                <li><a href="#" className="hover:text-cyan-400 transition-colors relative z-interactive">Support</a></li>
               </ul>
             </div>
           </div>
