@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from "@/components/ui/use-toast";
@@ -168,7 +167,7 @@ const Index = () => {
                 Salvation from the flood
               </h2>
               <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
-                While others drown in market chaos, THE ARK saves those who board early. Built on revolutionary tokenomics that reward the faithful and punish the weak.
+                The flood is coming. While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?
               </p>
               <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
                 <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
