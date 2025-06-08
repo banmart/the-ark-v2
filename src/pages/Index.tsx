@@ -109,8 +109,8 @@ const Index = () => {
 
       {/* Hero Section with Background Image */}
       <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center">
-        {/* Background Image with Much Higher Opacity */}
-        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ${backgroundLoaded ? 'opacity-40' : 'opacity-0'}`} style={{
+        {/* Background Image with Minimal Opacity */}
+        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ${backgroundLoaded ? 'opacity-[0.02]' : 'opacity-0'}`} style={{
         backgroundImage: 'url(https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg)'
       }}></div>
         
