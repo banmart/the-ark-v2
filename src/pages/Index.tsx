@@ -121,7 +121,7 @@ const Index = () => {
         ></div>
         
         {/* Gradient Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/20 to-black/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/5 to-black/5"></div>
         
         {/* Content */}
         <div className="max-w-7xl mx-auto w-full relative z-20">
@@ -151,13 +151,11 @@ const Index = () => {
             {/* Right side - 3D Token */}
             <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
               <div className="relative w-80 h-80">
-                <div className="absolute inset-0 bg-gradient-conic from-cyan-500 via-blue-500 to-purple-500 rounded-full animate-[spin_20s_linear_infinite] opacity-20"></div>
                 <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite]">
                   <div className="text-6xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                     ARK
                   </div>
                 </div>
-                <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
