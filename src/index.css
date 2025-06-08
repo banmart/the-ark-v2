@@ -105,12 +105,6 @@
 
 /* Custom Animations and Effects */
 @layer utilities {
-  /* Fixed Z-Index Utilities */
-  .z-background { z-index: -10; }
-  .z-content { z-index: 10; }
-  .z-interactive { z-index: 20; }
-  .z-nav { z-index: 50; }
-
   /* Animated Grid Pattern */
   .pulse-grid {
     position: absolute;
@@ -184,6 +178,15 @@
     background: linear-gradient(90deg, transparent, #00ffff, transparent);
     animation: scan 3s linear infinite;
   }
+
+  /* Hero Background with Fixed Attachment */
+  .hero-bg {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 }
 
 /* Keyframes */
@@ -205,6 +208,16 @@
 @keyframes gradient-shift {
   0%, 100% { filter: hue-rotate(0deg); }
   50% { filter: hue-rotate(30deg); }
+}
+
+@keyframes grid-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, -50px) scale(1.2); }
 }
 
 @keyframes rotate-3d {
