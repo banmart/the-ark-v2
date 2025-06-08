@@ -3,14 +3,17 @@ import { Link } from 'react-router-dom';
 import { toast } from "@/components/ui/use-toast";
 import { Sparkles, Copy, ExternalLink } from "lucide-react";
 import { useContractData } from '../hooks/useContractData';
+
 const Index = () => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [account, setAccount] = useState<string | null>(null);
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+
   const {
     data: contractData,
     loading: contractLoading
   } = useContractData();
+
   useEffect(() => {
     checkWalletConnection();
 
@@ -21,6 +24,7 @@ const Index = () => {
     };
     img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
   }, []);
+
   const checkWalletConnection = async () => {
     if (window.ethereum) {
       try {
@@ -41,6 +45,7 @@ const Index = () => {
       }
     }
   };
+
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
@@ -69,6 +74,7 @@ const Index = () => {
       });
     }
   };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
@@ -76,7 +82,9 @@ const Index = () => {
       description: "Contract address copied to clipboard"
     });
   };
+
   const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+
   return <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
@@ -135,11 +143,9 @@ const Index = () => {
 
             {/* Right side - 3D Token */}
             <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
-              <div className="relative w-80 h-80">
-                <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-teal-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite] shadow-2xl shadow-cyan-500/20">
-                  <div className="text-[12rem] font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
-                    ❍
-                  </div>
+              <div className="relative w-96 h-96 flex items-center justify-center">
+                <div className="text-[24rem] font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[rotate-3d_15s_linear_infinite]">
+                  ❍
                 </div>
               </div>
             </div>
@@ -656,4 +662,5 @@ const Index = () => {
       </footer>
     </div>;
 };
+
 export default Index;
