@@ -46,7 +46,7 @@ const Locker = () => {
   const protocolStats = {
     totalLockedTokens: "10,000,000",
     totalRewardsDistributed: "2,500,000",
-    totalActiveLockers: 1,250
+    totalActiveLockers: 1250
   };
 
   const userLocks = [
