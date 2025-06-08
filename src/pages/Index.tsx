@@ -1,149 +1,192 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { toast } from "@/components/ui/use-toast"
-import { Sparkles, Copy, ExternalLink } from "lucide-react"
-import { useContractData } from '../hooks/useContractData';
 
 const Index = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [walletConnected, setWalletConnected] = useState(false);
-  const [account, setAccount] = useState<string | null>(null);
-  const { data: contractData, loading: contractLoading } = useContractData();
+  const [plsAmount, setPlsAmount] = useState('');
+  const [arkAmount, setArkAmount] = useState('');
+  const [copyMessage, setCopyMessage] = useState(false);
 
+  // Scroll handler for navigation
   useEffect(() => {
-    checkWalletConnection();
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const checkWalletConnection = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-        if (accounts.length > 0) {
-          setWalletConnected(true);
-          setAccount(accounts[0]);
-        } else {
-          setWalletConnected(false);
-          setAccount(null);
+  // Countdown timer
+  useEffect(() => {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 40);
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = targetDate.getTime() - now;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      const daysEl = document.getElementById('days');
+      const hoursEl = document.getElementById('hours');
+      const minutesEl = document.getElementById('minutes');
+      const secondsEl = document.getElementById('seconds');
+
+      if (daysEl) daysEl.textContent = days.toString();
+      if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
+      if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
+      if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
+    };
+
+    const interval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Load stats
+  useEffect(() => {
+    const loadStats = () => {
+      const stats = {
+        totalSupply: '1,000,000,000',
+        tokensBurned: '47,500,000',
+        tvl: '$2,450,000',
+        holders: '8,742',
+        reflections: '150,000,000',
+        lockerRewards: '75,000,000'
+      };
+
+      Object.entries(stats).forEach(([key, value]) => {
+        const element = document.getElementById(key);
+        if (element) {
+          element.innerHTML = value;
         }
-      } catch (error) {
-        console.error("Error checking wallet connection:", error);
-        setWalletConnected(false);
-        setAccount(null);
+      });
+
+      // Add burn percentage
+      const burnPercentage = document.getElementById('burnPercentage');
+      if (burnPercentage) {
+        burnPercentage.textContent = '+4.75% since launch';
       }
+    };
+
+    setTimeout(loadStats, 1000);
+  }, []);
+
+  const connectWallet = () => {
+    setWalletConnected(!walletConnected);
+    const swapButton = document.getElementById('swapButton');
+    if (swapButton) {
+      swapButton.innerHTML = walletConnected ? 'Connect Wallet' : 'Swap Tokens';
     }
   };
 
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        setWalletConnected(true);
-        setAccount(accounts[0]);
-        toast({
-          title: "Connected!",
-          description: `Wallet connected with account ${accounts[0]}`,
-        })
-      } catch (error: any) {
-        console.error("Error connecting wallet:", error);
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: error.message,
-        })
-      }
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Please install Metamask!",
-      })
-    }
-  };
+  const calculateSwap = () => {
+    const amount = parseFloat(plsAmount) || 0;
+    const rate = 10000; // 1 PLS = 10,000 ARK
+    const total = amount * rate;
+    const fees = total * 0.09; // 9% total fees
+    const received = total - fees;
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Copied!",
-      description: "Contract address copied to clipboard",
+    setArkAmount(total.toString());
+    
+    const elements = {
+      swapRate: rate.toLocaleString(),
+      totalFees: fees.toLocaleString(),
+      youReceive: received.toLocaleString()
+    };
+
+    Object.entries(elements).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
     });
   };
 
-  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+  const copyContract = () => {
+    const contractAddress = "0x0000000000000000000000000000000000000000";
+    navigator.clipboard.writeText(contractAddress);
+    setCopyMessage(true);
+    setTimeout(() => setCopyMessage(false), 3000);
+  };
+
+  const executeSwap = () => {
+    if (!walletConnected) {
+      connectWallet();
+    } else {
+      alert('Swap functionality would be implemented here');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden font-['Inter']">
       {/* Animated Background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900/50 to-black"></div>
-        <div className="absolute inset-0 bg-grid animate-[grid-move_20s_linear_infinite] opacity-20"></div>
-        <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite] [animation-delay:3s]"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl animate-[float_8s_ease-in-out_infinite] [animation-delay:1.5s]"></div>
+      <div className="fixed w-full h-full top-0 left-0 -z-10 overflow-hidden bg-gradient-radial from-[#1a1a2e] to-[#0a0a0a]">
+        <div className="absolute w-[200%] h-[200%] -top-1/2 -left-1/2 bg-grid bg-[length:50px_50px] animate-[grid-move_20s_linear_infinite] opacity-30"></div>
+        <div className="floating-orb absolute w-[300px] h-[300px] rounded-full bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent blur-[40px] top-[10%] left-[10%] animate-[float_15s_ease-in-out_infinite]"></div>
+        <div className="floating-orb absolute w-[300px] h-[300px] rounded-full bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent blur-[40px] top-[60%] right-[10%] animate-[float_15s_ease-in-out_infinite] [animation-delay:5s]"></div>
+        <div className="floating-orb absolute w-[300px] h-[300px] rounded-full bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent blur-[40px] bottom-[10%] left-[30%] animate-[float_15s_ease-in-out_infinite] [animation-delay:10s]"></div>
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              ARK
-            </div>
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</a>
-              <Link to="/locker" className="text-gray-300 hover:text-cyan-400 transition-colors">Locker</Link>
-              <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
-              <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
-              <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
-              <button 
-                onClick={connectWallet}
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform"
-              >
-                {walletConnected ? `${account?.slice(0,6)}...${account?.slice(-4)}` : 'Connect Wallet'}
-              </button>
-            </div>
+      <nav className={`fixed top-0 w-full p-5 backdrop-blur-[20px] z-[1000] transition-all duration-300 ${isScrolled ? 'bg-[rgba(10,10,10,0.95)] py-4' : 'bg-[rgba(10,10,10,0.8)]'}`}>
+        <div className="flex justify-between items-center max-w-[1400px] mx-auto">
+          <div className="text-[28px] font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent tracking-[2px]">
+            ARK
+          </div>
+          <div className="hidden md:flex gap-10 items-center">
+            <a href="#swap" className="text-white no-underline font-medium transition-all duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:transition-all after:duration-300 hover:after:w-full">Swap</a>
+            <a href="#vault" className="text-white no-underline font-medium transition-all duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:transition-all after:duration-300 hover:after:w-full">Vault</a>
+            <a href="#stats" className="text-white no-underline font-medium transition-all duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:transition-all after:duration-300 hover:after:w-full">Stats</a>
+            <a href="#features" className="text-white no-underline font-medium transition-all duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:transition-all after:duration-300 hover:after:w-full">Features</a>
+            <a href="#chart" className="text-white no-underline font-medium transition-all duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-blue-500 after:transition-all after:duration-300 hover:after:w-full">Chart</a>
+            <button 
+              onClick={connectWallet}
+              className="px-8 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 border-none rounded-[30px] text-black font-bold cursor-pointer transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(0,255,255,0.3)]"
+            >
+              {walletConnected ? 'Connected' : 'Connect Wallet'}
+            </button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section with 3D Token */}
-      <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left side - Text */}
-            <div>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
-                THE ARK
-              </h1>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-300 animate-[fade-in_1s_ease-out_0.2s_both]">
-                Salvation from the Flood
-              </h2>
-              <p className="text-xl md:text-2xl text-gray-400 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
-                Board THE ARK and be saved from the crypto flood. Deflationary tokenomics with burns, reflections, and vault rewards.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
-                <button
-                  onClick={() => copyToClipboard(contractAddress)}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2"
-                >
-                  <Copy size={18} />
-                  Copy Contract
-                </button>
-                <a href="#swap" className="bg-black/30 border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-black/50 hover:scale-105 transition-transform text-center">
-                  Buy ARK
-                </a>
-              </div>
+      {/* Hero Section */}
+      <section className="min-h-screen flex items-center justify-center px-[5%] pt-[120px] pb-[80px] relative bg-cover bg-center bg-fixed animate-[heroFadeIn_2s_ease-out]" style={{
+        backgroundImage: "linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=1920&h=1080&fit=crop')"
+      }}>
+        <div className="max-w-[1400px] w-full grid md:grid-cols-2 gap-20 items-center">
+          <div>
+            <h1 className="text-[clamp(3rem,8vw,5.5rem)] font-black leading-[1.1] mb-8 bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent animate-[gradient-shift_3s_ease-in-out_infinite]">
+              THE ARK
+            </h1>
+            <p className="text-xl text-[#b0b0b0] mb-10 leading-relaxed">
+              The flood is coming. While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?
+            </p>
+            <div className="flex gap-5 flex-wrap">
+              <a 
+                href="https://pulsex.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-10 py-4 rounded-[30px] font-bold no-underline inline-flex items-center gap-2.5 transition-all duration-300 relative overflow-hidden bg-gradient-to-r from-cyan-400 to-blue-500 text-black hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,255,255,0.3)]"
+              >
+                <span>Buy ARK</span>
+                <span>→</span>
+              </a>
+              <a 
+                href="#features" 
+                className="px-10 py-4 rounded-[30px] font-bold no-underline inline-flex items-center gap-2.5 transition-all duration-300 relative overflow-hidden bg-transparent text-cyan-400 border-2 border-cyan-400 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,255,255,0.3)]"
+              >
+                <span>Learn More</span>
+              </a>
             </div>
-
-            {/* Right side - 3D Token */}
-            <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
-              <div className="relative w-80 h-80">
-                <div className="absolute inset-0 bg-gradient-conic from-cyan-500 via-blue-500 to-purple-500 rounded-full animate-[spin_20s_linear_infinite] opacity-20"></div>
-                <div className="absolute inset-4 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full backdrop-blur-sm border border-cyan-500/30 flex items-center justify-center animate-[rotate-3d_15s_linear_infinite]">
-                  <div className="text-6xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    ARK
-                  </div>
-                </div>
-                <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent rounded-full animate-pulse"></div>
+          </div>
+          <div className="relative flex justify-center items-center h-[500px]">
+            <div className="w-[350px] h-[350px] relative [transform-style:preserve-3d] animate-[rotate-3d_20s_linear_infinite]">
+              <div className="absolute w-full h-full rounded-full bg-gradient-to-r from-[rgba(0,255,255,0.1)] to-[rgba(0,128,255,0.1)] border-2 border-[rgba(0,255,255,0.5)] flex items-center justify-center text-[15rem] font-black backdrop-blur-[10px] shadow-[0_0_50px_rgba(0,255,255,0.5)] text-cyan-400 [text-shadow:0_0_30px_rgba(0,255,255,0.8),0_0_60px_rgba(0,255,255,0.5)]">
+                ❍
               </div>
             </div>
           </div>
@@ -151,571 +194,467 @@ const Index = () => {
       </section>
 
       {/* Contract Address Section */}
-      <section className="relative z-10 py-12 px-6 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent">
-        <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-2xl font-bold mb-4 text-cyan-400">Smart Contract Address</h3>
-          <div className="bg-black/50 border border-cyan-500/30 rounded-xl p-6 flex items-center justify-between">
-            <code className="text-sm md:text-base text-gray-300 font-mono">{contractAddress}</code>
-            <div className="flex gap-2">
-              <button
-                onClick={() => copyToClipboard(contractAddress)}
-                className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-colors"
+      <section className="py-20 px-[5%] bg-gradient-to-b from-transparent via-[rgba(0,255,255,0.02)] to-transparent">
+        <div className="max-w-[800px] mx-auto text-center">
+          <h2 className="text-[2rem] mb-8 text-cyan-400">🔐 The Sacred Contract 🔐</h2>
+          <div className="bg-[rgba(255,255,255,0.05)] border-2 border-[rgba(0,255,255,0.3)] rounded-[20px] p-10 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-radial from-[rgba(0,255,255,0.05)] to-transparent animate-pulse"></div>
+            <p className="text-lg text-[#b0b0b0] mb-5">Official ARK Contract Address (PulseChain)</p>
+            <div className="bg-[rgba(0,0,0,0.5)] border border-[rgba(0,255,255,0.5)] rounded-[15px] p-5 flex items-center gap-4 relative">
+              <input 
+                type="text" 
+                id="contractAddress" 
+                value="0x0000000000000000000000000000000000000000" 
+                readOnly 
+                className="flex-1 bg-transparent border-none text-cyan-400 font-mono text-lg outline-none cursor-pointer"
+                onClick={copyContract}
+              />
+              <button 
+                onClick={copyContract}
+                className="bg-gradient-to-r from-cyan-400 to-blue-500 border-none py-3 px-6 rounded-[10px] text-black font-bold cursor-pointer transition-all duration-300 whitespace-nowrap"
               >
-                <Copy size={18} />
-              </button>
-              <button className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-lg transition-colors">
-                <ExternalLink size={18} />
+                <span>📋 Copy</span>
               </button>
             </div>
+            <div className={`mt-4 text-green-400 text-sm transition-opacity duration-300 ${copyMessage ? 'opacity-100' : 'opacity-0'}`}>
+              ✅ Contract address copied to clipboard!
+            </div>
+            <div className="mt-8 flex gap-5 justify-center flex-wrap">
+              <a href="https://scan.pulsechain.com/address/0x0000000000000000000000000000000000000000" target="_blank" rel="noopener noreferrer" className="text-cyan-400 no-underline flex items-center gap-1 py-2.5 px-5 border border-[rgba(0,255,255,0.3)] rounded-[10px] transition-all duration-300">
+                <span>🔍</span> View on PulseScan
+              </a>
+              <a href="https://dexscreener.com/pulsechain/0x0000000000000000000000000000000000000000" target="_blank" rel="noopener noreferrer" className="text-cyan-400 no-underline flex items-center gap-1 py-2.5 px-5 border border-[rgba(0,255,255,0.3)] rounded-[10px] transition-all duration-300">
+                <span>📊</span> View on DexScreener
+              </a>
+            </div>
+            <p className="mt-5 text-sm text-[#666]">
+              ⚠️ Always verify the contract address. Beware of scams and copies.
+            </p>
           </div>
         </div>
       </section>
 
       {/* Swap Section */}
-      <section id="swap" className="relative z-10 py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            Swap PLS for ARK
-          </h2>
-          <div className="bg-white/5 border border-cyan-500/30 rounded-2xl p-8 backdrop-blur-sm">
-            <div className="space-y-6">
-              {/* From Token */}
-              <div className="bg-black/30 rounded-xl p-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-400">From</span>
-                  <span className="text-sm text-gray-400">Balance: 0.0 PLS</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <input
-                    type="number"
-                    placeholder="0.0"
-                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none"
-                  />
-                  <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
-                    <div className="w-6 h-6 bg-red-500 rounded-full"></div>
-                    <span className="font-semibold">PLS</span>
-                  </div>
+      <section id="swap" className="py-[100px] px-[5%] bg-gradient-to-b from-transparent via-[rgba(0,255,255,0.03)] to-transparent">
+        <div className="max-w-[500px] mx-auto">
+          <h2 className="text-[2.5rem] font-black text-center mb-10 bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">Board THE ARK</h2>
+          <div className="bg-[rgba(255,255,255,0.05)] border-2 border-[rgba(0,255,255,0.3)] rounded-[30px] p-8 relative overflow-hidden">
+            <div className="absolute -top-[100px] -right-[100px] w-[300px] h-[300px] bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent blur-[80px]"></div>
+            
+            {/* From Token */}
+            <div className="bg-[rgba(0,0,0,0.3)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-5 mb-5">
+              <div className="flex justify-between items-center mb-2.5">
+                <span className="text-[#666] text-sm">From</span>
+                <span className="text-[#666] text-sm">Balance: <span id="plsBalance">0.00</span></span>
+              </div>
+              <div className="flex items-center gap-4">
+                <input 
+                  type="number" 
+                  id="plsAmount" 
+                  placeholder="0.0" 
+                  value={plsAmount}
+                  onChange={(e) => {
+                    setPlsAmount(e.target.value);
+                    calculateSwap();
+                  }}
+                  className="flex-1 bg-transparent border-none text-white text-3xl font-semibold outline-none"
+                />
+                <div className="flex items-center gap-2.5 bg-[rgba(255,255,255,0.1)] py-2.5 px-4 rounded-[15px]">
+                  <div className="w-6 h-6 bg-green-500 rounded-full"></div>
+                  <span className="font-semibold">PLS</span>
                 </div>
               </div>
+            </div>
 
-              {/* Swap Icon */}
-              <div className="flex justify-center">
-                <button className="p-3 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-full transition-colors rotate-0 hover:rotate-180 duration-300">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                </button>
+            {/* Swap Arrow */}
+            <div className="flex justify-center my-0 -my-2.5">
+              <div className="bg-[rgba(0,255,255,0.2)] w-[50px] h-[50px] rounded-[15px] flex items-center justify-center border-2 border-[rgba(0,255,255,0.3)] cursor-pointer transition-all duration-300">
+                <span className="text-2xl">⬇</span>
               </div>
+            </div>
 
-              {/* To Token */}
-              <div className="bg-black/30 rounded-xl p-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-400">To</span>
-                  <span className="text-sm text-gray-400">Balance: 0.0 ARK</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <input
-                    type="number"
-                    placeholder="0.0"
-                    className="flex-1 bg-transparent text-3xl font-bold text-white placeholder-gray-500 outline-none"
-                    readOnly
-                  />
-                  <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
-                    <div className="w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
-                    <span className="font-semibold">ARK</span>
-                  </div>
-                </div>
+            {/* To Token */}
+            <div className="bg-[rgba(0,0,0,0.3)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-5 mb-5">
+              <div className="flex justify-between items-center mb-2.5">
+                <span className="text-[#666] text-sm">To</span>
+                <span className="text-[#666] text-sm">Balance: <span id="arkBalance">0.00</span></span>
               </div>
-
-              {/* Swap Button */}
-              <button
-                disabled={!walletConnected}
-                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-lg"
-              >
-                {walletConnected ? 'Swap Tokens' : 'Connect Wallet First'}
-              </button>
-
-              {/* Swap Info */}
-              <div className="bg-black/20 rounded-xl p-4 text-sm space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Rate</span>
-                  <span>1 PLS = 100 ARK</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Slippage</span>
-                  <span>2%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Network Fee</span>
-                  <span>~$0.01</span>
+              <div className="flex items-center gap-4">
+                <input 
+                  type="number" 
+                  id="arkAmount" 
+                  placeholder="0.0" 
+                  value={arkAmount}
+                  readOnly
+                  className="flex-1 bg-transparent border-none text-white text-3xl font-semibold outline-none"
+                />
+                <div className="flex items-center gap-2.5 bg-[rgba(255,255,255,0.1)] py-2.5 px-4 rounded-[15px]">
+                  <div className="w-6 h-6 bg-cyan-400 rounded-full flex items-center justify-center font-black">❍</div>
+                  <span className="font-semibold">ARK</span>
                 </div>
               </div>
+            </div>
+
+            {/* Swap Info */}
+            <div className="bg-[rgba(0,0,0,0.2)] rounded-[15px] p-4 mb-5 text-sm">
+              <div className="flex justify-between mb-2">
+                <span className="text-[#666]">Rate</span>
+                <span>1 PLS = <span id="swapRate">0</span> ARK</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-[#666]">Slippage Tolerance</span>
+                <span>2%</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-[#666]">Total Fees (9%)</span>
+                <span id="totalFees">0 ARK</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#666]">You Receive</span>
+                <span className="text-cyan-400 font-semibold"><span id="youReceive">0</span> ARK</span>
+              </div>
+            </div>
+
+            {/* Swap Button */}
+            <button 
+              id="swapButton" 
+              onClick={executeSwap}
+              className="w-full py-[18px] bg-gradient-to-r from-cyan-400 to-blue-500 border-none rounded-[15px] text-black text-xl font-bold cursor-pointer transition-all duration-300 relative overflow-hidden"
+            >
+              <span>{walletConnected ? 'Swap Tokens' : 'Connect Wallet'}</span>
+            </button>
+
+            {/* Warning */}
+            <p className="text-center mt-4 text-[0.85rem] text-[#666]">
+              🛡️ Audited & Safe • 🔥 3% Burn • 💎 2% Reflections • 💧 2% LP • 🔒 2% Locker
+            </p>
+          </div>
+          
+          {/* Quick Buy Links */}
+          <div className="mt-8 text-center">
+            <p className="text-[#666] mb-4">Or swap directly on:</p>
+            <div className="flex gap-4 justify-center flex-wrap">
+              <a href="https://app.pulsex.com/swap?outputCurrency=YOUR_CONTRACT_ADDRESS" target="_blank" rel="noopener noreferrer" className="py-3 px-6 bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,255,0.3)] rounded-[10px] text-cyan-400 no-underline transition-all duration-300">
+                PulseX
+              </a>
+              <a href="https://app.piteas.io/#/swap?outputCurrency=YOUR_CONTRACT_ADDRESS" target="_blank" rel="noopener noreferrer" className="py-3 px-6 bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,255,0.3)] rounded-[10px] text-cyan-400 no-underline transition-all duration-300">
+                Piteas
+              </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section with Real Contract Data */}
-      <section id="stats" className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            $ARK By The Numbers
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Market Cap */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 Market Cap</h3>
-              <p className="text-3xl font-black text-white mb-2">
-                {contractLoading ? (
-                  <span className="animate-pulse">Loading...</span>
-                ) : (
-                  `$${contractData.marketCap}`
-                )}
-              </p>
-              <p className="text-sm text-gray-400">Real-time valuation</p>
-            </div>
-
-            {/* Total Supply */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💎 Total Supply</h3>
-              <p className="text-3xl font-black text-white mb-2">
-                {contractLoading ? (
-                  <span className="animate-pulse">Loading...</span>
-                ) : (
-                  `${contractData.totalSupply} ARK`
-                )}
-              </p>
-              <p className="text-sm text-gray-400">From smart contract</p>
-            </div>
-
-            {/* Holders */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">👥 Holders</h3>
-              <p className="text-3xl font-black text-white mb-2">
-                {contractLoading ? (
-                  <span className="animate-pulse">Loading...</span>
-                ) : (
-                  contractData.holders
-                )}
-              </p>
-              <p className="text-sm text-gray-400">Unique addresses</p>
-            </div>
-          </div>
-
-          {/* Contract Fees Info */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
-              <h4 className="text-lg font-bold text-cyan-400 mb-2">🔥 Burn Fee</h4>
-              <p className="text-2xl font-bold">
-                {contractLoading ? '...' : `${contractData.currentFees.burn}%`}
-              </p>
-            </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
-              <h4 className="text-lg font-bold text-cyan-400 mb-2">🫂 Reflection Fee</h4>
-              <p className="text-2xl font-bold">
-                {contractLoading ? '...' : `${contractData.currentFees.reflection}%`}
-              </p>
-            </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
-              <h4 className="text-lg font-bold text-cyan-400 mb-2">💧 Liquidity Fee</h4>
-              <p className="text-2xl font-bold">
-                {contractLoading ? '...' : `${contractData.currentFees.liquidity}%`}
-              </p>
-            </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 text-center">
-              <h4 className="text-lg font-bold text-cyan-400 mb-2">🔒 Locker Fee</h4>
-              <p className="text-2xl font-bold">
-                {contractLoading ? '...' : `${contractData.currentFees.locker}%`}
+      {/* Noah's Ark Section */}
+      <section className="py-[100px] px-[5%] bg-gradient-to-b from-transparent via-[rgba(0,255,255,0.05)] to-transparent">
+        <div className="max-w-[1000px] mx-auto text-center">
+          <h2 className="text-[2.5rem] font-black mb-10 bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">⛵ The Prophecy of Wealth ⛵</h2>
+          <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.2)] rounded-[20px] py-[60px] px-10 relative overflow-hidden">
+            <div className="absolute -top-[50px] -right-[50px] w-[200px] h-[200px] bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent blur-[60px]"></div>
+            <p className="text-[1.4rem] leading-[1.8] text-cyan-400 font-medium mb-8">
+              "For 40 days and 40 nights, the markets shall flood with worthless tokens. 
+              But those who enter THE ARK shall be lifted above the waters."
+            </p>
+            <p className="text-xl leading-relaxed text-[#b0b0b0]">
+              Every holder becomes Noah. Every transaction makes the ARK stronger. 
+              The 3% burn is the flood washing away excess. The 2% reflections are manna from heaven. 
+              The liquidity pools are the foundation that keeps us afloat. 
+              And the locker rewards? That's your covenant with the future.
+            </p>
+            <div className="mt-10 p-5 bg-[rgba(0,255,255,0.1)] rounded-[15px]">
+              <p className="text-lg text-white font-semibold">
+                🔥 2 Million tokens burned every hour = Rising above the flood<br/>
+                💎 Reflections compound while you sleep = Blessed are the holders<br/>
+                🌊 50% of LP burned forever = The ARK cannot sink
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section - The Four Pillars */}
-      <section id="features" className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            The Four Pillars of Salvation
-          </h2>
-          <p className="text-xl text-gray-300 text-center max-w-3xl mx-auto mb-16">
-            $ARK is built upon four core principles, ensuring a stable and rewarding ecosystem for its holders.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Scarcity */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
-              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🔥</div>
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Scarcity</h3>
-              <p className="text-gray-300 text-center">
-                Limited supply with continuous burns on transactions creating deflationary pressure.
-              </p>
+      {/* Stats Section */}
+      <section id="stats" className="py-[100px] px-[5%] bg-[rgba(255,255,255,0.02)] backdrop-blur-[10px] relative">
+        <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:border-[rgba(0,255,255,0.5)] hover:shadow-[0_20px_40px_rgba(0,255,255,0.2)] group">
+            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="text-sm text-cyan-400 uppercase tracking-[2px] mb-4">Total Supply</div>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent mb-2.5" id="totalSupply">
+              <span className="inline-block w-5 h-5 border-2 border-[rgba(0,255,255,0.3)] rounded-full border-t-cyan-400 animate-spin"></span>
             </div>
-
-            {/* Rewards */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
-              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">💰</div>
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Rewards</h3>
-              <p className="text-gray-300 text-center">
-                Vault rewards and reflections for loyal holders who believe in the mission.
-              </p>
+          </div>
+          <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:border-[rgba(0,255,255,0.5)] hover:shadow-[0_20px_40px_rgba(0,255,255,0.2)] group">
+            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="text-sm text-cyan-400 uppercase tracking-[2px] mb-4">Tokens Burned</div>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent mb-2.5" id="tokensBurned">
+              <span className="inline-block w-5 h-5 border-2 border-[rgba(0,255,255,0.3)] rounded-full border-t-cyan-400 animate-spin"></span>
             </div>
-
-            {/* Community */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
-              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🫂</div>
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Community</h3>
-              <p className="text-gray-300 text-center">
-                A strong, supportive community driving the project forward together.
-              </p>
+            <div className="text-sm text-green-400" id="burnPercentage"></div>
+          </div>
+          <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:border-[rgba(0,255,255,0.5)] hover:shadow-[0_20px_40px_rgba(0,255,255,0.2)] group">
+            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="text-sm text-cyan-400 uppercase tracking-[2px] mb-4">Total Value Locked</div>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent mb-2.5" id="tvl">
+              <span className="inline-block w-5 h-5 border-2 border-[rgba(0,255,255,0.3)] rounded-full border-t-cyan-400 animate-spin"></span>
             </div>
-
-            {/* Security */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform group">
-              <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🛡️</div>
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Security</h3>
-              <p className="text-gray-300 text-center">
-                Audited contract ensuring safety and transparency for all passengers.
-              </p>
+          </div>
+          <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:border-[rgba(0,255,255,0.5)] hover:shadow-[0_20px_40px_rgba(0,255,255,0.2)] group">
+            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="text-sm text-cyan-400 uppercase tracking-[2px] mb-4">Holders</div>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent mb-2.5" id="holders">
+              <span className="inline-block w-5 h-5 border-2 border-[rgba(0,255,255,0.3)] rounded-full border-t-cyan-400 animate-spin"></span>
+            </div>
+          </div>
+          <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:border-[rgba(0,255,255,0.5)] hover:shadow-[0_20px_40px_rgba(0,255,255,0.2)] group">
+            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="text-sm text-cyan-400 uppercase tracking-[2px] mb-4">Reflections Distributed</div>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent mb-2.5" id="reflections">
+              <span className="inline-block w-5 h-5 border-2 border-[rgba(0,255,255,0.3)] rounded-full border-t-cyan-400 animate-spin"></span>
+            </div>
+          </div>
+          <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 text-center transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:border-[rgba(0,255,255,0.5)] hover:shadow-[0_20px_40px_rgba(0,255,255,0.2)] group">
+            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-radial from-[rgba(0,255,255,0.1)] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div className="text-sm text-cyan-400 uppercase tracking-[2px] mb-4">Locker Rewards</div>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent mb-2.5" id="lockerRewards">
+              <span className="inline-block w-5 h-5 border-2 border-[rgba(0,255,255,0.3)] rounded-full border-t-cyan-400 animate-spin"></span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Updated 6-Tier Locker Section */}
-      <section className="py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            🔒 The Sacred Locker Tiers 🔒
-          </h2>
-          <p className="text-xl text-gray-300 text-center max-w-4xl mx-auto mb-16">
+      {/* Features Section */}
+      <section id="features" className="py-[100px] px-[5%] max-w-[1400px] mx-auto">
+        <h2 className="text-center text-5xl font-black mb-[60px] bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">The Four Pillars of Salvation</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 transition-all duration-300 relative overflow-hidden after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-0.5 after:bg-gradient-to-r after:from-transparent after:via-cyan-400 after:to-transparent after:animate-[scan_3s_linear_infinite]">
+            <div className="w-20 h-20 bg-gradient-to-r from-[rgba(0,255,255,0.2)] to-[rgba(0,128,255,0.2)] rounded-[20px] flex items-center justify-center text-[2rem] mb-8">🔥</div>
+            <h3 className="text-2xl font-bold mb-4 text-cyan-400">The Great Flood</h3>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-5">3%</div>
+            <p className="text-[#b0b0b0] leading-relaxed">Like the biblical flood that cleansed the earth, every transaction burns 3% of tokens forever. The supply drowns while your value rises. This is not a bug - it's salvation.</p>
+          </div>
+          <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 transition-all duration-300 relative overflow-hidden after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-0.5 after:bg-gradient-to-r after:from-transparent after:via-cyan-400 after:to-transparent after:animate-[scan_3s_linear_infinite]">
+            <div className="w-20 h-20 bg-gradient-to-r from-[rgba(0,255,255,0.2)] to-[rgba(0,128,255,0.2)] rounded-[20px] flex items-center justify-center text-[2rem] mb-8">💎</div>
+            <h3 className="text-2xl font-bold mb-4 text-cyan-400">Manna From Heaven</h3>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-5">2%</div>
+            <p className="text-[#b0b0b0] leading-relaxed">Hold and be blessed. 2% of every transaction rains down on true believers. The longer you hold, the more you receive. Diamond hands are holy hands.</p>
+          </div>
+          <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 transition-all duration-300 relative overflow-hidden after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-0.5 after:bg-gradient-to-r after:from-transparent after:via-cyan-400 after:to-transparent after:animate-[scan_3s_linear_infinite]">
+            <div className="w-20 h-20 bg-gradient-to-r from-[rgba(0,255,255,0.2)] to-[rgba(0,128,255,0.2)] rounded-[20px] flex items-center justify-center text-[2rem] mb-8">💧</div>
+            <h3 className="text-2xl font-bold mb-4 text-cyan-400">The Eternal Foundation</h3>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-5">2%</div>
+            <p className="text-[#b0b0b0] leading-relaxed">The ARK's foundation grows stronger with each trade. Auto-liquidity ensures we stay afloat, and 50% of LP tokens are sacrificed to the burn address - a permanent covenant.</p>
+          </div>
+          <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 transition-all duration-300 relative overflow-hidden after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-0.5 after:bg-gradient-to-r after:from-transparent after:via-cyan-400 after:to-transparent after:animate-[scan_3s_linear_infinite]">
+            <div className="w-20 h-20 bg-gradient-to-r from-[rgba(0,255,255,0.2)] to-[rgba(0,128,255,0.2)] rounded-[20px] flex items-center justify-center text-[2rem] mb-8">🔒</div>
+            <h3 className="text-2xl font-bold mb-4 text-cyan-400">The Chosen Vault</h3>
+            <div className="text-[2.5rem] font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-5">2%</div>
+            <p className="text-[#b0b0b0] leading-relaxed">Lock your tokens and receive divine rewards. The vault protects the faithful and rewards patience. Time in THE ARK beats timing THE ARK.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* The Flood Timer Section */}
+      <section className="py-20 px-[5%] bg-[rgba(0,0,0,0.5)]">
+        <div className="max-w-[800px] mx-auto text-center">
+          <h3 className="text-[2rem] mb-8 text-cyan-400">⏰ The Flood Approaches ⏰</h3>
+          <div className="grid grid-cols-4 gap-5 mb-8">
+            <div className="bg-[rgba(255,255,255,0.05)] p-5 rounded-[15px] border border-[rgba(0,255,255,0.3)]">
+              <div className="text-[2.5rem] font-black text-cyan-400" id="days">40</div>
+              <div className="text-sm text-[#666] uppercase">Days</div>
+            </div>
+            <div className="bg-[rgba(255,255,255,0.05)] p-5 rounded-[15px] border border-[rgba(0,255,255,0.3)]">
+              <div className="text-[2.5rem] font-black text-cyan-400" id="hours">00</div>
+              <div className="text-sm text-[#666] uppercase">Hours</div>
+            </div>
+            <div className="bg-[rgba(255,255,255,0.05)] p-5 rounded-[15px] border border-[rgba(0,255,255,0.3)]">
+              <div className="text-[2.5rem] font-black text-cyan-400" id="minutes">00</div>
+              <div className="text-sm text-[#666] uppercase">Minutes</div>
+            </div>
+            <div className="bg-[rgba(255,255,255,0.05)] p-5 rounded-[15px] border border-[rgba(0,255,255,0.3)]">
+              <div className="text-[2.5rem] font-black text-cyan-400" id="seconds">00</div>
+              <div className="text-sm text-[#666] uppercase">Seconds</div>
+            </div>
+          </div>
+          <p className="text-xl text-[#b0b0b0]">Until the next major burn event. Board THE ARK before it's too late.</p>
+        </div>
+      </section>
+
+      {/* Locker Vault Section */}
+      <section id="vault" className="py-[100px] px-[5%] bg-gradient-to-b from-[rgba(0,0,0,0.5)] via-[rgba(0,255,255,0.02)] to-[rgba(0,0,0,0.5)]">
+        <div className="max-w-[1400px] mx-auto">
+          <h2 className="text-[2.5rem] font-black text-center mb-5 bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">🔒 The Chosen Vault 🔒</h2>
+          <p className="text-center text-xl text-[#b0b0b0] max-w-[800px] mx-auto mb-[60px]">
             Lock your ARK tokens and ascend through divine tiers. The longer you lock, the greater your blessings. 
-            {contractLoading ? (
-              <span className="animate-pulse">Loading rewards...</span>
-            ) : (
-              `${contractData.currentFees.locker}% of every transaction flows to the vault, rewarding the faithful.`
-            )}
+            2% of every transaction flows to the vault, rewarding the faithful.
           </p>
           
-          {/* 6-tier system */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {/* Vault Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.3)] rounded-[20px] p-8 text-center">
+              <div className="text-5xl mb-2.5">🏛️</div>
+              <div className="text-cyan-400 text-sm uppercase tracking-wider mb-2.5">Total Locked</div>
+              <div className="text-[2rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
+                <span id="totalLocked">0</span> ARK
+              </div>
+            </div>
+            <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.3)] rounded-[20px] p-8 text-center">
+              <div className="text-5xl mb-2.5">👥</div>
+              <div className="text-cyan-400 text-sm uppercase tracking-wider mb-2.5">Vault Members</div>
+              <div className="text-[2rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
+                <span id="vaultMembers">0</span>
+              </div>
+            </div>
+            <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.3)] rounded-[20px] p-8 text-center">
+              <div className="text-5xl mb-2.5">💰</div>
+              <div className="text-cyan-400 text-sm uppercase tracking-wider mb-2.5">Rewards Pool</div>
+              <div className="text-[2rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
+                <span id="rewardsPool">0</span> ARK
+              </div>
+            </div>
+            <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.3)] rounded-[20px] p-8 text-center">
+              <div className="text-5xl mb-2.5">📈</div>
+              <div className="text-cyan-400 text-sm uppercase tracking-wider mb-2.5">APY Range</div>
+              <div className="text-[2rem] font-black bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
+                15-150%
+              </div>
+            </div>
+          </div>
+
+          {/* Lock Tiers */}
+          <h3 className="text-center text-[2rem] mb-10 text-cyan-400">Lock Tiers & Divine Rewards</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-[60px]">
             
-            {/* Bronze Tier */}
-            <div className="bg-gradient-to-br from-yellow-600/10 via-yellow-700/5 to-transparent border-2 border-yellow-600/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-600/20 to-transparent blur-2xl"></div>
-              <div className="relative z-10">
-                <div className="text-4xl text-center mb-4">⛵</div>
-                <h4 className="text-xl font-bold text-yellow-600 text-center mb-4">BRONZE</h4>
-                <div className="text-center mb-6">
-                  <div className="text-lg font-semibold text-yellow-600">30-89 Days</div>
-                  <div className="text-3xl font-black text-yellow-400 my-2">1x Multiplier</div>
+            {/* Believer Tier */}
+            <div className="bg-gradient-to-br from-[rgba(184,134,11,0.1)] to-[rgba(184,134,11,0.05)] border-2 border-[#B8860B] rounded-[20px] p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+              <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-gradient-radial from-[rgba(184,134,11,0.2)] to-transparent blur-[60px]"></div>
+              <div className="relative z-[1]">
+                <div className="text-5xl text-center mb-4">⛵</div>
+                <h4 className="text-2xl text-[#B8860B] text-center mb-5">BELIEVER</h4>
+                <div className="text-center mb-5">
+                  <div className="text-xl font-semibold text-[#B8860B]">7 Days Lock</div>
+                  <div className="text-[2rem] font-black text-[#FFD700] my-2.5">15% APY</div>
                 </div>
-                <ul className="space-y-2 text-sm text-gray-300 mb-6">
-                  <li>✓ Entry level blessing</li>
-                  <li>✓ Share in vault rewards</li>
-                  <li>✓ Bronze role in community</li>
+                <ul className="list-none p-0 text-[0.95rem] text-[#b0b0b0]">
+                  <li className="mb-2.5">✓ Entry level blessing</li>
+                  <li className="mb-2.5">✓ Share in 2% transaction rewards</li>
+                  <li className="mb-2.5">✓ Believer role in community</li>
                   <li>✓ Protected from the flood</li>
                 </ul>
-                <Link
-                  to="/locker"
-                  className="block w-full bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
-                >
-                  Enter Bronze Tier
-                </Link>
+                <button className="w-full mt-5 py-4 bg-gradient-to-r from-[#B8860B] to-[#FFD700] border-none rounded-[15px] text-black font-bold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+                  Lock for 7 Days
+                </button>
               </div>
             </div>
 
-            {/* Silver Tier */}
-            <div className="bg-gradient-to-br from-gray-400/10 via-gray-500/5 to-transparent border-2 border-gray-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-gray-400/20 to-transparent blur-2xl"></div>
-              <div className="relative z-10">
-                <div className="text-4xl text-center mb-4">🛡️</div>
-                <h4 className="text-xl font-bold text-gray-400 text-center mb-4">SILVER</h4>
-                <div className="text-center mb-6">
-                  <div className="text-lg font-semibold text-gray-400">90-179 Days</div>
-                  <div className="text-3xl font-black text-gray-300 my-2">1.5x Multiplier</div>
+            {/* Apostle Tier */}
+            <div className="bg-gradient-to-br from-[rgba(192,192,192,0.1)] to-[rgba(192,192,192,0.05)] border-2 border-[#C0C0C0] rounded-[20px] p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+              <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-gradient-radial from-[rgba(192,192,192,0.2)] to-transparent blur-[60px]"></div>
+              <div className="relative z-[1]">
+                <div className="text-5xl text-center mb-4">🛡️</div>
+                <h4 className="text-2xl text-[#C0C0C0] text-center mb-5">APOSTLE</h4>
+                <div className="text-center mb-5">
+                  <div className="text-xl font-semibold text-[#C0C0C0]">30 Days Lock</div>
+                  <div className="text-[2rem] font-black text-[#E5E5E5] my-2.5">50% APY</div>
                 </div>
-                <ul className="space-y-2 text-sm text-gray-300 mb-6">
-                  <li>✓ 1.5x rewards multiplier</li>
-                  <li>✓ Enhanced vault share</li>
-                  <li>✓ Silver role & privileges</li>
-                  <li>✓ Priority support</li>
-                </ul>
-                <Link
-                  to="/locker"
-                  className="block w-full bg-gradient-to-r from-gray-400 to-gray-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
-                >
-                  Ascend to Silver
-                </Link>
-              </div>
-            </div>
-
-            {/* Gold Tier */}
-            <div className="bg-gradient-to-br from-yellow-400/10 via-yellow-500/5 to-transparent border-2 border-yellow-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-400/20 to-transparent blur-2xl"></div>
-              <div className="relative z-10">
-                <div className="text-4xl text-center mb-4">👑</div>
-                <h4 className="text-xl font-bold text-yellow-400 text-center mb-4">GOLD</h4>
-                <div className="text-center mb-6">
-                  <div className="text-lg font-semibold text-yellow-400">180-364 Days</div>
-                  <div className="text-3xl font-black text-yellow-300 my-2">2x Multiplier</div>
-                </div>
-                <ul className="space-y-2 text-sm text-gray-300 mb-6">
-                  <li>✓ 2x rewards multiplier</li>
-                  <li>✓ Gold tier benefits</li>
+                <ul className="list-none p-0 text-[0.95rem] text-[#b0b0b0]">
+                  <li className="mb-2.5">✓ 3.3x rewards multiplier</li>
+                  <li className="mb-2.5">✓ Priority vault distributions</li>
+                  <li className="mb-2.5">✓ Apostle role & privileges</li>
                   <li>✓ Governance participation</li>
-                  <li>✓ Exclusive features access</li>
                 </ul>
-                <Link
-                  to="/locker"
-                  className="block w-full bg-gradient-to-r from-yellow-400 to-yellow-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
-                >
-                  Claim Gold Status
-                </Link>
+                <button className="w-full mt-5 py-4 bg-gradient-to-r from-[#C0C0C0] to-[#E5E5E5] border-none rounded-[15px] text-black font-bold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+                  Lock for 30 Days
+                </button>
               </div>
             </div>
 
-            {/* Diamond Tier */}
-            <div className="bg-gradient-to-br from-cyan-400/10 via-cyan-500/5 to-transparent border-2 border-cyan-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-cyan-400/20 to-transparent blur-2xl"></div>
-              <div className="relative z-10">
-                <div className="text-4xl text-center mb-4">💎</div>
-                <h4 className="text-xl font-bold text-cyan-400 text-center mb-4">DIAMOND</h4>
-                <div className="text-center mb-6">
-                  <div className="text-lg font-semibold text-cyan-400">1-3 Years</div>
-                  <div className="text-3xl font-black text-cyan-300 my-2">3x Multiplier</div>
+            {/* Prophet Tier */}
+            <div className="bg-gradient-to-br from-[rgba(255,215,0,0.1)] to-[rgba(255,215,0,0.05)] border-2 border-[#FFD700] rounded-[20px] p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+              <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-gradient-radial from-[rgba(255,215,0,0.2)] to-transparent blur-[60px]"></div>
+              <div className="relative z-[1]">
+                <div className="text-5xl text-center mb-4">👑</div>
+                <h4 className="text-2xl text-[#FFD700] text-center mb-5">PROPHET</h4>
+                <div className="text-center mb-5">
+                  <div className="text-xl font-semibold text-[#FFD700]">90 Days Lock</div>
+                  <div className="text-[2rem] font-black text-[#FFED4E] my-2.5">100% APY</div>
                 </div>
-                <ul className="space-y-2 text-sm text-gray-300 mb-6">
-                  <li>✓ 3x rewards multiplier</li>
-                  <li>✓ Diamond hand status</li>
-                  <li>✓ VIP community access</li>
-                  <li>✓ Special event invites</li>
+                <ul className="list-none p-0 text-[0.95rem] text-[#b0b0b0]">
+                  <li className="mb-2.5">✓ 6.6x rewards multiplier</li>
+                  <li className="mb-2.5">✓ Exclusive prophet benefits</li>
+                  <li className="mb-2.5">✓ Early access to features</li>
+                  <li>✓ Prophet council membership</li>
                 </ul>
-                <Link
-                  to="/locker"
-                  className="block w-full bg-gradient-to-r from-cyan-400 to-cyan-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
-                >
-                  Achieve Diamond
-                </Link>
+                <button className="w-full mt-5 py-4 bg-gradient-to-r from-[#FFD700] to-[#FFED4E] border-none rounded-[15px] text-black font-bold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+                  Lock for 90 Days
+                </button>
               </div>
             </div>
 
-            {/* Platinum Tier */}
-            <div className="bg-gradient-to-br from-purple-400/10 via-purple-500/5 to-transparent border-2 border-purple-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-purple-400/20 to-transparent blur-2xl"></div>
-              <div className="relative z-10">
-                <div className="text-4xl text-center mb-4">⭐</div>
-                <h4 className="text-xl font-bold text-purple-400 text-center mb-4">PLATINUM</h4>
-                <div className="text-center mb-6">
-                  <div className="text-lg font-semibold text-purple-400">3-4 Years</div>
-                  <div className="text-3xl font-black text-purple-300 my-2">5x Multiplier</div>
+            {/* Noah Tier */}
+            <div className="bg-gradient-to-br from-[rgba(0,255,255,0.1)] to-[rgba(0,128,255,0.05)] border-2 border-cyan-400 rounded-[20px] p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] shadow-[0_0_30px_rgba(0,255,255,0.3)]">
+              <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-gradient-radial from-[rgba(0,255,255,0.3)] to-transparent blur-[60px]"></div>
+              <div className="absolute top-2.5 right-2.5 bg-cyan-400 text-black py-1 px-4 rounded-[20px] text-xs font-bold">HIGHEST TIER</div>
+              <div className="relative z-[1]">
+                <div className="text-5xl text-center mb-4 drop-shadow-[0_0_20px_rgba(0,255,255,0.8)]">⚡</div>
+                <h4 className="text-2xl text-cyan-400 text-center mb-5 [text-shadow:0_0_20px_rgba(0,255,255,0.8)]">NOAH</h4>
+                <div className="text-center mb-5">
+                  <div className="text-xl font-semibold text-cyan-400">180 Days Lock</div>
+                  <div className="text-[2rem] font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent my-2.5">150% APY</div>
                 </div>
-                <ul className="space-y-2 text-sm text-gray-300 mb-6">
-                  <li>✓ 5x rewards multiplier</li>
-                  <li>✓ Platinum elite status</li>
-                  <li>✓ Development influence</li>
-                  <li>✓ Maximum benefits tier</li>
-                </ul>
-                <Link
-                  to="/locker"
-                  className="block w-full bg-gradient-to-r from-purple-400 to-purple-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform"
-                >
-                  Reach Platinum
-                </Link>
-              </div>
-            </div>
-
-            {/* Legendary Tier */}
-            <div className="bg-gradient-to-br from-orange-500/10 via-red-500/5 to-transparent border-2 border-orange-500/50 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform shadow-2xl shadow-orange-500/20">
-              <div className="absolute top-2 right-2 bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-bold">LEGENDARY</div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-orange-500/30 to-transparent blur-2xl"></div>
-              <div className="relative z-10">
-                <div className="text-4xl text-center mb-4 animate-pulse">⚡</div>
-                <h4 className="text-xl font-bold text-orange-400 text-center mb-4">LEGENDARY</h4>
-                <div className="text-center mb-6">
-                  <div className="text-lg font-semibold text-orange-400">4-5 Years</div>
-                  <div className="text-3xl font-black bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent my-2">8x Multiplier</div>
-                </div>
-                <ul className="space-y-2 text-sm text-gray-300 mb-6">
-                  <li>✓ 8x rewards multiplier</li>
-                  <li>✓ Legendary ARK status</li>
-                  <li>✓ Ultimate vault rewards</li>
-                  <li>✓ True Noah privileges</li>
+                <ul className="list-none p-0 text-[0.95rem] text-[#b0b0b0]">
+                  <li className="mb-2.5">✓ 10x rewards multiplier</li>
+                  <li className="mb-2.5">✓ Noah status & recognition</li>
+                  <li className="mb-2.5">✓ Maximum vault rewards</li>
+                  <li className="mb-2.5">✓ Exclusive Noah benefits</li>
                   <li>✓ Lead the new world</li>
                 </ul>
-                <Link
-                  to="/locker"
-                  className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform shadow-lg shadow-orange-500/30"
-                >
-                  Become Legendary
-                </Link>
+                <button className="w-full mt-5 py-4 bg-gradient-to-r from-cyan-400 to-blue-500 border-none rounded-[15px] text-black font-bold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 shadow-[0_5px_20px_rgba(0,255,255,0.3)]">
+                  Become Noah - Lock 180 Days
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Locker Rewards Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
-              <h4 className="text-lg font-bold text-cyan-400 mb-4">💰 Pending Locker Rewards</h4>
-              <p className="text-2xl font-black text-green-400">
-                {contractLoading ? (
-                  <span className="animate-pulse">Loading...</span>
-                ) : (
-                  `${contractData.lockerRewards.pending} ARK`
-                )}
-              </p>
-              <p className="text-sm text-gray-400 mt-2">Ready for distribution</p>
+          {/* Your Locks */}
+          <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.3)] rounded-[20px] p-10 text-center">
+            <h3 className="text-3xl mb-8 text-cyan-400">Your Sacred Locks</h3>
+            <div id="userLocks" className="text-[#666]">
+              <p>Connect wallet to view your locks</p>
             </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
-              <h4 className="text-lg font-bold text-cyan-400 mb-4">🎁 Total Distributed</h4>
-              <p className="text-2xl font-black text-blue-400">
-                {contractLoading ? (
-                  <span className="animate-pulse">Loading...</span>
-                ) : (
-                  `${contractData.lockerRewards.distributed} ARK`
-                )}
-              </p>
-              <p className="text-sm text-gray-400 mt-2">All-time rewards paid</p>
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="text-center">
-            <Link
-              to="/locker"
-              className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30"
+            <button 
+              onClick={connectWallet}
+              className="mt-5 py-4 px-8 bg-gradient-to-r from-cyan-400 to-blue-500 border-none rounded-[15px] text-black font-bold cursor-pointer"
             >
-              <Sparkles className="inline w-5 h-5 mr-2" />
-              Enter The Sacred Locker
-            </Link>
+              {walletConnected ? 'Connected' : 'Connect Wallet'}
+            </button>
           </div>
-        </div>
-      </section>
-
-      {/* Noah's Prophecy Section */}
-      <section className="relative z-10 py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            The Prophecy of Noah's ARK
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* The Flood */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <div className="text-4xl mb-4 text-center">🌊</div>
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Flood</h3>
-              <p className="text-gray-300 text-center">
-                As the crypto waters rise and projects sink, only those aboard the ARK shall survive the great cleansing.
-              </p>
-            </div>
-
-            {/* The Chosen */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <div className="text-4xl mb-4 text-center">⚡</div>
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">The Chosen</h3>
-              <p className="text-gray-300 text-center">
-                ARK holders are the chosen ones, guided by divine tokenomics to weather any storm in the crypto seas.
-              </p>
-            </div>
-
-            {/* New World */}
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6 hover:scale-105 transition-transform">
-              <div className="text-4xl mb-4 text-center">🕊️</div>
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">New World</h3>
-              <p className="text-gray-300 text-center">
-                When the waters recede, ARK passengers will rebuild the crypto world, stronger and more united than before.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Countdown Timer */}
-      <section className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-4xl font-black mb-8 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            The Great Flood Approaches
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
-              <div className="text-3xl font-black text-cyan-400">07</div>
-              <div className="text-sm text-gray-400">Days</div>
-            </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
-              <div className="text-3xl font-black text-cyan-400">14</div>
-              <div className="text-sm text-gray-400">Hours</div>
-            </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
-              <div className="text-3xl font-black text-cyan-400">32</div>
-              <div className="text-sm text-gray-400">Minutes</div>
-            </div>
-            <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-4">
-              <div className="text-3xl font-black text-cyan-400">18</div>
-              <div className="text-sm text-gray-400">Seconds</div>
-            </div>
-          </div>
-          <p className="text-gray-300 mt-6">Until the next major crypto correction. Board the ARK now!</p>
         </div>
       </section>
 
       {/* Chart Section */}
-      <section id="chart" className="relative z-10 py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            $ARK Price Chart
-          </h2>
-          <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8 min-h-[400px] flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-6xl mb-4">📈</div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-4">Interactive Chart Coming Soon</h3>
-              <p className="text-gray-300">Real-time price data and trading view integration</p>
-            </div>
-          </div>
+      <section id="chart" className="py-[100px] px-[5%] max-w-[1400px] mx-auto">
+        <h2 className="text-center text-5xl font-black mb-[60px] bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">Price Chart</h2>
+        <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(0,255,255,0.2)] rounded-[20px] p-10 h-[500px] relative">
+          <canvas id="priceChart" className="w-full h-full"></canvas>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 py-12 px-6 border-t border-cyan-500/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
-                ARK
-              </div>
-              <p className="text-gray-400 text-sm">
-                Salvation from the crypto flood. Join the ARK and be saved.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-cyan-400 mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#swap" className="hover:text-cyan-400 transition-colors">Swap</a></li>
-                <li><Link to="/locker" className="hover:text-cyan-400 transition-colors">Locker</Link></li>
-                <li><a href="#stats" className="hover:text-cyan-400 transition-colors">Stats</a></li>
-                <li><a href="#chart" className="hover:text-cyan-400 transition-colors">Chart</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-cyan-400 mb-4">Community</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Discord</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Telegram</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Medium</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-cyan-400 mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Whitepaper</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Audit</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Support</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-cyan-500/20 mt-8 pt-8 text-center text-gray-400 text-sm">
-            &copy; 2024 THE ARK. All rights reserved. Built for the faithful.
-          </div>
+      <footer className="py-[60px] px-[5%] bg-[rgba(0,0,0,0.5)] text-center">
+        <div className="flex justify-center gap-8 mb-8">
+          <a href="#" title="Twitter" className="w-[50px] h-[50px] bg-[rgba(255,255,255,0.1)] border border-[rgba(0,255,255,0.3)] rounded-full flex items-center justify-center no-underline text-cyan-400 text-xl transition-all duration-300 hover:bg-[rgba(0,255,255,0.2)] hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,255,255,0.3)]">
+            𝕏
+          </a>
+          <a href="#" title="Telegram" className="w-[50px] h-[50px] bg-[rgba(255,255,255,0.1)] border border-[rgba(0,255,255,0.3)] rounded-full flex items-center justify-center no-underline text-cyan-400 text-xl transition-all duration-300 hover:bg-[rgba(0,255,255,0.2)] hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,255,255,0.3)]">
+            ✈
+          </a>
+          <a href="#" title="Discord" className="w-[50px] h-[50px] bg-[rgba(255,255,255,0.1)] border border-[rgba(0,255,255,0.3)] rounded-full flex items-center justify-center no-underline text-cyan-400 text-xl transition-all duration-300 hover:bg-[rgba(0,255,255,0.2)] hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,255,255,0.3)]">
+            💬
+          </a>
+          <a href="#" title="GitHub" className="w-[50px] h-[50px] bg-[rgba(255,255,255,0.1)] border border-[rgba(0,255,255,0.3)] rounded-full flex items-center justify-center no-underline text-cyan-400 text-xl transition-all duration-300 hover:bg-[rgba(0,255,255,0.2)] hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,255,255,0.3)]">
+            ⚡
+          </a>
         </div>
+        <p className="text-[#666]">© 2025 ARK Token. All rights reserved.</p>
       </footer>
     </div>
   );

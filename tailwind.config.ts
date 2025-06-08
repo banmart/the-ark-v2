@@ -106,10 +106,6 @@ export default {
 					'0%': { transform: 'translateX(-100%)' },
 					'100%': { transform: 'translateX(100%)' }
 				},
-				'fade-in': {
-					'0%': { opacity: '0', transform: 'translateY(20px)' },
-					'100%': { opacity: '1', transform: 'translateY(0)' }
-				},
 				'heroFadeIn': {
 					'0%': { opacity: '0' },
 					'100%': { opacity: '1' }
@@ -121,11 +117,7 @@ export default {
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-				'gradient-conic': 'conic-gradient(var(--tw-gradient-stops))',
 				'grid': 'linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px)'
-			},
-			backgroundSize: {
-				'grid': '50px 50px'
 			}
 		}
 	},
