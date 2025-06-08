@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -84,11 +85,39 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'grid-move': {
+					'0%': { transform: 'translate(0, 0)' },
+					'100%': { transform: 'translate(50px, 50px)' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+					'50%': { transform: 'translate(50px, -50px) scale(1.2)' }
+				},
+				'rotate-3d': {
+					'0%': { transform: 'rotateY(0deg) rotateX(0deg)' },
+					'100%': { transform: 'rotateY(360deg) rotateX(360deg)' }
+				},
+				'gradient-shift': {
+					'0%, 100%': { filter: 'hue-rotate(0deg)' },
+					'50%': { filter: 'hue-rotate(30deg)' }
+				},
+				'scan': {
+					'0%': { transform: 'translateX(-100%)' },
+					'100%': { transform: 'translateX(100%)' }
+				},
+				'heroFadeIn': {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'grid': 'linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px)'
 			}
 		}
 	},
