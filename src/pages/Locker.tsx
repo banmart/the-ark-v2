@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useWallet } from '../hooks/useWallet';
 import Navigation from '../components/Navigation';
 import MobileDock from '../components/MobileDock';
+import Footer from '../components/Footer';
 
 interface LockPosition {
   id: number;
@@ -289,6 +290,9 @@ const Locker = () => {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
 
       {/* Mobile Dock */}
       <MobileDock />
