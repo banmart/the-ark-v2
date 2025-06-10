@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useWallet } from '../hooks/useWallet';
+import Navigation from '../components/Navigation';
 
 interface LockPosition {
   id: number;
@@ -13,11 +15,17 @@ interface LockPosition {
 }
 
 const Locker = () => {
-  const [walletConnected, setWalletConnected] = useState(false);
   const [lockAmount, setLockAmount] = useState('');
   const [lockDuration, setLockDuration] = useState(30);
   const [userLocks, setUserLocks] = useState<LockPosition[]>([]);
   const [pendingRewards, setPendingRewards] = useState(0);
+
+  const {
+    isConnected,
+    account,
+    isConnecting,
+    connectWallet,
+  } = useWallet();
 
   const lockTiers = [
     { name: 'Bronze', duration: 30, multiplier: '1x', color: '#CD7F32', minDays: 30, maxDays: 89 },
@@ -44,6 +52,14 @@ const Locker = () => {
     return { penalty, userReceives: amount - penalty };
   };
 
+  const handleConnectWallet = async () => {
+    try {
+      await connectWallet();
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Animated Background */}
@@ -55,26 +71,12 @@ const Locker = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/20">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <Link to="/" className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              ARK
-            </Link>
-            <div className="flex items-center gap-8">
-              <Link to="/#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</Link>
-              <Link to="/locker" className="text-cyan-400 font-semibold">Locker</Link>
-              <Link to="/#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</Link>
-              <button 
-                onClick={() => setWalletConnected(!walletConnected)}
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform"
-              >
-                {walletConnected ? 'Disconnect' : 'Connect Wallet'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation 
+        handleConnectWallet={handleConnectWallet}
+        isConnecting={isConnecting}
+        isConnected={isConnected}
+        account={account}
+      />
 
       <div className="relative z-10 pt-24">
         {/* Header */}
@@ -170,10 +172,10 @@ const Locker = () => {
                   </div>
 
                   <button
-                    disabled={!walletConnected || !lockAmount}
+                    disabled={!isConnected || !lockAmount}
                     className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
                   >
-                    {!walletConnected ? 'Connect Wallet First' : 'Lock Tokens'}
+                    {!isConnected ? 'Connect Wallet First' : 'Lock Tokens'}
                   </button>
                 </div>
               </div>
@@ -206,14 +208,14 @@ const Locker = () => {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold text-cyan-400">Pending Rewards</h2>
                   <button
-                    disabled={!walletConnected || pendingRewards === 0}
+                    disabled={!isConnected || pendingRewards === 0}
                     className="bg-gradient-to-r from-green-500 to-emerald-600 text-black font-bold px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
                   >
                     Claim
                   </button>
                 </div>
                 <div className="text-3xl font-black text-green-400">
-                  {walletConnected ? `${pendingRewards.toLocaleString()} ARK` : 'Connect wallet'}
+                  {isConnected ? `${pendingRewards.toLocaleString()} ARK` : 'Connect wallet'}
                 </div>
               </div>
 
@@ -221,7 +223,7 @@ const Locker = () => {
               <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8">
                 <h2 className="text-2xl font-bold mb-6 text-cyan-400">Your Active Locks</h2>
                 
-                {!walletConnected ? (
+                {!isConnected ? (
                   <div className="text-center py-8 text-gray-400">
                     Connect your wallet to view your locks
                   </div>
