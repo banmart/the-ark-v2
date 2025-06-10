@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from "@/components/ui/use-toast";
 import { useContractData } from '../hooks/useContractData';
@@ -190,7 +189,12 @@ const Index = () => {
       <Footer />
 
       {/* Mobile Dock */}
-      <MobileDock />
+      <MobileDock 
+        handleConnectWallet={handleConnectWallet}
+        isConnecting={isConnecting}
+        isConnected={isConnected}
+        account={account}
+      />
     </div>
   );
 };

@@ -1,10 +1,22 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Lock } from 'lucide-react';
+import { Home, Lock, Wallet } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
 
-const MobileDock = () => {
+interface MobileDockProps {
+  handleConnectWallet?: () => void;
+  isConnecting?: boolean;
+  isConnected?: boolean;
+  account?: string | null;
+}
+
+const MobileDock = ({ 
+  handleConnectWallet, 
+  isConnecting = false, 
+  isConnected = false, 
+  account 
+}: MobileDockProps) => {
   const isMobile = useIsMobile();
   const location = useLocation();
 
@@ -15,30 +27,49 @@ const MobileDock = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
       <div className="glass-nav border-t border-cyan-500/30 mx-4 mb-4 rounded-xl">
-        <div className="flex items-center justify-center gap-8 py-4">
+        <div className="flex items-center justify-center gap-4 py-4">
           <Link 
             to="/" 
-            className={`flex flex-col items-center gap-1 px-6 py-2 rounded-lg transition-all duration-200 ${
+            onClick={() => window.scrollTo(0, 0)}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all duration-200 ${
               isActive('/') 
                 ? 'bg-cyan-500/20 text-cyan-400' 
                 : 'text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10'
             }`}
           >
-            <Home size={20} />
+            <Home size={18} />
             <span className="text-xs font-medium">Home</span>
           </Link>
           
           <Link 
             to="/locker" 
-            className={`flex flex-col items-center gap-1 px-6 py-2 rounded-lg transition-all duration-200 ${
+            onClick={() => window.scrollTo(0, 0)}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all duration-200 ${
               isActive('/locker') 
                 ? 'bg-cyan-500/20 text-cyan-400' 
                 : 'text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10'
             }`}
           >
-            <Lock size={20} />
+            <Lock size={18} />
             <span className="text-xs font-medium">Locker</span>
           </Link>
+
+          {handleConnectWallet && (
+            <button 
+              onClick={handleConnectWallet}
+              disabled={isConnecting}
+              className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all duration-200 ${
+                isConnected 
+                  ? 'bg-green-500/20 text-green-400' 
+                  : 'text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10'
+              } disabled:opacity-50`}
+            >
+              <Wallet size={18} />
+              <span className="text-xs font-medium">
+                {isConnecting ? 'Connecting...' : isConnected ? 'Connected' : 'Wallet'}
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>

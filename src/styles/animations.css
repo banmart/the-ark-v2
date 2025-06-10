@@ -19,12 +19,20 @@
   /* Floating Orbs */
   .floating-orb {
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent);
     filter: blur(40px);
     animation: float 15s ease-in-out infinite;
+  }
+
+  /* Responsive orb sizing */
+  @media (min-width: 768px) {
+    .floating-orb {
+      width: 300px;
+      height: 300px;
+    }
   }
 
   .orb1 { 

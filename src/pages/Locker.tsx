@@ -125,7 +125,12 @@ const Locker = () => {
       <Footer />
 
       {/* Mobile Dock */}
-      <MobileDock />
+      <MobileDock 
+        handleConnectWallet={handleConnectWallet}
+        isConnecting={isConnecting}
+        isConnected={isConnected}
+        account={account}
+      />
     </div>
   );
 };
