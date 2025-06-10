@@ -84,6 +84,11 @@
     background-position: center;
     background-repeat: no-repeat;
   }
+
+  /* Cinematic Hero Background Animation */
+  .hero-bg-animated {
+    animation: heroBackgroundFadeIn 2.5s ease-out;
+  }
 }
 
 /* Keyframes */
@@ -120,4 +125,15 @@
 @keyframes heroFadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
+}
+
+@keyframes heroBackgroundFadeIn {
+  0% { 
+    opacity: 0; 
+    transform: scale(1.05);
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
 }
