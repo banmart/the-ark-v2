@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useWallet } from '../hooks/useWallet';
 import Navigation from '../components/Navigation';
+import MobileDock from '../components/MobileDock';
 
 interface LockPosition {
   id: number;
@@ -289,6 +289,9 @@ const Locker = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Dock */}
+      <MobileDock />
     </div>
   );
 };

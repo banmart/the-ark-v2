@@ -7,6 +7,7 @@ import { useSwap } from '../hooks/useSwap';
 import OnboardingModal from '../components/OnboardingModal';
 import AnimatedBackground from '../components/AnimatedBackground';
 import Navigation from '../components/Navigation';
+import MobileDock from '../components/MobileDock';
 import HeroSection from '../components/HeroSection';
 import ContractAddressSection from '../components/ContractAddressSection';
 import SwapSection from '../components/SwapSection';
@@ -187,6 +188,9 @@ const Index = () => {
 
       {/* Footer */}
       <Footer />
+
+      {/* Mobile Dock */}
+      <MobileDock />
     </div>
   );
 };
