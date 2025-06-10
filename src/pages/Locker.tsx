@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { useWallet } from '../hooks/useWallet';
 import Navigation from '../components/Navigation';
 import MobileDock from '../components/MobileDock';
 import Footer from '../components/Footer';
+import AnimatedBackground from '../components/AnimatedBackground';
 import ProtocolStats from '../components/locker/ProtocolStats';
 import LockInterface from '../components/locker/LockInterface';
 import TierBenefits from '../components/locker/TierBenefits';
@@ -68,12 +68,7 @@ const Locker = () => {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Animated Background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900/50 to-black"></div>
-        <div className="absolute inset-0 bg-grid animate-grid-move opacity-20"></div>
-        <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '5s' }}></div>
-      </div>
+      <AnimatedBackground />
 
       {/* Navigation */}
       <Navigation 
