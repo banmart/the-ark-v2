@@ -1,10 +1,9 @@
-
 import React from 'react';
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-20 px-6">
-      <div className="max-w-7xl mx-auto">
+    <section id="features" className="relative z-30 py-20 px-6">
+      <div className="max-w-7xl mx-auto relative z-10">
         <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
           The Four Pillars of Salvation
         </h2>

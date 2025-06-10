@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles } from "lucide-react";
@@ -10,8 +9,8 @@ interface LockerTiersSectionProps {
 
 const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectionProps) => {
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
+      <div className="max-w-7xl mx-auto relative z-10">
         <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
           🔒 The Sacred Locker Tiers 🔒
         </h2>
@@ -21,8 +20,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
         </p>
         
         {/* 6-tier system */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 relative z-10">
           {/* Bronze Tier */}
           <div className="bg-gradient-to-br from-yellow-600/10 via-yellow-700/5 to-transparent border-2 border-yellow-600/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-600/20 to-transparent blur-2xl"></div>
@@ -39,7 +37,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
                 <li>✓ Bronze role in community</li>
                 <li>✓ Protected from the flood</li>
               </ul>
-              <Link to="/locker" className="block w-full bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+              <Link to="/locker" className="block w-full bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-10">
                 Enter Bronze Tier
               </Link>
             </div>
@@ -61,7 +59,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
                 <li>✓ Silver role & privileges</li>
                 <li>✓ Priority support</li>
               </ul>
-              <Link to="/locker" className="block w-full bg-gradient-to-r from-gray-400 to-gray-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+              <Link to="/locker" className="block w-full bg-gradient-to-r from-gray-400 to-gray-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-10">
                 Ascend to Silver
               </Link>
             </div>
@@ -83,7 +81,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
                 <li>✓ Governance participation</li>
                 <li>✓ Exclusive features access</li>
               </ul>
-              <Link to="/locker" className="block w-full bg-gradient-to-r from-yellow-400 to-yellow-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+              <Link to="/locker" className="block w-full bg-gradient-to-r from-yellow-400 to-yellow-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-10">
                 Claim Gold Status
               </Link>
             </div>
@@ -105,7 +103,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
                 <li>✓ VIP community access</li>
                 <li>✓ Special event invites</li>
               </ul>
-              <Link to="/locker" className="block w-full bg-gradient-to-r from-cyan-400 to-cyan-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+              <Link to="/locker" className="block w-full bg-gradient-to-r from-cyan-400 to-cyan-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-10">
                 Achieve Diamond
               </Link>
             </div>
@@ -127,7 +125,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
                 <li>✓ Development influence</li>
                 <li>✓ Maximum benefits tier</li>
               </ul>
-              <Link to="/locker" className="block w-full bg-gradient-to-r from-purple-400 to-purple-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform">
+              <Link to="/locker" className="block w-full bg-gradient-to-r from-purple-400 to-purple-300 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-10">
                 Reach Platinum
               </Link>
             </div>
@@ -151,7 +149,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
                 <li>✓ True Noah privileges</li>
                 <li>✓ Lead the new world</li>
               </ul>
-              <Link to="/locker" className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform shadow-lg shadow-orange-500/30">
+              <Link to="/locker" className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform shadow-lg shadow-orange-500/30 relative z-10">
                 Become Legendary
               </Link>
             </div>
@@ -159,7 +157,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
         </div>
 
         {/* Locker Rewards Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative z-10">
           <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all">
             <h4 className="text-lg font-bold text-cyan-400 mb-4">💰 Pending Locker Rewards</h4>
             <p className="text-2xl font-black text-green-400">
@@ -177,8 +175,8 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
         </div>
 
         {/* Call to Action */}
-        <div className="text-center">
-          <Link to="/locker" className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30">
+        <div className="text-center relative z-10">
+          <Link to="/locker" className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 relative z-10">
             <Sparkles className="inline w-5 h-5 mr-2" />
             Enter The Sacred Locker
           </Link>
