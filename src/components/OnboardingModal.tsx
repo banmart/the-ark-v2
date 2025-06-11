@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -198,7 +197,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
 
           <Button
             onClick={handleNext}
-            className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-bold flex items-center gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[40px]"
+            className="bg-cyan-500 text-black font-bold flex items-center gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[40px]"
           >
             {currentStep === totalSteps ? 'Get Started' : 'Next'}
             <ArrowRight size={14} />

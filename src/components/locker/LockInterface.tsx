@@ -86,7 +86,7 @@ const LockInterface = ({
 
         <button
           disabled={!isConnected || !lockAmount}
-          className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+          className="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
         >
           {!isConnected ? 'Connect Wallet First' : 'Lock Tokens'}
         </button>

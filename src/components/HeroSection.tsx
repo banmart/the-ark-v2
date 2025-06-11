@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight } from "lucide-react";
 
@@ -29,7 +28,7 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
               The flood is coming. While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?
             </p>
             <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
-              <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
+              <button onClick={() => copyToClipboard(contractAddress)} className="bg-cyan-500 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
                 Buy ARK
                 <ArrowRight size={18} />
               </button>
@@ -46,7 +45,7 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
           <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
             <div className="relative w-96 h-96 flex items-center justify-center">
               {/* Clean ❍ Symbol - Keep exactly as is */}
-              <div className="text-[24rem] font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[rotate-3d_15s_linear_infinite] relative z-10">
+              <div className="text-[24rem] font-black text-cyan-400 animate-[rotate-3d_15s_linear_infinite] relative z-10">
                 ❍
               </div>
             </div>

@@ -176,7 +176,7 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
 
         {/* Call to Action */}
         <div className="text-center relative z-10">
-          <Link to="/locker" className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 relative z-10">
+          <Link to="/locker" className="inline-block bg-cyan-500 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 relative z-10">
             <Sparkles className="inline w-5 h-5 mr-2" />
             Enter The Sacred Locker
           </Link>
