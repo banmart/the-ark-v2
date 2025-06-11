@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -16,13 +17,20 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
         <div className="flex justify-between items-center">
           <Link 
             to="/" 
+            onClick={() => window.scrollTo(0, 0)}
             className="text-2xl megrim-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform"
           >
             ARK ❍
           </Link>
           <div className="hidden md:flex items-center gap-8">
             <a href="#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</a>
-            <Link to="/locker" className="text-gray-300 hover:text-cyan-400 transition-colors">Locker</Link>
+            <Link 
+              to="/locker" 
+              onClick={() => window.scrollTo(0, 0)}
+              className="text-gray-300 hover:text-cyan-400 transition-colors"
+            >
+              Locker
+            </Link>
             <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
             <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
             <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
@@ -41,3 +49,4 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
 };
 
 export default Navigation;
+
