@@ -34,7 +34,7 @@ export const createRenderer = (
     ctx.fillRect(0, 0, width, height);
     
     // Calculate atmosphere hue
-    const baseHue = 217;
+    const baseHue = 188; // Cyan-500 hue
     const atmosphereHue = baseHue + params.atmosphereShift * 20;
     
     // Draw glitched orb
@@ -73,7 +73,7 @@ export const createRenderer = (
             }
             
             const alpha = Math.max(0.3, brightness);
-            ctx.fillStyle = `rgba(59, 130, 246, ${alpha})`; // blue-500 RGB equivalent
+            ctx.fillStyle = `rgba(34, 211, 238, ${alpha})`; // cyan-500 RGB equivalent
             ctx.fillText(char, x, y);
           }
         }

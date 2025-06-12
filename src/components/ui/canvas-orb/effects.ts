@@ -13,11 +13,11 @@ export const createAtmosphericBackground = (
     centerX, centerY, radius * 0.8
   );
   
-  const baseHue = 217; // Blue-500 hue
+  const baseHue = 188; // Cyan-500 hue
   const atmosphereHue = baseHue + params.atmosphereShift * 20;
   
-  bgGradient.addColorStop(0, `hsla(${atmosphereHue}, 91%, 70%, 0.1)`);
-  bgGradient.addColorStop(0.6, `hsla(${atmosphereHue - 10}, 80%, 50%, 0.05)`);
+  bgGradient.addColorStop(0, `hsla(${atmosphereHue}, 94%, 70%, 0.1)`);
+  bgGradient.addColorStop(0.6, `hsla(${atmosphereHue - 10}, 85%, 50%, 0.05)`);
   bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
   
   return bgGradient;
@@ -44,39 +44,39 @@ export const drawGlitchedOrb = (
     ctx.scale(glitchScale, 1 / glitchScale);
   }
   
-  // Main orb gradient with electric blue colors
+  // Main orb gradient with cyan colors
   const orbGradient = ctx.createRadialGradient(
     centerX, centerY, 0,
     centerX, centerY, radius * 1.5
   );
   
-  orbGradient.addColorStop(0, `hsla(213, 94%, 85%, 0.9)`);
-  orbGradient.addColorStop(0.2, `hsla(213, 94%, 68%, 0.7)`);
-  orbGradient.addColorStop(0.5, `hsla(217, 91%, 60%, 0.4)`);
+  orbGradient.addColorStop(0, `hsla(188, 94%, 85%, 0.9)`);
+  orbGradient.addColorStop(0.2, `hsla(188, 94%, 68%, 0.7)`);
+  orbGradient.addColorStop(0.5, `hsla(188, 80%, 50%, 0.4)`);
   orbGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
   
   ctx.fillStyle = orbGradient;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
   
-  // Bright electric blue center circle
+  // Bright cyan center circle
   const centerRadius = radius * 0.3;
-  ctx.fillStyle = `hsla(213, 94%, 90%, 0.8)`;
+  ctx.fillStyle = `hsla(188, 94%, 90%, 0.8)`;
   ctx.beginPath();
   ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
   ctx.fill();
   
-  // Electric blue/purple glitch effects
+  // Cyan/magenta glitch effects
   if (shouldGlitch) {
     ctx.globalCompositeOperation = 'screen';
     
-    // Electric blue glitch
-    ctx.fillStyle = `hsla(213, 100%, 68%, ${0.6 * glitchIntensity})`;
+    // Cyan glitch
+    ctx.fillStyle = `hsla(188, 100%, 68%, ${0.6 * glitchIntensity})`;
     ctx.beginPath();
     ctx.arc(centerX + glitchOffset * 0.5, centerY, centerRadius, 0, Math.PI * 2);
     ctx.fill();
     
-    // Purple glitch for contrast
-    ctx.fillStyle = `hsla(270, 100%, 65%, ${0.5 * glitchIntensity})`;
+    // Magenta glitch for contrast
+    ctx.fillStyle = `hsla(300, 100%, 65%, ${0.5 * glitchIntensity})`;
     ctx.beginPath();
     ctx.arc(centerX - glitchOffset * 0.5, centerY, centerRadius, 0, Math.PI * 2);
     ctx.fill();
@@ -84,8 +84,8 @@ export const drawGlitchedOrb = (
     ctx.globalCompositeOperation = 'source-over';
   }
   
-  // Outer ring with electric blue color
-  ctx.strokeStyle = `hsla(217, 91%, 60%, 0.8)`;
+  // Outer ring with cyan color
+  ctx.strokeStyle = `hsla(188, 94%, 60%, 0.8)`;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius * 1.2, 0, Math.PI * 2);
