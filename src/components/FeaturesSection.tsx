@@ -1,4 +1,6 @@
+
 import React from 'react';
+import CustomIcon from './ui/CustomIcon';
 
 const FeaturesSection = () => {
   return (
@@ -13,7 +15,9 @@ const FeaturesSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Scarcity */}
           <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
-            <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🔥</div>
+            <div className="flex justify-center mb-4">
+              <CustomIcon name="fire" size={48} className="group-hover:scale-110 transition-transform" />
+            </div>
             <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Scarcity</h3>
             <p className="text-gray-300 text-center">
               Limited supply with continuous burns on transactions creating deflationary pressure.
@@ -22,7 +26,9 @@ const FeaturesSection = () => {
 
           {/* Rewards */}
           <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
-            <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">💰</div>
+            <div className="flex justify-center mb-4">
+              <CustomIcon name="money" size={48} className="group-hover:scale-110 transition-transform" />
+            </div>
             <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Rewards</h3>
             <p className="text-gray-300 text-center">
               Vault rewards and reflections for loyal holders who believe in the mission.
@@ -31,7 +37,9 @@ const FeaturesSection = () => {
 
           {/* Community */}
           <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
-            <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🫂</div>
+            <div className="flex justify-center mb-4">
+              <CustomIcon name="users" size={48} className="group-hover:scale-110 transition-transform" />
+            </div>
             <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Community</h3>
             <p className="text-gray-300 text-center">
               A strong, supportive community driving the project forward together.
@@ -40,7 +48,9 @@ const FeaturesSection = () => {
 
           {/* Security */}
           <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all group relative scan-effect overflow-hidden">
-            <div className="text-4xl mb-4 text-cyan-400 text-center group-hover:animate-bounce">🛡️</div>
+            <div className="flex justify-center mb-4">
+              <CustomIcon name="shield" size={48} className="group-hover:scale-110 transition-transform" />
+            </div>
             <h3 className="text-2xl font-bold mb-4 text-cyan-400 text-center">Security</h3>
             <p className="text-gray-300 text-center">
               Audited contract ensuring safety and transparency for all passengers.

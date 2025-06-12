@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles } from "lucide-react";
+import CustomIcon from './ui/CustomIcon';
 
 interface LockerTiersSectionProps {
   contractData: any;
@@ -12,7 +14,9 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
     <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
       <div className="max-w-7xl mx-auto relative z-10">
         <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-          🔒 The Sacred Locker Tiers 🔒
+          <CustomIcon name="lock" size={40} className="inline mr-2" />
+          The Sacred Locker Tiers
+          <CustomIcon name="lock" size={40} className="inline ml-2" />
         </h2>
         <p className="text-xl text-gray-300 text-center max-w-4xl mx-auto mb-16">
           Lock your ARK tokens and ascend through divine tiers. The longer you lock, the greater your blessings. 
@@ -25,7 +29,9 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
           <div className="bg-gradient-to-br from-yellow-600/10 via-yellow-700/5 to-transparent border-2 border-yellow-600/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-600/20 to-transparent blur-2xl"></div>
             <div className="relative z-10">
-              <div className="text-4xl text-center mb-4">⛵</div>
+              <div className="flex justify-center mb-4">
+                <CustomIcon name="ship" size={48} className="group-hover:scale-110 transition-transform" />
+              </div>
               <h4 className="text-xl font-bold text-yellow-600 text-center mb-4">BRONZE</h4>
               <div className="text-center mb-6">
                 <div className="text-lg font-semibold text-yellow-600">30-89 Days</div>
@@ -47,7 +53,9 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
           <div className="bg-gradient-to-br from-gray-400/10 via-gray-500/5 to-transparent border-2 border-gray-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-gray-400/20 to-transparent blur-2xl"></div>
             <div className="relative z-10">
-              <div className="text-4xl text-center mb-4">🛡️</div>
+              <div className="flex justify-center mb-4">
+                <CustomIcon name="shield" size={48} className="group-hover:scale-110 transition-transform" />
+              </div>
               <h4 className="text-xl font-bold text-gray-400 text-center mb-4">SILVER</h4>
               <div className="text-center mb-6">
                 <div className="text-lg font-semibold text-gray-400">90-179 Days</div>
@@ -69,7 +77,9 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
           <div className="bg-gradient-to-br from-yellow-400/10 via-yellow-500/5 to-transparent border-2 border-yellow-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-400/20 to-transparent blur-2xl"></div>
             <div className="relative z-10">
-              <div className="text-4xl text-center mb-4">👑</div>
+              <div className="flex justify-center mb-4">
+                <CustomIcon name="crown" size={48} className="group-hover:scale-110 transition-transform" />
+              </div>
               <h4 className="text-xl font-bold text-yellow-400 text-center mb-4">GOLD</h4>
               <div className="text-center mb-6">
                 <div className="text-lg font-semibold text-yellow-400">180-364 Days</div>
@@ -91,7 +101,9 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
           <div className="bg-gradient-to-br from-cyan-400/10 via-cyan-500/5 to-transparent border-2 border-cyan-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-cyan-400/20 to-transparent blur-2xl"></div>
             <div className="relative z-10">
-              <div className="text-4xl text-center mb-4">💎</div>
+              <div className="flex justify-center mb-4">
+                <CustomIcon name="diamond" size={48} className="group-hover:scale-110 transition-transform" />
+              </div>
               <h4 className="text-xl font-bold text-cyan-400 text-center mb-4">DIAMOND</h4>
               <div className="text-center mb-6">
                 <div className="text-lg font-semibold text-cyan-400">1-3 Years</div>
@@ -113,7 +125,9 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
           <div className="bg-gradient-to-br from-purple-400/10 via-purple-500/5 to-transparent border-2 border-purple-400/30 rounded-xl p-8 relative overflow-hidden group hover:scale-105 transition-transform">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-purple-400/20 to-transparent blur-2xl"></div>
             <div className="relative z-10">
-              <div className="text-4xl text-center mb-4">⭐</div>
+              <div className="flex justify-center mb-4">
+                <CustomIcon name="star" size={48} className="group-hover:scale-110 transition-transform" />
+              </div>
               <h4 className="text-xl font-bold text-purple-400 text-center mb-4">PLATINUM</h4>
               <div className="text-center mb-6">
                 <div className="text-lg font-semibold text-purple-400">3-4 Years</div>
@@ -136,7 +150,9 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
             <div className="absolute top-2 right-2 bg-orange-500 text-black px-3 py-1 rounded-full text-xs font-bold">LEGENDARY</div>
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-orange-500/30 to-transparent blur-2xl"></div>
             <div className="relative z-10">
-              <div className="text-4xl text-center mb-4 animate-pulse">⚡</div>
+              <div className="flex justify-center mb-4">
+                <CustomIcon name="lightning" size={48} className="group-hover:scale-110 transition-transform animate-pulse" />
+              </div>
               <h4 className="text-xl font-bold text-orange-400 text-center mb-4">LEGENDARY</h4>
               <div className="text-center mb-6">
                 <div className="text-lg font-semibold text-orange-400">4-5 Years</div>
@@ -159,14 +175,20 @@ const LockerTiersSection = ({ contractData, contractLoading }: LockerTiersSectio
         {/* Locker Rewards Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative z-10">
           <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all">
-            <h4 className="text-lg font-bold text-cyan-400 mb-4">💰 Pending Locker Rewards</h4>
+            <h4 className="text-lg font-bold text-cyan-400 mb-4 flex items-center">
+              <CustomIcon name="money" size={24} className="mr-2" />
+              Pending Locker Rewards
+            </h4>
             <p className="text-2xl font-black text-green-400">
               {contractLoading ? <span className="animate-pulse">Loading...</span> : `${contractData.lockerRewards.pending} ARK`}
             </p>
             <p className="text-sm text-gray-400 mt-2">Ready for distribution</p>
           </div>
           <div className="glass-card rounded-xl p-6 hover:glass-strong transition-all">
-            <h4 className="text-lg font-bold text-cyan-400 mb-4">🎁 Total Distributed</h4>
+            <h4 className="text-lg font-bold text-cyan-400 mb-4 flex items-center">
+              <CustomIcon name="gift" size={24} className="mr-2" />
+              Total Distributed
+            </h4>
             <p className="text-2xl font-black text-blue-400">
               {contractLoading ? <span className="animate-pulse">Loading...</span> : `${contractData.lockerRewards.distributed} ARK`}
             </p>

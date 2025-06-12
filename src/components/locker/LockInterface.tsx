@@ -1,5 +1,6 @@
 
 import React from 'react';
+import CustomIcon from '../ui/CustomIcon';
 
 interface LockTier {
   name: string;
@@ -29,6 +30,18 @@ const LockInterface = ({
   getCurrentTier,
   isConnected
 }: LockInterfaceProps) => {
+  const getTierIcon = (tierName: string) => {
+    switch (tierName) {
+      case 'Bronze': return 'ship';
+      case 'Silver': return 'shield';
+      case 'Gold': return 'crown';
+      case 'Diamond': return 'diamond';
+      case 'Platinum': return 'star';
+      case 'Legendary': return 'lightning';
+      default: return 'ship';
+    }
+  };
+
   return (
     <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8">
       <h2 className="text-2xl font-bold mb-6 text-cyan-400">Lock Tokens</h2>
@@ -73,13 +86,12 @@ const LockInterface = ({
                 {getCurrentTier(lockDuration).multiplier} reward multiplier
               </div>
             </div>
-            <div className="text-2xl">
-              {getCurrentTier(lockDuration).name === 'Bronze' && '⛵'}
-              {getCurrentTier(lockDuration).name === 'Silver' && '🛡️'}
-              {getCurrentTier(lockDuration).name === 'Gold' && '👑'}
-              {getCurrentTier(lockDuration).name === 'Diamond' && '💎'}
-              {getCurrentTier(lockDuration).name === 'Platinum' && '⭐'}
-              {getCurrentTier(lockDuration).name === 'Legendary' && '⚡'}
+            <div className="flex justify-center">
+              <CustomIcon 
+                name={getTierIcon(getCurrentTier(lockDuration).name)} 
+                size={32} 
+                className="hover:scale-110 transition-transform" 
+              />
             </div>
           </div>
         </div>
