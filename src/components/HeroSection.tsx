@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { ArrowRight } from "lucide-react";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
@@ -8,6 +10,8 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: HeroSectionProps) => {
+  const heroText = "The flood is coming. While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?";
+
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
       backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)), url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
@@ -24,9 +28,14 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white animate-[fade-in_1s_ease-out_0.2s_both]">
               Salvation from the flood
             </h2>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
-              The flood is coming. While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?
-            </p>
+            <div className="mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
+              <TextGenerateEffect 
+                words={heroText}
+                duration={2}
+                filter={false}
+                className="text-gray-300"
+              />
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
               <button onClick={() => copyToClipboard(contractAddress)} className="bg-cyan-500 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
                 Buy ARK
