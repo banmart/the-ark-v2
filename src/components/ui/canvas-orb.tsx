@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 
@@ -80,37 +79,40 @@ export const CanvasOrb = () => {
         ctx.scale(glitchScale, 1 / glitchScale);
       }
       
-      // Main orb gradient
+      // Main orb gradient with cyan/teal colors
       const orbGradient = ctx.createRadialGradient(
         centerX, centerY, 0,
         centerX, centerY, radius * 1.5
       );
       
-      orbGradient.addColorStop(0, `hsla(${hue + 10}, 100%, 95%, 0.9)`);
-      orbGradient.addColorStop(0.2, `hsla(${hue + 20}, 90%, 80%, 0.7)`);
-      orbGradient.addColorStop(0.5, `hsla(${hue}, 70%, 50%, 0.4)`);
+      // Using cyan-400 to teal-500 gradient
+      orbGradient.addColorStop(0, `hsla(187, 85%, 85%, 0.9)`); // Bright cyan core
+      orbGradient.addColorStop(0.2, `hsla(187, 85%, 65%, 0.7)`); // Cyan-400
+      orbGradient.addColorStop(0.5, `hsla(173, 80%, 50%, 0.4)`); // Teal-500
       orbGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
       
       ctx.fillStyle = orbGradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Bright center circle
+      // Bright cyan center circle
       const centerRadius = radius * 0.3;
-      ctx.fillStyle = `hsla(${hue + 20}, 100%, 95%, 0.8)`;
+      ctx.fillStyle = `hsla(187, 85%, 90%, 0.8)`; // Bright cyan center
       ctx.beginPath();
       ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
       ctx.fill();
       
-      // Glitch effects
+      // Cyan/magenta glitch effects
       if (shouldGlitch) {
         ctx.globalCompositeOperation = 'screen';
         
-        ctx.fillStyle = `hsla(100, 100%, 50%, ${0.6 * glitchIntensity})`;
+        // Cyan glitch
+        ctx.fillStyle = `hsla(187, 100%, 60%, ${0.6 * glitchIntensity})`;
         ctx.beginPath();
         ctx.arc(centerX + glitchOffset * 0.5, centerY, centerRadius, 0, Math.PI * 2);
         ctx.fill();
         
-        ctx.fillStyle = `hsla(240, 100%, 50%, ${0.5 * glitchIntensity})`;
+        // Magenta glitch for contrast
+        ctx.fillStyle = `hsla(300, 100%, 60%, ${0.5 * glitchIntensity})`;
         ctx.beginPath();
         ctx.arc(centerX - glitchOffset * 0.5, centerY, centerRadius, 0, Math.PI * 2);
         ctx.fill();
@@ -118,8 +120,8 @@ export const CanvasOrb = () => {
         ctx.globalCompositeOperation = 'source-over';
       }
       
-      // Outer ring
-      ctx.strokeStyle = `hsla(${hue + 20}, 80%, 70%, 0.6)`;
+      // Outer ring with cyan color
+      ctx.strokeStyle = `hsla(188, 94%, 60%, 0.8)`; // Cyan-500
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius * 1.2, 0, Math.PI * 2);
@@ -141,22 +143,25 @@ export const CanvasOrb = () => {
       const centerY = height / 2;
       const radius = Math.min(width, height) * 0.35; // Increased from 0.25 to 0.35
       
-      // Minimal atmospheric background (much more subtle)
+      // Cyan atmospheric background
       const bgGradient = ctx.createRadialGradient(
         centerX, centerY, 0,
         centerX, centerY, radius * 0.8
       );
       
-      const hue = 180 + params.atmosphereShift * 60;
-      bgGradient.addColorStop(0, `hsla(${hue + 40}, 80%, 60%, 0.1)`);
-      bgGradient.addColorStop(0.6, `hsla(${hue}, 60%, 40%, 0.05)`);
+      // Base cyan/teal hue instead of variable hue
+      const baseHue = 187; // Cyan-400 hue
+      const atmosphereHue = baseHue + params.atmosphereShift * 20; // Subtle shift within cyan range
+      
+      bgGradient.addColorStop(0, `hsla(${atmosphereHue}, 80%, 70%, 0.1)`);
+      bgGradient.addColorStop(0.6, `hsla(${atmosphereHue - 10}, 60%, 50%, 0.05)`);
       bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
       
       ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, width, height);
       
       // Draw glitched orb
-      drawGlitchedOrb(centerX, centerY, radius, hue, params.glitchIntensity);
+      drawGlitchedOrb(centerX, centerY, radius, atmosphereHue, params.glitchIntensity);
       
       // ASCII sphere particles (optimized)
       ctx.font = '10px monospace'; // Increased font size
@@ -192,7 +197,8 @@ export const CanvasOrb = () => {
               }
               
               const alpha = Math.max(0.3, brightness);
-              ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+              // Cyan-colored particles instead of white
+              ctx.fillStyle = `rgba(34, 211, 238, ${alpha})`; // Cyan-400 RGB
               ctx.fillText(char, x, y);
             }
           }
