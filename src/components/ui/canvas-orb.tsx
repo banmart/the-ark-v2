@@ -51,8 +51,8 @@ export const CanvasOrb = () => {
       repeatDelay: Math.random() * 3 + 1
     });
 
-    // Film grain generation
-    const generateFilmGrain = (width: number, height: number, intensity = 0.15) => {
+    // Film grain generation (reduced intensity)
+    const generateFilmGrain = (width: number, height: number, intensity = 0.05) => {
       const imageData = grainCtx.createImageData(width, height);
       const data = imageData.data;
       
@@ -61,7 +61,7 @@ export const CanvasOrb = () => {
         data[i] = Math.max(0, Math.min(255, 128 + grain));
         data[i + 1] = Math.max(0, Math.min(255, 128 + grain));
         data[i + 2] = Math.max(0, Math.min(255, 128 + grain));
-        data[i + 3] = Math.abs(grain) * 3;
+        data[i + 3] = Math.abs(grain) * 2;
       }
       
       return imageData;
@@ -134,24 +134,23 @@ export const CanvasOrb = () => {
       const width = canvas.width = grainCanvas.width = 384;
       const height = canvas.height = grainCanvas.height = 384;
       
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, width, height);
+      // Clear canvas to make it transparent
+      ctx.clearRect(0, 0, width, height);
       
       const centerX = width / 2;
       const centerY = height / 2;
-      const radius = Math.min(width, height) * 0.25;
+      const radius = Math.min(width, height) * 0.35; // Increased from 0.25 to 0.35
       
-      // Atmospheric background
+      // Minimal atmospheric background (much more subtle)
       const bgGradient = ctx.createRadialGradient(
-        centerX, centerY - 25, 0,
-        centerX, centerY, Math.max(width, height) * 0.6
+        centerX, centerY, 0,
+        centerX, centerY, radius * 0.8
       );
       
       const hue = 180 + params.atmosphereShift * 60;
-      bgGradient.addColorStop(0, `hsla(${hue + 40}, 80%, 60%, 0.3)`);
-      bgGradient.addColorStop(0.3, `hsla(${hue}, 60%, 40%, 0.2)`);
-      bgGradient.addColorStop(0.6, `hsla(${hue - 20}, 40%, 20%, 0.1)`);
-      bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
+      bgGradient.addColorStop(0, `hsla(${hue + 40}, 80%, 60%, 0.1)`);
+      bgGradient.addColorStop(0.6, `hsla(${hue}, 60%, 40%, 0.05)`);
+      bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
       
       ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, width, height);
@@ -159,17 +158,17 @@ export const CanvasOrb = () => {
       // Draw glitched orb
       drawGlitchedOrb(centerX, centerY, radius, hue, params.glitchIntensity);
       
-      // ASCII sphere particles
-      ctx.font = '8px "JetBrains Mono", monospace';
+      // ASCII sphere particles (optimized)
+      ctx.font = '10px monospace'; // Increased font size
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
-      const spacing = 8;
+      const spacing = 12; // Increased spacing
       const cols = Math.floor(width / spacing);
       const rows = Math.floor(height / spacing);
       
-      for (let i = 0; i < cols && i < 50; i++) {
-        for (let j = 0; j < rows && j < 50; j++) {
+      for (let i = 0; i < cols && i < 40; i++) { // Reduced particle count
+        for (let j = 0; j < rows && j < 40; j++) {
           const x = (i - cols / 2) * spacing + centerX;
           const y = (j - rows / 2) * spacing + centerY;
           
@@ -177,7 +176,7 @@ export const CanvasOrb = () => {
           const dy = y - centerY;
           const dist = Math.sqrt(dx * dx + dy * dy);
           
-          if (dist < radius && Math.random() > 0.5) {
+          if (dist < radius && Math.random() > 0.3) { // Reduced particle density
             const z = Math.sqrt(Math.max(0, radius * radius - dx * dx - dy * dy));
             const angle = params.rotation;
             const rotZ = dx * Math.sin(angle) + z * Math.cos(angle);
@@ -192,7 +191,7 @@ export const CanvasOrb = () => {
                 char = glitchChars[Math.floor(Math.random() * glitchChars.length)];
               }
               
-              const alpha = Math.max(0.2, brightness);
+              const alpha = Math.max(0.3, brightness);
               ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
               ctx.fillText(char, x, y);
             }
@@ -200,9 +199,9 @@ export const CanvasOrb = () => {
         }
       }
       
-      // Generate and render subtle film grain
+      // Generate and render subtle film grain (reduced)
       grainCtx.clearRect(0, 0, width, height);
-      const grainIntensity = 0.1 + Math.sin(timeRef.current * 10) * 0.02;
+      const grainIntensity = 0.05 + Math.sin(timeRef.current * 10) * 0.01;
       const grainImageData = generateFilmGrain(width, height, grainIntensity);
       grainCtx.putImageData(grainImageData, 0, 0);
       
@@ -227,12 +226,9 @@ export const CanvasOrb = () => {
       />
       <canvas
         ref={grainCanvasRef}
-        className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-40"
+        className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20"
         style={{ mixBlendMode: 'overlay' }}
       />
-      <style jsx>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap');
-      `}</style>
     </div>
   );
 };
