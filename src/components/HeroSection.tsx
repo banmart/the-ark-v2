@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { ArrowRight } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import { CanvasOrb } from "@/components/ui/canvas-orb";
 
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
@@ -50,14 +50,9 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
             </div>
           </div>
 
-          {/* Right side - Clean ❍ Symbol */}
+          {/* Right side - Canvas Orb */}
           <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
-            <div className="relative w-96 h-96 flex items-center justify-center">
-              {/* Clean ❍ Symbol - Keep exactly as is */}
-              <div className="text-[24rem] font-black text-cyan-400 animate-[rotate-3d_15s_linear_infinite] relative z-10">
-                ❍
-              </div>
-            </div>
+            <CanvasOrb />
           </div>
         </div>
       </div>
