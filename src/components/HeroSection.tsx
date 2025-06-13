@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { ArrowRight } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
@@ -14,7 +15,7 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
 
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
-      backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)), url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
+      backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)), url('/lovable-uploads/fa12e00f-4d05-4966-a987-e5caeb0c5029.png')`
     }}>
       
       {/* Content */}
@@ -66,3 +67,4 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
 };
 
 export default HeroSection;
+
