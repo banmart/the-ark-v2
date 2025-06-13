@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ArrowRight } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
@@ -49,12 +50,16 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
             </div>
           </div>
 
-          {/* Right side - Clean ❍ Symbol */}
+          {/* Right side - Glassmorphism Orb */}
           <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
             <div className="relative w-96 h-96 flex items-center justify-center">
-              {/* Clean ❍ Symbol - Keep exactly as is */}
-              <div className="text-[24rem] font-black text-cyan-400 animate-[rotate-3d_15s_linear_infinite] relative z-10">
-                ❍
+              {/* Glassmorphism Orb with ❍ Symbol */}
+              <div className="w-80 h-80 md:w-96 md:h-96 rounded-full glass-strong animate-[rotate-3d_15s_linear_infinite] relative z-10 flex items-center justify-center shadow-2xl shadow-cyan-500/20">
+                <div className="text-8xl md:text-9xl font-black text-cyan-400/80">
+                  ❍
+                </div>
+                {/* Inner glow effect */}
+                <div className="absolute inset-4 rounded-full bg-gradient-to-br from-cyan-400/10 to-transparent pointer-events-none"></div>
               </div>
             </div>
           </div>
