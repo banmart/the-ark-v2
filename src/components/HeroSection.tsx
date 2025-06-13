@@ -14,7 +14,7 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
 
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
-      backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)), url('/lovable-uploads/fa12e00f-4d05-4966-a987-e5caeb0c5029.png')`
+      backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)), url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
     }}>
       
       {/* Content */}
@@ -26,7 +26,7 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
               THE ARK
             </h1>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white animate-[fade-in_1s_ease-out_0.2s_both]">
-              Where Deflation Meets Devotion
+              Built on PulseChain. Sustained by Believers.
             </h2>
             <div className="mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
               <TextGenerateEffect 
@@ -50,16 +50,12 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
             </div>
           </div>
 
-          {/* Right side - Glassmorphism Orb */}
+          {/* Right side - Clean ❍ Symbol */}
           <div className="flex justify-center animate-[fade-in_1s_ease-out_0.8s_both]">
             <div className="relative w-96 h-96 flex items-center justify-center">
-              {/* Glassmorphism Orb with ❍ Symbol */}
-              <div className="w-80 h-80 md:w-96 md:h-96 rounded-full glass-strong animate-[rotate-3d_15s_linear_infinite] relative z-10 flex items-center justify-center shadow-2xl shadow-cyan-500/20">
-                <div className="text-8xl md:text-9xl font-black text-cyan-400/80">
-                  ❍
-                </div>
-                {/* Inner glow effect */}
-                <div className="absolute inset-4 rounded-full bg-gradient-to-br from-cyan-400/10 to-transparent pointer-events-none"></div>
+              {/* Clean ❍ Symbol - Keep exactly as is */}
+              <div className="text-[24rem] font-black text-cyan-400 animate-[rotate-3d_15s_linear_infinite] relative z-10">
+                ❍
               </div>
             </div>
           </div>
