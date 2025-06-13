@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
@@ -10,7 +9,7 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: HeroSectionProps) => {
-  const heroText = "The flood is coming. While others drown in inflation and rug pulls, THE ARK saves those who board early. Every transaction builds the vessel stronger - burning supply, rewarding believers, and locking in permanent value. Will you be saved, or will you watch from the shore?";
+  const heroText = "No marketing wallet. No team tokens. No admin keys. Just pure tokenomics: burn, reflect, liquify, and reward. ARK is what happens when code serves community, not founders.";
 
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
