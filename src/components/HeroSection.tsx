@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { ArrowRight } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
@@ -27,7 +25,7 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
               THE ARK
             </h1>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white animate-[fade-in_1s_ease-out_0.2s_both]">
-              Built on PulseChain. Sustained by Believers.
+              Where Deflation Meets Devotion
             </h2>
             <div className="mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
               <TextGenerateEffect 
@@ -67,4 +65,3 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
 };
 
 export default HeroSection;
-
