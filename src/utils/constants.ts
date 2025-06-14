@@ -1,4 +1,3 @@
-
 // Network and contract configurations
 export const NETWORKS = {
   PULSECHAIN: {
@@ -18,6 +17,83 @@ export const CONTRACT_ADDRESSES = {
   ARK_TOKEN: '0x1234567890abcdef1234567890abcdef12345678',
   DEX_ROUTER: '0xabcdef1234567890abcdef1234567890abcdef12',
   DEAD_ADDRESS: '0x000000000000000000000000000000000000dEaD',
+};
+
+// Complete SimplifiedLockerVault ABI from the contract
+export const LOCKER_VAULT_ABI = [
+  // View functions
+  'function totalLockedTokens() view returns (uint256)',
+  'function totalRewardsDistributed() view returns (uint256)',
+  'function totalActiveLockers() view returns (uint256)',
+  'function getUserLocks(address user) view returns (tuple(uint256 amount, uint256 lockTime, uint256 unlockTime, uint256 lockPeriod, uint8 tier, uint256 totalRewardsEarned, bool active)[])',
+  'function getUserActiveLocks(address user) view returns (tuple(uint256 amount, uint256 lockTime, uint256 unlockTime, uint256 lockPeriod, uint8 tier, uint256 totalRewardsEarned, bool active)[])',
+  'function calculateUserWeight(address user) view returns (uint256)',
+  'function calculateEarlyUnlockPenalty(address user, uint256 lockId) view returns (uint256 penaltyAmount, uint256 userReceives)',
+  'function getProtocolStats() view returns (uint256 _totalLockedTokens, uint256 _totalRewardsDistributed, uint256 _totalActiveLockers)',
+  'function getLockTierInfo(uint8 tier) view returns (tuple(uint256 minDuration, uint256 multiplier, string name))',
+  'function pendingRewards(address user) view returns (uint256)',
+  'function userStats(address user) view returns (tuple(uint256 totalLocked, uint256 totalRewardsEarned, uint256 pendingRewards, uint256 activeLocksCount))',
+  
+  // State variables
+  'function emergencyMode() view returns (bool)',
+  'function paused() view returns (bool)',
+  'function earlyUnlockEnabled() view returns (bool)',
+  'function earlyUnlockPenalty() view returns (uint256)',
+  'function penaltyBurnShare() view returns (uint256)',
+  'function penaltyRewardShare() view returns (uint256)',
+  
+  // Constants
+  'function MIN_LOCK_DURATION() view returns (uint256)',
+  'function MAX_LOCK_DURATION() view returns (uint256)',
+  'function BASIS_POINTS() view returns (uint256)',
+  'function MAX_EARLY_PENALTY() view returns (uint256)',
+  'function DEAD_ADDRESS() view returns (address)',
+  
+  // User functions
+  'function lockTokens(uint256 amount, uint256 lockDuration)',
+  'function unlockTokens(uint256 lockId)',
+  'function claimRewards()',
+  
+  // Events
+  'event TokensLocked(address indexed user, uint256 amount, uint256 lockPeriod, uint256 unlockTime)',
+  'event TokensUnlocked(address indexed user, uint256 amount)',
+  'event RewardsDistributed(uint256 totalRewards, uint256 totalRecipients)',
+  'event RewardsClaimed(address indexed user, uint256 amount)',
+  'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount)',
+];
+
+// Locker vault contract address
+export const LOCKER_VAULT_ADDRESS = '0x1234567890abcdef1234567890abcdef12345679'; // Placeholder
+
+// Lock tier enumeration matching the contract
+export const LOCK_TIERS = {
+  BRONZE: 0,
+  SILVER: 1,
+  GOLD: 2,
+  DIAMOND: 3,
+  PLATINUM: 4,
+  LEGENDARY: 5
+};
+
+// Locker contract constants matching the smart contract
+export const LOCKER_CONSTANTS = {
+  MIN_LOCK_DURATION_DAYS: 30,
+  MAX_LOCK_DURATION_DAYS: 1826, // 5 years
+  BASIS_POINTS: 10000,
+  EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
+  MAX_EARLY_PENALTY: 7500, // 75% maximum
+  PENALTY_BURN_SHARE: 5000, // 50% burned
+  PENALTY_REWARD_SHARE: 5000, // 50% to lockers
+  
+  // Tier multipliers (in basis points)
+  TIER_MULTIPLIERS: {
+    BRONZE: 10000,   // 1x
+    SILVER: 15000,   // 1.5x
+    GOLD: 20000,     // 2x
+    DIAMOND: 30000,  // 3x
+    PLATINUM: 50000, // 5x
+    LEGENDARY: 80000 // 8x
+  }
 };
 
 // Complete ARK Token ABI from the contract

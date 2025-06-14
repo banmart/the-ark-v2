@@ -1,30 +1,17 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import { useWallet } from '../hooks/useWallet';
+import { useLockerData } from '../hooks/useLockerData';
 import Navigation from '../components/Navigation';
 import MobileDock from '../components/MobileDock';
 import Footer from '../components/Footer';
 import AnimatedBackground from '../components/AnimatedBackground';
-import ProtocolStats from '../components/locker/ProtocolStats';
-import LockInterface from '../components/locker/LockInterface';
+import EnhancedProtocolStats from '../components/locker/EnhancedProtocolStats';
+import EnhancedLockInterface from '../components/locker/EnhancedLockInterface';
 import TierBenefits from '../components/locker/TierBenefits';
-import UserDashboard from '../components/locker/UserDashboard';
-
-interface LockPosition {
-  id: number;
-  amount: number;
-  lockTime: number;
-  unlockTime: number;
-  tier: string;
-  active: boolean;
-  totalRewards: number;
-}
+import EnhancedUserDashboard from '../components/locker/EnhancedUserDashboard';
 
 const Locker = () => {
-  const [lockAmount, setLockAmount] = useState('');
-  const [lockDuration, setLockDuration] = useState(30);
-  const [userLocks, setUserLocks] = useState<LockPosition[]>([]);
-  const [pendingRewards, setPendingRewards] = useState(0);
-
   const {
     isConnected,
     account,
@@ -32,30 +19,7 @@ const Locker = () => {
     connectWallet,
   } = useWallet();
 
-  const lockTiers = [
-    { name: 'Bronze', duration: 30, multiplier: '1x', color: '#CD7F32', minDays: 30, maxDays: 89 },
-    { name: 'Silver', duration: 90, multiplier: '1.5x', color: '#C0C0C0', minDays: 90, maxDays: 179 },
-    { name: 'Gold', duration: 180, multiplier: '2x', color: '#FFD700', minDays: 180, maxDays: 364 },
-    { name: 'Diamond', duration: 365, multiplier: '3x', color: '#B9F2FF', minDays: 365, maxDays: 1094 },
-    { name: 'Platinum', duration: 1095, multiplier: '5x', color: '#E5E4E2', minDays: 1095, maxDays: 1459 },
-    { name: 'Legendary', duration: 1460, multiplier: '8x', color: '#FF6B35', minDays: 1460, maxDays: 1826 }
-  ];
-
-  const getCurrentTier = (days: number) => {
-    return lockTiers.find(tier => days >= tier.minDays && days <= tier.maxDays) || lockTiers[0];
-  };
-
-  const calculatePenalty = (lockTime: number, unlockTime: number, amount: number) => {
-    const now = Date.now() / 1000;
-    if (now >= unlockTime) return { penalty: 0, userReceives: amount };
-    
-    const timeRemaining = unlockTime - now;
-    const totalLockTime = unlockTime - lockTime;
-    const penaltyRate = (50 * timeRemaining) / totalLockTime; // 50% max penalty
-    const penalty = (amount * penaltyRate) / 100;
-    
-    return { penalty, userReceives: amount - penalty };
-  };
+  const { lockTiers, emergencyMode, contractPaused } = useLockerData();
 
   const handleConnectWallet = async () => {
     try {
@@ -84,39 +48,72 @@ const Locker = () => {
           <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             🔒 THE ARK LOCKER 🔒
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-4">
             Lock your ARK tokens and ascend through divine tiers. The longer you lock, the greater your blessings.
           </p>
+          <div className="text-sm text-gray-400 max-w-2xl mx-auto">
+            Powered by SimplifiedLockerVault • ReentrancyGuard Protected • Renounced Ownership
+          </div>
+          
+          {(emergencyMode || contractPaused) && (
+            <div className="mt-4 inline-block bg-red-900/20 border border-red-500/30 rounded-lg px-4 py-2">
+              <span className="text-red-400 text-sm font-semibold">
+                {emergencyMode ? '⚠️ Emergency Mode Active' : '⏸️ Contract Paused'}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="max-w-7xl mx-auto px-6 pb-20">
-          {/* Protocol Stats */}
-          <ProtocolStats />
+          {/* Enhanced Protocol Stats */}
+          <EnhancedProtocolStats />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Lock Interface */}
+            {/* Enhanced Lock Interface */}
             <div className="space-y-8">
-              <LockInterface
-                lockAmount={lockAmount}
-                setLockAmount={setLockAmount}
-                lockDuration={lockDuration}
-                setLockDuration={setLockDuration}
-                lockTiers={lockTiers}
-                getCurrentTier={getCurrentTier}
-                isConnected={isConnected}
-              />
+              <EnhancedLockInterface isConnected={isConnected} />
 
               {/* Tier Information */}
               <TierBenefits lockTiers={lockTiers} />
             </div>
 
-            {/* User Dashboard */}
-            <UserDashboard
-              isConnected={isConnected}
-              pendingRewards={pendingRewards}
-              userLocks={userLocks}
-              calculatePenalty={calculatePenalty}
-            />
+            {/* Enhanced User Dashboard */}
+            <EnhancedUserDashboard isConnected={isConnected} />
+          </div>
+
+          {/* Contract Information */}
+          <div className="mt-12 bg-white/5 border border-cyan-500/30 rounded-xl p-8">
+            <h3 className="text-xl font-bold text-cyan-400 mb-4">Contract Features</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-sm">ReentrancyGuard Protection</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  <span className="text-sm">Renounced Ownership</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                  <span className="text-sm">6 Lock Tiers (1x - 8x multipliers)</span>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <span className="text-sm">50% Max Early Unlock Penalty</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                  <span className="text-sm">Penalty: 50% Burn + 50% to Lockers</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                  <span className="text-sm">Weight-Based Reward Distribution</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
