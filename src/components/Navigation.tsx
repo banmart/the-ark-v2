@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -18,7 +16,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
           <Link 
             to="/" 
             onClick={() => window.scrollTo(0, 0)}
-            className="text-2xl megrim-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform"
+            className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform"
           >
             ARK ❍
           </Link>
@@ -49,4 +47,3 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
 };
 
 export default Navigation;
-
