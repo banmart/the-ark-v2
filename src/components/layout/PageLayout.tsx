@@ -1,0 +1,165 @@
+
+import React, { useState, useEffect } from 'react';
+import { toast } from "@/components/ui/use-toast";
+import { useContractData } from '../../hooks/useContractData';
+import { useWalletContext } from '../providers/WalletProvider';
+import { useSwapContext } from '../providers/SwapProvider';
+import { useOnboardingContext } from '../providers/OnboardingProvider';
+import OnboardingModal from '../OnboardingModal';
+import AnimatedBackground from '../AnimatedBackground';
+import Navigation from '../Navigation';
+import MobileDock from '../MobileDock';
+import HeroSection from '../HeroSection';
+import ContractAddressSection from '../ContractAddressSection';
+import SwapSection from '../SwapSection';
+import StatsSection from '../StatsSection';
+import FeaturesSection from '../FeaturesSection';
+import ContractTransparencySection from '../ContractTransparencySection';
+import LockerTiersSection from '../LockerTiersSection';
+import ProphecySection from '../ProphecySection';
+import CountdownSection from '../CountdownSection';
+import ChartSection from '../ChartSection';
+import Footer from '../Footer';
+
+const PageLayout = () => {
+  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+
+  const {
+    data: contractData,
+    loading: contractLoading
+  } = useContractData();
+
+  const {
+    isConnected,
+    account,
+    plsBalance,
+    arkBalance,
+    isConnecting,
+    handleConnectWallet,
+  } = useWalletContext();
+
+  const {
+    fromAmount,
+    toAmount,
+    isLoading: swapLoading,
+    slippage,
+    canSwap,
+    setFromAmount,
+    handleSwap,
+  } = useSwapContext();
+
+  const {
+    showOnboarding,
+    setShowOnboarding,
+  } = useOnboardingContext();
+
+  useEffect(() => {
+    // Preload background image and trigger fade-in
+    const img = new Image();
+    img.onload = () => {
+      setBackgroundLoaded(true);
+    };
+    img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
+  }, []);
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: "Contract address copied to clipboard"
+    });
+  };
+
+  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+
+  return (
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Onboarding Modal */}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
+
+      {/* Animated Background System */}
+      <AnimatedBackground />
+
+      {/* Navigation */}
+      <Navigation 
+        handleConnectWallet={handleConnectWallet}
+        isConnecting={isConnecting}
+        isConnected={isConnected}
+        account={account}
+      />
+
+      {/* Hero Section */}
+      <HeroSection 
+        copyToClipboard={copyToClipboard}
+        contractAddress={contractAddress}
+        setShowOnboarding={setShowOnboarding}
+      />
+
+      {/* Contract Address Section */}
+      <ContractAddressSection 
+        contractAddress={contractAddress}
+        copyToClipboard={copyToClipboard}
+      />
+
+      {/* Swap Section */}
+      <SwapSection 
+        fromAmount={fromAmount}
+        toAmount={toAmount}
+        plsBalance={plsBalance}
+        arkBalance={arkBalance}
+        swapLoading={swapLoading}
+        slippage={slippage}
+        canSwap={canSwap}
+        isConnected={isConnected}
+        setFromAmount={setFromAmount}
+        handleSwap={handleSwap}
+      />
+
+      {/* Stats Section */}
+      <StatsSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Features Section - Updated Four Pillars */}
+      <FeaturesSection />
+
+      {/* NEW: Contract Transparency Section */}
+      <ContractTransparencySection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Locker Tiers Section */}
+      <LockerTiersSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Prophecy Section */}
+      <ProphecySection />
+
+      {/* Countdown Section */}
+      <CountdownSection />
+
+      {/* Chart Section */}
+      <ChartSection />
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Mobile Dock */}
+      <MobileDock 
+        handleConnectWallet={handleConnectWallet}
+        isConnecting={isConnecting}
+        isConnected={isConnected}
+        account={account}
+      />
+    </div>
+  );
+};
+
+export default PageLayout;
