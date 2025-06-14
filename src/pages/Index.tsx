@@ -12,6 +12,7 @@ import ContractAddressSection from '../components/ContractAddressSection';
 import SwapSection from '../components/SwapSection';
 import StatsSection from '../components/StatsSection';
 import FeaturesSection from '../components/FeaturesSection';
+import ContractTransparencySection from '../components/ContractTransparencySection';
 import LockerTiersSection from '../components/LockerTiersSection';
 import ProphecySection from '../components/ProphecySection';
 import CountdownSection from '../components/CountdownSection';
@@ -167,8 +168,14 @@ const Index = () => {
         contractLoading={contractLoading}
       />
 
-      {/* Features Section */}
+      {/* Features Section - Updated Four Pillars */}
       <FeaturesSection />
+
+      {/* NEW: Contract Transparency Section */}
+      <ContractTransparencySection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
 
       {/* Locker Tiers Section */}
       <LockerTiersSection 

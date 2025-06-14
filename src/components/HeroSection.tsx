@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Shield, Lock } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
 interface HeroSectionProps {
@@ -10,7 +10,7 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: HeroSectionProps) => {
-  const heroText = "No marketing wallet. No team tokens. No admin keys. Just pure tokenomics: burn, reflect, liquify, and reward. ARK is what happens when code serves community, not founders.";
+  const heroText = "Where deflation meets devotion. Four sacred pillars uphold the ARK: Burn (3%), Reflect (2%), Liquify (2%), and Reward (2%). Built with ReentrancyGuard, Pausable security, and LP token burning for ultimate deflationary pressure.";
 
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
@@ -26,8 +26,24 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
               THE ARK
             </h1>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white animate-[fade-in_1s_ease-out_0.2s_both]">
-              Built on PulseChain. Sustained by Believers.
+              Where Deflation Meets Devotion
             </h2>
+            
+            {/* Security Badges */}
+            <div className="flex flex-wrap gap-3 mb-6 animate-[fade-in_1s_ease-out_0.3s_both]">
+              <div className="flex items-center gap-2 glass-card px-3 py-2 rounded-full">
+                <Shield className="w-4 h-4 text-green-400" />
+                <span className="text-sm font-semibold text-green-400">ReentrancyGuard</span>
+              </div>
+              <div className="flex items-center gap-2 glass-card px-3 py-2 rounded-full">
+                <Lock className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-semibold text-blue-400">Pausable</span>
+              </div>
+              <div className="glass-card px-3 py-2 rounded-full">
+                <span className="text-sm font-semibold text-orange-400">9% Total Fees</span>
+              </div>
+            </div>
+            
             <div className="mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
               <TextGenerateEffect 
                 words={heroText}
