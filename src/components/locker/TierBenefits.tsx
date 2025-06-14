@@ -1,17 +1,9 @@
 
 import React from 'react';
-
-interface LockTier {
-  name: string;
-  duration: number;
-  multiplier: string;
-  color: string;
-  minDays: number;
-  maxDays: number;
-}
+import { LockTierInfo } from '../../hooks/useLockerData';
 
 interface TierBenefitsProps {
-  lockTiers: LockTier[];
+  lockTiers: LockTierInfo[];
 }
 
 const TierBenefits = ({ lockTiers }: TierBenefitsProps) => {
@@ -28,7 +20,7 @@ const TierBenefits = ({ lockTiers }: TierBenefitsProps) => {
               {tier.minDays}-{tier.maxDays} days
             </div>
             <div className="text-sm font-bold text-white">
-              {tier.multiplier} rewards
+              {(tier.multiplier / 10000).toFixed(1)}x rewards
             </div>
           </div>
         ))}
