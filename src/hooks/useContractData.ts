@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 interface ContractData {
@@ -73,7 +72,7 @@ export const useContractData = () => {
       reflection: 3,
       liquidity: 2,
       locker: 2,
-      total: 10
+      total: 9
     },
     lockerRewards: {
       vaultAddress: '0x0000000000000000000000000000000000000000',

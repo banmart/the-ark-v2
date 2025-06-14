@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 const FeaturesSection = () => {
@@ -75,14 +74,14 @@ const FeaturesSection = () => {
               <p className="text-sm text-gray-400">Protection against reentrancy attacks</p>
             </div>
             <div className="glass-card rounded-xl p-4">
-              <div className="text-2xl mb-2">⏸️</div>
-              <h4 className="font-semibold text-blue-400 mb-2">Pausable Contract</h4>
-              <p className="text-sm text-gray-400">Emergency pause functionality for safety</p>
+              <div className="text-2xl mb-2">🚫</div>
+              <h4 className="font-semibold text-blue-400 mb-2">Renounced Contract</h4>
+              <p className="text-sm text-gray-400">No admin keys - fully decentralized</p>
             </div>
             <div className="glass-card rounded-xl p-4">
               <div className="text-2xl mb-2">🔒</div>
               <h4 className="font-semibold text-purple-400 mb-2">Fee Caps</h4>
-              <p className="text-sm text-gray-400">Maximum 10% total fees hardcoded</p>
+              <p className="text-sm text-gray-400">Maximum 9% total fees hardcoded</p>
             </div>
           </div>
         </div>

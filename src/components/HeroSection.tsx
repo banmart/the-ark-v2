@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight, Shield, Lock } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
@@ -10,7 +9,7 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: HeroSectionProps) => {
-  const heroText = "Where deflation meets devotion. Four sacred pillars uphold the ARK: Burn (3%), Reflect (2%), Liquify (2%), and Reward (2%). Built with ReentrancyGuard, Pausable security, and LP token burning for ultimate deflationary pressure.";
+  const heroText = "Where deflation meets devotion. Four sacred pillars uphold the ARK: Burn (3%), Reflect (2%), Liquify (2%), and Reward (2%). Built with ReentrancyGuard, renounced ownership, and LP token burning for ultimate deflationary pressure.";
 
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
@@ -37,7 +36,7 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
               </div>
               <div className="flex items-center gap-2 glass-card px-3 py-2 rounded-full">
                 <Lock className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-semibold text-blue-400">Pausable</span>
+                <span className="text-sm font-semibold text-blue-400">No Admin Keys</span>
               </div>
               <div className="glass-card px-3 py-2 rounded-full">
                 <span className="text-sm font-semibold text-orange-400">9% Total Fees</span>

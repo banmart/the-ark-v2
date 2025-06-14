@@ -90,7 +90,7 @@ export const CONTRACT_CONSTANTS = {
   MAX_REFLECTION_FEE: 3,
   MAX_LIQUIDITY_FEE: 2,
   MAX_LOCKER_FEE: 2,
-  MAX_TOTAL_FEES: 10,
+  MAX_TOTAL_FEES: 9,
   MIN_SWAP_THRESHOLD: 1000, // in tokens (before decimals)
   MAX_SWAP_THRESHOLD: 50000, // in tokens (before decimals)
   MAX_SLIPPAGE: 500, // 5% in basis points

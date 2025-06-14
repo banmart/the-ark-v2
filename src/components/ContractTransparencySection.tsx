@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Shield, Lock, Target, Zap } from 'lucide-react';
 
@@ -114,7 +113,7 @@ const ContractTransparencySection = ({ contractData, contractLoading }: Contract
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  Pausable: Emergency stop functionality
+                  Renounced: No admin keys or control
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
