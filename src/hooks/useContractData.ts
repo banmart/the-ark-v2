@@ -1,10 +1,16 @@
+
 import { useState, useEffect } from 'react';
+import { useARKTokenData } from './useARKTokenData';
 
 interface ContractData {
-  // Token basics
+  // Token basics (now from live data)
   totalSupply: string;
   marketCap: string;
   holders: string;
+  price: string;
+  priceChange24h: string;
+  circulatingSupply: string;
+  burnedTokens: string;
   
   // Current fees (from getCurrentFees())
   currentFees: {
@@ -53,13 +59,25 @@ interface ContractData {
     totalFeesCollected: string;
     lpTokensBurned: string;
   };
+  
+  // Meta data
+  lastUpdated: Date;
 }
 
 export const useContractData = () => {
+  const { data: arkTokenData, loading: arkTokenLoading, error: arkTokenError } = useARKTokenData();
+  
   const [data, setData] = useState<ContractData>({
-    totalSupply: '100,000,000',
-    marketCap: '12,500,000',
-    holders: '12,500',
+    // Live token data
+    totalSupply: '0',
+    marketCap: '0',
+    holders: '0',
+    price: '0',
+    priceChange24h: '0',
+    circulatingSupply: '0',
+    burnedTokens: '0',
+    
+    // Mock contract data (would be replaced with real contract calls)
     currentFees: {
       burn: 3,
       reflection: 2,
@@ -80,8 +98,8 @@ export const useContractData = () => {
       distributed: '2,150,000'
     },
     swapSettings: {
-      threshold: '100,000', // 0.1% of supply
-      maxAmount: '200,000',  // 0.2% of supply
+      threshold: '100,000',
+      maxAmount: '200,000',
       enabled: true,
       slippageTolerance: 2
     },
@@ -95,33 +113,32 @@ export const useContractData = () => {
       tokensForLiquidity: '45,000',
       totalFeesCollected: '1,250,000',
       lpTokensBurned: '325,000'
-    }
+    },
+    lastUpdated: new Date()
   });
   
   const [loading, setLoading] = useState(false);
 
-  // In a real implementation, this would connect to the smart contract
-  // For now, we'll simulate loading and use mock data that represents the actual contract structure
+  // Update contract data when ARK token data changes
   useEffect(() => {
-    setLoading(true);
-    
-    // Simulate contract data loading with realistic delays
-    const timer = setTimeout(() => {
-      // This would normally call smart contract functions like:
-      // - getCurrentFees() -> returns (burnFee, reflectionFee, liquidityFee, lockerFee, totalFees)
-      // - getMaxFees() -> returns max fee caps for security
-      // - getLockerRewardsInfo() -> returns (vault, pending, distributed)
-      // - getSwapSettings() -> returns (threshold, maxAmount, enabled)
-      // - getTokensForLiquidity() -> returns tokens ready for swap
-      // - totalFeesCollected() -> returns total reflection fees ever collected
-      // - paused() -> returns if contract is paused
-      // - owner() -> returns contract owner
-      
-      setLoading(false);
-    }, 1500);
+    if (!arkTokenLoading && arkTokenData) {
+      setData(prev => ({
+        ...prev,
+        totalSupply: arkTokenData.totalSupply,
+        marketCap: arkTokenData.marketCap,
+        holders: arkTokenData.holders,
+        price: arkTokenData.price,
+        priceChange24h: arkTokenData.priceChange24h,
+        circulatingSupply: arkTokenData.circulatingSupply,
+        burnedTokens: arkTokenData.burnedTokens,
+        lastUpdated: arkTokenData.lastUpdated,
+      }));
+    }
+  }, [arkTokenData, arkTokenLoading]);
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  return { data, loading };
+  return { 
+    data, 
+    loading: arkTokenLoading, 
+    error: arkTokenError 
+  };
 };
