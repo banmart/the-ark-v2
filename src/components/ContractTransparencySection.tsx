@@ -23,60 +23,7 @@ const ContractTransparencySection = ({
         
 
         {/* Security Features */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold text-center mb-8 text-cyan-400">Security Architecture</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="glass-card rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Shield className="w-8 h-8 text-green-400" />
-                <h4 className="text-xl font-bold text-green-400">Contract Protection</h4>
-              </div>
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  ReentrancyGuard: Prevents recursive attacks
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  Renounced: No admin keys or control
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                  Ownable: Controlled access management
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
-                  SafeMath: Overflow protection built-in
-                </li>
-              </ul>
-            </div>
-
-            <div className="glass-card rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Lock className="w-8 h-8 text-purple-400" />
-                <h4 className="text-xl font-bold text-purple-400">Fee Constraints</h4>
-              </div>
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                  Maximum total fees: {contractLoading ? 'Loading...' : `${contractData.maxFees.total}%`}
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                  Hardcoded fee caps prevent abuse
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-                  Immutable router for security
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                  Excluded address limits (max 50)
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        
 
         {/* Swap & Liquidity Settings */}
         <div className="mb-16">

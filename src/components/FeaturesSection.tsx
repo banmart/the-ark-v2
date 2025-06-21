@@ -1,8 +1,6 @@
 import React from 'react';
-
 const FeaturesSection = () => {
-  return (
-    <section id="features" className="relative z-30 py-20 px-6">
+  return <section id="features" className="relative z-30 py-20 px-6">
       <div className="max-w-7xl mx-auto relative z-10">
         <h2 className="text-4xl font-black text-center mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
           The Four Sacred Pillars
@@ -65,29 +63,8 @@ const FeaturesSection = () => {
         </div>
         
         {/* Contract Security Features */}
-        <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold mb-6 text-cyan-400">Built-in Security Features</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card rounded-xl p-4">
-              <div className="text-2xl mb-2">🛡️</div>
-              <h4 className="font-semibold text-green-400 mb-2">ReentrancyGuard</h4>
-              <p className="text-sm text-gray-400">Protection against reentrancy attacks</p>
-            </div>
-            <div className="glass-card rounded-xl p-4">
-              <div className="text-2xl mb-2">🚫</div>
-              <h4 className="font-semibold text-blue-400 mb-2">Renounced Contract</h4>
-              <p className="text-sm text-gray-400">No admin keys - fully decentralized</p>
-            </div>
-            <div className="glass-card rounded-xl p-4">
-              <div className="text-2xl mb-2">🔒</div>
-              <h4 className="font-semibold text-purple-400 mb-2">Fee Caps</h4>
-              <p className="text-sm text-gray-400">Maximum 9% total fees hardcoded</p>
-            </div>
-          </div>
-        </div>
+        
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default FeaturesSection;
