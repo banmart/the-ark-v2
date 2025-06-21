@@ -1,3 +1,4 @@
+
 // Network and contract configurations
 export const NETWORKS = {
   PULSECHAIN: {
@@ -14,7 +15,7 @@ export const NETWORKS = {
 };
 
 export const CONTRACT_ADDRESSES = {
-  ARK_TOKEN: '0x1234567890abcdef1234567890abcdef12345678',
+  ARK_TOKEN: '0x6316887CA7AF1c6f0D33Ded2D36c53A4CfFd1837',
   DEX_ROUTER: '0xabcdef1234567890abcdef1234567890abcdef12',
   DEAD_ADDRESS: '0x000000000000000000000000000000000000dEaD',
 };

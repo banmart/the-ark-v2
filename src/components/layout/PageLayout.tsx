@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from "@/components/ui/use-toast";
 import { useContractData } from '../../hooks/useContractData';
@@ -70,7 +69,7 @@ const PageLayout = () => {
     });
   };
 
-  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+  const contractAddress = "0x6316887CA7AF1c6f0D33Ded2D36c53A4CfFd1837";
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
