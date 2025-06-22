@@ -28,34 +28,7 @@ const ContractTransparencySection = ({
         {/* Swap & Liquidity Settings */}
         <div className="mb-16">
           <h3 className="text-2xl font-bold text-center mb-8 text-cyan-400">Automated Liquidity System</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card rounded-xl p-6 text-center">
-              <Target className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-              <h4 className="font-bold text-cyan-400 mb-2">Swap Threshold</h4>
-              <div className="text-2xl font-bold mb-2">
-                {contractLoading ? 'Loading...' : `${contractData.swapSettings.threshold} ARK`}
-              </div>
-              <p className="text-sm text-gray-400">0.1% of total supply</p>
-            </div>
-
-            <div className="glass-card rounded-xl p-6 text-center">
-              <Zap className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-              <h4 className="font-bold text-yellow-400 mb-2">Max Swap Amount</h4>
-              <div className="text-2xl font-bold mb-2">
-                {contractLoading ? 'Loading...' : `${contractData.swapSettings.maxAmount} ARK`}
-              </div>
-              <p className="text-sm text-gray-400">0.2% of total supply</p>
-            </div>
-
-            <div className="glass-card rounded-xl p-6 text-center">
-              <Shield className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-              <h4 className="font-bold text-purple-400 mb-2">Slippage Protection</h4>
-              <div className="text-2xl font-bold mb-2">
-                {contractLoading ? 'Loading...' : `${contractData.swapSettings.slippageTolerance}%`}
-              </div>
-              <p className="text-sm text-gray-400">Maximum 5% allowed</p>
-            </div>
-          </div>
+          
         </div>
 
         {/* LP Token Burning */}
