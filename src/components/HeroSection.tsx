@@ -29,16 +29,7 @@ const HeroSection = ({
             </h3>
             
             {/* Security Badges */}
-            <div className="flex flex-wrap gap-3 mb-6 animate-[fade-in_1s_ease-out_0.3s_both]">
-              
-              <div className="flex items-center gap-2 glass-card px-3 py-2 rounded-full">
-                <Lock className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-semibold text-blue-400">No Admin Keys</span>
-              </div>
-              <div className="glass-card px-3 py-2 rounded-full">
-                <span className="text-sm font-semibold text-orange-400">9% Total Fees</span>
-              </div>
-            </div>
+            
             
             <div className="mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
               <TextGenerateEffect words={heroText} duration={2} filter={false} className="text-gray-300" />
