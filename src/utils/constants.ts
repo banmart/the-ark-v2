@@ -1,4 +1,3 @@
-
 // Network and contract configurations
 export const NETWORKS = {
   PULSECHAIN: {
@@ -15,7 +14,7 @@ export const NETWORKS = {
 };
 
 export const CONTRACT_ADDRESSES = {
-  ARK_TOKEN: '0x6316887CA7AF1c6f0D33Ded2D36c53A4CfFd1837',
+  ARK_TOKEN: '0xACC15eF8fa2e702d0138c3662A9E7d696f40F021',
   DEX_ROUTER: '0xabcdef1234567890abcdef1234567890abcdef12',
   DEAD_ADDRESS: '0x000000000000000000000000000000000000dEaD',
 };
@@ -63,8 +62,8 @@ export const LOCKER_VAULT_ABI = [
   'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount)',
 ];
 
-// Locker vault contract address
-export const LOCKER_VAULT_ADDRESS = '0x1234567890abcdef1234567890abcdef12345679'; // Placeholder
+// Locker vault contract address - UPDATED TO LIVE ADDRESS
+export const LOCKER_VAULT_ADDRESS = '0x6774a0386ae6f39509533698Fbf9b73EE5C06187';
 
 // Lock tier enumeration matching the contract
 export const LOCK_TIERS = {

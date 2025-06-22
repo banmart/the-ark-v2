@@ -20,7 +20,11 @@ import CountdownSection from '../CountdownSection';
 import ChartSection from '../ChartSection';
 import Footer from '../Footer';
 
-const PageLayout = () => {
+interface PageLayoutProps {
+  children: React.ReactNode;
+}
+
+const PageLayout = ({ children }: PageLayoutProps) => {
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
 
   const {
@@ -69,7 +73,8 @@ const PageLayout = () => {
     });
   };
 
-  const contractAddress = "0x6316887CA7AF1c6f0D33Ded2D36c53A4CfFd1837";
+  // Updated to use the live ARK contract address
+  const contractAddress = '0xACC15eF8fa2e702d0138c3662A9E7d696f40F021';
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">

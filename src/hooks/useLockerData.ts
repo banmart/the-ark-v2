@@ -1,5 +1,7 @@
 
 import { useState, useEffect } from 'react';
+import { useLockerContractData } from './useLockerContractData';
+import { useWallet } from './useWallet';
 
 export enum LockTier {
   BRONZE = 0,
@@ -56,25 +58,17 @@ export interface PenaltyCalculation {
 }
 
 export const useLockerData = () => {
-  const [protocolStats, setProtocolStats] = useState<ProtocolStats>({
-    totalLockedTokens: 12500000,
-    totalRewardsDistributed: 2150000,
-    totalActiveLockers: 2847,
-    averageAPY: 82.5
-  });
-
-  const [userStats, setUserStats] = useState<UserStats>({
-    totalLocked: 0,
-    totalRewardsEarned: 0,
-    pendingRewards: 0,
-    activeLocksCount: 0,
-    userWeight: 0
-  });
-
-  const [userLocks, setUserLocks] = useState<LockedPosition[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [emergencyMode, setEmergencyMode] = useState(false);
-  const [contractPaused, setContractPaused] = useState(false);
+  const { account } = useWallet();
+  const { 
+    protocolStats: contractProtocolStats,
+    userStats: contractUserStats,
+    userLocks: contractUserLocks,
+    userWeight: contractUserWeight,
+    emergencyMode,
+    contractPaused,
+    loading,
+    error
+  } = useLockerContractData(account || undefined);
 
   // Contract tier definitions matching the smart contract exactly
   const lockTiers: LockTierInfo[] = [
@@ -144,6 +138,43 @@ export const useLockerData = () => {
     PENALTY_REWARD_SHARE: 5000 // 50% to lockers
   };
 
+  // Transform contract data to match UI expectations
+  const protocolStats: ProtocolStats = {
+    totalLockedTokens: contractProtocolStats.totalLockedTokens,
+    totalRewardsDistributed: contractProtocolStats.totalRewardsDistributed,
+    totalActiveLockers: contractProtocolStats.totalActiveLockers,
+    averageAPY: 82.5 // This would need to be calculated based on reward distribution rate
+  };
+
+  const userStats: UserStats = {
+    totalLocked: contractUserStats.totalLocked,
+    totalRewardsEarned: contractUserStats.totalRewardsEarned,
+    pendingRewards: contractUserStats.pendingRewards,
+    activeLocksCount: contractUserStats.activeLocksCount,
+    userWeight: contractUserWeight
+  };
+
+  // Transform contract locks to UI format
+  const userLocks: LockedPosition[] = contractUserLocks.map(lock => {
+    const tierInfo = lockTiers[lock.tier];
+    const now = Date.now() / 1000;
+    const daysRemaining = Math.max(0, Math.ceil((lock.unlockTime - now) / (24 * 60 * 60)));
+    
+    return {
+      id: lock.id,
+      amount: lock.amount,
+      lockTime: lock.lockTime,
+      unlockTime: lock.unlockTime,
+      lockPeriod: lock.lockPeriod,
+      tier: lock.tier as LockTier,
+      tierName: tierInfo.name,
+      totalRewardsEarned: lock.totalRewardsEarned,
+      active: lock.active,
+      multiplier: `${(tierInfo.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS).toFixed(1)}x`,
+      daysRemaining
+    };
+  });
+
   const determineLockTier = (days: number): LockTierInfo => {
     return lockTiers.find(tier => days >= tier.minDays && days <= tier.maxDays) || lockTiers[0];
   };
@@ -191,68 +222,6 @@ export const useLockerData = () => {
     return { min: minAPY, max: maxAPY };
   };
 
-  const mockUserLocks = (): LockedPosition[] => {
-    const now = Date.now() / 1000;
-    return [
-      {
-        id: 1,
-        amount: 50000,
-        lockTime: now - (180 * 24 * 60 * 60), // 180 days ago
-        unlockTime: now + (185 * 24 * 60 * 60), // 185 days from now
-        lockPeriod: 365 * 24 * 60 * 60, // 1 year
-        tier: LockTier.DIAMOND,
-        tierName: 'Diamond',
-        totalRewardsEarned: 15000,
-        active: true,
-        multiplier: '3x',
-        daysRemaining: 185
-      },
-      {
-        id: 2,
-        amount: 25000,
-        lockTime: now - (60 * 24 * 60 * 60), // 60 days ago
-        unlockTime: now + (30 * 24 * 60 * 60), // 30 days from now
-        lockPeriod: 90 * 24 * 60 * 60, // 90 days
-        tier: LockTier.SILVER,
-        tierName: 'Silver',
-        totalRewardsEarned: 3750,
-        active: true,
-        multiplier: '1.5x',
-        daysRemaining: 30
-      }
-    ];
-  };
-
-  // Simulate contract data loading
-  useEffect(() => {
-    const loadContractData = async () => {
-      setLoading(true);
-      
-      // Simulate network delay
-      setTimeout(() => {
-        // In a real implementation, this would call actual contract functions
-        const mockLocks = mockUserLocks();
-        setUserLocks(mockLocks);
-        
-        const totalLocked = mockLocks.reduce((sum, lock) => sum + lock.amount, 0);
-        const totalRewards = mockLocks.reduce((sum, lock) => sum + lock.totalRewardsEarned, 0);
-        const userWeight = calculateUserWeight(mockLocks);
-        
-        setUserStats({
-          totalLocked,
-          totalRewardsEarned: totalRewards,
-          pendingRewards: 8500,
-          activeLocksCount: mockLocks.length,
-          userWeight
-        });
-        
-        setLoading(false);
-      }, 1500);
-    };
-
-    loadContractData();
-  }, []);
-
   return {
     // Data
     protocolStats,
@@ -262,6 +231,7 @@ export const useLockerData = () => {
     loading,
     emergencyMode,
     contractPaused,
+    error,
     
     // Constants
     CONTRACT_CONSTANTS,
