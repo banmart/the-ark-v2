@@ -153,7 +153,7 @@ const HeroSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-6 font-mono text-xs">
                   <div className="bg-black/30 border border-cyan-500/30 rounded p-2">
                     <div className="text-cyan-400">CONTRACT_ADDR</div>
-                    <div className="text-white truncate">0xACC15eF8...</div>
+                    <div className="text-white truncate">0xACC15eF8fa2e702d0138c3662A9E7d696f40F021</div>
                   </div>
                   <div className="bg-black/30 border border-green-500/30 rounded p-2">
                     <div className="text-green-400">SECURITY_STATUS</div>
@@ -165,21 +165,21 @@ const HeroSection = ({
 
             {/* Action Buttons */}
             <div className={`flex flex-col sm:flex-row gap-4 transition-all duration-1000 delay-2000 ${textPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <button 
+              <!--button 
                 onClick={() => copyToClipboard(contractAddress)} 
                 className="bg-gradient-to-r from-cyan-500 to-teal-500 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-lg shadow-cyan-500/30 flex items-center gap-2 relative overflow-hidden group"
               >
                 <span className="relative z-10">BOARD THE ARK</span>
                 <ArrowRight size={18} className="relative z-10" />
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </button>
-              <button 
+              </button-->
+              <!--button 
                 onClick={() => setShowOnboarding(true)} 
                 className="border border-cyan-500/50 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/20 hover:scale-105 transition-all text-center backdrop-blur-sm relative overflow-hidden group"
               >
                 <span className="relative z-10">DECODE PROTOCOL</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </button>
+              </button-->
             </div>
           </div>
 
