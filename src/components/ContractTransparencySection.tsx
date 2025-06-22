@@ -10,14 +10,7 @@ const ContractTransparencySection = ({
 }: ContractTransparencySectionProps) => {
   return <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent">
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-            🔍 Contract Transparency 🔍
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Full transparency with hardcoded security measures, fee caps, and automated mechanisms that protect every ARK holder.
-          </p>
-        </div>
+        
 
         {/* Fee Structure with Caps */}
         
