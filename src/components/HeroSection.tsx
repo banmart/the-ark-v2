@@ -9,7 +9,7 @@ interface HeroSectionProps {
 }
 
 const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: HeroSectionProps) => {
-  const heroText = "Where deflation meets devotion. Four sacred pillars uphold the ARK: Burn (3%), Reflect (2%), Liquify (2%), and Reward (2%). Built with ReentrancyGuard, renounced ownership, and LP token burning for ultimate deflationary pressure.";
+  const heroText = "The digital waters are rising. Projects sink beneath the waves daily, their promises dissolved into the endless ocean of failed tokens. But from the storm clouds emerges a beacon of hope—The ARK, where deflation meets devotion, and only the faithful shall inherit the new world.";
 
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
@@ -22,11 +22,11 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
           {/* Left side - Text */}
           <div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent animate-[fade-in_1s_ease-out]">
-              THE ARK
+              THE ARK ❍
             </h1>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white animate-[fade-in_1s_ease-out_0.2s_both]">
-              Where Deflation Meets Devotion
-            </h2>
+            <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white animate-[fade-in_1s_ease-out_0.2s_both]">
+              In the beginning, there was chaos in the crypto seas...
+            </h3>
             
             {/* Security Badges */}
             <div className="flex flex-wrap gap-3 mb-6 animate-[fade-in_1s_ease-out_0.3s_both]">
