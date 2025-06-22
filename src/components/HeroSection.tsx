@@ -165,21 +165,21 @@ const HeroSection = ({
 
             {/* Action Buttons */}
             <div className={`flex flex-col sm:flex-row gap-4 transition-all duration-1000 delay-2000 ${textPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <button 
+              <!--button 
                 onClick={() => copyToClipboard(contractAddress)} 
                 className="bg-gradient-to-r from-cyan-500 to-teal-500 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-lg shadow-cyan-500/30 flex items-center gap-2 relative overflow-hidden group"
               >
                 <span className="relative z-10">BOARD THE ARK</span>
                 <ArrowRight size={18} className="relative z-10" />
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </button>
-              <button 
+              </button-->
+              <!--button 
                 onClick={() => setShowOnboarding(true)} 
                 className="border border-cyan-500/50 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/20 hover:scale-105 transition-all text-center backdrop-blur-sm relative overflow-hidden group"
               >
                 <span className="relative z-10">DECODE PROTOCOL</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </button>
+              </button-->
             </div>
           </div>
 
@@ -187,17 +187,16 @@ const HeroSection = ({
           <div className="flex justify-center">
             <div className="relative w-96 h-96 flex items-center justify-center">
               {/* Orbital rings */}
-              <div className="absolute inset-0 border border-cyan-400/20 rounded-full animate-[spin_20s_linear_infinite]"></div>
-              <div className="absolute inset-8 border border-cyan-400/30 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
-              <div className="absolute inset-16 border border-cyan-400/40 rounded-full animate-[spin_10s_linear_infinite]"></div>
+              <div className="absolute inset-0 border border-cyan-400/30 rounded-full animate-[spin_20s_linear_infinite]"></div>
+              <div className="absolute inset-8 border border-cyan-400/40 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+              <div className="absolute inset-16 border border-cyan-400/50 rounded-full animate-[spin_10s_linear_infinite]"></div>
               
               {/* Central ❍ Symbol */}
               <div className="text-[24rem] font-black text-cyan-400 animate-[rotate-3d_15s_linear_infinite] relative z-10 drop-shadow-[0_0_30px_rgba(34,211,238,0.5)]">
                 ❍
               </div>
               
-              {/* Pulsing energy */}
-              <div className="absolute inset-0 bg-cyan-400/5 rounded-full animate-[pulse_3s_ease-in-out_infinite]"></div>
+              {/* Removed the pulsing energy background */}
             </div>
           </div>
         </div>
