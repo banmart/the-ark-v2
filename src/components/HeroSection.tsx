@@ -143,7 +143,7 @@ const HeroSection = ({
                   <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">
                     <span className="text-cyan-400">[TRANSMISSION_DECODED]</span>
                   </h3>
-                  <p className="text-lg text-gray-200 leading-relaxed">
+                  <p className="text-sm text-gray-200 leading-relaxed">
                     The digital waters are rising. Projects sink beneath the waves daily, their promises dissolved into the endless ocean of failed tokens. But from the storm clouds emerges a beacon of hope—
                     <span className="text-cyan-400 font-bold"> The ARK</span>, where 
                     <span className="text-teal-400 font-semibold"> deflation meets devotion</span>, and only the faithful shall inherit the new world.
