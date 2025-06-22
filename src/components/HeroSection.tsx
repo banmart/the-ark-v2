@@ -26,7 +26,7 @@ const HeroSection = ({
           playsInline
           className="w-full h-full object-cover"
         >
-          <source src="/path-to-your-video.mp4" type="video/mp4" />
+          <source src="https://capkhkvrmzbiyzaaqcts.supabase.co/storage/v1/object/sign/media/ark-background.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9kNWY4ZTA3NC1hYmI5LTQ3NDQtYjk3ZC0wMDMyZDEwMjBiZDEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYmFja2dyb3VuZC5tcDQiLCJpYXQiOjE3NTA1OTY3ODIsImV4cCI6MTc4MjEzMjc4Mn0.l-0uwdiiCLTri4fUi3Ypl43vp6Hy7s3gjxAg4BPZHHc" type="video/mp4" />
           {/* Fallback image if video fails to load */}
           <img 
             src="https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg" 
