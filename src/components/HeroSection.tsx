@@ -1,20 +1,20 @@
 import React from 'react';
 import { ArrowRight, Shield, Lock } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
-
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
   contractAddress: string;
   setShowOnboarding: (show: boolean) => void;
 }
-
-const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: HeroSectionProps) => {
+const HeroSection = ({
+  copyToClipboard,
+  contractAddress,
+  setShowOnboarding
+}: HeroSectionProps) => {
   const heroText = "The digital waters are rising. Projects sink beneath the waves daily, their promises dissolved into the endless ocean of failed tokens. But from the storm clouds emerges a beacon of hope—The ARK, where deflation meets devotion, and only the faithful shall inherit the new world.";
-
-  return (
-    <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
-      backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)), url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
-    }}>
+  return <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center hero-bg hero-bg-animated" style={{
+    backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)), url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
+  }}>
       
       {/* Content */}
       <div className="max-w-7xl mx-auto w-full relative z-20">
@@ -30,10 +30,7 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
             
             {/* Security Badges */}
             <div className="flex flex-wrap gap-3 mb-6 animate-[fade-in_1s_ease-out_0.3s_both]">
-              <div className="flex items-center gap-2 glass-card px-3 py-2 rounded-full">
-                <Shield className="w-4 h-4 text-green-400" />
-                <span className="text-sm font-semibold text-green-400">ReentrancyGuard</span>
-              </div>
+              
               <div className="flex items-center gap-2 glass-card px-3 py-2 rounded-full">
                 <Lock className="w-4 h-4 text-blue-400" />
                 <span className="text-sm font-semibold text-blue-400">No Admin Keys</span>
@@ -44,22 +41,14 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
             </div>
             
             <div className="mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
-              <TextGenerateEffect 
-                words={heroText}
-                duration={2}
-                filter={false}
-                className="text-gray-300"
-              />
+              <TextGenerateEffect words={heroText} duration={2} filter={false} className="text-gray-300" />
             </div>
             <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
               <button onClick={() => copyToClipboard(contractAddress)} className="bg-cyan-500 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 flex items-center gap-2">
                 Buy ARK
                 <ArrowRight size={18} />
               </button>
-              <button 
-                onClick={() => setShowOnboarding(true)}
-                className="border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/10 hover:scale-105 transition-all text-center backdrop-blur-sm"
-              >
+              <button onClick={() => setShowOnboarding(true)} className="border border-cyan-500/30 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/10 hover:scale-105 transition-all text-center backdrop-blur-sm">
                 Learn More
               </button>
             </div>
@@ -76,8 +65,6 @@ const HeroSection = ({ copyToClipboard, contractAddress, setShowOnboarding }: He
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
