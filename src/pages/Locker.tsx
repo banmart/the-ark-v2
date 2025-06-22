@@ -46,13 +46,13 @@ const Locker = () => {
         {/* Header */}
         <div className="text-center py-12">
           <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            🔒 THE ARK LOCKER 🔒
+            🔒 THE SACRED LOCKER 🔒
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-4">
-            Lock your ARK tokens and ascend through divine tiers. The longer you lock, the greater your blessings.
+            Those who commit their tokens to the sacred vault shall be blessed according to their devotion. The longer the covenant, the greater the divine reward.
           </p>
           <div className="text-sm text-gray-400 max-w-2xl mx-auto">
-            Powered by SimplifiedLockerVault • ReentrancyGuard Protected • Renounced Ownership
+            In the depths of The ARK lies the Sacred Locker—a divine vault where time transforms into treasure. Here, the faithful lock away their tokens, ascending through celestial tiers as their commitment deepens and their blessings multiply.
           </div>
           
           {(emergencyMode || contractPaused) && (
