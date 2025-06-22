@@ -10,8 +10,8 @@ const ContractTransparencySection = ({
   contractData,
   contractLoading
 }: ContractTransparencySectionProps) => {
-  // Mock data for demonstration
-  const mockContractData = {
+  // Default data structure to prevent undefined errors
+  const defaultContractData = {
     fees: {
       buy: 5,
       sell: 8,
@@ -44,7 +44,13 @@ const ContractTransparencySection = ({
     }
   };
 
-  const data = contractData || mockContractData;
+  // Safely merge contract data with defaults
+  const data = {
+    fees: { ...defaultContractData.fees, ...(contractData?.fees || {}) },
+    security: { ...defaultContractData.security, ...(contractData?.security || {}) },
+    liquidityData: { ...defaultContractData.liquidityData, ...(contractData?.liquidityData || {}) },
+    automation: { ...defaultContractData.automation, ...(contractData?.automation || {}) }
+  };
 
   const SecurityBadge = ({ feature, status, icon: Icon, description }) => (
     <div className={`flex items-center p-4 rounded-lg border-2 transition-all duration-300 ${
@@ -75,7 +81,7 @@ const ContractTransparencySection = ({
           {contractLoading ? (
             <span className="animate-pulse">--%</span>
           ) : (
-            `${percentage}%`
+            `${percentage || 0}%`
           )}
         </div>
       </div>
@@ -90,7 +96,7 @@ const ContractTransparencySection = ({
       <div className="mt-4 bg-gray-700 rounded-full h-2">
         <div 
           className={`bg-gradient-to-r from-${color}-500 to-${color}-400 h-2 rounded-full transition-all duration-500`}
-          style={{ width: `${(percentage / (maxPercentage || 10)) * 100}%` }}
+          style={{ width: `${((percentage || 0) / (maxPercentage || 10)) * 100}%` }}
         ></div>
       </div>
     </div>
@@ -124,27 +130,27 @@ const ContractTransparencySection = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <FeeCard 
               title="Buy Fee"
-              percentage={data.fees.buy}
-              maxPercentage={data.fees.maxBuy}
+              percentage={data?.fees?.buy || 0}
+              maxPercentage={data?.fees?.maxBuy || 10}
               description="Fee applied on token purchases"
               color="green"
             />
             <FeeCard 
               title="Sell Fee"
-              percentage={data.fees.sell}
-              maxPercentage={data.fees.maxSell}
+              percentage={data?.fees?.sell || 0}
+              maxPercentage={data?.fees?.maxSell || 12}
               description="Fee applied on token sales"
               color="red"
             />
             <FeeCard 
               title="Locker Rewards"
-              percentage={data.fees.locker}
+              percentage={data?.fees?.locker || 0}
               description="Distributed to token lockers"
               color="purple"
             />
             <FeeCard 
               title="Auto Liquidity"
-              percentage={data.fees.liquidity}
+              percentage={data?.fees?.liquidity || 0}
               description="Added to liquidity pool"
               color="blue"
             />
@@ -153,13 +159,13 @@ const ContractTransparencySection = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FeeCard 
               title="Development"
-              percentage={data.fees.development}
+              percentage={data?.fees?.development || 0}
               description="Funds project development"
               color="yellow"
             />
             <FeeCard 
               title="Marketing"
-              percentage={data.fees.marketing}
+              percentage={data?.fees?.marketing || 0}
               description="Community growth & marketing"
               color="pink"
             />
@@ -176,25 +182,25 @@ const ContractTransparencySection = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <SecurityBadge 
               feature="Contract Renounced"
-              status={data.security.renounced}
+              status={data?.security?.renounced || false}
               icon={CheckCircle}
               description="Ownership permanently renounced - no backdoors possible"
             />
             <SecurityBadge 
               feature="LP Tokens Locked"
-              status={data.security.lpLocked}
+              status={data?.security?.lpLocked || false}
               icon={Lock}
               description="Liquidity permanently locked - rug pull impossible"
             />
             <SecurityBadge 
               feature="Anti-Bot Protection"
-              status={data.security.antiBot}
+              status={data?.security?.antiBot || false}
               icon={Shield}
               description="Advanced bot detection and prevention system"
             />
             <SecurityBadge 
               feature="Honeypot Protection"
-              status={data.security.honeypotProtection}
+              status={data?.security?.honeypotProtection || false}
               icon={AlertTriangle}
               description="Protected against honeypot attacks"
             />
@@ -209,11 +215,11 @@ const ContractTransparencySection = ({
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-300">Max Wallet:</span>
-                  <span className="text-blue-300 font-semibold">{data.security.maxWallet}%</span>
+                  <span className="text-blue-300 font-semibold">{data?.security?.maxWallet || 0}%</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Max Transaction:</span>
-                  <span className="text-blue-300 font-semibold">{data.security.maxTransaction}%</span>
+                  <span className="text-blue-300 font-semibold">{data?.security?.maxTransaction || 0}%</span>
                 </div>
               </div>
             </div>
@@ -226,13 +232,13 @@ const ContractTransparencySection = ({
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-300">Auto Swap:</span>
-                  <span className={`font-semibold ${data.automation.swapEnabled ? 'text-green-400' : 'text-red-400'}`}>
-                    {data.automation.swapEnabled ? 'Enabled' : 'Disabled'}
+                  <span className={`font-semibold ${(data?.automation?.swapEnabled || false) ? 'text-green-400' : 'text-red-400'}`}>
+                    {(data?.automation?.swapEnabled || false) ? 'Enabled' : 'Disabled'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Swap Threshold:</span>
-                  <span className="text-cyan-300 font-semibold">{data.automation.swapThreshold}</span>
+                  <span className="text-cyan-300 font-semibold">{data?.automation?.swapThreshold || '0%'}</span>
                 </div>
               </div>
             </div>
@@ -254,7 +260,7 @@ const ContractTransparencySection = ({
                 Automatic liquidity addition when threshold is reached
               </p>
               <div className="text-2xl font-black text-cyan-300">
-                {data.automation.swapThreshold}
+                {data?.automation?.swapThreshold || '0%'}
               </div>
               <div className="text-sm text-gray-400">Trigger Threshold</div>
             </div>
@@ -266,7 +272,7 @@ const ContractTransparencySection = ({
                 Fees ready for liquidity addition
               </p>
               <div className="text-2xl font-black text-blue-300">
-                {contractLoading ? 'Loading...' : data.liquidityData.liquidityFeeAccumulated}
+                {contractLoading ? 'Loading...' : (data?.liquidityData?.liquidityFeeAccumulated || '0')}
               </div>
               <div className="text-sm text-gray-400">ARK Tokens</div>
             </div>
@@ -278,7 +284,7 @@ const ContractTransparencySection = ({
                 Maximum tokens swapped per transaction
               </p>
               <div className="text-2xl font-black text-green-300">
-                {data.automation.maxSwapAmount}
+                {data?.automation?.maxSwapAmount || '0%'}
               </div>
               <div className="text-sm text-gray-400">Of Total Supply</div>
             </div>
@@ -312,7 +318,7 @@ const ContractTransparencySection = ({
                   {contractLoading ? (
                     <span className="animate-pulse">Loading...</span>
                   ) : (
-                    data.liquidityData.lpTokensBurned
+                    data?.liquidityData?.lpTokensBurned || '0'
                   )}
                 </div>
                 <div className="text-sm text-gray-400 mt-2">Permanently Removed</div>
