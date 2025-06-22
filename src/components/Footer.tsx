@@ -44,7 +44,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-cyan-500/20 mt-8 pt-8 text-center text-gray-400 text-sm">
-          &copy; 2024 THE ARK. All rights reserved. Built for the faithful.
+          &copy; 2025 THE ARK ❍. 0xACC15eF8fa2e702d0138c3662A9E7d696f40F021
         </div>
       </div>
     </footer>
