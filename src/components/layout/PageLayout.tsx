@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { toast } from "@/components/ui/use-toast";
 import { useContractData } from '../../hooks/useContractData';
@@ -21,7 +22,7 @@ import ChartSection from '../ChartSection';
 import Footer from '../Footer';
 
 interface PageLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const PageLayout = ({ children }: PageLayoutProps) => {
@@ -151,6 +152,9 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
       {/* Chart Section */}
       <ChartSection />
+
+      {/* Render children if provided */}
+      {children}
 
       {/* Footer */}
       <Footer />
