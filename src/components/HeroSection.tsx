@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Shield, Lock } from "lucide-react";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
@@ -13,29 +13,55 @@ const HeroSection = ({
   contractAddress,
   setShowOnboarding
 }: HeroSectionProps) => {
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  
   const heroText = "The digital waters are rising. Projects sink beneath the waves daily, their promises dissolved into the endless ocean of failed tokens. But from the storm clouds emerges a beacon of hope—The ARK, where deflation meets devotion, and only the faithful shall inherit the new world.";
+  
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      const handleCanPlay = () => {
+        setVideoLoaded(true);
+      };
+      
+      video.addEventListener('canplay', handleCanPlay);
+      return () => video.removeEventListener('canplay', handleCanPlay);
+    }
+  }, []);
   
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center overflow-hidden">
-      {/* Video Background */}
+      {/* Video Background with Cinematic Fade In */}
       <div className="absolute inset-0 z-0">
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${
+            videoLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
         >
-          <source src="https://capkhkvrmzbiyzaaqcts.supabase.co/storage/v1/object/sign/media/ark-background.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9kNWY4ZTA3NC1hYmI5LTQ3NDQtYjk3ZC0wMDMyZDEwMjBiZDEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYmFja2dyb3VuZC5tcDQiLCJpYXQiOjE3NTA1OTY3ODIsImV4cCI6MTc4MjEzMjc4Mn0.l-0uwdiiCLTri4fUi3Ypl43vp6Hy7s3gjxAg4BPZHHc" type="video/mp4" />
-          {/* Fallback image if video fails to load */}
-          <img 
-            src="https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg" 
-            alt="ARK Background"
-            className="w-full h-full object-cover"
-          />
+          <source src="/path-to-your-video.mp4" type="video/mp4" />
         </video>
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20"></div>
+        
+        {/* Fallback image - shows while video loads */}
+        <div 
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${
+            videoLoaded ? 'opacity-0' : 'opacity-100'
+          }`}
+          style={{
+            backgroundImage: `url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
+          }}
+        />
+        
+        {/* Cinematic overlay with enhanced gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30"></div>
+        
+        {/* Additional cinematic vignette effect */}
+        <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-black/60"></div>
       </div>
       
       {/* Content */}
