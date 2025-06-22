@@ -64,7 +64,7 @@ const HeroSection = ({
             videoLoaded ? 'opacity-0' : 'opacity-100'
           }`}
           style={{
-            backgroundImage: `url('https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg')`
+            backgroundImage: `url('https://capkhkvrmzbiyzaaqcts.supabase.co/storage/v1/object/sign/media/ark-hero-fallback.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9kNWY4ZTA3NC1hYmI5LTQ3NDQtYjk3ZC0wMDMyZDEwMjBiZDEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstaGVyby1mYWxsYmFjay5wbmciLCJpYXQiOjE3NTA2MDA0MDMsImV4cCI6MTc4MjEzNjQwM30.2MmyzglE3BMmDMSlih-QiemzxalgmspSNly6Lcznrcs')`
           }}
         />
         
