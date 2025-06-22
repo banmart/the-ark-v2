@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { useChartData } from '../hooks/useChartData';
@@ -6,27 +5,22 @@ import MetricCards from './charts/MetricCards';
 import TokenDistributionChart from './charts/TokenDistributionChart';
 import FeeDistributionChart from './charts/FeeDistributionChart';
 import TrendChart from './charts/TrendChart';
-
 const ChartSection = () => {
-  const { 
-    tokenDistribution, 
-    feeDistribution, 
-    timeSeriesData, 
-    metricCards, 
-    loading, 
-    lastUpdated 
+  const {
+    tokenDistribution,
+    feeDistribution,
+    timeSeriesData,
+    metricCards,
+    loading,
+    lastUpdated
   } = useChartData();
-
   const [refreshing, setRefreshing] = useState(false);
-
   const handleRefresh = () => {
     setRefreshing(true);
     // Simulate refresh delay
     setTimeout(() => setRefreshing(false), 1000);
   };
-
-  return (
-    <section id="chart" className="relative z-10 py-20 px-6">
+  return <section id="chart" className="relative z-10 py-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -40,11 +34,7 @@ const ChartSection = () => {
           {/* Refresh Controls */}
           <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
             <span>Last Updated: {lastUpdated?.toLocaleTimeString()}</span>
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="flex items-center gap-2 px-3 py-1 glass-card rounded-lg hover:bg-cyan-400/10 transition-colors"
-            >
+            <button onClick={handleRefresh} disabled={refreshing} className="flex items-center gap-2 px-3 py-1 glass-card rounded-lg hover:bg-cyan-400/10 transition-colors">
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
             </button>
@@ -55,10 +45,7 @@ const ChartSection = () => {
         <MetricCards metrics={metricCards} loading={loading} />
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <TokenDistributionChart data={tokenDistribution} />
-          <FeeDistributionChart data={feeDistribution} />
-        </div>
+        
 
         {/* Trend Chart */}
         <div className="grid grid-cols-1 gap-6">
@@ -77,8 +64,6 @@ const ChartSection = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default ChartSection;
