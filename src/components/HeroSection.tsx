@@ -80,7 +80,7 @@ const HeroSection = ({
           <div className="relative">
             {/* Tech HUD Elements */}
             <div className="absolute -top-8 -left-4 text-cyan-400/40 text-xs font-mono">
-              [SYSTEM_INIT] 0x7A8B9C2D
+              [SYSTEM_INIT] 0xACC15eF8fa2e...
             </div>
             <div className="absolute -top-8 right-0 text-cyan-400/40 text-xs font-mono">
               {new Date().toISOString().slice(0, 19)}Z
@@ -187,10 +187,6 @@ const HeroSection = ({
           {/* Right side - Enhanced ❍ Symbol with NO background overlay */}
           <div className="flex justify-center">
             <div className="relative w-96 h-96 flex items-center justify-center">
-              {/* Orbital rings */}
-              <div className="absolute inset-0 border border-cyan-400/30 rounded-full animate-[spin_20s_linear_infinite]"></div>
-              <div className="absolute inset-8 border border-cyan-400/40 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
-              <div className="absolute inset-16 border border-cyan-400/50 rounded-full animate-[spin_10s_linear_infinite]"></div>
               
               {/* Central ❍ Symbol */}
               <div className="text-[24rem] font-black text-cyan-400 animate-[rotate-3d_15s_linear_infinite] relative z-10 drop-shadow-[0_0_30px_rgba(34,211,238,0.5)]">
