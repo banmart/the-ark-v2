@@ -113,7 +113,7 @@ const HeroSection = ({
               <div className={`transition-all duration-1000 delay-500 ${textPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <div className="flex items-center gap-2 text-green-400 font-mono text-sm mb-2">
                   <Zap className="w-4 h-4 animate-pulse" />
-                  <span>SCANNING PULSECHAIN NETWORKS... [████████████] 100%</span>
+                  <span>SCANNING BLOCKCHAIN NETWORKS... [████████████] 100%</span>
                 </div>
                 <div className="text-yellow-400 font-mono text-xs ml-6">
                   → DETECTING FAILED PROJECTS: 47,392 TOKENS
@@ -141,7 +141,7 @@ const HeroSection = ({
               <div className={`transition-all duration-2000 delay-1500 ${textPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <div className="border-l-2 border-cyan-400 pl-4 my-6">
                   <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-                    <span className="text-cyan-400">[TRANSMISSION_DECODED]</span>
+                    <span className="text-cyan-400">[TRANSMISSION DECODED]</span>
                   </h3>
                   <p className="text-sm text-gray-200 leading-relaxed">
                     The digital waters are rising. Projects sink beneath the waves daily, their promises dissolved into the endless ocean of failed tokens. But from the storm clouds emerges a beacon of hope—
