@@ -31,7 +31,7 @@ const HeroSection = ({
             {/* Security Badges */}
             
             
-            <div className="mb-8 animate-[fade-in_1s_ease-out_0.4s_both]">
+            <div className="text-xl text-gray-300 max-w-3xl mx-auto mb-4 animate-[fade-in_1s_ease-out_0.4s_both]">
               <TextGenerateEffect words={heroText} duration={2} filter={false} className="text-gray-300" />
             </div>
             <div className="flex flex-col sm:flex-row gap-4 animate-[fade-in_1s_ease-out_0.6s_both]">
