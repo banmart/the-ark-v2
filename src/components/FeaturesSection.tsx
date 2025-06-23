@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Flame, Users, Droplets, Lock, Zap, Database, Activity, Shield } from 'lucide-react';
 
@@ -242,7 +243,7 @@ const FeaturesSection = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes scan {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(100vw); }

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, X, Shield, Coins, Users, Lock, Sparkles, Star, Crown, Flame } from "lucide-react";
 
@@ -38,7 +39,7 @@ const DialogTitle = ({ className, children }) => (
   </h1>
 );
 
-const Button = ({ variant = "default", size = "default", disabled, onClick, className, children, ...props }) => {
+const Button = ({ variant = "default", size = "default", disabled = false, onClick, className, children, ...props }) => {
   const baseClasses = "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500/50";
   
   const variants = {
