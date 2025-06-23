@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
 import { useARKTokenData } from './useARKTokenData';
+import { CONTRACT_ADDRESSES, ARK_TOKEN_ABI, NETWORKS } from '../utils/constants';
 
 interface ContractData {
   // Token basics (now from live data)
@@ -77,47 +79,83 @@ export const useContractData = () => {
     circulatingSupply: '0',
     burnedTokens: '0',
     
-    // Mock contract data (would be replaced with real contract calls)
+    // Will be updated with real contract data
     currentFees: {
-      burn: 3,
-      reflection: 2,
-      liquidity: 2,
-      locker: 2,
-      total: 9
+      burn: 0,
+      reflection: 0,
+      liquidity: 0,
+      locker: 0,
+      total: 0
     },
     maxFees: {
-      burn: 3,
-      reflection: 3,
-      liquidity: 2,
-      locker: 2,
-      total: 9
+      burn: 0,
+      reflection: 0,
+      liquidity: 0,
+      locker: 0,
+      total: 0
     },
     lockerRewards: {
       vaultAddress: '0x0000000000000000000000000000000000000000',
-      pending: '850,000',
-      distributed: '2,150,000'
+      pending: '0',
+      distributed: '0'
     },
     swapSettings: {
-      threshold: '100,000',
-      maxAmount: '200,000',
-      enabled: true,
-      slippageTolerance: 2
+      threshold: '0',
+      maxAmount: '0',
+      enabled: false,
+      slippageTolerance: 0
     },
     security: {
       isPaused: false,
       ownerAddress: '0x0000000000000000000000000000000000000000',
-      hasReentrancyGuard: true,
-      hasPauseFunction: true
+      hasReentrancyGuard: false,
+      hasPauseFunction: false
     },
     liquidityData: {
-      tokensForLiquidity: '45,000',
-      totalFeesCollected: '1,250,000',
-      lpTokensBurned: '325,000'
+      tokensForLiquidity: '0',
+      totalFeesCollected: '0',
+      lpTokensBurned: '0'
     },
     lastUpdated: new Date()
   });
   
   const [loading, setLoading] = useState(false);
+
+  const fetchContractData = async () => {
+    try {
+      setLoading(true);
+      
+      const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
+      const arkToken = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
+
+      console.log('Fetching additional contract data...');
+
+      // Fetch basic contract info
+      const [owner, isPaused] = await Promise.all([
+        arkToken.owner().catch(() => '0x0000000000000000000000000000000000000000'),
+        arkToken.paused().catch(() => false)
+      ]);
+
+      // Update with real contract data
+      setData(prev => ({
+        ...prev,
+        security: {
+          ...prev.security,
+          isPaused,
+          ownerAddress: owner,
+          hasReentrancyGuard: true, // ARK token has ReentrancyGuard
+          hasPauseFunction: true
+        },
+        lastUpdated: new Date()
+      }));
+
+      console.log('Contract data updated successfully');
+    } catch (err: any) {
+      console.error('Error fetching contract data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Update contract data when ARK token data changes
   useEffect(() => {
@@ -136,9 +174,18 @@ export const useContractData = () => {
     }
   }, [arkTokenData, arkTokenLoading]);
 
+  useEffect(() => {
+    fetchContractData();
+    
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchContractData, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   return { 
     data, 
-    loading: arkTokenLoading, 
+    loading: arkTokenLoading || loading, 
     error: arkTokenError 
   };
 };

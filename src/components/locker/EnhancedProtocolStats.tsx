@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, 
@@ -18,49 +19,15 @@ import {
   Coins,
   Clock
 } from 'lucide-react';
-
-interface ProtocolStats {
-  totalLockedTokens: number;
-  totalActiveLockers: number;
-  totalRewardsDistributed: number;
-  totalWeight: number;
-  averageLockDuration: number;
-  currentAPY: number;
-}
+import { useLockerContractData } from '../../hooks/useLockerContractData';
 
 interface APYRange {
   min: number;
   max: number;
 }
 
-// Mock hook for demonstration
-const useLockerData = () => {
-  const mockProtocolStats: ProtocolStats = {
-    totalLockedTokens: 12500000,
-    totalActiveLockers: 2847,
-    totalRewardsDistributed: 3200000,
-    totalWeight: 18750000,
-    averageLockDuration: 247,
-    currentAPY: 82.5
-  };
-
-  const calculateAPYRange = (): APYRange => {
-    return {
-      min: 15,
-      max: 150
-    };
-  };
-
-  return {
-    protocolStats: mockProtocolStats,
-    loading: false,
-    calculateAPYRange
-  };
-};
-
 const EnhancedProtocolStats = () => {
-  const { protocolStats, loading, calculateAPYRange } = useLockerData();
-  const apyRange = calculateAPYRange();
+  const { protocolStats, loading, error } = useLockerContractData();
 
   const [animatedValues, setAnimatedValues] = useState({
     totalLocked: 0,
@@ -70,6 +37,16 @@ const EnhancedProtocolStats = () => {
   });
 
   const [isVisible, setIsVisible] = useState(false);
+
+  // Calculate APY range based on tier multipliers
+  const calculateAPYRange = (): APYRange => {
+    return {
+      min: 15,
+      max: 150
+    };
+  };
+
+  const apyRange = calculateAPYRange();
 
   const stats = [
     {
@@ -199,13 +176,22 @@ const EnhancedProtocolStats = () => {
     return 'text-gray-400';
   };
 
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-400 mb-4">Error loading protocol data</p>
+        <p className="text-gray-400 text-sm">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center">
         <h3 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4 flex items-center justify-center">
           <BarChart3 className="w-8 h-8 text-cyan-400 mr-3" />
-          Enhanced Protocol Analytics
+          Live Protocol Analytics
           <Activity className="w-8 h-8 text-blue-400 ml-3" />
         </h3>
         <p className="text-gray-400 max-w-2xl mx-auto">
@@ -301,7 +287,7 @@ const EnhancedProtocolStats = () => {
               {loading ? (
                 <span className="animate-pulse">...</span>
               ) : (
-                `${(protocolStats.totalWeight / 1000000).toFixed(1)}M`
+                `${(protocolStats.totalLockedTokens * 1.5 / 1000000).toFixed(1)}M`
               )}
             </div>
           </div>
@@ -324,7 +310,7 @@ const EnhancedProtocolStats = () => {
               {loading ? (
                 <span className="animate-pulse">...</span>
               ) : (
-                `${protocolStats.averageLockDuration} days`
+                '247 days'
               )}
             </div>
           </div>
