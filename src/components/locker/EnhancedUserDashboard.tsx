@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Clock, 
@@ -20,122 +21,11 @@ import {
   CheckCircle,
   Coins
 } from 'lucide-react';
-
-interface UserStats {
-  totalLocked: number;
-  totalRewardsEarned: number;
-  activeLocksCount: number;
-  userWeight: number;
-  pendingRewards: number;
-}
-
-interface UserLock {
-  id: number;
-  amount: number;
-  lockTime: number;
-  unlockTime: number;
-  tier: number;
-  multiplier: number;
-  totalRewardsEarned: number;
-  lockPeriod: number;
-  daysRemaining: number;
-}
-
-interface LockTier {
-  name: string;
-  icon: string;
-  color: string;
-  multiplier: number;
-}
+import { useLockerData } from '../../hooks/useLockerData';
 
 interface EnhancedUserDashboardProps {
   isConnected: boolean;
 }
-
-// Mock hook for demonstration
-const useLockerData = () => {
-  const mockUserStats: UserStats = {
-    totalLocked: 250000,
-    totalRewardsEarned: 18750,
-    activeLocksCount: 3,
-    userWeight: 375000,
-    pendingRewards: 2847
-  };
-
-  const mockLockTiers: LockTier[] = [
-    { name: 'Bronze', icon: '⛵', color: '#ca8a04', multiplier: 10000 },
-    { name: 'Silver', icon: '🛡️', color: '#9ca3af', multiplier: 15000 },
-    { name: 'Gold', icon: '👑', color: '#fbbf24', multiplier: 20000 },
-    { name: 'Diamond', icon: '💎', color: '#06b6d4', multiplier: 30000 },
-    { name: 'Platinum', icon: '⭐', color: '#8b5cf6', multiplier: 50000 },
-    { name: 'Legendary', icon: '⚡', color: '#f97316', multiplier: 80000 }
-  ];
-
-  const mockUserLocks: UserLock[] = [
-    {
-      id: 1,
-      amount: 50000,
-      lockTime: Date.now() / 1000 - (86400 * 45),
-      unlockTime: Date.now() / 1000 + (86400 * 45),
-      tier: 0,
-      multiplier: 1.0,
-      totalRewardsEarned: 2500,
-      lockPeriod: 86400 * 90,
-      daysRemaining: 45
-    },
-    {
-      id: 2,
-      amount: 100000,
-      lockTime: Date.now() / 1000 - (86400 * 120),
-      unlockTime: Date.now() / 1000 + (86400 * 60),
-      tier: 1,
-      multiplier: 1.5,
-      totalRewardsEarned: 8750,
-      lockPeriod: 86400 * 180,
-      daysRemaining: 60
-    },
-    {
-      id: 3,
-      amount: 100000,
-      lockTime: Date.now() / 1000 - (86400 * 350),
-      unlockTime: Date.now() / 1000 - (86400 * 5),
-      tier: 2,
-      multiplier: 2.0,
-      totalRewardsEarned: 7500,
-      lockPeriod: 86400 * 365,
-      daysRemaining: 0
-    }
-  ];
-
-  const calculateEarlyUnlockPenalty = (lock: UserLock) => {
-    const now = Date.now() / 1000;
-    const timeRemaining = Math.max(0, lock.unlockTime - now);
-    const totalLockTime = lock.lockPeriod;
-    const penaltyRate = (timeRemaining / totalLockTime) * 50; // Max 50% penalty
-    const penalty = lock.amount * (penaltyRate / 100);
-    const userReceives = lock.amount - penalty;
-    
-    return {
-      penalty,
-      penaltyRate,
-      userReceives
-    };
-  };
-
-  return {
-    userStats: mockUserStats,
-    userLocks: mockUserLocks,
-    calculateEarlyUnlockPenalty,
-    unlockTokens: async (lockId: number) => {
-      console.log('Unlocking lock:', lockId);
-    },
-    claimRewards: async () => {
-      console.log('Claiming rewards');
-    },
-    loading: false,
-    lockTiers: mockLockTiers
-  };
-};
 
 const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
   const { 
@@ -189,9 +79,6 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
     }
   };
 
-  const displayStats = isConnected ? userStats : userStats; // Same data for demo
-  const displayLocks = isConnected ? userLocks : userLocks; // Same data for demo
-
   return (
     <div className="space-y-8">
       {/* Connection Status */}
@@ -199,10 +86,10 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
         <div className="bg-gradient-to-r from-orange-500/10 via-yellow-500/10 to-orange-500/10 border-2 border-orange-500/30 rounded-xl p-6">
           <div className="flex items-center justify-center mb-4">
             <Wallet className="w-8 h-8 text-orange-400 mr-3" />
-            <h3 className="text-xl font-bold text-orange-400">Demo Mode - Connect Wallet</h3>
+            <h3 className="text-xl font-bold text-orange-400">Connect Wallet</h3>
           </div>
           <p className="text-center text-gray-300 mb-4">
-            The data below is for demonstration. Connect your wallet to see your actual positions.
+            Connect your wallet to view your actual locker positions and stats.
           </p>
           <button className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-black font-bold py-3 rounded-lg hover:scale-105 transition-transform">
             Connect Wallet to View Real Data
@@ -224,7 +111,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           <div className="bg-gradient-to-br from-blue-500/10 via-cyan-500/5 to-transparent border border-blue-500/30 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
             <Lock className="w-8 h-8 text-blue-400 mx-auto mb-3" />
             <div className="text-2xl font-bold text-white mb-1">
-              {loading ? <span className="animate-pulse">...</span> : displayStats.totalLocked.toLocaleString()}
+              {loading ? <span className="animate-pulse">...</span> : userStats.totalLocked.toLocaleString()}
             </div>
             <div className="text-sm text-gray-400">Total Locked ARK</div>
           </div>
@@ -232,7 +119,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-transparent border border-green-500/30 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
             <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-3" />
             <div className="text-2xl font-bold text-green-400 mb-1">
-              {loading ? <span className="animate-pulse">...</span> : displayStats.totalRewardsEarned.toLocaleString()}
+              {loading ? <span className="animate-pulse">...</span> : userStats.totalRewardsEarned.toLocaleString()}
             </div>
             <div className="text-sm text-gray-400">Total Earned ARK</div>
           </div>
@@ -240,7 +127,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent border border-purple-500/30 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
             <Users className="w-8 h-8 text-purple-400 mx-auto mb-3" />
             <div className="text-2xl font-bold text-purple-400 mb-1">
-              {loading ? <span className="animate-pulse">...</span> : displayStats.activeLocksCount}
+              {loading ? <span className="animate-pulse">...</span> : userStats.activeLocksCount}
             </div>
             <div className="text-sm text-gray-400">Active Positions</div>
           </div>
@@ -248,7 +135,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           <div className="bg-gradient-to-br from-yellow-500/10 via-orange-500/5 to-transparent border border-yellow-500/30 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
             <Award className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
             <div className="text-2xl font-bold text-yellow-400 mb-1">
-              {loading ? <span className="animate-pulse">...</span> : displayStats.userWeight.toFixed(0)}
+              {loading ? <span className="animate-pulse">...</span> : userStats.userWeight.toFixed(0)}
             </div>
             <div className="text-sm text-gray-400">Weight Score</div>
           </div>
@@ -269,7 +156,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           </div>
           <button
             onClick={handleClaimRewards}
-            disabled={!isConnected || displayStats.pendingRewards === 0 || loading || processingClaim}
+            disabled={!isConnected || userStats.pendingRewards === 0 || loading || processingClaim}
             className="bg-gradient-to-r from-green-500 to-emerald-600 text-black font-bold px-8 py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300 shadow-lg shadow-green-500/30 flex items-center gap-2"
           >
             {processingClaim ? (
@@ -288,21 +175,15 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
 
         <div className="flex items-center mb-4">
           <div className="text-4xl font-black text-green-400 mr-4">
-            {!isConnected ? `${displayStats.pendingRewards.toLocaleString()} ARK` : 
-             loading ? <span className="animate-pulse">Loading...</span> :
-             `${displayStats.pendingRewards.toLocaleString()} ARK`}
+            {loading ? <span className="animate-pulse">Loading...</span> :
+             `${userStats.pendingRewards.toLocaleString()} ARK`}
           </div>
-          {!isConnected && (
-            <div className="bg-orange-500/20 border border-orange-500/40 rounded-lg px-3 py-1">
-              <span className="text-xs text-orange-300 font-medium">DEMO</span>
-            </div>
-          )}
         </div>
 
         <div className="bg-black/30 rounded-lg p-4 border border-green-500/20">
           <div className="text-sm text-gray-300">
             💡 <strong>Weight-based distribution:</strong> Your share is calculated based on your total weight score 
-            ({displayStats.userWeight.toFixed(0)}) relative to all active lockers in the SimplifiedLockerVault.
+            ({userStats.userWeight.toFixed(0)}) relative to all active lockers in the SimplifiedLockerVault.
           </div>
         </div>
       </div>
@@ -321,10 +202,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           <div className="text-center py-12">
             <Wallet className="w-16 h-16 text-gray-500 mx-auto mb-4" />
             <div className="text-gray-400 mb-4">
-              Connect your wallet to view your actual lock positions
-            </div>
-            <div className="text-sm text-gray-500 mb-6">
-              The positions below are for demonstration purposes
+              Connect your wallet to view your lock positions
             </div>
           </div>
         ) : loading ? (
@@ -332,7 +210,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
             <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <div className="text-gray-400">Loading your positions from contract...</div>
           </div>
-        ) : displayLocks.length === 0 ? (
+        ) : userLocks.length === 0 ? (
           <div className="text-center py-12">
             <Lock className="w-16 h-16 text-gray-500 mx-auto mb-4" />
             <div className="text-gray-400 mb-4">
@@ -347,13 +225,14 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           </div>
         ) : (
           <div className="space-y-6">
-            {displayLocks.map((lock) => {
+            {userLocks.map((lock) => {
               const now = Date.now() / 1000;
               const isUnlocked = now >= lock.unlockTime;
               const penalty = calculateEarlyUnlockPenalty(lock);
               const tierInfo = getTierInfo(lock.tier);
               const TierIconComponent = getTierIconComponent(tierInfo.name);
               const progress = Math.max(0, Math.min(100, ((now - lock.lockTime) / (lock.unlockTime - lock.lockTime)) * 100));
+              const daysRemaining = Math.max(0, Math.ceil((lock.unlockTime - now) / (24 * 60 * 60)));
               
               return (
                 <div 
@@ -382,7 +261,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                               {tierInfo.name} Tier
                             </div>
                             <div className="text-sm text-gray-400">
-                              • {lock.multiplier}x multiplier
+                              • {(tierInfo.multiplier / 10000).toFixed(1)}x multiplier
                             </div>
                           </div>
                         </div>
@@ -398,7 +277,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                           ) : (
                             <>
                               <Clock className="w-4 h-4" />
-                              <span className="font-semibold">{lock.daysRemaining} days remaining</span>
+                              <span className="font-semibold">{daysRemaining} days remaining</span>
                             </>
                           )}
                         </div>

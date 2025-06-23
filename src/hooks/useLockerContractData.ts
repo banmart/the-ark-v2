@@ -1,17 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { CONTRACT_ADDRESSES, ARK_TOKEN_ABI, NETWORKS } from '../utils/constants';
-
-// Mock locker vault address and ABI for demonstration
-const LOCKER_VAULT_ADDRESS = '0x0000000000000000000000000000000000000000'; // Would be real address
-const LOCKER_VAULT_ABI = [
-  'function totalLockedTokens() view returns (uint256)',
-  'function totalRewardsDistributed() view returns (uint256)',
-  'function totalActiveLockers() view returns (uint256)',
-  'function emergencyMode() view returns (bool)',
-  'function paused() view returns (bool)'
-];
+import { CONTRACT_ADDRESSES, LOCKER_VAULT_ABI, LOCKER_VAULT_ADDRESS, NETWORKS } from '../utils/constants';
 
 interface ProtocolStats {
   totalLockedTokens: number;
@@ -61,84 +51,95 @@ export const useLockerContractData = (userAddress?: string) => {
   const fetchProtocolStats = async () => {
     try {
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
+      const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
       
-      // For demonstration, we'll use realistic mock data that simulates contract calls
-      // In production, this would connect to the actual SimplifiedLockerVault contract
-      console.log('Fetching protocol stats from locker contract...');
+      console.log('Fetching protocol stats from SimplifiedLockerVault contract...');
 
-      // Simulate realistic protocol statistics
-      const baseLockedTokens = 12500000; // 12.5M ARK locked
-      const variance = Math.random() * 0.1 - 0.05; // ±5% variance
-      const totalLocked = baseLockedTokens * (1 + variance);
-      
-      const baseRewards = 3200000; // 3.2M ARK distributed
-      const rewardVariance = Math.random() * 0.05; // Growing rewards
-      const totalRewards = baseRewards * (1 + rewardVariance);
-      
-      const baseLockers = 2847;
-      const lockerVariance = Math.floor(Math.random() * 100 - 50); // ±50 lockers
-      const totalLockers = Math.max(baseLockers + lockerVariance, 1);
+      // Call actual contract methods
+      const [totalLocked, totalRewards, totalLockers, emergency, paused] = await Promise.all([
+        contract.totalLockedTokens(),
+        contract.totalRewardsDistributed(),
+        contract.totalActiveLockers(),
+        contract.emergencyMode(),
+        contract.paused()
+      ]);
+
+      // Convert from wei to tokens (18 decimals)
+      const totalLockedTokens = parseFloat(ethers.formatEther(totalLocked));
+      const totalRewardsDistributed = parseFloat(ethers.formatEther(totalRewards));
+      const totalActiveLockers = parseInt(totalLockers.toString());
 
       setProtocolStats({
-        totalLockedTokens: totalLocked,
-        totalRewardsDistributed: totalRewards,
-        totalActiveLockers: totalLockers
+        totalLockedTokens,
+        totalRewardsDistributed,
+        totalActiveLockers
       });
 
-      setEmergencyMode(false); // Would come from contract
-      setContractPaused(false); // Would come from contract
+      setEmergencyMode(emergency);
+      setContractPaused(paused);
 
-      console.log('Protocol stats updated successfully');
+      console.log('Protocol stats fetched successfully:', {
+        totalLockedTokens,
+        totalRewardsDistributed,
+        totalActiveLockers,
+        emergency,
+        paused
+      });
     } catch (err: any) {
       console.error('Error fetching protocol stats:', err);
       setError(err.message || 'Failed to fetch protocol stats');
-      
-      // Fallback to reasonable defaults
-      setProtocolStats({
-        totalLockedTokens: 12500000,
-        totalRewardsDistributed: 3200000,
-        totalActiveLockers: 2847
-      });
     }
   };
 
   const fetchUserData = async (address: string) => {
     try {
       console.log('Fetching user data for address:', address);
+      
+      const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
+      const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
 
-      // Simulate user-specific data
-      // In production, this would query the user's locks from the contract
-      const mockUserStats = {
-        totalLocked: Math.random() * 50000 + 10000, // Random amount between 10K-60K
-        totalRewardsEarned: Math.random() * 5000 + 1000, // Random rewards
-        pendingRewards: Math.random() * 500 + 100, // Pending rewards
-        activeLocksCount: Math.floor(Math.random() * 5) + 1 // 1-5 active locks
-      };
+      // Get user stats and locks from contract
+      const [userStatsData, userLocksData, weight] = await Promise.all([
+        contract.userStats(address),
+        contract.getUserActiveLocks(address),
+        contract.calculateUserWeight(address)
+      ]);
 
-      setUserStats(mockUserStats);
+      // Parse user stats
+      const totalLocked = parseFloat(ethers.formatEther(userStatsData.totalLocked));
+      const totalRewardsEarned = parseFloat(ethers.formatEther(userStatsData.totalRewardsEarned));
+      const pendingRewards = parseFloat(ethers.formatEther(userStatsData.pendingRewards));
+      const activeLocksCount = parseInt(userStatsData.activeLocksCount.toString());
 
-      // Generate mock lock positions
-      const mockLocks: LockPosition[] = [];
-      for (let i = 0; i < mockUserStats.activeLocksCount; i++) {
-        const lockTime = Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000; // Random lock time in last 90 days
-        const lockPeriod = [30, 90, 180, 365][Math.floor(Math.random() * 4)]; // Random lock period
-        
-        mockLocks.push({
-          id: i,
-          amount: Math.random() * 20000 + 5000,
-          lockTime: Math.floor(lockTime / 1000),
-          unlockTime: Math.floor((lockTime + lockPeriod * 24 * 60 * 60 * 1000) / 1000),
-          lockPeriod,
-          tier: Math.floor(Math.random() * 6) + 1, // Tier 1-6
-          totalRewardsEarned: Math.random() * 1000 + 100,
-          active: true
-        });
-      }
+      setUserStats({
+        totalLocked,
+        totalRewardsEarned,
+        pendingRewards,
+        activeLocksCount
+      });
 
-      setUserLocks(mockLocks);
-      setUserWeight(mockUserStats.totalLocked * 1.5); // Weight calculation
+      // Parse user locks
+      const locks: LockPosition[] = userLocksData.map((lock: any, index: number) => ({
+        id: index,
+        amount: parseFloat(ethers.formatEther(lock.amount)),
+        lockTime: parseInt(lock.lockTime.toString()),
+        unlockTime: parseInt(lock.unlockTime.toString()),
+        lockPeriod: parseInt(lock.lockPeriod.toString()),
+        tier: parseInt(lock.tier.toString()),
+        totalRewardsEarned: parseFloat(ethers.formatEther(lock.totalRewardsEarned)),
+        active: lock.active
+      }));
 
-      console.log('User data updated successfully');
+      setUserLocks(locks);
+      setUserWeight(parseFloat(ethers.formatEther(weight)));
+
+      console.log('User data fetched successfully:', {
+        totalLocked,
+        totalRewardsEarned,
+        pendingRewards,
+        activeLocksCount,
+        locks: locks.length
+      });
     } catch (err: any) {
       console.error('Error fetching user data:', err);
       setError(err.message || 'Failed to fetch user data');
