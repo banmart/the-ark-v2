@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useWallet } from '../hooks/useWallet';
 import { useLockerData } from '../hooks/useLockerData';
@@ -136,29 +137,29 @@ const Locker = () => {
           )}
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 pb-20">
+        <div className="max-w-7xl mx-auto px-6 pb-20 space-y-12">
           {/* Enhanced Protocol Stats */}
           <div className={`transition-all duration-1000 delay-1000 ${vaultPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <EnhancedProtocolStats />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
-            {/* Enhanced Lock Interface */}
-            <div className={`space-y-8 transition-all duration-1000 delay-1200 ${vaultPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <EnhancedLockInterface isConnected={isConnected} />
+          {/* Row 1: Enhanced Lock Interface */}
+          <div className={`transition-all duration-1000 delay-1200 ${vaultPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <EnhancedLockInterface isConnected={isConnected} />
+          </div>
 
-              {/* Tier Information */}
-              <TierBenefits lockTiers={lockTiers} />
-            </div>
+          {/* Row 2: Sacred Lock Tier Benefits */}
+          <div className={`transition-all duration-1000 delay-1400 ${vaultPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <TierBenefits lockTiers={lockTiers} />
+          </div>
 
-            {/* Enhanced User Dashboard */}
-            <div className={`transition-all duration-1000 delay-1400 ${vaultPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <EnhancedUserDashboard isConnected={isConnected} />
-            </div>
+          {/* Row 3: Your Sacred Lock Positions */}
+          <div className={`transition-all duration-1000 delay-1600 ${vaultPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <EnhancedUserDashboard isConnected={isConnected} />
           </div>
 
           {/* Enhanced Contract Security Matrix */}
-          <div className={`mt-16 transition-all duration-1000 delay-1600 ${vaultPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className={`transition-all duration-1000 delay-1800 ${vaultPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <div className="relative bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-1 shadow-2xl shadow-cyan-500/20">
               {/* Animated Security Border */}
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-blue-500/20 rounded-2xl animate-[pulse_4s_ease-in-out_infinite]"></div>
