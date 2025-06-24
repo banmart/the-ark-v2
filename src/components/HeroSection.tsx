@@ -88,7 +88,7 @@ const HeroSection = ({
 
             {/* Main Title with Glitch Effect */}
             <div className="relative mb-6">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent relative z-10">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-cyan-400 relative z-10">
                 <span className="inline-block animate-[glitch_2s_ease-in-out_infinite]">THE</span>{' '}
                 <span className="inline-block animate-[glitch_2s_ease-in-out_0.3s_infinite]">ARK</span>{' '}
                 <span className="inline-block text-cyan-300 animate-[pulse_2s_ease-in-out_infinite]">❍</span>
