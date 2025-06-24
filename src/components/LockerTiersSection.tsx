@@ -176,7 +176,7 @@ const LockerTiersSection = ({
           <ul className="space-y-2 text-sm text-gray-300 mb-6">
             {tier.features.map((feature, index) => (
               <li key={index} className="flex items-center font-mono text-xs">
-                <span className="text-green-400 mr-2 font-mono">></span>
+                <span className="text-green-400 mr-2 font-mono">&gt;</span>
                 {feature}
               </li>
             ))}

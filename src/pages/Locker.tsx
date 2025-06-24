@@ -7,6 +7,7 @@ import MobileDock from '../components/MobileDock';
 import Footer from '../components/Footer';
 import LockerHeader from '../components/locker/LockerHeader';
 import EmergencyStatus from '../components/locker/EmergencyStatus';
+import TierLegend from '../components/locker/TierLegend';
 import LockerOperations from '../components/locker/LockerOperations';
 
 const Locker = () => {
@@ -68,6 +69,9 @@ const Locker = () => {
           emergencyMode={emergencyMode} 
           contractPaused={contractPaused} 
         />
+
+        {/* Tier Legend */}
+        <TierLegend />
 
         {/* Operations */}
         <LockerOperations isConnected={isConnected} />
