@@ -9,6 +9,9 @@ interface SwapContextType {
   isLoading: boolean;
   slippage: number;
   canSwap: boolean;
+  priceImpact: number;
+  minimumReceived: string;
+  pairExists: boolean;
   setFromAmount: (amount: string) => void;
   setSlippage: (slippage: number) => void;
   handleSwap: () => Promise<void>;
@@ -34,6 +37,9 @@ export const SwapProvider = ({ children }: SwapProviderProps) => {
     toAmount,
     isLoading,
     slippage,
+    priceImpact,
+    minimumReceived,
+    pairExists,
     setFromAmount,
     setSlippage,
     executeSwap,
@@ -42,17 +48,38 @@ export const SwapProvider = ({ children }: SwapProviderProps) => {
 
   const handleSwap = async () => {
     try {
+      if (!pairExists) {
+        toast({
+          variant: "destructive",
+          title: "Pair Not Available",
+          description: "ARK/WPLS trading pair not found on PulseX. Please check if liquidity exists."
+        });
+        return;
+      }
+
       const result = await executeSwap();
       toast({
         title: "Swap Successful!",
-        description: `Transaction hash: ${result.hash.slice(0, 10)}...`
+        description: `Swapped ${result.amountIn} PLS for ${parseFloat(result.amountOut).toFixed(2)} ARK. TX: ${result.hash.slice(0, 10)}...`
       });
     } catch (error: any) {
       console.error("Swap error:", error);
+      
+      let errorMessage = "Failed to execute swap";
+      if (error.message.includes("insufficient funds")) {
+        errorMessage = "Insufficient PLS balance for swap + gas fees";
+      } else if (error.message.includes("slippage")) {
+        errorMessage = "Price changed too much. Try increasing slippage tolerance.";
+      } else if (error.message.includes("liquidity")) {
+        errorMessage = "Insufficient liquidity for this trade size";
+      } else if (error.message.includes("user rejected")) {
+        errorMessage = "Transaction was rejected";
+      }
+      
       toast({
         variant: "destructive",
         title: "Swap Failed",
-        description: error.message || "Failed to execute swap"
+        description: errorMessage
       });
     }
   };
@@ -63,6 +90,9 @@ export const SwapProvider = ({ children }: SwapProviderProps) => {
     isLoading,
     slippage,
     canSwap,
+    priceImpact,
+    minimumReceived,
+    pairExists,
     setFromAmount,
     setSlippage,
     handleSwap,

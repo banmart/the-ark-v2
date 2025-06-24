@@ -1,3 +1,4 @@
+
 // Network and contract configurations
 export const NETWORKS = {
   PULSECHAIN: {
@@ -15,7 +16,8 @@ export const NETWORKS = {
 
 export const CONTRACT_ADDRESSES = {
   ARK_TOKEN: '0xACC15eF8fa2e702d0138c3662A9E7d696f40F021',
-  DEX_ROUTER: '0xabcdef1234567890abcdef1234567890abcdef12',
+  PULSEX_V2_ROUTER: '0x98bf93ebf5c380C0e6Ae8e192A7e2AE08edAcc02', // Real PulseX V2 Router
+  WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27', // Wrapped PLS
   DEAD_ADDRESS: '0x000000000000000000000000000000000000dEaD',
 };
 
@@ -152,9 +154,12 @@ export const ARK_TOKEN_ABI = [
   'event LockerRewardsDistributed(uint256 amount)',
 ];
 
+// Real PulseX V2 Router ABI
 export const DEX_ROUTER_ABI = [
   'function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)',
+  'function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)',
   'function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts)',
+  'function getAmountsIn(uint amountOut, address[] calldata path) external view returns (uint[] memory amounts)',
   'function addLiquidityETH(address token, uint amountTokenDesired, uint amountTokenMin, uint amountETHMin, address to, uint deadline) external payable returns (uint amountToken, uint amountETH, uint liquidity)',
   'function WPLS() external pure returns (address)',
   'function factory() external pure returns (address)',
