@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Lock, Wallet, Bridge } from 'lucide-react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Home, Lock, Wallet, Link } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
 
 interface MobileDockProps {
@@ -28,7 +28,7 @@ const MobileDock = ({
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
       <div className="glass-nav border-t border-cyan-500/30 mx-4 mb-4 rounded-xl">
         <div className="flex items-center justify-center gap-2 py-4">
-          <Link 
+          <RouterLink 
             to="/" 
             onClick={() => window.scrollTo(0, 0)}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 ${
@@ -39,9 +39,9 @@ const MobileDock = ({
           >
             <Home size={18} />
             <span className="text-xs font-medium">Home</span>
-          </Link>
+          </RouterLink>
           
-          <Link 
+          <RouterLink 
             to="/locker" 
             onClick={() => window.scrollTo(0, 0)}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 ${
@@ -52,7 +52,7 @@ const MobileDock = ({
           >
             <Lock size={18} />
             <span className="text-xs font-medium">Locker</span>
-          </Link>
+          </RouterLink>
 
           <a 
             href="https://pulse-bridge-onboard.lovable.app/" 
@@ -60,7 +60,7 @@ const MobileDock = ({
             rel="noopener noreferrer"
             className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10"
           >
-            <Bridge size={18} />
+            <Link size={18} />
             <span className="text-xs font-medium">Bridge</span>
           </a>
 
