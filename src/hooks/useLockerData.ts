@@ -154,9 +154,11 @@ export const useLockerData = () => {
     userWeight: contractUserWeight
   };
 
-  // Transform contract locks to UI format
+  // Transform contract locks to UI format with proper tier validation
   const userLocks: LockedPosition[] = contractUserLocks.map(lock => {
-    const tierInfo = lockTiers[lock.tier];
+    // Ensure tier is within valid range, default to Bronze (0) if invalid
+    const tierIndex = (lock.tier >= 0 && lock.tier < lockTiers.length) ? lock.tier : 0;
+    const tierInfo = lockTiers[tierIndex];
     const now = Date.now() / 1000;
     const daysRemaining = Math.max(0, Math.ceil((lock.unlockTime - now) / (24 * 60 * 60)));
     
@@ -166,7 +168,7 @@ export const useLockerData = () => {
       lockTime: lock.lockTime,
       unlockTime: lock.unlockTime,
       lockPeriod: lock.lockPeriod,
-      tier: lock.tier as LockTier,
+      tier: tierIndex as LockTier,
       tierName: tierInfo.name,
       totalRewardsEarned: lock.totalRewardsEarned,
       active: lock.active,
