@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -32,6 +33,14 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
             <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
             <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
             <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
+            <a 
+              href="https://pulse-bridge-onboard.lovable.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-300 hover:text-cyan-400 transition-colors"
+            >
+              Bridge
+            </a>
             <button 
               onClick={handleConnectWallet} 
               disabled={isConnecting}
