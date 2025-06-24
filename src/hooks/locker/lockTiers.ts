@@ -66,3 +66,6 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     maxDays: 1826
   }
 ];
+
+// Export ContractConstants type for other files to use
+export type { ContractConstants };
