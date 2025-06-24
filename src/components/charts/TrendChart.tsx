@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TimeSeriesData } from '../../hooks/useChartData';
 
 interface TrendChartProps {
@@ -15,7 +15,7 @@ const TrendChart = ({ data }: TrendChartProps) => {
           <p className="text-cyan-400 font-semibold">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }}>
-              {entry.name}: {entry.value.toLocaleString()}
+              Price: ${entry.value.toFixed(6)}
             </p>
           ))}
         </div>
@@ -25,11 +25,11 @@ const TrendChart = ({ data }: TrendChartProps) => {
   };
 
   return (
-    <div className="glass-card rounded-xl p-6 col-span-2">
+    <div className="glass-card rounded-xl p-6">
       <h3 className="text-xl font-bold text-cyan-400 mb-4 text-center">
-        30-Day Trend Analysis
+        ARK Token Price History (30 Days)
       </h3>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={400}>
         <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 255, 0.1)" />
           <XAxis 
@@ -37,27 +37,20 @@ const TrendChart = ({ data }: TrendChartProps) => {
             stroke="#ffffff"
             fontSize={10}
           />
-          <YAxis stroke="#ffffff" fontSize={12} />
+          <YAxis 
+            stroke="#ffffff" 
+            fontSize={12}
+            tickFormatter={(value) => `$${value.toFixed(6)}`}
+          />
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            wrapperStyle={{ color: '#ffffff' }}
-            formatter={(value) => <span style={{ color: '#ffffff' }}>{value}</span>}
-          />
           <Line 
             type="monotone" 
-            dataKey="burned" 
-            stroke="#ff6b35" 
-            strokeWidth={3}
-            name="Burned Tokens"
-            dot={{ fill: '#ff6b35', strokeWidth: 2, r: 4 }}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="holders" 
+            dataKey="price" 
             stroke="#00ffff" 
             strokeWidth={3}
-            name="Total Holders"
+            name="Price (USD)"
             dot={{ fill: '#00ffff', strokeWidth: 2, r: 4 }}
+            activeDot={{ r: 6, fill: '#00ffff' }}
           />
         </LineChart>
       </ResponsiveContainer>

@@ -1,18 +1,12 @@
 
 import React, { useState } from 'react';
-import { RefreshCw, BarChart3, TrendingUp, Activity, Database } from 'lucide-react';
+import { RefreshCw, BarChart3 } from 'lucide-react';
 import { useChartData } from '../hooks/useChartData';
-import MetricCards from './charts/MetricCards';
-import TokenDistributionChart from './charts/TokenDistributionChart';
-import FeeDistributionChart from './charts/FeeDistributionChart';
 import TrendChart from './charts/TrendChart';
 
 const ChartSection = () => {
   const {
-    tokenDistribution,
-    feeDistribution,
     timeSeriesData,
-    metricCards,
     loading,
     lastUpdated
   } = useChartData();
@@ -39,7 +33,7 @@ const ChartSection = () => {
           </div>
           
           <p className="text-gray-300 text-lg mb-6 max-w-4xl mx-auto leading-relaxed">
-            Real-time data from ARK Token Contract on PulseChain
+            Real-time price data from ARK Token Contract on PulseChain
             <br />
             <code className="text-cyan-400 text-sm bg-black/30 px-3 py-1 rounded-lg mt-2 inline-block">
               0xACC15eF8fa2e702d0138c3662A9E7d696f40F021
@@ -63,19 +57,7 @@ const ChartSection = () => {
           </div>
         </div>
 
-        {/* Metric Cards */}
-        <MetricCards metrics={metricCards} loading={loading} />
-
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Token Distribution Chart */}
-          <TokenDistributionChart data={tokenDistribution} />
-          
-          {/* Fee Distribution Chart */}
-          <FeeDistributionChart data={feeDistribution} />
-        </div>
-
-        {/* Trend Chart - Full Width */}
+        {/* Price Chart - Full Width */}
         <div className="mb-8">
           <TrendChart data={timeSeriesData} />
         </div>
@@ -85,10 +67,10 @@ const ChartSection = () => {
           <div className="bg-black/20 backdrop-blur-sm border border-gray-500/20 rounded-xl p-6 inline-block max-w-2xl">
             <div className="flex items-center justify-center mb-3">
               <BarChart3 className="w-5 h-5 text-cyan-400 mr-2" />
-              <span className="text-lg font-semibold text-white">Live Data Source</span>
+              <span className="text-lg font-semibold text-white">Live Price Data Source</span>
             </div>
             <p className="text-sm text-gray-400 mb-2">
-              📊 Data sourced directly from PulseChain blockchain • Updates every 30 seconds
+              📊 Price data sourced directly from PulseChain blockchain • Updates every 30 seconds
             </p>
             <div className="bg-black/40 rounded-lg p-3 mt-3">
               <p className="text-xs text-gray-500 font-mono">
