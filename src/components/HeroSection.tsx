@@ -56,7 +56,7 @@ const HeroSection = ({
             videoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <source src="https://capkhkvrmzbiyzaaqcts.supabase.co/storage/v1/object/sign/media/ark-background.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9kNWY4ZTA3NC1hYmI5LTQ3NDQtYjk3ZC0wMDMyZDEwMjBiZDEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYmFja2dyb3VuZC5tcDQiLCJpYXQiOjE3NTA2MDExMTUsImV4cCI6MTc4MjEzNzExNX0.3XdhWzm64kpZrjTKgN-dqfhN7_9GB3jmJehT6hIubfQ" type="video/mp4" />
+          <source src="https://rckclvsyoyayayqyshaa.supabase.co/storage/v1/object/sign/media/ark-background.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZTkyYTVlNC1kOWMzLTQwYzUtOTYzMC03OGMzNjlhOWJhNjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYmFja2dyb3VuZC5tcDQiLCJpYXQiOjE3NTA3NjY4NjIsImV4cCI6MTc4MjMwMjg2Mn0.24WKsIDpIb6IknwAZLPUiRtsSOBUT8OPQZ3ZsD1IAFQ" type="video/mp4" />
         </video>
         
         <div 
@@ -64,7 +64,7 @@ const HeroSection = ({
             videoLoaded ? 'opacity-0' : 'opacity-100'
           }`}
           style={{
-            backgroundImage: `url('https://capkhkvrmzbiyzaaqcts.supabase.co/storage/v1/object/sign/media/ark-hero-fallback.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9kNWY4ZTA3NC1hYmI5LTQ3NDQtYjk3ZC0wMDMyZDEwMjBiZDEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstaGVyby1mYWxsYmFjay5wbmciLCJpYXQiOjE3NTA2MDEwNzUsImV4cCI6MTc4MjEzNzA3NX0.V8cOGGqQZpVhdmKsJuNi9YMDgZ_GeAC4kFtG4lDunis')`
+            backgroundImage: `url('https://rckclvsyoyayayqyshaa.supabase.co/storage/v1/object/sign/media/hero-image.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZTkyYTVlNC1kOWMzLTQwYzUtOTYzMC03OGMzNjlhOWJhNjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9oZXJvLWltYWdlLnBuZyIsImlhdCI6MTc1MDc2NjgxOSwiZXhwIjoxNzgyMzAyODE5fQ.4-gP7sBClx0sH9QzIXOS9y3fJB5CzQGzRRoxzcdt-vM')`
           }}
         />
         
