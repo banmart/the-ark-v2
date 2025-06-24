@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Waves, Zap, Bird, BookOpen, Sparkles, Database, Activity, Cpu } from 'lucide-react';
 
@@ -137,7 +136,7 @@ const ProphecySection = () => {
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
-          <h2 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-teal-500 to-green-500 bg-clip-text text-transparent font-mono">
+          <h2 className="text-4xl md:text-6xl font-black mb-6 text-cyan-400 font-mono">
             [NOAH_ARK_PROTOCOL]
           </h2>
           

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Shield, Lock, Target, Zap, Database, Activity, Cpu } from 'lucide-react';
 
@@ -50,7 +49,7 @@ const ContractTransparencySection = ({
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
-          <h3 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-teal-500 to-green-500 bg-clip-text text-transparent font-mono">
+          <h3 className="text-4xl md:text-5xl font-black mb-6 text-cyan-400 font-mono">
             <span className="animate-[glitch_4s_ease-in-out_infinite]">AUTOMATED</span>{' '}
             <span className="animate-[glitch_4s_ease-in-out_0.5s_infinite]">LIQUIDITY</span>{' '}
             <span className="animate-[glitch_4s_ease-in-out_1s_infinite]">SYSTEM</span>

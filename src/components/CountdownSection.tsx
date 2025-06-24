@@ -75,7 +75,7 @@ const CountdownSection = () => {
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
-          <h3 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-teal-500 to-green-500 bg-clip-text text-transparent font-mono">
+          <h3 className="text-4xl md:text-5xl font-black mb-6 text-cyan-400 font-mono">
             [MISSION_COUNTDOWN]
           </h3>
         </div>

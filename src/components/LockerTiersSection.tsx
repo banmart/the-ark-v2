@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, Lock, TrendingUp, Users, Gift, Database, Activity, Shield, Zap } from "lucide-react";
@@ -224,7 +223,7 @@ const LockerTiersSection = ({
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-500 bg-clip-text text-transparent font-mono">
+          <h2 className="text-4xl md:text-5xl font-black mb-6 text-cyan-400 font-mono">
             <Lock className="inline w-10 h-10 mr-3 text-cyan-400" />
             [SACRED_LOCKER_TIERS]
             <Lock className="inline w-10 h-10 ml-3 text-cyan-400" />

@@ -59,7 +59,7 @@ const StatsSection = ({
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent font-mono">
+          <h2 className="text-4xl md:text-5xl font-black mb-6 text-cyan-400 font-mono">
             <span className="animate-[glitch_4s_ease-in-out_infinite]">$ARK</span>{' '}
             <span className="animate-[glitch_4s_ease-in-out_0.5s_infinite]">BY</span>{' '}
             <span className="animate-[glitch_4s_ease-in-out_1s_infinite]">THE</span>{' '}
