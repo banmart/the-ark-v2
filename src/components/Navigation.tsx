@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Zap, Wifi } from 'lucide-react';
 
 interface NavigationProps {
   handleConnectWallet: () => void;
@@ -11,41 +12,91 @@ interface NavigationProps {
 
 const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }: NavigationProps) => {
   return (
-    <nav className="fixed top-0 w-full glass-nav z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4">
+    <nav className="fixed top-0 w-full z-50 overflow-hidden">
+      {/* Quantum Field Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-teal-500/5"></div>
+        
+        {/* Scanning line */}
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent animate-pulse"></div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 border-b border-cyan-500/20">
         <div className="flex justify-between items-center">
-          <Link 
-            to="/" 
-            onClick={() => window.scrollTo(0, 0)}
-            className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform"
-          >
-            ARK ❍
-          </Link>
+          {/* Brand with System Status */}
+          <div className="flex items-center gap-4">
+            <Link 
+              to="/" 
+              onClick={() => window.scrollTo(0, 0)}
+              className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform relative group"
+            >
+              ARK ❍
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
+            </Link>
+            
+            {/* System Status Indicators */}
+            <div className="hidden md:flex items-center gap-3">
+              <div className="flex items-center gap-1 px-2 py-1 bg-green-500/10 border border-green-500/30 rounded">
+                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-xs font-mono text-green-400">LIVE</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Wifi className="w-3 h-3 text-cyan-400" />
+                <span className="text-xs font-mono text-cyan-400">PULSE</span>
+              </div>
+            </div>
+          </div>
+
           <div className="hidden md:flex items-center gap-8">
             <Link 
               to="/locker" 
               onClick={() => window.scrollTo(0, 0)}
-              className="text-gray-300 hover:text-cyan-400 transition-colors"
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
               Locker
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </Link>
-            <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors">Stats</a>
-            <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors">Features</a>
-            <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors">Chart</a>
+            <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group">
+              Stats
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
+            </a>
+            <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group">
+              Features
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
+            </a>
+            <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group">
+              Chart
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
+            </a>
             <a 
               href="https://pulse-bridge-onboard.lovable.app/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-gray-300 hover:text-cyan-400 transition-colors"
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
               Bridge
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </a>
+            
+            {/* Enhanced Connect Wallet Button */}
             <button 
               onClick={handleConnectWallet} 
               disabled={isConnecting}
-              className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform disabled:opacity-50"
+              className="relative bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-6 py-2 rounded-full font-mono font-bold hover:scale-105 transition-all duration-300 disabled:opacity-50 group overflow-hidden"
             >
-              {isConnecting ? 'Connecting...' : isConnected ? `${account?.slice(0, 6)}...${account?.slice(-4)}` : 'Connect Wallet'}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex items-center gap-2">
+                {isConnected && <Zap className="w-4 h-4" />}
+                <span>
+                  {isConnecting ? 'Connecting...' : isConnected ? `${account?.slice(0, 6)}...${account?.slice(-4)}` : 'Connect Wallet'}
+                </span>
+              </div>
+              
+              {/* Scan effect for connected state */}
+              {isConnected && (
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/50 to-transparent animate-scan"></div>
+              )}
             </button>
           </div>
         </div>
