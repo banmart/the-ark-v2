@@ -24,7 +24,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   } = useLockerData();
   
   const [lockAmount, setLockAmount] = useState('');
-  const [lockDuration, setLockDuration] = useState(30);
+  const [lockDuration, setLockDuration] = useState(CONTRACT_CONSTANTS.MIN_LOCK_DURATION); // Set to minimum 1 day
 
   const currentTier = determineLockTier(lockDuration);
   const estimatedWeight = lockAmount ? parseFloat(lockAmount) * lockDuration * (currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS) : 0;
@@ -36,6 +36,14 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   const handleLock = async () => {
     if (!lockAmount || !isConnected || hasInsufficientBalance) return;
     
+    console.log('Lock attempt with:', {
+      amount,
+      lockDuration,
+      lockDurationSeconds: lockDuration * 24 * 60 * 60,
+      minDuration: CONTRACT_CONSTANTS.MIN_LOCK_DURATION,
+      maxDuration: CONTRACT_CONSTANTS.MAX_LOCK_DURATION
+    });
+    
     try {
       await lockTokens(amount, lockDuration);
       
@@ -46,7 +54,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
       
       // Reset form
       setLockAmount('');
-      setLockDuration(30);
+      setLockDuration(CONTRACT_CONSTANTS.MIN_LOCK_DURATION);
       
     } catch (error: any) {
       console.error('Lock failed:', error);

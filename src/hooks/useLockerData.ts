@@ -161,6 +161,9 @@ export const useLockerData = () => {
       setCurrentAllowance(parseFloat(ethers.formatEther(allowance)));
     } catch (error) {
       console.error('Error fetching user token data:', error);
+      // Set defaults if contract calls fail
+      setUserArkBalance(0);
+      setCurrentAllowance(0);
     }
   };
 
@@ -285,7 +288,7 @@ export const useLockerData = () => {
     }
   };
 
-  // Real token locking function
+  // Real token locking function with proper duration handling
   const lockTokens = async (amount: number, duration: number): Promise<void> => {
     if (!signer || !account) {
       throw new Error('Wallet not connected');
@@ -299,6 +302,11 @@ export const useLockerData = () => {
       throw new Error('Contract is paused - operations temporarily disabled');
     }
 
+    // Validate duration before proceeding
+    if (duration < CONTRACT_CONSTANTS.MIN_LOCK_DURATION || duration > CONTRACT_CONSTANTS.MAX_LOCK_DURATION) {
+      throw new Error(`Lock duration must be between ${CONTRACT_CONSTANTS.MIN_LOCK_DURATION} and ${CONTRACT_CONSTANTS.MAX_LOCK_DURATION} days`);
+    }
+
     // Check if approval is needed
     if (currentAllowance < amount) {
       await approveTokens(amount);
@@ -310,7 +318,17 @@ export const useLockerData = () => {
       
       const lockerContract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, signer);
       const amountWei = ethers.parseEther(amount.toString());
-      const durationSeconds = duration * 24 * 60 * 60; // Convert days to seconds
+      
+      // Convert days to seconds - ensuring we use proper integer conversion
+      const durationSeconds = Math.floor(duration * 24 * 60 * 60);
+      
+      console.log('Contract call params:', {
+        amount: amount.toString(),
+        amountWei: amountWei.toString(),
+        duration,
+        durationSeconds,
+        contractAddress: LOCKER_VAULT_ADDRESS
+      });
       
       const tx = await lockerContract.lockTokens(amountWei, durationSeconds);
       console.log('Lock transaction sent:', tx.hash);
