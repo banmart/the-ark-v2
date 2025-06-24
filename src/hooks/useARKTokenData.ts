@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { CONTRACT_ADDRESSES, ARK_TOKEN_ABI, NETWORKS } from '../utils/constants';
+import { dexPriceService, DexPriceData } from '../services/dexPriceService';
+import { blockchainDataService } from '../services/blockchainDataService';
 
 interface ARKTokenData {
   totalSupply: string;
@@ -11,13 +13,11 @@ interface ARKTokenData {
   priceChange24h: string;
   circulatingSupply: string;
   burnedTokens: string;
+  volume24h: string;
+  volumeChange24h: string;
+  liquidity: string;
+  dailyBurnRate: string;
   lastUpdated: Date;
-}
-
-interface PulseXPriceData {
-  price: number;
-  priceChange24h: number;
-  volume24h: number;
 }
 
 export const useARKTokenData = () => {
@@ -29,74 +29,35 @@ export const useARKTokenData = () => {
     priceChange24h: '0',
     circulatingSupply: '0',
     burnedTokens: '0',
+    volume24h: '0',
+    volumeChange24h: '0',
+    liquidity: '0',
+    dailyBurnRate: '0',
     lastUpdated: new Date(),
   });
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPulseXPrice = async (): Promise<PulseXPriceData> => {
-    try {
-      // For now, we'll use mock data as PulseX API integration would require specific endpoints
-      // In production, this would call PulseX API: https://api.pulsex.com/api/v1/tokens/${CONTRACT_ADDRESSES.ARK_TOKEN}
-      
-      // Simulate realistic price data with small variations
-      const basePrice = 0.000015;
-      const variation = (Math.random() - 0.5) * 0.000002;
-      const currentPrice = basePrice + variation;
-      
-      const priceChange = (Math.random() - 0.5) * 20; // Random change between -10% and +10%
-      
-      return {
-        price: currentPrice,
-        priceChange24h: priceChange,
-        volume24h: Math.random() * 500000 + 100000 // Random volume between 100K and 600K
-      };
-    } catch (err) {
-      console.warn('Could not fetch PulseX price data, using fallback');
-      return {
-        price: 0.000012,
-        priceChange24h: 5.2,
-        volume24h: 250000
-      };
-    }
-  };
-
-  const fetchHolderCount = async (): Promise<string> => {
-    try {
-      // In production, this would query a block explorer API or maintain a holder count
-      // For now, we'll use a realistic growing number based on time
-      const baseHolders = 12000;
-      const growthFactor = Math.floor(Date.now() / (1000 * 60 * 60 * 24)) % 100; // Daily growth
-      return (baseHolders + growthFactor).toLocaleString();
-    } catch (err) {
-      console.warn('Could not fetch holder count, using fallback');
-      return '12,347';
-    }
-  };
-
   const fetchTokenData = async () => {
     try {
       setLoading(true);
       setError(null);
 
+      console.log('Fetching live ARK token data...');
+
       // Connect to PulseChain RPC
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
-      
-      // Create contract instance
-      const arkToken = new ethers.Contract(
-        CONTRACT_ADDRESSES.ARK_TOKEN,
-        ARK_TOKEN_ABI,
-        provider
-      );
+      const arkToken = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
 
-      console.log('Fetching ARK token data from contract:', CONTRACT_ADDRESSES.ARK_TOKEN);
-
-      // Fetch basic token data and price data in parallel
+      // Fetch all data in parallel
       const [
         [totalSupply, name, symbol, decimals],
         priceData,
-        holderCount
+        burnData,
+        volumeData,
+        holderCount,
+        recentEvents
       ] = await Promise.all([
         Promise.all([
           arkToken.totalSupply(),
@@ -104,40 +65,62 @@ export const useARKTokenData = () => {
           arkToken.symbol(),
           arkToken.decimals(),
         ]),
-        fetchPulseXPrice(),
-        fetchHolderCount()
+        dexPriceService.getLivePrice(),
+        blockchainDataService.calculateBurnRate(),
+        blockchainDataService.getVolumeData(),
+        blockchainDataService.calculateHolderCount(),
+        blockchainDataService.getRecentEvents(-1000)
       ]);
 
-      console.log('Token info:', { name, symbol, decimals: decimals.toString() });
+      console.log('Live data fetched:', { 
+        priceData, 
+        burnData, 
+        volumeData, 
+        holderCount,
+        eventsCount: recentEvents.length 
+      });
 
       // Format total supply
       const formattedTotalSupply = ethers.formatUnits(totalSupply, decimals);
       
-      // Calculate burned tokens (tokens sent to dead address)
-      const deadBalance = await arkToken.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS);
-      const formattedBurnedTokens = ethers.formatUnits(deadBalance, decimals);
+      // Use live burned tokens from blockchain data
+      const formattedBurnedTokens = burnData.totalBurned;
       
       // Calculate circulating supply
       const circulatingSupply = (parseFloat(formattedTotalSupply) - parseFloat(formattedBurnedTokens)).toString();
 
-      // Calculate market cap with real price
+      // Calculate market cap with live price
       const marketCap = (parseFloat(circulatingSupply) * priceData.price).toFixed(0);
 
       setData({
         totalSupply: parseInt(formattedTotalSupply).toLocaleString(),
         marketCap: parseInt(marketCap).toLocaleString(),
-        holders: holderCount,
+        holders: holderCount.toLocaleString(),
         price: priceData.price.toFixed(6),
-        priceChange24h: priceData.priceChange24h > 0 ? `+${priceData.priceChange24h.toFixed(1)}` : priceData.priceChange24h.toFixed(1),
+        priceChange24h: priceData.priceChange24h > 0 
+          ? `+${priceData.priceChange24h.toFixed(1)}` 
+          : priceData.priceChange24h.toFixed(1),
         circulatingSupply: parseInt(circulatingSupply).toLocaleString(),
         burnedTokens: parseInt(formattedBurnedTokens).toLocaleString(),
+        volume24h: volumeData.volume24h.toLocaleString(),
+        volumeChange24h: volumeData.volumeChange > 0 
+          ? `+${volumeData.volumeChange.toFixed(1)}` 
+          : volumeData.volumeChange.toFixed(1),
+        liquidity: priceData.liquidity.toLocaleString(),
+        dailyBurnRate: burnData.dailyBurnRate.toLocaleString(),
         lastUpdated: new Date(),
       });
 
-      console.log('ARK token data updated successfully with live price data');
+      console.log('ARK token data updated successfully with live blockchain data');
     } catch (err: any) {
-      console.error('Error fetching ARK token data:', err);
+      console.error('Error fetching live ARK token data:', err);
       setError(err.message || 'Failed to fetch token data');
+      
+      // Set fallback data on error
+      setData(prev => ({
+        ...prev,
+        lastUpdated: new Date(),
+      }));
     } finally {
       setLoading(false);
     }
@@ -146,7 +129,7 @@ export const useARKTokenData = () => {
   useEffect(() => {
     fetchTokenData();
     
-    // Auto-refresh every 30 seconds
+    // Auto-refresh every 30 seconds for live data
     const interval = setInterval(fetchTokenData, 30000);
     
     return () => clearInterval(interval);

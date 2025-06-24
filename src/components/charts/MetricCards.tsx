@@ -9,7 +9,20 @@ const MetricCards = ({
   loading
 }: MetricCardsProps) => {
   if (loading) {
-    return;
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {[1, 2, 3, 4].map((index) => (
+          <div key={index} className="glass-card rounded-xl p-4 border border-gray-400/20 animate-pulse">
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-20 h-4 bg-gray-600 rounded"></div>
+              <div className="w-6 h-6 bg-gray-600 rounded"></div>
+            </div>
+            <div className="w-24 h-6 bg-gray-600 rounded mb-1"></div>
+            <div className="w-16 h-3 bg-gray-600 rounded"></div>
+          </div>
+        ))}
+      </div>
+    );
   }
   const getColorClasses = (color: string) => {
     switch (color) {

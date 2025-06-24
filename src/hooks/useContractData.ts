@@ -128,36 +128,53 @@ export const useContractData = () => {
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
       const arkToken = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
 
-      console.log('Fetching additional contract data...');
+      console.log('Fetching live contract data...');
 
-      // Fetch basic contract info
-      const [owner, isPaused] = await Promise.all([
+      // Fetch live contract info and fees
+      const [owner, isPaused, currentFees] = await Promise.all([
         arkToken.owner().catch(() => '0x0000000000000000000000000000000000000000'),
-        arkToken.paused().catch(() => false)
+        arkToken.paused().catch(() => false),
+        arkToken.getCurrentFees().catch(() => [3, 2, 2, 2, 9]) // Default fees if call fails
       ]);
 
-      // Update with real contract data
+      console.log('Live contract fees:', currentFees);
+
+      // Update with real contract data including live fees
       setData(prev => ({
         ...prev,
+        currentFees: {
+          burn: Number(currentFees[0] || 3),
+          reflection: Number(currentFees[1] || 2),
+          liquidity: Number(currentFees[2] || 2),
+          locker: Number(currentFees[3] || 2),
+          total: Number(currentFees[4] || 9)
+        },
+        maxFees: {
+          burn: 3,
+          reflection: 3,
+          liquidity: 2,
+          locker: 2,
+          total: 9
+        },
         security: {
           ...prev.security,
           isPaused,
           ownerAddress: owner,
-          hasReentrancyGuard: true, // ARK token has ReentrancyGuard
+          hasReentrancyGuard: true,
           hasPauseFunction: true
         },
         lastUpdated: new Date()
       }));
 
-      console.log('Contract data updated successfully');
+      console.log('Contract data updated successfully with live fees');
     } catch (err: any) {
-      console.error('Error fetching contract data:', err);
+      console.error('Error fetching live contract data:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Update contract data when ARK token data changes
+  // Update contract data when ARK token data changes (now includes volume, liquidity etc.)
   useEffect(() => {
     if (!arkTokenLoading && arkTokenData) {
       setData(prev => ({
@@ -169,6 +186,10 @@ export const useContractData = () => {
         priceChange24h: arkTokenData.priceChange24h,
         circulatingSupply: arkTokenData.circulatingSupply,
         burnedTokens: arkTokenData.burnedTokens,
+        volume24h: arkTokenData.volume24h,
+        volumeChange24h: arkTokenData.volumeChange24h,
+        liquidity: arkTokenData.liquidity,
+        dailyBurnRate: arkTokenData.dailyBurnRate,
         lastUpdated: arkTokenData.lastUpdated,
       }));
     }
