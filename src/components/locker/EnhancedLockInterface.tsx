@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
 import { useLockerData } from '../../hooks/useLockerData';
-import { AlertTriangle, Info } from 'lucide-react';
+import { AlertTriangle, Info, CheckCircle, Loader2 } from 'lucide-react';
+import { toast } from "@/components/ui/use-toast";
 
 interface EnhancedLockInterfaceProps {
   isConnected: boolean;
@@ -15,29 +16,58 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
     lockTokens,
     emergencyMode,
     contractPaused,
-    loading 
+    loading,
+    userArkBalance,
+    currentAllowance,
+    isProcessingApproval,
+    isProcessingLock
   } = useLockerData();
   
   const [lockAmount, setLockAmount] = useState('');
   const [lockDuration, setLockDuration] = useState(30);
-  const [isLocking, setIsLocking] = useState(false);
 
   const currentTier = determineLockTier(lockDuration);
   const estimatedWeight = lockAmount ? parseFloat(lockAmount) * lockDuration * (currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS) : 0;
+  const amount = parseFloat(lockAmount || '0');
+  const needsApproval = amount > 0 && currentAllowance < amount;
+  const hasInsufficientBalance = amount > userArkBalance;
+  const isProcessing = isProcessingApproval || isProcessingLock;
 
   const handleLock = async () => {
-    if (!lockAmount || !isConnected) return;
+    if (!lockAmount || !isConnected || hasInsufficientBalance) return;
     
-    setIsLocking(true);
     try {
-      await lockTokens(parseFloat(lockAmount), lockDuration);
+      await lockTokens(amount, lockDuration);
+      
+      toast({
+        title: "Success!",
+        description: `Successfully locked ${amount} ARK tokens for ${lockDuration} days`,
+      });
+      
+      // Reset form
       setLockAmount('');
       setLockDuration(30);
-    } catch (error) {
+      
+    } catch (error: any) {
       console.error('Lock failed:', error);
-    } finally {
-      setIsLocking(false);
+      toast({
+        variant: "destructive",
+        title: "Transaction Failed",
+        description: error.message || "Failed to lock tokens"
+      });
     }
+  };
+
+  const getButtonText = () => {
+    if (!isConnected) return 'Connect Wallet First';
+    if (isProcessingApproval) return 'Approving Tokens...';
+    if (isProcessingLock) return 'Locking Tokens...';
+    if (emergencyMode) return 'Emergency Mode - Locked';
+    if (contractPaused) return 'Contract Paused';
+    if (!isValidDuration) return 'Invalid Duration';
+    if (hasInsufficientBalance) return 'Insufficient ARK Balance';
+    if (needsApproval) return `Approve & Lock ${amount} ARK`;
+    return `Lock ${amount} ARK Tokens`;
   };
 
   const isValidDuration = lockDuration >= CONTRACT_CONSTANTS.MIN_LOCK_DURATION && 
@@ -66,15 +96,36 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
 
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium mb-2">Amount to Lock (ARK)</label>
-          <input
-            type="number"
-            value={lockAmount}
-            onChange={(e) => setLockAmount(e.target.value)}
-            placeholder="0.0"
-            disabled={emergencyMode || contractPaused || isLocking}
-            className="w-full bg-black/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none disabled:opacity-50"
-          />
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium">Amount to Lock (ARK)</label>
+            <div className="text-sm text-gray-400">
+              Balance: {isConnected ? userArkBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '--'} ARK
+            </div>
+          </div>
+          <div className="relative">
+            <input
+              type="number"
+              value={lockAmount}
+              onChange={(e) => setLockAmount(e.target.value)}
+              placeholder="0.0"
+              disabled={emergencyMode || contractPaused || isProcessing}
+              className="w-full bg-black/50 border border-gray-600 rounded-lg px-4 py-3 pr-20 text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none disabled:opacity-50"
+            />
+            <button
+              onClick={() => setLockAmount(userArkBalance.toString())}
+              disabled={!isConnected || isProcessing}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50"
+            >
+              MAX
+            </button>
+          </div>
+          
+          {hasInsufficientBalance && lockAmount && (
+            <div className="flex items-center text-red-400 text-sm mt-2">
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Insufficient ARK balance
+            </div>
+          )}
         </div>
 
         <div>
@@ -91,7 +142,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
             max={CONTRACT_CONSTANTS.MAX_LOCK_DURATION}
             value={lockDuration}
             onChange={(e) => setLockDuration(Number(e.target.value))}
-            disabled={emergencyMode || contractPaused || isLocking}
+            disabled={emergencyMode || contractPaused || isProcessing}
             className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider disabled:opacity-50"
           />
           <div className="flex justify-between text-sm text-gray-400 mt-2">
@@ -133,6 +184,29 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
           )}
         </div>
 
+        {/* Approval Status */}
+        {lockAmount && amount > 0 && isConnected && (
+          <div className={`rounded-lg p-4 border ${needsApproval ? 'bg-yellow-900/20 border-yellow-500/30' : 'bg-green-900/20 border-green-500/30'}`}>
+            <div className="flex items-center gap-2">
+              {needsApproval ? (
+                <>
+                  <Info className="w-4 h-4 text-yellow-400" />
+                  <span className="text-yellow-300 text-sm">
+                    Token approval required: {amount.toLocaleString()} ARK
+                  </span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  <span className="text-green-300 text-sm">
+                    Sufficient allowance: {currentAllowance.toLocaleString()} ARK approved
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Contract Security Info */}
         <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
           <div className="text-sm space-y-1">
@@ -151,15 +225,11 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
 
         <button
           onClick={handleLock}
-          disabled={!isConnected || !lockAmount || !isValidDuration || emergencyMode || contractPaused || isLocking}
-          className="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+          disabled={!isConnected || !lockAmount || !isValidDuration || emergencyMode || contractPaused || isProcessing || hasInsufficientBalance}
+          className="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform flex items-center justify-center gap-2"
         >
-          {!isConnected ? 'Connect Wallet First' : 
-           isLocking ? 'Locking...' :
-           emergencyMode ? 'Emergency Mode - Locked' :
-           contractPaused ? 'Contract Paused' :
-           !isValidDuration ? 'Invalid Duration' :
-           'Lock Tokens'}
+          {isProcessing && <Loader2 className="w-5 h-5 animate-spin" />}
+          {getButtonText()}
         </button>
       </div>
     </div>
