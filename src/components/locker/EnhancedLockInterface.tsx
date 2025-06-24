@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useLockerData } from '../../hooks/useLockerData';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Lock, Zap } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
 import ContractAddressDisplay from './ContractAddressDisplay';
 import EmergencyModeAlert from './EmergencyModeAlert';
@@ -67,64 +67,95 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   };
 
   return (
-    <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8">
-      <div className="flex items-center gap-2 mb-6">
-        <h2 className="text-2xl font-bold text-cyan-400">Lock Tokens</h2>
-        {(emergencyMode || contractPaused) && (
-          <AlertTriangle className="w-5 h-5 text-red-400" />
-        )}
+    <div className="relative">
+      {/* Quantum field background */}
+      <div className="absolute inset-0 -inset-4">
+        <div className="absolute inset-0 bg-gradient-radial from-cyan-500/5 via-transparent to-transparent blur-2xl"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-conic from-teal-500/10 via-cyan-500/10 to-teal-500/10 rounded-full blur-3xl animate-[spin_30s_linear_infinite]"></div>
       </div>
 
-      <ContractAddressDisplay />
-      <EmergencyModeAlert emergencyMode={emergencyMode} />
+      <div className="relative z-10 bg-black/20 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-8 hover:border-cyan-500/50 transition-all duration-500">
+        {/* System Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+            <Lock className="w-4 h-4 text-cyan-400" />
+            <span className="text-xs font-mono text-cyan-400 tracking-wider">LOCK_PROTOCOL</span>
+          </div>
+          <div className="flex-1 h-px bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
+          {(emergencyMode || contractPaused) && (
+            <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/30 rounded-lg">
+              <AlertTriangle className="w-4 h-4 text-red-400 animate-pulse" />
+              <span className="text-xs font-mono text-red-400 tracking-wider">ALERT</span>
+            </div>
+          )}
+        </div>
 
-      <div className="space-y-6">
-        <LockAmountInput
-          lockAmount={lockAmount}
-          setLockAmount={setLockAmount}
-          userArkBalance={userArkBalance}
-          isConnected={isConnected}
-          emergencyMode={emergencyMode}
-          contractPaused={contractPaused}
-          isProcessing={isProcessing}
-        />
+        {/* Main Title */}
+        <div className="mb-8">
+          <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.15em]">
+            [LOCK_PROTOCOL_INTERFACE]
+          </div>
+          <h2 className="text-2xl font-bold text-cyan-400 mb-2">Quantum Token Lock</h2>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-sm font-mono text-green-400">READY_FOR_OPERATIONS</span>
+          </div>
+        </div>
 
-        <LockDurationSlider
-          lockDuration={lockDuration}
-          setLockDuration={setLockDuration}
-          CONTRACT_CONSTANTS={CONTRACT_CONSTANTS}
-          emergencyMode={emergencyMode}
-          contractPaused={contractPaused}
-          isProcessing={isProcessing}
-        />
+        <ContractAddressDisplay />
+        <EmergencyModeAlert emergencyMode={emergencyMode} />
 
-        <TierDisplay
-          currentTier={currentTier}
-          lockAmount={lockAmount}
-          lockDuration={lockDuration}
-          CONTRACT_CONSTANTS={CONTRACT_CONSTANTS}
-        />
+        <div className="space-y-8">
+          <LockAmountInput
+            lockAmount={lockAmount}
+            setLockAmount={setLockAmount}
+            userArkBalance={userArkBalance}
+            isConnected={isConnected}
+            emergencyMode={emergencyMode}
+            contractPaused={contractPaused}
+            isProcessing={isProcessing}
+          />
 
-        <ApprovalStatus
-          lockAmount={lockAmount}
-          isConnected={isConnected}
-          needsApproval={needsApproval}
-          currentAllowance={currentAllowance}
-        />
+          <LockDurationSlider
+            lockDuration={lockDuration}
+            setLockDuration={setLockDuration}
+            CONTRACT_CONSTANTS={CONTRACT_CONSTANTS}
+            emergencyMode={emergencyMode}
+            contractPaused={contractPaused}
+            isProcessing={isProcessing}
+          />
 
-        <SecurityInfoPanel CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} />
+          <TierDisplay
+            currentTier={currentTier}
+            lockAmount={lockAmount}
+            lockDuration={lockDuration}
+            CONTRACT_CONSTANTS={CONTRACT_CONSTANTS}
+          />
 
-        <LockButton
-          isConnected={isConnected}
-          lockAmount={lockAmount}
-          isValidDuration={isValidDuration}
-          emergencyMode={emergencyMode}
-          contractPaused={contractPaused}
-          isProcessing={isProcessing}
-          hasInsufficientBalance={hasInsufficientBalance}
-          needsApproval={needsApproval}
-          onLock={handleLock}
-        />
+          <ApprovalStatus
+            lockAmount={lockAmount}
+            isConnected={isConnected}
+            needsApproval={needsApproval}
+            currentAllowance={currentAllowance}
+          />
+
+          <SecurityInfoPanel CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} />
+
+          <LockButton
+            isConnected={isConnected}
+            lockAmount={lockAmount}
+            isValidDuration={isValidDuration}
+            emergencyMode={emergencyMode}
+            contractPaused={contractPaused}
+            isProcessing={isProcessing}
+            hasInsufficientBalance={hasInsufficientBalance}
+            needsApproval={needsApproval}
+            onLock={handleLock}
+          />
+        </div>
+
+        {/* Scanning Effect */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent animate-scan"></div>
       </div>
     </div>
   );
