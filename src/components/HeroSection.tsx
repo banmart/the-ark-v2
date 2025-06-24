@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Shield, Lock, Zap, Database, Code } from "lucide-react";
 
@@ -13,6 +14,7 @@ const HeroSection = ({
   setShowOnboarding
 }: HeroSectionProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [overlayFaded, setOverlayFaded] = useState(false);
   const [textPhase, setTextPhase] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   
@@ -21,6 +23,10 @@ const HeroSection = ({
     if (video) {
       const handleCanPlay = () => {
         setVideoLoaded(true);
+        // Start overlay fade after video loads with cinematic delay
+        setTimeout(() => {
+          setOverlayFaded(true);
+        }, 500);
       };
       
       video.addEventListener('canplay', handleCanPlay);
@@ -68,9 +74,10 @@ const HeroSection = ({
           }}
         />
         
-        {/* Lighter overlay - only on left side */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:bg-gradient-to-r lg:from-black/20 lg:via-transparent lg:to-transparent"></div>
+        {/* Single Cinematic Overlay - Fades from black to 30% */}
+        <div className={`absolute inset-0 transition-all duration-[4000ms] ease-out ${
+          overlayFaded ? 'bg-black/30' : 'bg-black'
+        }`}></div>
       </div>
       
       {/* Content */}
