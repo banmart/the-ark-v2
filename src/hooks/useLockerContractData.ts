@@ -47,21 +47,40 @@ export const useLockerContractData = (userAddress?: string) => {
   const [contractPaused, setContractPaused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [connectionHealth, setConnectionHealth] = useState<'healthy' | 'degraded' | 'offline'>('offline');
 
   const fetchProtocolStats = async () => {
     try {
-      const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
-      const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
+      console.log('🔄 Fetching live protocol stats from blockchain...');
       
-      console.log('Fetching protocol stats from SimplifiedLockerVault contract...');
+      const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
+      
+      // Test connection health
+      const blockNumber = await provider.getBlockNumber();
+      console.log('✅ Connected to blockchain, current block:', blockNumber);
+      setConnectionHealth('healthy');
+      
+      const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
 
-      // Call actual contract methods
+      // Fetch all data in parallel with retry logic
+      const fetchWithRetry = async (fn: () => Promise<any>, retries = 3): Promise<any> => {
+        for (let i = 0; i < retries; i++) {
+          try {
+            return await fn();
+          } catch (err) {
+            if (i === retries - 1) throw err;
+            console.warn(`Retry ${i + 1} for contract call...`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+          }
+        }
+      };
+
       const [totalLocked, totalRewards, totalLockers, emergency, paused] = await Promise.all([
-        contract.totalLockedTokens(),
-        contract.totalRewardsDistributed(),
-        contract.totalActiveLockers(),
-        contract.emergencyMode(),
-        contract.paused()
+        fetchWithRetry(() => contract.totalLockedTokens()),
+        fetchWithRetry(() => contract.totalRewardsDistributed()),
+        fetchWithRetry(() => contract.totalActiveLockers()),
+        fetchWithRetry(() => contract.emergencyMode()),
+        fetchWithRetry(() => contract.paused())
       ]);
 
       // Convert from wei to tokens (18 decimals)
@@ -78,31 +97,46 @@ export const useLockerContractData = (userAddress?: string) => {
       setEmergencyMode(emergency);
       setContractPaused(paused);
 
-      console.log('Protocol stats fetched successfully:', {
-        totalLockedTokens,
-        totalRewardsDistributed,
+      console.log('✅ Live protocol stats updated:', {
+        totalLockedTokens: totalLockedTokens.toLocaleString(),
+        totalRewardsDistributed: totalRewardsDistributed.toLocaleString(),
         totalActiveLockers,
         emergency,
-        paused
+        paused,
+        blockNumber
       });
+
     } catch (err: any) {
-      console.error('Error fetching protocol stats:', err);
+      console.error('❌ Error fetching live protocol stats:', err);
       setError(err.message || 'Failed to fetch protocol stats');
+      setConnectionHealth('degraded');
     }
   };
 
   const fetchUserData = async (address: string) => {
     try {
-      console.log('Fetching user data for address:', address);
+      console.log('🔄 Fetching live user data for:', address);
       
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
       const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
 
-      // Get user stats and locks from contract
+      // Fetch user data with retry logic
+      const fetchWithRetry = async (fn: () => Promise<any>, retries = 3): Promise<any> => {
+        for (let i = 0; i < retries; i++) {
+          try {
+            return await fn();
+          } catch (err) {
+            if (i === retries - 1) throw err;
+            console.warn(`Retry ${i + 1} for user data call...`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+          }
+        }
+      };
+
       const [userStatsData, userLocksData, weight] = await Promise.all([
-        contract.userStats(address),
-        contract.getUserActiveLocks(address),
-        contract.calculateUserWeight(address)
+        fetchWithRetry(() => contract.userStats(address)),
+        fetchWithRetry(() => contract.getUserActiveLocks(address)),
+        fetchWithRetry(() => contract.calculateUserWeight(address))
       ]);
 
       // Parse user stats
@@ -133,16 +167,19 @@ export const useLockerContractData = (userAddress?: string) => {
       setUserLocks(locks);
       setUserWeight(parseFloat(ethers.formatEther(weight)));
 
-      console.log('User data fetched successfully:', {
-        totalLocked,
-        totalRewardsEarned,
-        pendingRewards,
+      console.log('✅ Live user data updated:', {
+        totalLocked: totalLocked.toLocaleString(),
+        totalRewardsEarned: totalRewardsEarned.toLocaleString(),
+        pendingRewards: pendingRewards.toLocaleString(),
         activeLocksCount,
-        locks: locks.length
+        locksCount: locks.length,
+        userWeight: parseFloat(ethers.formatEther(weight)).toLocaleString()
       });
+
     } catch (err: any) {
-      console.error('Error fetching user data:', err);
+      console.error('❌ Error fetching live user data:', err);
       setError(err.message || 'Failed to fetch user data');
+      setConnectionHealth('degraded');
     }
   };
 
@@ -156,22 +193,44 @@ export const useLockerContractData = (userAddress?: string) => {
       if (userAddress) {
         await fetchUserData(userAddress);
       }
+      
+      setConnectionHealth('healthy');
     } catch (err: any) {
-      console.error('Error fetching contract data:', err);
+      console.error('❌ Error in contract data fetch:', err);
       setError(err.message || 'Failed to fetch contract data');
+      setConnectionHealth('degraded');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    console.log('🚀 Initializing live blockchain connection...');
     fetchContractData();
     
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchContractData, 30000);
+    // Auto-refresh every 15 seconds for more responsive live data
+    const interval = setInterval(() => {
+      console.log('🔄 Auto-refreshing live data...');
+      fetchContractData();
+    }, 15000);
     
-    return () => clearInterval(interval);
+    return () => {
+      console.log('🛑 Cleaning up blockchain connection...');
+      clearInterval(interval);
+    };
   }, [userAddress]);
+
+  // Connection health monitoring
+  useEffect(() => {
+    const healthCheck = setInterval(() => {
+      if (connectionHealth === 'degraded') {
+        console.log('🔄 Attempting to restore connection...');
+        fetchContractData();
+      }
+    }, 30000); // Check every 30 seconds
+
+    return () => clearInterval(healthCheck);
+  }, [connectionHealth]);
 
   return {
     protocolStats,
@@ -182,6 +241,7 @@ export const useLockerContractData = (userAddress?: string) => {
     contractPaused,
     loading,
     error,
+    connectionHealth,
     refetch: fetchContractData,
   };
 };
