@@ -22,7 +22,6 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
             ARK ❍
           </Link>
           <div className="hidden md:flex items-center gap-8">
-            <a href="#swap" className="text-gray-300 hover:text-cyan-400 transition-colors">Swap</a>
             <Link 
               to="/locker" 
               onClick={() => window.scrollTo(0, 0)}
