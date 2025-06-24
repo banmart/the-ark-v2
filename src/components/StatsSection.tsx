@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
 
 interface StatsSectionProps {
   contractData: any;
@@ -11,6 +11,21 @@ const StatsSection = ({
   contractData,
   contractLoading
 }: StatsSectionProps) => {
+  const [statsPhase, setStatsPhase] = useState(0);
+
+  useEffect(() => {
+    // Cinematic reveal sequence
+    const phases = [
+      { delay: 300, phase: 1 },   // System scan
+      { delay: 1000, phase: 2 },  // Matrix detected
+      { delay: 1800, phase: 3 },  // Full activation
+    ];
+
+    phases.forEach(({ delay, phase }) => {
+      setTimeout(() => setStatsPhase(phase), delay);
+    });
+  }, []);
+
   const formatLastUpdated = (date: Date) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -21,120 +36,258 @@ const StatsSection = ({
   };
 
   return (
-    <section id="stats" className="relative z-10 py-20 px-6 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-center gap-4 mb-12">
-          <h2 className="text-4xl font-black text-center bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            $ARK By The Numbers
+    <section id="stats" className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
+      {/* Quantum Field Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
+            radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
+            radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
+            radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px)
+          `,
+          backgroundSize: '100px 100px'
+        }}></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* System Header */}
+        <div className={`text-center mb-16 transition-all duration-1000 ${statsPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
+            <Database className="w-3 h-3 animate-pulse" />
+            <span>[ARK_STATISTICS_MATRIX]</span>
+            <Database className="w-3 h-3 animate-pulse" />
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent font-mono">
+            <span className="animate-[glitch_4s_ease-in-out_infinite]">$ARK</span>{' '}
+            <span className="animate-[glitch_4s_ease-in-out_0.5s_infinite]">BY</span>{' '}
+            <span className="animate-[glitch_4s_ease-in-out_1s_infinite]">THE</span>{' '}
+            <span className="animate-[glitch_4s_ease-in-out_1.5s_infinite]">NUMBERS</span>
           </h2>
+
           {contractData.lastUpdated && (
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <RefreshCw className="w-4 h-4" />
-              <span>Updated {formatLastUpdated(contractData.lastUpdated)}</span>
+            <div className="flex items-center justify-center gap-2 text-sm text-cyan-400/60 font-mono">
+              <RefreshCw className="w-4 h-4 animate-spin" />
+              <span>[LAST_SYNC: {formatLastUpdated(contractData.lastUpdated)}]</span>
             </div>
           )}
         </div>
 
         {/* Primary Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 transition-all duration-1000 delay-500 ${statsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {/* Market Cap */}
-          <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
-            <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 Market Cap</h3>
-            <p className="text-3xl font-black text-white mb-2">
-              {contractLoading ? (
-                <span className="animate-pulse">Loading...</span>
-              ) : (
-                `$${contractData.marketCap}`
-              )}
-            </p>
-            <p className="text-sm text-gray-400">Real-time valuation</p>
+          <div className="relative bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 hover:scale-105 hover:border-cyan-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="absolute top-2 right-2 flex items-center gap-1">
+              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+              <span className="text-cyan-400 font-mono text-xs">ACTIVE</span>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 font-mono">💰 MARKET_CAP</h3>
+              <p className="text-3xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  `$${contractData.marketCap}`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[REAL_TIME_VALUATION]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
           </div>
 
           {/* Current Price */}
-          <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
-            <h3 className="text-2xl font-bold mb-4 text-cyan-400">📈 Price</h3>
-            <div className="flex items-baseline gap-2 mb-2">
-              <p className="text-3xl font-black text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">Loading...</span>
-                ) : (
-                  `$${contractData.price}`
-                )}
-              </p>
-              {!contractLoading && contractData.priceChange24h && (
-                <span className={`text-sm font-bold ${
-                  contractData.priceChange24h.startsWith('+') ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {contractData.priceChange24h}%
-                </span>
-              )}
+          <div className="relative bg-black/40 backdrop-blur-xl border border-blue-500/30 rounded-xl p-6 hover:scale-105 hover:border-blue-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="absolute top-2 right-2 flex items-center gap-1">
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              <span className="text-blue-400 font-mono text-xs">LIVE</span>
             </div>
-            <p className="text-sm text-gray-400">24h change</p>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl font-bold mb-4 text-blue-400 font-mono">📈 PRICE_FEED</h3>
+              <div className="flex items-baseline gap-2 mb-2">
+                <p className="text-3xl font-black text-white font-mono">
+                  {contractLoading ? (
+                    <span className="animate-pulse">[SCANNING...]</span>
+                  ) : (
+                    `$${contractData.price}`
+                  )}
+                </p>
+                {!contractLoading && contractData.priceChange24h && (
+                  <span className={`text-sm font-bold font-mono ${
+                    contractData.priceChange24h.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {contractData.priceChange24h}%
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-gray-400 font-mono">[24H_DELTA]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
           </div>
 
           {/* Holders */}
-          <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
-            <h3 className="text-2xl font-bold mb-4 text-cyan-400">👥 Holders</h3>
-            <p className="text-3xl font-black text-white mb-2">
-              {contractLoading ? (
-                <span className="animate-pulse">Loading...</span>
-              ) : (
-                contractData.holders
-              )}
-            </p>
-            <p className="text-sm text-gray-400">Unique addresses</p>
+          <div className="relative bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl p-6 hover:scale-105 hover:border-purple-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="absolute top-2 right-2 flex items-center gap-1">
+              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+              <span className="text-purple-400 font-mono text-xs">TRACKING</span>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl font-bold mb-4 text-purple-400 font-mono">👥 HOLDERS</h3>
+              <p className="text-3xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  contractData.holders
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[UNIQUE_ADDRESSES]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
           </div>
         </div>
 
         {/* Secondary Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 transition-all duration-1000 delay-1000 ${statsPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {/* Total Supply */}
-          <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">💎 Total Supply</h3>
-            <p className="text-2xl font-black text-white mb-2">
-              {contractLoading ? (
-                <span className="animate-pulse">Loading...</span>
-              ) : (
-                `${contractData.totalSupply} ARK`
-              )}
-            </p>
-            <p className="text-sm text-gray-400">From smart contract</p>
+          <div className="relative bg-black/40 backdrop-blur-xl border border-green-500/30 rounded-xl p-6 hover:scale-105 hover:border-green-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="relative z-10">
+              <h3 className="text-xl font-bold mb-4 text-green-400 font-mono">💎 TOTAL_SUPPLY</h3>
+              <p className="text-2xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  `${contractData.totalSupply} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[CONTRACT_SOURCE]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
           </div>
 
           {/* Circulating Supply */}
-          <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">🔄 Circulating</h3>
-            <p className="text-2xl font-black text-white mb-2">
-              {contractLoading ? (
-                <span className="animate-pulse">Loading...</span>
-              ) : (
-                `${contractData.circulatingSupply} ARK`
-              )}
-            </p>
-            <p className="text-sm text-gray-400">Available in market</p>
+          <div className="relative bg-black/40 backdrop-blur-xl border border-yellow-500/30 rounded-xl p-6 hover:scale-105 hover:border-yellow-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="relative z-10">
+              <h3 className="text-xl font-bold mb-4 text-yellow-400 font-mono">🔄 CIRCULATING</h3>
+              <p className="text-2xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  `${contractData.circulatingSupply} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[MARKET_AVAILABLE]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
           </div>
 
           {/* Burned Tokens */}
-          <div className="glass-card rounded-xl p-6 hover:scale-105 hover:glass-strong transition-all">
-            <h3 className="text-xl font-bold mb-4 text-purple-400">🔥 Burned</h3>
-            <p className="text-2xl font-black text-white mb-2">
-              {contractLoading ? (
-                <span className="animate-pulse">Loading...</span>
-              ) : (
-                `${contractData.burnedTokens} ARK`
-              )}
-            </p>
-            <p className="text-sm text-gray-400">Permanently removed</p>
+          <div className="relative bg-black/40 backdrop-blur-xl border border-red-500/30 rounded-xl p-6 hover:scale-105 hover:border-red-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="relative z-10">
+              <h3 className="text-xl font-bold mb-4 text-red-400 font-mono">🔥 BURNED</h3>
+              <p className="text-2xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  `${contractData.burnedTokens} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[VOID_ADDRESS]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
           </div>
         </div>
 
-        {/* Data Source Notice */}
-        <div className="text-center mt-8">
-          <p className="text-sm text-gray-500">
-            Data sourced directly from PulseChain blockchain • Auto-refreshes every 30 seconds
-          </p>
+        {/* System Diagnostics */}
+        <div className={`transition-all duration-1000 delay-1500 ${statsPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Shield className="w-5 h-5 text-cyan-400" />
+                <h3 className="text-lg font-bold text-cyan-400 font-mono">
+                  [STATISTICS_DIAGNOSTICS]
+                </h3>
+              </div>
+              <div className="flex items-center gap-2 text-green-400 font-mono text-sm">
+                <Zap className="w-4 h-4 animate-pulse" />
+                <span>ALL_SYSTEMS_OPERATIONAL</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+              <div className="text-center p-3 bg-cyan-500/10 border border-cyan-500/30 rounded">
+                <div className="text-cyan-400 mb-1">MARKET_CAP</div>
+                <div className="text-white font-bold">REALTIME</div>
+              </div>
+              <div className="text-center p-3 bg-blue-500/10 border border-blue-500/30 rounded">
+                <div className="text-blue-400 mb-1">PRICE_FEED</div>
+                <div className="text-white font-bold">LIVE</div>
+              </div>
+              <div className="text-center p-3 bg-purple-500/10 border border-purple-500/30 rounded">
+                <div className="text-purple-400 mb-1">HOLDERS</div>
+                <div className="text-white font-bold">TRACKING</div>
+              </div>
+              <div className="text-center p-3 bg-green-500/10 border border-green-500/30 rounded">
+                <div className="text-green-400 mb-1">BLOCKCHAIN</div>
+                <div className="text-white font-bold">SYNCED</div>
+              </div>
+            </div>
+
+            <div className="text-center mt-6">
+              <p className="text-sm text-gray-500 font-mono">
+                [DATA_SOURCE: PULSECHAIN_BLOCKCHAIN] • [AUTO_REFRESH: 30S_INTERVAL]
+              </p>
+            </div>
+          </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes scan {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100vw); }
+        }
+        @keyframes glitch {
+          0%, 100% { transform: translateX(0); }
+          10% { transform: translateX(-2px); }
+          20% { transform: translateX(2px); }
+          30% { transform: translateX(-2px); }
+          40% { transform: translateX(2px); }
+          50% { transform: translateX(0); }
+        }
+      `}</style>
     </section>
   );
 };
