@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useLockerData } from '../../hooks/useLockerData';
-import { AlertTriangle, Info, Lock } from 'lucide-react';
+import { AlertTriangle, Info } from 'lucide-react';
 
 interface EnhancedLockInterfaceProps {
   isConnected: boolean;
@@ -19,7 +19,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   } = useLockerData();
   
   const [lockAmount, setLockAmount] = useState('');
-  const [lockDuration, setLockDuration] = useState(1); // UPDATED: Start from 1 day
+  const [lockDuration, setLockDuration] = useState(30);
   const [isLocking, setIsLocking] = useState(false);
 
   const currentTier = determineLockTier(lockDuration);
@@ -32,7 +32,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
     try {
       await lockTokens(parseFloat(lockAmount), lockDuration);
       setLockAmount('');
-      setLockDuration(1);
+      setLockDuration(30);
     } catch (error) {
       console.error('Lock failed:', error);
     } finally {
@@ -44,46 +44,45 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
                          lockDuration <= CONTRACT_CONSTANTS.MAX_LOCK_DURATION;
 
   return (
-    <div className="bg-white/5 border border-cyan-500/30 rounded-lg p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <Lock className="w-5 h-5 text-cyan-400" />
-        <h3 className="text-lg font-bold text-cyan-400">Lock Tokens</h3>
+    <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-8">
+      <div className="flex items-center gap-2 mb-6">
+        <h2 className="text-2xl font-bold text-cyan-400">Lock Tokens</h2>
         {(emergencyMode || contractPaused) && (
-          <AlertTriangle className="w-4 h-4 text-red-400" />
+          <AlertTriangle className="w-5 h-5 text-red-400" />
         )}
       </div>
 
       {emergencyMode && (
-        <div className="bg-red-900/20 border border-red-500/30 rounded p-3 mb-4">
-          <div className="flex items-center gap-2 text-red-400 text-sm">
-            <AlertTriangle className="w-3 h-3" />
+        <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-2 text-red-400">
+            <AlertTriangle className="w-4 h-4" />
             <span className="font-semibold">Emergency Mode Active</span>
           </div>
-          <p className="text-xs text-red-300 mt-1">
-            New locks disabled. Existing locks unlockable after 3 days.
+          <p className="text-sm text-red-300 mt-1">
+            New locks are temporarily disabled. Existing locks can be unlocked after 3 days.
           </p>
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div>
-          <label className="block text-xs font-medium mb-1">Amount (ARK)</label>
+          <label className="block text-sm font-medium mb-2">Amount to Lock (ARK)</label>
           <input
             type="number"
             value={lockAmount}
             onChange={(e) => setLockAmount(e.target.value)}
             placeholder="0.0"
             disabled={emergencyMode || contractPaused || isLocking}
-            className="w-full bg-black/50 border border-gray-600 rounded px-3 py-2 text-sm text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none disabled:opacity-50"
+            className="w-full bg-black/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none disabled:opacity-50"
           />
         </div>
 
         <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="text-xs font-medium">Duration (Days)</label>
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-sm font-medium">Lock Duration (Days)</label>
             <div className="flex items-center gap-1 text-xs text-gray-400">
               <Info className="w-3 h-3" />
-              {CONTRACT_CONSTANTS.MIN_LOCK_DURATION}-{CONTRACT_CONSTANTS.MAX_LOCK_DURATION}
+              Min: {CONTRACT_CONSTANTS.MIN_LOCK_DURATION}, Max: {CONTRACT_CONSTANTS.MAX_LOCK_DURATION}
             </div>
           </div>
           <input
@@ -93,53 +92,71 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
             value={lockDuration}
             onChange={(e) => setLockDuration(Number(e.target.value))}
             disabled={emergencyMode || contractPaused || isLocking}
-            className="w-full h-2 bg-gray-700 rounded appearance-none cursor-pointer disabled:opacity-50"
+            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider disabled:opacity-50"
           />
-          <div className="flex justify-between text-xs text-gray-400 mt-1">
-            <span>{CONTRACT_CONSTANTS.MIN_LOCK_DURATION}d</span>
+          <div className="flex justify-between text-sm text-gray-400 mt-2">
+            <span>{CONTRACT_CONSTANTS.MIN_LOCK_DURATION} days</span>
             <span className={`font-bold ${isValidDuration ? 'text-cyan-400' : 'text-red-400'}`}>
-              {lockDuration}d
+              {lockDuration} days
             </span>
-            <span>{CONTRACT_CONSTANTS.MAX_LOCK_DURATION}d</span>
+            <span>{CONTRACT_CONSTANTS.MAX_LOCK_DURATION} days</span>
           </div>
         </div>
 
-        {/* Compact Tier Display */}
-        <div className="bg-black/30 rounded p-3 border" style={{ borderColor: currentTier.color }}>
-          <div className="flex items-center justify-between mb-2">
+        {/* Current Tier Display */}
+        <div className="bg-black/30 rounded-lg p-4 border" style={{ borderColor: currentTier.color }}>
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <div className="text-sm font-bold" style={{ color: currentTier.color }}>
+              <div className="text-lg font-bold" style={{ color: currentTier.color }}>
                 {currentTier.name} Tier
               </div>
-              <div className="text-xs text-gray-400">
-                {(currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS).toFixed(1)}x multiplier
+              <div className="text-sm text-gray-400">
+                {(currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS).toFixed(1)}x reward multiplier
               </div>
             </div>
-            <div className="text-lg">{currentTier.icon}</div>
+            <div className="text-3xl">
+              {currentTier.icon}
+            </div>
           </div>
           
           {lockAmount && (
-            <div className="space-y-1 text-xs">
+            <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-400">Est. Weight:</span>
+                <span className="text-gray-400">Estimated Weight:</span>
                 <span className="text-white font-medium">{estimatedWeight.toFixed(0)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Range:</span>
+                <span className="text-gray-400">Duration Range:</span>
                 <span className="text-white">{currentTier.minDays}-{currentTier.maxDays} days</span>
               </div>
             </div>
           )}
         </div>
 
+        {/* Contract Security Info */}
+        <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+          <div className="text-sm space-y-1">
+            <div className="flex items-center gap-2 text-green-400 font-semibold mb-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              Contract Security Features
+            </div>
+            <ul className="text-xs text-green-300 space-y-1 ml-4">
+              <li>• ReentrancyGuard protection against attacks</li>
+              <li>• {CONTRACT_CONSTANTS.EARLY_UNLOCK_PENALTY / 100}% max early unlock penalty</li>
+              <li>• 50% penalty burned, 50% distributed to lockers</li>
+              <li>• Renounced ownership - fully decentralized</li>
+            </ul>
+          </div>
+        </div>
+
         <button
           onClick={handleLock}
           disabled={!isConnected || !lockAmount || !isValidDuration || emergencyMode || contractPaused || isLocking}
-          className="w-full bg-cyan-500 text-black font-bold py-3 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform text-sm"
+          className="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
         >
-          {!isConnected ? 'Connect Wallet' : 
+          {!isConnected ? 'Connect Wallet First' : 
            isLocking ? 'Locking...' :
-           emergencyMode ? 'Emergency Mode' :
+           emergencyMode ? 'Emergency Mode - Locked' :
            contractPaused ? 'Contract Paused' :
            !isValidDuration ? 'Invalid Duration' :
            'Lock Tokens'}

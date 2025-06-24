@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useLockerContractData } from './useLockerContractData';
 import { useWallet } from './useWallet';
@@ -69,80 +70,80 @@ export const useLockerData = () => {
     error
   } = useLockerContractData(account || undefined);
 
-  // Updated tier definitions to support 1-day minimum
+  // Contract tier definitions matching the smart contract exactly
   const lockTiers: LockTierInfo[] = [
     {
       name: 'Bronze',
-      minDuration: 1, // UPDATED: Now starts from 1 day
-      multiplier: 10000,
+      minDuration: 30,
+      multiplier: 10000, // 1x in basis points
       color: '#CD7F32',
       icon: '⛵',
-      minDays: 1,
-      maxDays: 29
-    },
-    {
-      name: 'Silver',
-      minDuration: 30,
-      multiplier: 15000,
-      color: '#C0C0C0',
-      icon: '🛡️',
       minDays: 30,
       maxDays: 89
     },
     {
-      name: 'Gold',
+      name: 'Silver',
       minDuration: 90,
-      multiplier: 20000,
-      color: '#FFD700',
-      icon: '👑',
+      multiplier: 15000, // 1.5x in basis points
+      color: '#C0C0C0',
+      icon: '🛡️',
       minDays: 90,
       maxDays: 179
     },
     {
-      name: 'Diamond',
+      name: 'Gold',
       minDuration: 180,
-      multiplier: 30000,
-      color: '#B9F2FF',
-      icon: '💎',
+      multiplier: 20000, // 2x in basis points
+      color: '#FFD700',
+      icon: '👑',
       minDays: 180,
       maxDays: 364
     },
     {
-      name: 'Platinum',
+      name: 'Diamond',
       minDuration: 365,
-      multiplier: 50000,
-      color: '#E5E4E2',
-      icon: '⭐',
+      multiplier: 30000, // 3x in basis points
+      color: '#B9F2FF',
+      icon: '💎',
       minDays: 365,
       maxDays: 1094
     },
     {
-      name: 'Legendary',
+      name: 'Platinum',
       minDuration: 1095,
-      multiplier: 80000,
+      multiplier: 50000, // 5x in basis points
+      color: '#E5E4E2',
+      icon: '⭐',
+      minDays: 1095,
+      maxDays: 1459
+    },
+    {
+      name: 'Legendary',
+      minDuration: 1460,
+      multiplier: 80000, // 8x in basis points
       color: '#FF6B35',
       icon: '⚡',
-      minDays: 1095,
+      minDays: 1460,
       maxDays: 1826
     }
   ];
 
-  // Updated contract constants
+  // Contract constants
   const CONTRACT_CONSTANTS = {
-    MIN_LOCK_DURATION: 1, // UPDATED: Now 1 day minimum
-    MAX_LOCK_DURATION: 1826,
+    MIN_LOCK_DURATION: 30, // days
+    MAX_LOCK_DURATION: 1826, // days (5 years)
     BASIS_POINTS: 10000,
-    EARLY_UNLOCK_PENALTY: 5000,
-    PENALTY_BURN_SHARE: 5000,
-    PENALTY_REWARD_SHARE: 5000
+    EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
+    PENALTY_BURN_SHARE: 5000, // 50% burned
+    PENALTY_REWARD_SHARE: 5000 // 50% to lockers
   };
 
-  // Transform contract data to match UI expectations with live data
+  // Transform contract data to match UI expectations
   const protocolStats: ProtocolStats = {
     totalLockedTokens: contractProtocolStats.totalLockedTokens,
     totalRewardsDistributed: contractProtocolStats.totalRewardsDistributed,
     totalActiveLockers: contractProtocolStats.totalActiveLockers,
-    averageAPY: 82.5 // Calculate from live data if available
+    averageAPY: 82.5 // This would need to be calculated based on reward distribution rate
   };
 
   const userStats: UserStats = {
@@ -155,6 +156,7 @@ export const useLockerData = () => {
 
   // Transform contract locks to UI format with proper tier validation
   const userLocks: LockedPosition[] = contractUserLocks.map(lock => {
+    // Ensure tier is within valid range, default to Bronze (0) if invalid
     const tierIndex = (lock.tier >= 0 && lock.tier < lockTiers.length) ? lock.tier : 0;
     const tierInfo = lockTiers[tierIndex];
     const now = Date.now() / 1000;
@@ -193,7 +195,7 @@ export const useLockerData = () => {
     return {
       penalty,
       userReceives: lockPosition.amount - penalty,
-      penaltyRate: penaltyRate / 100
+      penaltyRate: penaltyRate / 100 // Convert to percentage
     };
   };
 
@@ -214,7 +216,8 @@ export const useLockerData = () => {
   };
 
   const calculateAPYRange = (): { min: number; max: number } => {
-    const baseAPY = 15;
+    // Calculate based on tier multipliers and typical lock durations
+    const baseAPY = 15; // Base 15% APY
     const minAPY = baseAPY * (lockTiers[0].multiplier / CONTRACT_CONSTANTS.BASIS_POINTS);
     const maxAPY = baseAPY * (lockTiers[5].multiplier / CONTRACT_CONSTANTS.BASIS_POINTS);
     
@@ -222,6 +225,7 @@ export const useLockerData = () => {
   };
 
   return {
+    // Data
     protocolStats,
     userStats,
     userLocks,
@@ -230,14 +234,18 @@ export const useLockerData = () => {
     emergencyMode,
     contractPaused,
     error,
+    
+    // Constants
     CONTRACT_CONSTANTS,
+    
+    // Functions
     determineLockTier,
     calculateEarlyUnlockPenalty,
     calculateLockWeight,
     calculateUserWeight,
     calculateAPYRange,
     
-    // Actions for actual contract interactions
+    // Actions (would connect to actual contract in real implementation)
     lockTokens: async (amount: number, duration: number) => {
       console.log(`Locking ${amount} tokens for ${duration} days`);
       // Implementation would call contract

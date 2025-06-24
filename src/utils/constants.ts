@@ -75,9 +75,9 @@ export const LOCK_TIERS = {
   LEGENDARY: 5
 };
 
-// Locker contract constants matching the smart contract - UPDATED FOR 1-DAY MINIMUM
+// Locker contract constants matching the smart contract
 export const LOCKER_CONSTANTS = {
-  MIN_LOCK_DURATION_DAYS: 1, // UPDATED: Now supports 1-day minimum
+  MIN_LOCK_DURATION_DAYS: 30,
   MAX_LOCK_DURATION_DAYS: 1826, // 5 years
   BASIS_POINTS: 10000,
   EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
@@ -85,14 +85,14 @@ export const LOCKER_CONSTANTS = {
   PENALTY_BURN_SHARE: 5000, // 50% burned
   PENALTY_REWARD_SHARE: 5000, // 50% to lockers
   
-  // Tier multipliers (in basis points) - UPDATED FOR 1-DAY MINIMUM
+  // Tier multipliers (in basis points)
   TIER_MULTIPLIERS: {
-    BRONZE: 10000,   // 1x (1-29 days)
-    SILVER: 15000,   // 1.5x (30-89 days)
-    GOLD: 20000,     // 2x (90-179 days)
-    DIAMOND: 30000,  // 3x (180-364 days)
-    PLATINUM: 50000, // 5x (365-1094 days)
-    LEGENDARY: 80000 // 8x (1095+ days)
+    BRONZE: 10000,   // 1x
+    SILVER: 15000,   // 1.5x
+    GOLD: 20000,     // 2x
+    DIAMOND: 30000,  // 3x
+    PLATINUM: 50000, // 5x
+    LEGENDARY: 80000 // 8x
   }
 };
 
@@ -167,8 +167,8 @@ export const CONTRACT_CONSTANTS = {
   MAX_LIQUIDITY_FEE: 2,
   MAX_LOCKER_FEE: 2,
   MAX_TOTAL_FEES: 9,
-  MIN_SWAP_THRESHOLD: 1000,
-  MAX_SWAP_THRESHOLD: 50000,
-  MAX_SLIPPAGE: 500,
-  DEFAULT_SLIPPAGE: 200,
+  MIN_SWAP_THRESHOLD: 1000, // in tokens (before decimals)
+  MAX_SWAP_THRESHOLD: 50000, // in tokens (before decimals)
+  MAX_SLIPPAGE: 500, // 5% in basis points
+  DEFAULT_SLIPPAGE: 200, // 2% in basis points
 };
