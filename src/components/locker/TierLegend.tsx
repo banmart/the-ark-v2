@@ -1,10 +1,11 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Database, Zap } from 'lucide-react';
 
 const TierLegend = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [hoveredTier, setHoveredTier] = useState<number | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<'top' | 'bottom'>('top');
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const tiers = [
     {
@@ -58,8 +59,20 @@ const TierLegend = () => {
     }
   ];
 
+  useEffect(() => {
+    if (hoveredTier !== null && containerRef.current) {
+      const container = containerRef.current;
+      const rect = container.getBoundingClientRect();
+      const spaceAbove = rect.top;
+      const spaceBelow = window.innerHeight - rect.bottom;
+      
+      // If there's not enough space above (less than 200px), show tooltip below
+      setTooltipPosition(spaceAbove < 200 ? 'bottom' : 'top');
+    }
+  }, [hoveredTier]);
+
   return (
-    <div className="relative max-w-6xl mx-auto px-6 mb-8">
+    <div ref={containerRef} className="relative max-w-6xl mx-auto px-6 mb-8">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -139,9 +152,11 @@ const TierLegend = () => {
                   )}
                 </div>
 
-                {/* Hover Tooltip */}
+                {/* Dynamic Hover Tooltip */}
                 {hoveredTier === index && (
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-20">
+                  <div className={`absolute left-1/2 transform -translate-x-1/2 z-20 ${
+                    tooltipPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
+                  }`}>
                     <div className="bg-black/90 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-3 min-w-48">
                       <div className={`text-sm font-bold text-${tier.color} font-mono mb-1`}>
                         [{tier.name}_TIER]
@@ -159,7 +174,11 @@ const TierLegend = () => {
                       </div>
                     </div>
                     {/* Arrow */}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-cyan-500/30"></div>
+                    <div className={`absolute left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-transparent ${
+                      tooltipPosition === 'top' 
+                        ? 'top-full border-t-4 border-t-cyan-500/30' 
+                        : 'bottom-full border-b-4 border-b-cyan-500/30'
+                    }`}></div>
                   </div>
                 )}
               </div>

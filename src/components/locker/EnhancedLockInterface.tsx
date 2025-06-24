@@ -1,9 +1,7 @@
-
 import React, { useState } from 'react';
 import { useLockerData } from '../../hooks/useLockerData';
 import { AlertTriangle, Lock, Zap } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
-import ContractAddressDisplay from './ContractAddressDisplay';
 import EmergencyModeAlert from './EmergencyModeAlert';
 import LockAmountInput from './LockAmountInput';
 import LockDurationSlider from './LockDurationSlider';
@@ -102,7 +100,6 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
           </div>
         </div>
 
-        <ContractAddressDisplay />
         <EmergencyModeAlert emergencyMode={emergencyMode} />
 
         <div className="space-y-8">

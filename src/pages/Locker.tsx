@@ -9,6 +9,7 @@ import LockerHeader from '../components/locker/LockerHeader';
 import EmergencyStatus from '../components/locker/EmergencyStatus';
 import TierLegend from '../components/locker/TierLegend';
 import LockerOperations from '../components/locker/LockerOperations';
+import ContractAddressDisplay from '../components/locker/ContractAddressDisplay';
 
 const Locker = () => {
   const {
@@ -75,6 +76,35 @@ const Locker = () => {
 
         {/* Operations */}
         <LockerOperations isConnected={isConnected} />
+
+        {/* Contract Address Section */}
+        <div className="relative max-w-6xl mx-auto px-6 py-16">
+          {/* Quantum Field Background */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `
+                radial-gradient(circle at 25% 25%, rgba(34, 211, 238, 0.2) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(34, 211, 238, 0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '50px 50px'
+            }}></div>
+          </div>
+
+          <div className="relative">
+            <div className="text-center mb-8">
+              <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.15em]">
+                [CONTRACT_INFORMATION]
+              </div>
+              <h3 className="text-2xl font-bold text-cyan-400 mb-2">Smart Contract Address</h3>
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-sm font-mono text-green-400">VERIFIED_ON_PULSECHAIN</span>
+              </div>
+            </div>
+            
+            <ContractAddressDisplay />
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
