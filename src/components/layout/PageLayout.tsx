@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from "@/components/ui/use-toast";
 import { useContractData } from '../../hooks/useContractData';
@@ -17,7 +16,6 @@ import FeaturesSection from '../FeaturesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
 import ProphecySection from '../ProphecySection';
-import CountdownSection from '../CountdownSection';
 import ChartSection from '../ChartSection';
 import Footer from '../Footer';
 
@@ -146,9 +144,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
       {/* Prophecy Section */}
       <ProphecySection />
-
-      {/* Countdown Section */}
-      <CountdownSection />
 
       {/* Chart Section */}
       <ChartSection />
