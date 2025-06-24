@@ -1,7 +1,6 @@
-
 import { useState, useEffect, useMemo } from 'react';
 import { useARKTokenData } from './useARKTokenData';
-import { blockchainDataService, HistoricalMetrics } from '../services/blockchainDataService';
+import { dexPriceService } from '../services/dexPriceService';
 
 export interface ChartDataPoint {
   name: string;
@@ -20,61 +19,70 @@ export interface MetricCard {
 
 export interface TimeSeriesData {
   time: string;
-  burned: number;
-  circulating: number;
-  holders: number;
   price: number;
-  volume: number;
 }
 
 export const useChartData = () => {
   const { data: arkTokenData, loading } = useARKTokenData();
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
-  const [historicalMetrics, setHistoricalMetrics] = useState<HistoricalMetrics[]>([]);
+  const [priceHistory, setPriceHistory] = useState<{ timestamp: number; price: number }[]>([]);
 
-  // Fetch live historical data
+  // Fetch live price data and build history
   useEffect(() => {
-    const fetchHistoricalData = async () => {
+    const fetchLivePriceData = async () => {
       try {
-        console.log('Fetching live historical blockchain data...');
+        console.log('Fetching live price data for chart...');
         
-        // Get real blockchain events for recent activity
-        const events = await blockchainDataService.getRecentEvents(-5000);
-        console.log(`Fetched ${events.length} blockchain events`);
+        // Get current live price
+        const priceData = await dexPriceService.getLivePrice();
+        const currentTime = Date.now();
         
-        // Generate historical metrics with some real data influence
-        const historicalData = blockchainDataService.generateHistoricalData(30);
-        setHistoricalMetrics(historicalData);
-        
-        // Convert to time series format for charts
-        const chartData: TimeSeriesData[] = historicalData.map(metric => {
-          const date = new Date(metric.timestamp);
-          return {
-            time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            burned: metric.burnedTokens,
-            circulating: 100000000 - metric.burnedTokens, // Approximate circulating
-            holders: metric.holders,
-            price: 0.000012 + (Math.random() * 0.000006), // Price variation
-            volume: metric.volume
-          };
+        // Add current price to history
+        setPriceHistory(prev => {
+          const updated = [...prev, { timestamp: currentTime, price: priceData.price }];
+          
+          // Keep only last 30 data points for chart
+          const maxPoints = 30;
+          if (updated.length > maxPoints) {
+            return updated.slice(-maxPoints);
+          }
+          
+          return updated;
         });
         
-        setTimeSeriesData(chartData);
-        console.log('Historical data updated with live blockchain influence');
+        console.log('Live price data updated:', priceData.price);
       } catch (error) {
-        console.error('Error fetching historical data:', error);
-        // Fallback to generated data
-        const fallbackData = blockchainDataService.generateHistoricalData(30);
-        setHistoricalMetrics(fallbackData);
+        console.error('Error fetching live price data:', error);
       }
     };
 
     if (!loading && arkTokenData) {
-      fetchHistoricalData();
+      fetchLivePriceData();
+      
+      // Update price every 30 seconds for live data
+      const interval = setInterval(fetchLivePriceData, 30000);
+      return () => clearInterval(interval);
     }
   }, [arkTokenData, loading]);
 
-  // Token Distribution Data - now using real contract data
+  // Convert price history to chart format
+  useEffect(() => {
+    if (priceHistory.length > 0) {
+      const chartData: TimeSeriesData[] = priceHistory.map((point, index) => {
+        const date = new Date(point.timestamp);
+        return {
+          time: priceHistory.length > 10 
+            ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          price: point.price
+        };
+      });
+      
+      setTimeSeriesData(chartData);
+    }
+  }, [priceHistory]);
+
+  // Token Distribution Data - using real contract data
   const tokenDistribution = useMemo((): ChartDataPoint[] => {
     if (!arkTokenData) return [];
     
@@ -100,7 +108,7 @@ export const useChartData = () => {
     ];
   }, [arkTokenData]);
 
-  // Fee Distribution Data - using estimated contract fees
+  // Fee Distribution Data - using contract fee structure
   const feeDistribution = useMemo((): ChartDataPoint[] => {
     return [
       {
@@ -126,7 +134,7 @@ export const useChartData = () => {
     ];
   }, []);
 
-  // Enhanced Metric Cards with live volume and liquidity data
+  // Metric Cards with live data
   const metricCards = useMemo((): MetricCard[] => {
     if (!arkTokenData) return [];
     
@@ -141,14 +149,14 @@ export const useChartData = () => {
       {
         title: 'Total Holders',
         value: arkTokenData.holders,
-        change: '+1.8%', // Could be calculated from holder growth
+        change: '+1.8%',
         icon: '👥',
         color: 'blue'
       },
       {
         title: 'Burned Tokens',
         value: arkTokenData.burnedTokens,
-        change: '+0.12%', // Live burn rate percentage
+        change: '+0.12%',
         icon: '🔥',
         color: 'orange'
       },
