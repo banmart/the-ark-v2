@@ -24,7 +24,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   } = useLockerData();
   
   const [lockAmount, setLockAmount] = useState('');
-  const [lockDuration, setLockDuration] = useState(CONTRACT_CONSTANTS.MIN_LOCK_DURATION); // Set to minimum 1 day
+  const [lockDuration, setLockDuration] = useState(30); // Set back to 30 days as requested
 
   const currentTier = determineLockTier(lockDuration);
   const estimatedWeight = lockAmount ? parseFloat(lockAmount) * lockDuration * (currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS) : 0;
@@ -52,9 +52,9 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
         description: `Successfully locked ${amount} ARK tokens for ${lockDuration} days`,
       });
       
-      // Reset form
+      // Reset form to 30 days
       setLockAmount('');
-      setLockDuration(CONTRACT_CONSTANTS.MIN_LOCK_DURATION);
+      setLockDuration(30);
       
     } catch (error: any) {
       console.error('Lock failed:', error);

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useLockerContractData } from './useLockerContractData';
 import { useWallet } from './useWallet';
-import { ARK_TOKEN_ABI, LOCKER_VAULT_ABI, CONTRACT_ADDRESSES, LOCKER_VAULT_ADDRESS } from '../utils/constants';
+import { ARK_TOKEN_ABI, LOCKER_VAULT_ABI, CONTRACT_ADDRESSES, LOCKER_VAULT_ADDRESS, NETWORKS } from '../utils/constants';
 
 export enum LockTier {
   BRONZE = 0,
@@ -76,6 +76,59 @@ export const useLockerData = () => {
   const [isProcessingLock, setIsProcessingLock] = useState(false);
   const [userArkBalance, setUserArkBalance] = useState(0);
   const [currentAllowance, setCurrentAllowance] = useState(0);
+  const [realContractConstants, setRealContractConstants] = useState<any>(null);
+
+  // Default contract constants (fallback)
+  const DEFAULT_CONSTANTS = {
+    MIN_LOCK_DURATION: 30, // Set back to 30 days as requested
+    MAX_LOCK_DURATION: 1826, // days (5 years)
+    BASIS_POINTS: 10000,
+    EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
+    PENALTY_BURN_SHARE: 5000, // 50% burned
+    PENALTY_REWARD_SHARE: 5000 // 50% to lockers
+  };
+
+  // Use real constants if available, otherwise use defaults
+  const CONTRACT_CONSTANTS = realContractConstants || DEFAULT_CONSTANTS;
+
+  // Fetch real contract constants
+  const fetchContractConstants = async () => {
+    try {
+      console.log('Fetching real contract constants...');
+      const rpcProvider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
+      const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, rpcProvider);
+      
+      const [minDuration, maxDuration, basisPoints] = await Promise.all([
+        contract.MIN_LOCK_DURATION(),
+        contract.MAX_LOCK_DURATION(),
+        contract.BASIS_POINTS()
+      ]);
+
+      // Convert from seconds to days for min/max duration
+      const minDurationDays = Math.ceil(parseInt(minDuration.toString()) / (24 * 60 * 60));
+      const maxDurationDays = Math.ceil(parseInt(maxDuration.toString()) / (24 * 60 * 60));
+      
+      const constants = {
+        MIN_LOCK_DURATION: minDurationDays,
+        MAX_LOCK_DURATION: maxDurationDays,
+        BASIS_POINTS: parseInt(basisPoints.toString()),
+        EARLY_UNLOCK_PENALTY: 5000,
+        PENALTY_BURN_SHARE: 5000,
+        PENALTY_REWARD_SHARE: 5000
+      };
+
+      console.log('Real contract constants fetched:', constants);
+      setRealContractConstants(constants);
+      
+    } catch (error) {
+      console.error('Failed to fetch contract constants, using defaults:', error);
+      // Keep using defaults if contract call fails
+    }
+  };
+
+  useEffect(() => {
+    fetchContractConstants();
+  }, []);
 
   // Contract tier definitions matching the smart contract exactly
   const lockTiers: LockTierInfo[] = [
@@ -85,7 +138,7 @@ export const useLockerData = () => {
       multiplier: 10000, // 1x in basis points
       color: '#CD7F32',
       icon: '⛵',
-      minDays: 1,
+      minDays: CONTRACT_CONSTANTS.MIN_LOCK_DURATION,
       maxDays: 89
     },
     {
@@ -134,16 +187,6 @@ export const useLockerData = () => {
       maxDays: 1826
     }
   ];
-
-  // Contract constants
-  const CONTRACT_CONSTANTS = {
-    MIN_LOCK_DURATION: 1, // days
-    MAX_LOCK_DURATION: 1826, // days (5 years)
-    BASIS_POINTS: 10000,
-    EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
-    PENALTY_BURN_SHARE: 5000, // 50% burned
-    PENALTY_REWARD_SHARE: 5000 // 50% to lockers
-  };
 
   // Fetch user ARK balance and allowance
   const fetchUserTokenData = async () => {
@@ -327,6 +370,8 @@ export const useLockerData = () => {
         amountWei: amountWei.toString(),
         duration,
         durationSeconds,
+        minAllowed: CONTRACT_CONSTANTS.MIN_LOCK_DURATION,
+        maxAllowed: CONTRACT_CONSTANTS.MAX_LOCK_DURATION,
         contractAddress: LOCKER_VAULT_ADDRESS
       });
       
