@@ -74,11 +74,11 @@ export const useLockerData = () => {
   const lockTiers: LockTierInfo[] = [
     {
       name: 'Bronze',
-      minDuration: 30,
+      minDuration: 1,
       multiplier: 10000, // 1x in basis points
       color: '#CD7F32',
       icon: '⛵',
-      minDays: 30,
+      minDays: 1,
       maxDays: 89
     },
     {
@@ -130,7 +130,7 @@ export const useLockerData = () => {
 
   // Contract constants
   const CONTRACT_CONSTANTS = {
-    MIN_LOCK_DURATION: 30, // days
+    MIN_LOCK_DURATION: 1, // days
     MAX_LOCK_DURATION: 1826, // days (5 years)
     BASIS_POINTS: 10000,
     EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
