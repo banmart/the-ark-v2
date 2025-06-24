@@ -86,16 +86,14 @@ const HeroSection = ({
               {new Date().toISOString().slice(0, 19)}Z
             </div>
 
-            {/* Main Title with Glitch Effect */}
+            {/* Main Title with One-Time Load Animation */}
             <div className="relative mb-6">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-cyan-400 relative z-10">
-                <span className="inline-block animate-[glitch_2s_ease-in-out_infinite]">THE</span>{' '}
-                <span className="inline-block animate-[glitch_2s_ease-in-out_0.3s_infinite]">ARK</span>{' '}
-                <span className="inline-block text-cyan-300 animate-[pulse_2s_ease-in-out_infinite]">❍</span>
-              </h1>
-              {/* Glitch overlay */}
-              <h1 className="absolute top-0 left-0 text-5xl md:text-6xl lg:text-7xl font-black text-red-500/20 animate-[glitch-overlay_2s_ease-in-out_infinite] pointer-events-none">
-                THE ARK ❍
+              <h1 className={`text-5xl md:text-6xl lg:text-7xl font-black text-cyan-400 relative z-10 ${
+                textPhase >= 4 ? 'title-entrance title-glow' : 'opacity-0'
+              }`}>
+                <span className="inline-block">THE</span>{' '}
+                <span className="inline-block">ARK</span>{' '}
+                <span className="inline-block text-cyan-300">❍</span>
               </h1>
             </div>
 
