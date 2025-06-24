@@ -1,5 +1,6 @@
+
 import { useState, useEffect, useMemo } from 'react';
-import { useContractData } from './useContractData';
+import { useARKTokenData } from './useARKTokenData';
 import { blockchainDataService, HistoricalMetrics } from '../services/blockchainDataService';
 
 export interface ChartDataPoint {
@@ -27,7 +28,7 @@ export interface TimeSeriesData {
 }
 
 export const useChartData = () => {
-  const { data: contractData, loading } = useContractData();
+  const { data: arkTokenData, loading } = useARKTokenData();
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [historicalMetrics, setHistoricalMetrics] = useState<HistoricalMetrics[]>([]);
 
@@ -68,18 +69,18 @@ export const useChartData = () => {
       }
     };
 
-    if (!loading && contractData) {
+    if (!loading && arkTokenData) {
       fetchHistoricalData();
     }
-  }, [contractData, loading]);
+  }, [arkTokenData, loading]);
 
   // Token Distribution Data - now using real contract data
   const tokenDistribution = useMemo((): ChartDataPoint[] => {
-    if (!contractData) return [];
+    if (!arkTokenData) return [];
     
-    const total = parseFloat(contractData.totalSupply.replace(/,/g, ''));
-    const burned = parseFloat(contractData.burnedTokens.replace(/,/g, ''));
-    const circulating = parseFloat(contractData.circulatingSupply.replace(/,/g, ''));
+    const total = parseFloat(arkTokenData.totalSupply.replace(/,/g, ''));
+    const burned = parseFloat(arkTokenData.burnedTokens.replace(/,/g, ''));
+    const circulating = parseFloat(arkTokenData.circulatingSupply.replace(/,/g, ''));
     
     if (total === 0) return [];
     
@@ -97,71 +98,69 @@ export const useChartData = () => {
         percentage: (burned / total) * 100
       }
     ];
-  }, [contractData]);
+  }, [arkTokenData]);
 
-  // Fee Distribution Data - using real contract fees
+  // Fee Distribution Data - using estimated contract fees
   const feeDistribution = useMemo((): ChartDataPoint[] => {
-    if (!contractData) return [];
-    
     return [
       {
         name: 'Burn Fee',
-        value: contractData.currentFees.burn || 3,
+        value: 3,
         color: '#ff6b35'
       },
       {
         name: 'Reflection Fee',
-        value: contractData.currentFees.reflection || 2,
+        value: 2,
         color: '#00ffff'
       },
       {
         name: 'Liquidity Fee',
-        value: contractData.currentFees.liquidity || 2,
+        value: 2,
         color: '#3b82f6'
       },
       {
         name: 'Locker Fee',
-        value: contractData.currentFees.locker || 2,
+        value: 2,
         color: '#8b5cf6'
       }
     ];
-  }, [contractData]);
+  }, []);
 
   // Enhanced Metric Cards with live volume and liquidity data
   const metricCards = useMemo((): MetricCard[] => {
-    if (!contractData) return [];
+    if (!arkTokenData) return [];
     
     return [
       {
         title: 'Market Cap',
-        value: `$${contractData.marketCap}`,
-        change: contractData.priceChange24h + '%',
+        value: `$${arkTokenData.marketCap}`,
+        change: arkTokenData.priceChange24h + '%',
         icon: '💰',
         color: 'cyan'
       },
       {
         title: 'Total Holders',
-        value: contractData.holders,
+        value: arkTokenData.holders,
         change: '+1.8%', // Could be calculated from holder growth
         icon: '👥',
         color: 'blue'
       },
       {
         title: 'Burned Tokens',
-        value: contractData.burnedTokens,
+        value: arkTokenData.burnedTokens,
         change: '+0.12%', // Live burn rate percentage
         icon: '🔥',
         color: 'orange'
       },
       {
         title: '24h Volume',
-        value: contractData.volume24h ? `${contractData.volume24h} ARK` : 'N/A',
-        change: contractData.volumeChange24h ? contractData.volumeChange24h + '%' : '0%',
+        value: arkTokenData.volume24h ? `${arkTokenData.volume24h} ARK` : 'N/A',
+        change: arkTokenData.volumeChange24h ? arkTokenData.volumeChange24h + '%' : '0%',
         icon: '📊',
         color: 'purple'
       }
     ];
-  }, [contractData]);
+  }, [arkTokenData]);
 
   return {
     tokenDistribution,
@@ -169,6 +168,6 @@ export const useChartData = () => {
     timeSeriesData,
     metricCards,
     loading,
-    lastUpdated: contractData?.lastUpdated
+    lastUpdated: arkTokenData?.lastUpdated
   };
 };

@@ -46,17 +46,21 @@ class BlockchainDataService {
       
       for (const event of transferEvents) {
         const block = await this.provider.getBlock(event.blockNumber);
-        const isBurn = event.args?.to?.toLowerCase() === CONTRACT_ADDRESSES.DEAD_ADDRESS.toLowerCase();
         
-        events.push({
-          blockNumber: event.blockNumber,
-          transactionHash: event.transactionHash,
-          timestamp: block ? block.timestamp * 1000 : Date.now(),
-          eventType: isBurn ? 'burn' : 'transfer',
-          amount: event.args?.value?.toString() || '0',
-          from: event.args?.from,
-          to: event.args?.to
-        });
+        // Type guard to check if event is an EventLog
+        if ('args' in event && event.args) {
+          const isBurn = event.args.to?.toLowerCase() === CONTRACT_ADDRESSES.DEAD_ADDRESS.toLowerCase();
+          
+          events.push({
+            blockNumber: event.blockNumber,
+            transactionHash: event.transactionHash,
+            timestamp: block ? block.timestamp * 1000 : Date.now(),
+            eventType: isBurn ? 'burn' : 'transfer',
+            amount: event.args.value?.toString() || '0',
+            from: event.args.from,
+            to: event.args.to
+          });
+        }
       }
       
       // Sort by timestamp
