@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { useLockerData } from '../../hooks/useLockerData';
-import { AlertTriangle, Info, CheckCircle, Loader2 } from 'lucide-react';
+import { AlertTriangle, Info, CheckCircle, Loader2, Copy, Check } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
+import { LOCKER_VAULT_ADDRESS } from '../../utils/constants';
 
 interface EnhancedLockInterfaceProps {
   isConnected: boolean;
@@ -25,6 +25,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   
   const [lockAmount, setLockAmount] = useState('');
   const [lockDuration, setLockDuration] = useState(30); // Set back to 30 days as requested
+  const [isCopied, setIsCopied] = useState(false);
 
   const currentTier = determineLockTier(lockDuration);
   const estimatedWeight = lockAmount ? parseFloat(lockAmount) * lockDuration * (currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS) : 0;
@@ -32,6 +33,27 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   const needsApproval = amount > 0 && currentAllowance < amount;
   const hasInsufficientBalance = amount > userArkBalance;
   const isProcessing = isProcessingApproval || isProcessingLock;
+
+  const copyContractAddress = async () => {
+    try {
+      await navigator.clipboard.writeText(LOCKER_VAULT_ADDRESS);
+      setIsCopied(true);
+      
+      toast({
+        title: "Copied!",
+        description: "Contract address copied to clipboard",
+      });
+      
+      // Reset copy state after 2 seconds
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Copy Failed",
+        description: "Failed to copy contract address"
+      });
+    }
+  };
 
   const handleLock = async () => {
     if (!lockAmount || !isConnected || hasInsufficientBalance) return;
@@ -88,6 +110,34 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
         {(emergencyMode || contractPaused) && (
           <AlertTriangle className="w-5 h-5 text-red-400" />
         )}
+      </div>
+
+      {/* Contract Address Section */}
+      <div className="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-4 mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-medium text-cyan-400 mb-1">Locker Contract Address</div>
+            <div className="text-xs text-gray-300 font-mono break-all">
+              {LOCKER_VAULT_ADDRESS}
+            </div>
+          </div>
+          <button
+            onClick={copyContractAddress}
+            className="ml-4 bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded-lg hover:bg-cyan-500/30 transition-colors flex items-center gap-2 text-sm font-medium"
+          >
+            {isCopied ? (
+              <>
+                <Check className="w-4 h-4" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <Copy className="w-4 h-4" />
+                Copy
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {emergencyMode && (
