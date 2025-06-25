@@ -128,9 +128,9 @@ export const useContractData = () => {
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
       const arkToken = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
 
-      console.log('Fetching live contract data...');
+      console.log('Fetching live contract data including LP burn data...');
 
-      // Fetch live contract info, fees, and liquidity data
+      // Fetch live contract info, fees, liquidity data, and LP burn data
       const [
         owner, 
         isPaused, 
@@ -138,7 +138,8 @@ export const useContractData = () => {
         tokensForLiquidity, 
         totalFeesCollected,
         swapSettings,
-        lockerRewardsInfo
+        lockerRewardsInfo,
+        lpTokensBurned
       ] = await Promise.all([
         arkToken.owner().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.paused().catch(() => false),
@@ -146,7 +147,8 @@ export const useContractData = () => {
         arkToken.getTokensForLiquidity().catch(() => ethers.parseEther('0')), // Real tokens ready for liquidity
         arkToken.totalFeesCollected().catch(() => ethers.parseEther('0')), // Total fees collected
         arkToken.getSwapSettings().catch(() => [ethers.parseEther('1000'), ethers.parseEther('50000'), false]), // [threshold, maxAmount, enabled]
-        arkToken.getLockerRewardsInfo().catch(() => ['0x0000000000000000000000000000000000000000', ethers.parseEther('0'), ethers.parseEther('0')]) // [vault, pending, distributed]
+        arkToken.getLockerRewardsInfo().catch(() => ['0x0000000000000000000000000000000000000000', ethers.parseEther('0'), ethers.parseEther('0')]), // [vault, pending, distributed]
+        arkToken.totalLPTokensBurned().catch(() => ethers.parseEther('0')) // Real LP tokens burned data
       ]);
 
       console.log('Live contract data fetched:', {
@@ -154,10 +156,11 @@ export const useContractData = () => {
         tokensForLiquidity: ethers.formatEther(tokensForLiquidity),
         totalFeesCollected: ethers.formatEther(totalFeesCollected),
         swapSettings,
-        lockerRewardsInfo
+        lockerRewardsInfo,
+        lpTokensBurned: ethers.formatEther(lpTokensBurned)
       });
 
-      // Update with real contract data including live fees and liquidity data
+      // Update with real contract data including live LP burn data
       setData(prev => ({
         ...prev,
         currentFees: {
@@ -177,7 +180,7 @@ export const useContractData = () => {
         liquidityData: {
           tokensForLiquidity: ethers.formatEther(tokensForLiquidity),
           totalFeesCollected: ethers.formatEther(totalFeesCollected),
-          lpTokensBurned: '0' // This would need a separate contract call if available
+          lpTokensBurned: ethers.formatEther(lpTokensBurned) // Now using real LP burn data
         },
         swapSettings: {
           threshold: ethers.formatEther(swapSettings[0]),
@@ -200,7 +203,7 @@ export const useContractData = () => {
         lastUpdated: new Date()
       }));
 
-      console.log('Contract data updated successfully with live fees and liquidity data');
+      console.log('Contract data updated successfully with live LP burn data');
     } catch (err: any) {
       console.error('Error fetching live contract data:', err);
     } finally {
