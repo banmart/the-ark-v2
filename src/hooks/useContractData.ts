@@ -130,16 +130,34 @@ export const useContractData = () => {
 
       console.log('Fetching live contract data...');
 
-      // Fetch live contract info and fees
-      const [owner, isPaused, currentFees] = await Promise.all([
+      // Fetch live contract info, fees, and liquidity data
+      const [
+        owner, 
+        isPaused, 
+        currentFees, 
+        tokensForLiquidity, 
+        totalFeesCollected,
+        swapSettings,
+        lockerRewardsInfo
+      ] = await Promise.all([
         arkToken.owner().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.paused().catch(() => false),
-        arkToken.getCurrentFees().catch(() => [3, 2, 2, 2, 9]) // Default fees if call fails
+        arkToken.getCurrentFees().catch(() => [3, 2, 2, 2, 9]), // Default fees if call fails
+        arkToken.getTokensForLiquidity().catch(() => ethers.parseEther('0')), // Real tokens ready for liquidity
+        arkToken.totalFeesCollected().catch(() => ethers.parseEther('0')), // Total fees collected
+        arkToken.getSwapSettings().catch(() => [ethers.parseEther('1000'), ethers.parseEther('50000'), false]), // [threshold, maxAmount, enabled]
+        arkToken.getLockerRewardsInfo().catch(() => ['0x0000000000000000000000000000000000000000', ethers.parseEther('0'), ethers.parseEther('0')]) // [vault, pending, distributed]
       ]);
 
-      console.log('Live contract fees:', currentFees);
+      console.log('Live contract data fetched:', {
+        fees: currentFees,
+        tokensForLiquidity: ethers.formatEther(tokensForLiquidity),
+        totalFeesCollected: ethers.formatEther(totalFeesCollected),
+        swapSettings,
+        lockerRewardsInfo
+      });
 
-      // Update with real contract data including live fees
+      // Update with real contract data including live fees and liquidity data
       setData(prev => ({
         ...prev,
         currentFees: {
@@ -156,6 +174,22 @@ export const useContractData = () => {
           locker: 2,
           total: 9
         },
+        liquidityData: {
+          tokensForLiquidity: ethers.formatEther(tokensForLiquidity),
+          totalFeesCollected: ethers.formatEther(totalFeesCollected),
+          lpTokensBurned: '0' // This would need a separate contract call if available
+        },
+        swapSettings: {
+          threshold: ethers.formatEther(swapSettings[0]),
+          maxAmount: ethers.formatEther(swapSettings[1]),
+          enabled: swapSettings[2],
+          slippageTolerance: 200 // Default 2% if not available from contract
+        },
+        lockerRewards: {
+          vaultAddress: lockerRewardsInfo[0],
+          pending: ethers.formatEther(lockerRewardsInfo[1]),
+          distributed: ethers.formatEther(lockerRewardsInfo[2])
+        },
         security: {
           ...prev.security,
           isPaused,
@@ -166,7 +200,7 @@ export const useContractData = () => {
         lastUpdated: new Date()
       }));
 
-      console.log('Contract data updated successfully with live fees');
+      console.log('Contract data updated successfully with live fees and liquidity data');
     } catch (err: any) {
       console.error('Error fetching live contract data:', err);
     } finally {
