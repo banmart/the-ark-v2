@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useChatContext } from '../providers/ChatProvider';
-import { useMediaQuery } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Drawer,
   DrawerContent,
@@ -13,7 +13,7 @@ import ChatAssistant from './ChatAssistant';
 
 const ChatDrawer = () => {
   const { isOpen, setIsOpen } = useChatContext();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useIsMobile();
 
   if (isMobile) {
     // Mobile: Bottom drawer using vaul
