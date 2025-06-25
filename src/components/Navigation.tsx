@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Zap, Wifi } from 'lucide-react';
 
 interface NavigationProps {
@@ -11,6 +11,28 @@ interface NavigationProps {
 }
 
 const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }: NavigationProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleHashNavigation = (hash: string) => {
+    if (location.pathname !== '/') {
+      // If not on homepage, navigate to homepage first, then scroll
+      navigate('/');
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // If already on homepage, just scroll to the section
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <nav className="fixed top-0 w-full z-50 overflow-hidden">
       {/* Quantum Field Background */}
@@ -28,7 +50,6 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
           <div className="flex items-center gap-4">
             <Link 
               to="/" 
-              onClick={() => window.scrollTo(0, 0)}
               className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform relative group"
             >
               ARK ❍
@@ -51,24 +72,32 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
           <div className="hidden md:flex items-center gap-8">
             <Link 
               to="/locker" 
-              onClick={() => window.scrollTo(0, 0)}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
               Locker
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </Link>
-            <a href="#stats" className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group">
+            <button 
+              onClick={() => handleHashNavigation('#stats')} 
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
+            >
               Stats
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </a>
-            <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group">
+            </button>
+            <button 
+              onClick={() => handleHashNavigation('#features')} 
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
+            >
               Features
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </a>
-            <a href="#chart" className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group">
+            </button>
+            <button 
+              onClick={() => handleHashNavigation('#chart')} 
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
+            >
               Chart
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </a>
+            </button>
             <a 
               href="https://pulse-bridge-onboard.lovable.app/" 
               target="_blank" 

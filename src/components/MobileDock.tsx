@@ -30,7 +30,6 @@ const MobileDock = ({
         <div className="flex items-center justify-center gap-2 py-4">
           <RouterLink 
             to="/" 
-            onClick={() => window.scrollTo(0, 0)}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 ${
               isActive('/') 
                 ? 'bg-cyan-500/20 text-cyan-400' 
@@ -43,7 +42,6 @@ const MobileDock = ({
           
           <RouterLink 
             to="/locker" 
-            onClick={() => window.scrollTo(0, 0)}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 ${
               isActive('/locker') 
                 ? 'bg-cyan-500/20 text-cyan-400' 
@@ -62,7 +60,7 @@ const MobileDock = ({
           >
             <Link size={18} />
             <span className="text-xs font-medium">Bridge</span>
-          </a>
+          </RouterLink>
 
           {handleConnectWallet && (
             <button 
