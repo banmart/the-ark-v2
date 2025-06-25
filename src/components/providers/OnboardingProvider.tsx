@@ -23,18 +23,16 @@ interface OnboardingProviderProps {
 export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
+  // Disabled automatic onboarding - now handled by AI chat assistant
   useEffect(() => {
     // Check if user has seen onboarding before
     const hasSeenOnboarding = localStorage.getItem('ark-onboarding-seen');
     
+    // Onboarding modal is now disabled in favor of AI chat assistant
+    // Users can still manually trigger it if needed
     if (!hasSeenOnboarding) {
-      // Set timer to show onboarding after 10 seconds
-      const timer = setTimeout(() => {
-        setShowOnboarding(true);
-      }, 10000);
-
-      // Cleanup timer if component unmounts
-      return () => clearTimeout(timer);
+      // No longer auto-show onboarding after 10 seconds
+      console.log('Onboarding available via AI chat assistant');
     }
   }, []);
 
