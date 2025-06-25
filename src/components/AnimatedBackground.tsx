@@ -14,6 +14,14 @@ const AnimatedBackground = () => {
       <div className="floating-orb orb1"></div>
       <div className="floating-orb orb2"></div>
       <div className="floating-orb orb3"></div>
+
+      {/* Breathing Gradient Bursts - Below Hero Section */}
+      <div className="gradient-burst burst1"></div>
+      <div className="gradient-burst burst2"></div>
+      <div className="gradient-burst burst3"></div>
+      <div className="gradient-burst burst4"></div>
+      <div className="gradient-burst burst5"></div>
+      <div className="gradient-burst burst6"></div>
     </div>
   );
 };

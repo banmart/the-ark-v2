@@ -46,6 +46,14 @@ const Locker = () => {
         <div className="floating-orb orb2 bg-gradient-radial from-teal-500/20 to-transparent blur-3xl"></div>
         <div className="floating-orb orb3 bg-gradient-radial from-green-500/20 to-transparent blur-3xl"></div>
         
+        {/* Breathing Gradient Bursts */}
+        <div className="gradient-burst burst1"></div>
+        <div className="gradient-burst burst2"></div>
+        <div className="gradient-burst burst3"></div>
+        <div className="gradient-burst burst4"></div>
+        <div className="gradient-burst burst5"></div>
+        <div className="gradient-burst burst6"></div>
+        
         {/* Scanning lines */}
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent animate-pulse"></div>
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/50 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
