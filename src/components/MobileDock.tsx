@@ -60,7 +60,7 @@ const MobileDock = ({
           >
             <Link size={18} />
             <span className="text-xs font-medium">Bridge</span>
-          </RouterLink>
+          </a>
 
           {handleConnectWallet && (
             <button 
