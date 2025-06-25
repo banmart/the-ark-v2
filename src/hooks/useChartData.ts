@@ -26,33 +26,60 @@ export const useChartData = () => {
   const { data: arkTokenData, loading } = useARKTokenData();
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [priceHistory, setPriceHistory] = useState<{ timestamp: number; price: number }[]>([]);
+  const [currentPriceInfo, setCurrentPriceInfo] = useState<{
+    dataSource: string;
+    plsPriceSource: string;
+    lastUpdated: Date;
+  }>({
+    dataSource: 'Loading',
+    plsPriceSource: 'Loading',
+    lastUpdated: new Date()
+  });
 
   // Fetch live price data and build history
   useEffect(() => {
     const fetchLivePriceData = async () => {
       try {
-        console.log('Fetching live price data for chart...');
+        console.log('Fetching enhanced live price data for chart...');
         
-        // Get current live price
+        // Get current live price with enhanced data
         const priceData = await dexPriceService.getLivePrice();
         const currentTime = Date.now();
         
-        // Add current price to history
-        setPriceHistory(prev => {
-          const updated = [...prev, { timestamp: currentTime, price: priceData.price }];
-          
-          // Keep only last 30 data points for chart
-          const maxPoints = 30;
-          if (updated.length > maxPoints) {
-            return updated.slice(-maxPoints);
-          }
-          
-          return updated;
+        // Update price info
+        setCurrentPriceInfo({
+          dataSource: priceData.dataSource,
+          plsPriceSource: priceData.plsPriceSource,
+          lastUpdated: priceData.lastUpdated
         });
         
-        console.log('Live price data updated:', priceData.price);
+        // Add current price to history if valid
+        if (priceData.price > 0) {
+          setPriceHistory(prev => {
+            const updated = [...prev, { timestamp: currentTime, price: priceData.price }];
+            
+            // Keep only last 50 data points for chart (about 25 minutes of data)
+            const maxPoints = 50;
+            if (updated.length > maxPoints) {
+              return updated.slice(-maxPoints);
+            }
+            
+            return updated;
+          });
+        }
+        
+        console.log('Enhanced price data updated:', {
+          price: priceData.price.toFixed(8),
+          source: priceData.dataSource,
+          plsSource: priceData.plsPriceSource
+        });
       } catch (error) {
-        console.error('Error fetching live price data:', error);
+        console.error('Error fetching enhanced price data:', error);
+        setCurrentPriceInfo(prev => ({
+          ...prev,
+          dataSource: 'Error',
+          plsPriceSource: 'Error'
+        }));
       }
     };
 
@@ -71,9 +98,9 @@ export const useChartData = () => {
       const chartData: TimeSeriesData[] = priceHistory.map((point, index) => {
         const date = new Date(point.timestamp);
         return {
-          time: priceHistory.length > 10 
+          time: priceHistory.length > 20 
             ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-            : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
           price: point.price
         };
       });
@@ -176,6 +203,9 @@ export const useChartData = () => {
     timeSeriesData,
     metricCards,
     loading,
-    lastUpdated: arkTokenData?.lastUpdated
+    lastUpdated: arkTokenData?.lastUpdated,
+    dataSource: currentPriceInfo.dataSource,
+    plsPriceSource: currentPriceInfo.plsPriceSource,
+    priceDataPoints: priceHistory.length
   };
 };

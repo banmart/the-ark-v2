@@ -1,5 +1,7 @@
+
 import { ethers } from 'ethers';
 import { CONTRACT_ADDRESSES, NETWORKS } from '../utils/constants';
+import { priceOracleService, PriceOracleData } from './priceOracleService';
 
 interface PulseXPairData {
   token0: string;
@@ -15,11 +17,12 @@ interface DexPriceData {
   volume24h: number;
   liquidity: number;
   lastUpdated: Date;
+  dataSource: string;
+  plsPriceSource: string;
 }
 
 // PulseX V2 Factory and Router addresses
 const PULSEX_V2_FACTORY = '0x1715a3E4A142d8b698131108995174F37aEBA10D';
-const PULSEX_V2_ROUTER = '0x98bf93ebf5c380C0e6Ae8e192A7e2AE08edAcc02';
 const WPLS_ADDRESS = '0xA1077a294dDE1B09bB078844df40758a5D0f9a27';
 
 // PulseX V2 Factory ABI (minimal for getPair function)
@@ -38,6 +41,7 @@ const PAIR_ABI = [
 class DexPriceService {
   private provider: ethers.JsonRpcProvider;
   private priceHistory: { timestamp: number; price: number }[] = [];
+  private currentPLSOracleData: PriceOracleData | null = null;
   
   constructor() {
     this.provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
@@ -53,6 +57,7 @@ class DexPriceService {
         return null;
       }
       
+      console.log('ARK/WPLS pair found:', pairAddress);
       return pairAddress;
     } catch (error) {
       console.error('Error getting ARK pair address:', error);
@@ -84,8 +89,12 @@ class DexPriceService {
     }
   }
 
-  calculatePrice(pairData: PulseXPairData): number {
+  async calculatePrice(pairData: PulseXPairData): Promise<{ arkPriceUSD: number; plsUsdPrice: number; source: string }> {
     try {
+      // Get real PLS/USD price from oracle
+      this.currentPLSOracleData = await priceOracleService.getPLSUSDPrice();
+      const plsUsdPrice = this.currentPLSOracleData.plsUsdPrice;
+      
       const { token0, token1, reserve0, reserve1 } = pairData;
       
       // Determine which token is ARK and which is WPLS
@@ -98,19 +107,30 @@ class DexPriceService {
       const arkAmount = parseFloat(ethers.formatEther(arkReserve));
       const plsAmount = parseFloat(ethers.formatEther(plsReserve));
       
-      if (arkAmount === 0) return 0;
+      if (arkAmount === 0) {
+        return { arkPriceUSD: 0, plsUsdPrice, source: this.currentPLSOracleData.source };
+      }
       
       // Price of ARK in PLS
       const arkPriceInPLS = plsAmount / arkAmount;
       
-      // For USD price, we'd need PLS/USD rate
-      // For now, using a reasonable PLS price estimate
-      const plsUSDPrice = 0.00002; // This should be fetched from an oracle
+      // Convert to USD using real PLS price
+      const arkPriceUSD = arkPriceInPLS * plsUsdPrice;
       
-      return arkPriceInPLS * plsUSDPrice;
+      console.log('Price calculation:', {
+        arkAmount: arkAmount.toFixed(2),
+        plsAmount: plsAmount.toFixed(2),
+        arkPriceInPLS: arkPriceInPLS.toFixed(8),
+        plsUsdPrice: plsUsdPrice.toFixed(8),
+        arkPriceUSD: arkPriceUSD.toFixed(8),
+        source: this.currentPLSOracleData.source
+      });
+      
+      return { arkPriceUSD, plsUsdPrice, source: this.currentPLSOracleData.source };
     } catch (error) {
       console.error('Error calculating price:', error);
-      return 0;
+      const fallbackPLS = priceOracleService.getCachedPrice();
+      return { arkPriceUSD: 0, plsUsdPrice: fallbackPLS, source: 'Error' };
     }
   }
 
@@ -138,56 +158,97 @@ class DexPriceService {
     this.priceHistory = this.priceHistory.filter(p => p.timestamp >= thirtyDaysAgo);
   }
 
+  async estimateVolume24h(pairData: PulseXPairData): Promise<number> {
+    try {
+      // Estimate volume based on reserves and typical trading activity
+      const { reserve0, reserve1 } = pairData;
+      const arkReserve = parseFloat(ethers.formatEther(reserve0));
+      const plsReserve = parseFloat(ethers.formatEther(reserve1));
+      
+      // Estimate daily volume as a percentage of liquidity (typically 50-200% for active pairs)
+      const totalLiquidityARK = arkReserve;
+      const estimatedDailyTurnover = 0.75; // 75% daily turnover estimate
+      
+      return totalLiquidityARK * estimatedDailyTurnover;
+    } catch (error) {
+      console.error('Error estimating volume:', error);
+      return 0;
+    }
+  }
+
   async getLivePrice(): Promise<DexPriceData> {
     try {
+      console.log('Fetching live ARK price data...');
+      
       const pairAddress = await this.getARKPairAddress();
       
       if (!pairAddress) {
-        // Fallback to simulated data if pair not found
-        return this.getFallbackData();
+        throw new Error('ARK/WPLS pair not found');
       }
 
       const pairData = await this.getPairData(pairAddress);
       
       if (!pairData) {
-        return this.getFallbackData();
+        throw new Error('Failed to get pair data');
       }
 
-      const price = this.calculatePrice(pairData);
-      this.addPriceToHistory(price);
+      const { arkPriceUSD, plsUsdPrice, source } = await this.calculatePrice(pairData);
+      
+      if (arkPriceUSD > 0) {
+        this.addPriceToHistory(arkPriceUSD);
+      }
       
       const priceChange24h = this.calculate24hChange();
       
-      // Calculate liquidity (total value locked in USD)
-      const arkReserve = parseFloat(ethers.formatEther(pairData.reserve0));
-      const plsReserve = parseFloat(ethers.formatEther(pairData.reserve1));
-      const liquidity = (arkReserve * price) + (plsReserve * 0.00002); // Approximate USD value
+      // Calculate real liquidity using both reserves
+      const { token0, token1, reserve0, reserve1 } = pairData;
+      const isToken0ARK = token0.toLowerCase() === CONTRACT_ADDRESSES.ARK_TOKEN.toLowerCase();
+      
+      const arkReserve = parseFloat(ethers.formatEther(isToken0ARK ? reserve0 : reserve1));
+      const plsReserve = parseFloat(ethers.formatEther(isToken0ARK ? reserve1 : reserve0));
+      
+      const arkLiquidityUSD = arkReserve * arkPriceUSD;
+      const plsLiquidityUSD = plsReserve * plsUsdPrice;
+      const totalLiquidityUSD = arkLiquidityUSD + plsLiquidityUSD;
+      
+      // Estimate 24h volume
+      const volume24h = await this.estimateVolume24h(pairData);
+      
+      console.log('Live price data retrieved:', {
+        arkPriceUSD: arkPriceUSD.toFixed(8),
+        priceChange24h: priceChange24h.toFixed(2),
+        volume24h: volume24h.toFixed(2),
+        totalLiquidityUSD: totalLiquidityUSD.toFixed(2),
+        plsPriceSource: source
+      });
       
       return {
-        price,
+        price: arkPriceUSD,
         priceChange24h,
-        volume24h: Math.random() * 100000 + 50000, // TODO: Calculate from recent transactions
-        liquidity,
-        lastUpdated: new Date()
+        volume24h,
+        liquidity: totalLiquidityUSD,
+        lastUpdated: new Date(),
+        dataSource: 'PulseX',
+        plsPriceSource: source
       };
     } catch (error) {
-      console.error('Error getting live price:', error);
-      return this.getFallbackData();
+      console.error('Error getting live price from PulseX:', error);
+      
+      // Return error state with cached data if available
+      const cachedPrice = this.priceHistory.length > 0 
+        ? this.priceHistory[this.priceHistory.length - 1].price 
+        : 0;
+        
+      return {
+        price: cachedPrice,
+        priceChange24h: 0,
+        volume24h: 0,
+        liquidity: 0,
+        lastUpdated: new Date(),
+        dataSource: 'Error',
+        plsPriceSource: 'None'
+      };
     }
-  }
-
-  private getFallbackData(): DexPriceData {
-    // Fallback to reasonable simulated data
-    const basePrice = 0.000015;
-    const variation = (Math.random() - 0.5) * 0.000002;
-    
-    return {
-      price: basePrice + variation,
-      priceChange24h: (Math.random() - 0.5) * 20,
-      volume24h: Math.random() * 500000 + 100000,
-      liquidity: 850000 + Math.random() * 200000,
-      lastUpdated: new Date()
-    };
   }
 }
 

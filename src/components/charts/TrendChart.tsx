@@ -2,27 +2,64 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TimeSeriesData } from '../../hooks/useChartData';
-import { Activity, Database, Wifi, Zap } from 'lucide-react';
+import { Activity, Database, Wifi, Zap, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface TrendChartProps {
   data: TimeSeriesData[];
+  dataSource?: string;
+  plsPriceSource?: string;
+  priceDataPoints?: number;
 }
 
-const TrendChart = ({ data }: TrendChartProps) => {
+const TrendChart = ({ data, dataSource = 'Loading', plsPriceSource = 'Loading', priceDataPoints = 0 }: TrendChartProps) => {
+  const getStatusColor = (source: string) => {
+    switch (source) {
+      case 'PulseX': return 'text-green-400';
+      case 'CoinGecko': return 'text-blue-400';
+      case 'Estimated': return 'text-yellow-400';
+      case 'Cached': return 'text-orange-400';
+      case 'Error': return 'text-red-400';
+      default: return 'text-gray-400';
+    }
+  };
+
+  const getStatusIcon = (source: string) => {
+    switch (source) {
+      case 'PulseX':
+      case 'CoinGecko':
+        return <CheckCircle className="w-3 h-3" />;
+      case 'Estimated':
+      case 'Cached':
+        return <AlertCircle className="w-3 h-3" />;
+      case 'Error':
+        return <AlertCircle className="w-3 h-3 text-red-400" />;
+      default:
+        return <Database className="w-3 h-3" />;
+    }
+  };
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-black/80 backdrop-blur-xl border border-cyan-400/30 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-            <span className="font-mono text-cyan-400 text-xs tracking-wider">DATA_POINT</span>
+            <span className="font-mono text-cyan-400 text-xs tracking-wider">LIVE_DATA</span>
           </div>
           <p className="text-cyan-400 font-mono text-sm font-semibold">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="font-mono text-xs" style={{ color: entry.color }}>
-              PRICE: ${entry.value.toFixed(6)}
+              PRICE: ${entry.value.toFixed(8)} USD
             </p>
           ))}
+          <div className="mt-2 pt-2 border-t border-cyan-400/20">
+            <div className="flex items-center gap-2">
+              {getStatusIcon(dataSource)}
+              <span className={`font-mono text-xs ${getStatusColor(dataSource)}`}>
+                SRC: {dataSource}
+              </span>
+            </div>
+          </div>
         </div>
       );
     }
@@ -54,26 +91,28 @@ const TrendChart = ({ data }: TrendChartProps) => {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
                 <Database className="w-3 h-3 text-cyan-400" />
-                <span className="text-xs font-mono text-cyan-400 tracking-wider">PRICE_ANALYTICS</span>
+                <span className="text-xs font-mono text-cyan-400 tracking-wider">LIVE_PRICE_MATRIX</span>
               </div>
               <h3 className="text-lg font-mono text-cyan-400 font-semibold">
-                ARK Token Price Matrix
+                ARK/USD Live Chart
               </h3>
             </div>
             
-            {/* System Status Indicators */}
+            {/* Enhanced Status Indicators */}
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-xs font-mono text-green-400">LIVE</span>
+                {getStatusIcon(dataSource)}
+                <span className={`text-xs font-mono ${getStatusColor(dataSource)}`}>
+                  {dataSource}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Wifi className="w-3 h-3 text-cyan-400" />
-                <span className="text-xs font-mono text-cyan-400">SYNC</span>
+                <span className="text-xs font-mono text-cyan-400">LIVE</span>
               </div>
               <div className="flex items-center gap-2">
                 <Activity className="w-3 h-3 text-teal-400" />
-                <span className="text-xs font-mono text-teal-400">{data.length} PTS</span>
+                <span className="text-xs font-mono text-teal-400">{priceDataPoints} PTS</span>
               </div>
             </div>
           </div>
@@ -103,7 +142,7 @@ const TrendChart = ({ data }: TrendChartProps) => {
                 stroke="#00ffff" 
                 fontSize={10}
                 fontFamily="monospace"
-                tickFormatter={(value) => `$${value.toFixed(6)}`}
+                tickFormatter={(value) => `$${value.toFixed(8)}`}
                 tickLine={{ stroke: '#00ffff', strokeWidth: 1 }}
                 axisLine={{ stroke: '#00ffff', strokeWidth: 1 }}
               />
@@ -127,7 +166,7 @@ const TrendChart = ({ data }: TrendChartProps) => {
           </ResponsiveContainer>
         </div>
 
-        {/* System Diagnostics Panel */}
+        {/* Enhanced System Diagnostics Panel */}
         <div className="bg-black/60 backdrop-blur-sm border-t border-cyan-500/20 p-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="flex items-center gap-2">
@@ -139,26 +178,26 @@ const TrendChart = ({ data }: TrendChartProps) => {
             </div>
             
             <div className="flex items-center gap-2">
-              <Database className="w-4 h-4 text-blue-400" />
+              {getStatusIcon(dataSource)}
+              <div>
+                <div className="text-xs font-mono text-gray-400">ARK_SOURCE</div>
+                <div className={`text-sm font-mono ${getStatusColor(dataSource)}`}>{dataSource}</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              {getStatusIcon(plsPriceSource)}
+              <div>
+                <div className="text-xs font-mono text-gray-400">PLS_ORACLE</div>
+                <div className={`text-sm font-mono ${getStatusColor(plsPriceSource)}`}>{plsPriceSource}</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Database className="w-4 h-4 text-cyan-400" />
               <div>
                 <div className="text-xs font-mono text-gray-400">DATA_POINTS</div>
-                <div className="text-sm font-mono text-blue-400">{data.length}</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-green-400" />
-              <div>
-                <div className="text-xs font-mono text-gray-400">STATUS</div>
-                <div className="text-sm font-mono text-green-400">OPTIMAL</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Wifi className="w-4 h-4 text-cyan-400" />
-              <div>
-                <div className="text-xs font-mono text-gray-400">LATENCY</div>
-                <div className="text-sm font-mono text-cyan-400">12ms</div>
+                <div className="text-sm font-mono text-cyan-400">{priceDataPoints}</div>
               </div>
             </div>
           </div>

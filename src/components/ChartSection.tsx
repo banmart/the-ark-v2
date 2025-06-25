@@ -8,7 +8,10 @@ const ChartSection = () => {
   const {
     timeSeriesData,
     loading,
-    lastUpdated
+    lastUpdated,
+    dataSource,
+    plsPriceSource,
+    priceDataPoints
   } = useChartData();
   
   const [refreshing, setRefreshing] = useState(false);
@@ -46,7 +49,7 @@ const ChartSection = () => {
           <div className="flex items-center justify-center mb-6">
             <div className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
               <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
-              <span className="font-mono text-cyan-400 text-sm tracking-wider">BLOCKCHAIN_ANALYTICS_PROTOCOL</span>
+              <span className="font-mono text-cyan-400 text-sm tracking-wider">ENHANCED_PRICE_ORACLE_PROTOCOL</span>
               <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
             </div>
           </div>
@@ -54,27 +57,43 @@ const ChartSection = () => {
           <div className="flex items-center justify-center mb-4">
             <BarChart3 className="w-10 h-10 text-cyan-400 mr-3" />
             <h2 className="text-4xl md:text-5xl font-black text-cyan-400 font-mono">
-              [LIVE_MATRIX]
+              [LIVE_PRICE_MATRIX]
             </h2>
             <BarChart3 className="w-10 h-10 text-cyan-400 ml-3" />
           </div>
           
           <p className="text-gray-300 text-lg mb-6 max-w-4xl mx-auto leading-relaxed font-mono">
-            Real-time quantum price analytics from ARK Token Contract
+            Enhanced real-time price analytics with live PLS/USD oracle integration
             <br />
             <code className="text-cyan-400 text-sm bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg mt-2 inline-block border border-cyan-500/20">
-              0xACC15eF8fa2e702d0138c3662A9E7d696f40F021
+              Multi-Source Price Oracle • PulseX DEX • Real-time Updates
             </code>
           </p>
           
           {/* Enhanced System Controls */}
           <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* System Status */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {/* Data Source Status */}
               <div className="flex items-center justify-center gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="font-mono text-green-400 text-sm">SYSTEM_ONLINE</span>
+                  <div className={`w-3 h-3 rounded-full ${
+                    dataSource === 'PulseX' ? 'bg-green-400 animate-pulse' :
+                    dataSource === 'Error' ? 'bg-red-400 animate-pulse' :
+                    'bg-yellow-400 animate-pulse'
+                  }`}></div>
+                  <span className="font-mono text-cyan-400 text-sm">ARK: {dataSource}</span>
+                </div>
+              </div>
+              
+              {/* PLS Oracle Status */}
+              <div className="flex items-center justify-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${
+                    plsPriceSource === 'CoinGecko' ? 'bg-green-400 animate-pulse' :
+                    plsPriceSource === 'Error' ? 'bg-red-400 animate-pulse' :
+                    'bg-yellow-400 animate-pulse'
+                  }`}></div>
+                  <span className="font-mono text-cyan-400 text-sm">PLS: {plsPriceSource}</span>
                 </div>
               </div>
               
@@ -102,9 +121,14 @@ const ChartSection = () => {
           </div>
         </div>
 
-        {/* Price Chart - Enhanced Container */}
+        {/* Enhanced Price Chart */}
         <div className="mb-8">
-          <TrendChart data={timeSeriesData} />
+          <TrendChart 
+            data={timeSeriesData} 
+            dataSource={dataSource}
+            plsPriceSource={plsPriceSource}
+            priceDataPoints={priceDataPoints}
+          />
         </div>
 
         {/* Enhanced Data Source Info */}
@@ -117,21 +141,21 @@ const ChartSection = () => {
             <div className="flex items-center justify-center mb-4">
               <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
                 <Shield className="w-4 h-4 text-cyan-400" />
-                <span className="font-mono text-cyan-400 text-xs tracking-wider">DATA_SOURCE_PROTOCOL</span>
+                <span className="font-mono text-cyan-400 text-xs tracking-wider">ENHANCED_DATA_PROTOCOL</span>
               </div>
             </div>
             
             <div className="flex items-center justify-center mb-4">
               <BarChart3 className="w-6 h-6 text-cyan-400 mr-3" />
-              <span className="text-xl font-mono text-white font-semibold">Live Quantum Price Matrix</span>
+              <span className="text-xl font-mono text-white font-semibold">Multi-Source Price Oracle</span>
             </div>
             
-            {/* System Diagnostics */}
+            {/* Enhanced System Diagnostics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-black/30 backdrop-blur-sm border border-green-500/20 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-1">
                   <Zap className="w-3 h-3 text-green-400" />
-                  <span className="font-mono text-green-400 text-xs">UPDATE_RATE</span>
+                  <span className="font-mono text-green-400 text-xs">ORACLE_RATE</span>
                 </div>
                 <div className="font-mono text-green-300 text-sm">30 seconds</div>
               </div>
@@ -139,27 +163,27 @@ const ChartSection = () => {
               <div className="bg-black/30 backdrop-blur-sm border border-cyan-500/20 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-1">
                   <Database className="w-3 h-3 text-cyan-400" />
-                  <span className="font-mono text-cyan-400 text-xs">CHAIN_SOURCE</span>
+                  <span className="font-mono text-cyan-400 text-xs">PRIMARY_DEX</span>
                 </div>
-                <div className="font-mono text-cyan-300 text-sm">PulseChain</div>
+                <div className="font-mono text-cyan-300 text-sm">PulseX V2</div>
               </div>
               
               <div className="bg-black/30 backdrop-blur-sm border border-teal-500/20 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-1">
                   <Activity className="w-3 h-3 text-teal-400" />
-                  <span className="font-mono text-teal-400 text-xs">LATENCY</span>
+                  <span className="font-mono text-teal-400 text-xs">PRECISION</span>
                 </div>
-                <div className="font-mono text-teal-300 text-sm">12ms</div>
+                <div className="font-mono text-teal-300 text-sm">8 decimals</div>
               </div>
             </div>
             
             <p className="text-sm text-gray-400 mb-4 font-mono">
-              📊 Quantum price matrix sourced directly from PulseChain protocol
+              🔗 Live pricing from PulseX DEX + CoinGecko PLS/USD oracle
             </p>
             
             <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/20 rounded-lg p-4">
               <p className="text-xs text-gray-500 font-mono">
-                CONTRACT_ADDRESS: 0xACC15eF8fa2e702d0138c3662A9E7d696f40F021
+                ARK_CONTRACT: 0xACC15eF8fa2e702d0138c3662A9E7d696f40F021 | PLS_ORACLE: Multi-source
               </p>
             </div>
             
