@@ -136,9 +136,6 @@ export const ARK_TOKEN_ABI = [
   'function manualSwapAndLiquify()',
   'function manualBurnLP()',
   
-  // LP burn tracking function - NEW
-  'function totalLPTokensBurned() view returns (uint256)',
-  
   // Security functions
   'function pause()',
   'function unpause()',
