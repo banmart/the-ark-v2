@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TimeSeriesData } from '../../hooks/useChartData';
@@ -7,17 +6,14 @@ import { Activity, Database, Wifi, Zap, CheckCircle, AlertCircle } from 'lucide-
 interface TrendChartProps {
   data: TimeSeriesData[];
   dataSource?: string;
-  plsPriceSource?: string;
+  baseCurrency?: string;
   priceDataPoints?: number;
 }
 
-const TrendChart = ({ data, dataSource = 'Loading', plsPriceSource = 'Loading', priceDataPoints = 0 }: TrendChartProps) => {
+const TrendChart = ({ data, dataSource = 'Loading', baseCurrency = 'DAI', priceDataPoints = 0 }: TrendChartProps) => {
   const getStatusColor = (source: string) => {
     switch (source) {
       case 'PulseX': return 'text-green-400';
-      case 'CoinGecko': return 'text-blue-400';
-      case 'Estimated': return 'text-yellow-400';
-      case 'Cached': return 'text-orange-400';
       case 'Error': return 'text-red-400';
       default: return 'text-gray-400';
     }
@@ -26,11 +22,7 @@ const TrendChart = ({ data, dataSource = 'Loading', plsPriceSource = 'Loading', 
   const getStatusIcon = (source: string) => {
     switch (source) {
       case 'PulseX':
-      case 'CoinGecko':
         return <CheckCircle className="w-3 h-3" />;
-      case 'Estimated':
-      case 'Cached':
-        return <AlertCircle className="w-3 h-3" />;
       case 'Error':
         return <AlertCircle className="w-3 h-3 text-red-400" />;
       default:
@@ -56,7 +48,7 @@ const TrendChart = ({ data, dataSource = 'Loading', plsPriceSource = 'Loading', 
             <div className="flex items-center gap-2">
               {getStatusIcon(dataSource)}
               <span className={`font-mono text-xs ${getStatusColor(dataSource)}`}>
-                SRC: {dataSource}
+                SRC: {dataSource} ({baseCurrency})
               </span>
             </div>
           </div>
@@ -91,10 +83,10 @@ const TrendChart = ({ data, dataSource = 'Loading', plsPriceSource = 'Loading', 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
                 <Database className="w-3 h-3 text-cyan-400" />
-                <span className="text-xs font-mono text-cyan-400 tracking-wider">LIVE_PRICE_MATRIX</span>
+                <span className="text-xs font-mono text-cyan-400 tracking-wider">ARK/DAI_LIVE_MATRIX</span>
               </div>
               <h3 className="text-lg font-mono text-cyan-400 font-semibold">
-                ARK/USD Live Chart
+                ARK/USD Live Chart (via DAI)
               </h3>
             </div>
             
@@ -180,16 +172,16 @@ const TrendChart = ({ data, dataSource = 'Loading', plsPriceSource = 'Loading', 
             <div className="flex items-center gap-2">
               {getStatusIcon(dataSource)}
               <div>
-                <div className="text-xs font-mono text-gray-400">ARK_SOURCE</div>
-                <div className={`text-sm font-mono ${getStatusColor(dataSource)}`}>{dataSource}</div>
+                <div className="text-xs font-mono text-gray-400">PAIR_SOURCE</div>
+                <div className={`text-sm font-mono ${getStatusColor(dataSource)}`}>ARK/{baseCurrency}</div>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
-              {getStatusIcon(plsPriceSource)}
+              <Database className="w-4 h-4 text-cyan-400" />
               <div>
-                <div className="text-xs font-mono text-gray-400">PLS_ORACLE</div>
-                <div className={`text-sm font-mono ${getStatusColor(plsPriceSource)}`}>{plsPriceSource}</div>
+                <div className="text-xs font-mono text-gray-400">BASE_CURRENCY</div>
+                <div className="text-sm font-mono text-cyan-400">{baseCurrency}</div>
               </div>
             </div>
             

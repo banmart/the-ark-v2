@@ -1,7 +1,5 @@
-
 import { ethers } from 'ethers';
 import { CONTRACT_ADDRESSES, NETWORKS } from '../utils/constants';
-import { priceOracleService, PriceOracleData } from './priceOracleService';
 
 interface PulseXPairData {
   token0: string;
@@ -18,17 +16,8 @@ interface DexPriceData {
   liquidity: number;
   lastUpdated: Date;
   dataSource: string;
-  plsPriceSource: string;
+  baseCurrency: string;
 }
-
-// PulseX V2 Factory and Router addresses
-const PULSEX_V2_FACTORY = '0x1715a3E4A142d8b698131108995174F37aEBA10D';
-const WPLS_ADDRESS = '0xA1077a294dDE1B09bB078844df40758a5D0f9a27';
-
-// PulseX V2 Factory ABI (minimal for getPair function)
-const FACTORY_ABI = [
-  'function getPair(address tokenA, address tokenB) external view returns (address pair)'
-];
 
 // PulseX V2 Pair ABI (minimal for reserves)
 const PAIR_ABI = [
@@ -41,28 +30,9 @@ const PAIR_ABI = [
 class DexPriceService {
   private provider: ethers.JsonRpcProvider;
   private priceHistory: { timestamp: number; price: number }[] = [];
-  private currentPLSOracleData: PriceOracleData | null = null;
   
   constructor() {
     this.provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
-  }
-
-  async getARKPairAddress(): Promise<string | null> {
-    try {
-      const factory = new ethers.Contract(PULSEX_V2_FACTORY, FACTORY_ABI, this.provider);
-      const pairAddress = await factory.getPair(CONTRACT_ADDRESSES.ARK_TOKEN, WPLS_ADDRESS);
-      
-      if (pairAddress === '0x0000000000000000000000000000000000000000') {
-        console.warn('ARK/WPLS pair not found on PulseX');
-        return null;
-      }
-      
-      console.log('ARK/WPLS pair found:', pairAddress);
-      return pairAddress;
-    } catch (error) {
-      console.error('Error getting ARK pair address:', error);
-      return null;
-    }
   }
 
   async getPairData(pairAddress: string): Promise<PulseXPairData | null> {
@@ -89,48 +59,37 @@ class DexPriceService {
     }
   }
 
-  async calculatePrice(pairData: PulseXPairData): Promise<{ arkPriceUSD: number; plsUsdPrice: number; source: string }> {
+  async calculatePrice(pairData: PulseXPairData): Promise<number> {
     try {
-      // Get real PLS/USD price from oracle
-      this.currentPLSOracleData = await priceOracleService.getPLSUSDPrice();
-      const plsUsdPrice = this.currentPLSOracleData.plsUsdPrice;
-      
       const { token0, token1, reserve0, reserve1 } = pairData;
       
-      // Determine which token is ARK and which is WPLS
+      // Determine which token is ARK and which is DAI
       const isToken0ARK = token0.toLowerCase() === CONTRACT_ADDRESSES.ARK_TOKEN.toLowerCase();
       
       const arkReserve = isToken0ARK ? reserve0 : reserve1;
-      const plsReserve = isToken0ARK ? reserve1 : reserve0;
+      const daiReserve = isToken0ARK ? reserve1 : reserve0;
       
       // Convert to numbers (both tokens have 18 decimals)
       const arkAmount = parseFloat(ethers.formatEther(arkReserve));
-      const plsAmount = parseFloat(ethers.formatEther(plsReserve));
+      const daiAmount = parseFloat(ethers.formatEther(daiReserve));
       
       if (arkAmount === 0) {
-        return { arkPriceUSD: 0, plsUsdPrice, source: this.currentPLSOracleData.source };
+        return 0;
       }
       
-      // Price of ARK in PLS
-      const arkPriceInPLS = plsAmount / arkAmount;
+      // Price of ARK in USD (since DAI ≈ USD)
+      const arkPriceUSD = daiAmount / arkAmount;
       
-      // Convert to USD using real PLS price
-      const arkPriceUSD = arkPriceInPLS * plsUsdPrice;
-      
-      console.log('Price calculation:', {
+      console.log('ARK/DAI price calculation:', {
         arkAmount: arkAmount.toFixed(2),
-        plsAmount: plsAmount.toFixed(2),
-        arkPriceInPLS: arkPriceInPLS.toFixed(8),
-        plsUsdPrice: plsUsdPrice.toFixed(8),
-        arkPriceUSD: arkPriceUSD.toFixed(8),
-        source: this.currentPLSOracleData.source
+        daiAmount: daiAmount.toFixed(2),
+        arkPriceUSD: arkPriceUSD.toFixed(8)
       });
       
-      return { arkPriceUSD, plsUsdPrice, source: this.currentPLSOracleData.source };
+      return arkPriceUSD;
     } catch (error) {
       console.error('Error calculating price:', error);
-      const fallbackPLS = priceOracleService.getCachedPrice();
-      return { arkPriceUSD: 0, plsUsdPrice: fallbackPLS, source: 'Error' };
+      return 0;
     }
   }
 
@@ -161,15 +120,14 @@ class DexPriceService {
   async estimateVolume24h(pairData: PulseXPairData): Promise<number> {
     try {
       // Estimate volume based on reserves and typical trading activity
-      const { reserve0, reserve1 } = pairData;
-      const arkReserve = parseFloat(ethers.formatEther(reserve0));
-      const plsReserve = parseFloat(ethers.formatEther(reserve1));
+      const { token0, reserve0, reserve1 } = pairData;
+      const isToken0ARK = token0.toLowerCase() === CONTRACT_ADDRESSES.ARK_TOKEN.toLowerCase();
+      const arkReserve = parseFloat(ethers.formatEther(isToken0ARK ? reserve0 : reserve1));
       
       // Estimate daily volume as a percentage of liquidity (typically 50-200% for active pairs)
-      const totalLiquidityARK = arkReserve;
       const estimatedDailyTurnover = 0.75; // 75% daily turnover estimate
       
-      return totalLiquidityARK * estimatedDailyTurnover;
+      return arkReserve * estimatedDailyTurnover;
     } catch (error) {
       console.error('Error estimating volume:', error);
       return 0;
@@ -178,21 +136,16 @@ class DexPriceService {
 
   async getLivePrice(): Promise<DexPriceData> {
     try {
-      console.log('Fetching live ARK price data...');
+      console.log('Fetching live ARK/DAI price data...');
       
-      const pairAddress = await this.getARKPairAddress();
-      
-      if (!pairAddress) {
-        throw new Error('ARK/WPLS pair not found');
-      }
-
+      const pairAddress = CONTRACT_ADDRESSES.ARK_DAI_PAIR;
       const pairData = await this.getPairData(pairAddress);
       
       if (!pairData) {
-        throw new Error('Failed to get pair data');
+        throw new Error('Failed to get ARK/DAI pair data');
       }
 
-      const { arkPriceUSD, plsUsdPrice, source } = await this.calculatePrice(pairData);
+      const arkPriceUSD = await this.calculatePrice(pairData);
       
       if (arkPriceUSD > 0) {
         this.addPriceToHistory(arkPriceUSD);
@@ -201,25 +154,24 @@ class DexPriceService {
       const priceChange24h = this.calculate24hChange();
       
       // Calculate real liquidity using both reserves
-      const { token0, token1, reserve0, reserve1 } = pairData;
+      const { token0, reserve0, reserve1 } = pairData;
       const isToken0ARK = token0.toLowerCase() === CONTRACT_ADDRESSES.ARK_TOKEN.toLowerCase();
       
       const arkReserve = parseFloat(ethers.formatEther(isToken0ARK ? reserve0 : reserve1));
-      const plsReserve = parseFloat(ethers.formatEther(isToken0ARK ? reserve1 : reserve0));
+      const daiReserve = parseFloat(ethers.formatEther(isToken0ARK ? reserve1 : reserve0));
       
       const arkLiquidityUSD = arkReserve * arkPriceUSD;
-      const plsLiquidityUSD = plsReserve * plsUsdPrice;
-      const totalLiquidityUSD = arkLiquidityUSD + plsLiquidityUSD;
+      const daiLiquidityUSD = daiReserve; // DAI ≈ USD
+      const totalLiquidityUSD = arkLiquidityUSD + daiLiquidityUSD;
       
       // Estimate 24h volume
       const volume24h = await this.estimateVolume24h(pairData);
       
-      console.log('Live price data retrieved:', {
+      console.log('Live ARK/DAI price data retrieved:', {
         arkPriceUSD: arkPriceUSD.toFixed(8),
         priceChange24h: priceChange24h.toFixed(2),
         volume24h: volume24h.toFixed(2),
-        totalLiquidityUSD: totalLiquidityUSD.toFixed(2),
-        plsPriceSource: source
+        totalLiquidityUSD: totalLiquidityUSD.toFixed(2)
       });
       
       return {
@@ -229,10 +181,10 @@ class DexPriceService {
         liquidity: totalLiquidityUSD,
         lastUpdated: new Date(),
         dataSource: 'PulseX',
-        plsPriceSource: source
+        baseCurrency: 'DAI'
       };
     } catch (error) {
-      console.error('Error getting live price from PulseX:', error);
+      console.error('Error getting live price from ARK/DAI pair:', error);
       
       // Return error state with cached data if available
       const cachedPrice = this.priceHistory.length > 0 
@@ -246,7 +198,7 @@ class DexPriceService {
         liquidity: 0,
         lastUpdated: new Date(),
         dataSource: 'Error',
-        plsPriceSource: 'None'
+        baseCurrency: 'DAI'
       };
     }
   }

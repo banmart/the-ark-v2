@@ -28,11 +28,11 @@ export const useChartData = () => {
   const [priceHistory, setPriceHistory] = useState<{ timestamp: number; price: number }[]>([]);
   const [currentPriceInfo, setCurrentPriceInfo] = useState<{
     dataSource: string;
-    plsPriceSource: string;
+    baseCurrency: string;
     lastUpdated: Date;
   }>({
     dataSource: 'Loading',
-    plsPriceSource: 'Loading',
+    baseCurrency: 'DAI',
     lastUpdated: new Date()
   });
 
@@ -40,16 +40,16 @@ export const useChartData = () => {
   useEffect(() => {
     const fetchLivePriceData = async () => {
       try {
-        console.log('Fetching enhanced live price data for chart...');
+        console.log('Fetching live ARK/DAI price data for chart...');
         
-        // Get current live price with enhanced data
+        // Get current live price from ARK/DAI pair
         const priceData = await dexPriceService.getLivePrice();
         const currentTime = Date.now();
         
         // Update price info
         setCurrentPriceInfo({
           dataSource: priceData.dataSource,
-          plsPriceSource: priceData.plsPriceSource,
+          baseCurrency: priceData.baseCurrency,
           lastUpdated: priceData.lastUpdated
         });
         
@@ -68,17 +68,16 @@ export const useChartData = () => {
           });
         }
         
-        console.log('Enhanced price data updated:', {
+        console.log('ARK/DAI price data updated:', {
           price: priceData.price.toFixed(8),
           source: priceData.dataSource,
-          plsSource: priceData.plsPriceSource
+          baseCurrency: priceData.baseCurrency
         });
       } catch (error) {
-        console.error('Error fetching enhanced price data:', error);
+        console.error('Error fetching ARK/DAI price data:', error);
         setCurrentPriceInfo(prev => ({
           ...prev,
-          dataSource: 'Error',
-          plsPriceSource: 'Error'
+          dataSource: 'Error'
         }));
       }
     };
@@ -205,7 +204,7 @@ export const useChartData = () => {
     loading,
     lastUpdated: arkTokenData?.lastUpdated,
     dataSource: currentPriceInfo.dataSource,
-    plsPriceSource: currentPriceInfo.plsPriceSource,
+    baseCurrency: currentPriceInfo.baseCurrency,
     priceDataPoints: priceHistory.length
   };
 };
