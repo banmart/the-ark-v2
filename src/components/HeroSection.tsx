@@ -56,7 +56,7 @@ const HeroSection = ({
             videoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <source src="https://rckclvsyoyayayqyshaa.supabase.co/storage/v1/object/sign/media/ark-background.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZTkyYTVlNC1kOWMzLTQwYzUtOTYzMC03OGMzNjlhOWJhNjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYmFja2dyb3VuZC5tcDQiLCJpYXQiOjE3NTA3NjY4NjIsImV4cCI6MTc4MjMwMjg2Mn0.24WKsIDpIb6IknwAZLPUiRtsSOBUT8OPQZ3ZsD1IAFQ" type="video/mp4" />
+          <source src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/ark-background.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYmFja2dyb3VuZC5tcDQiLCJpYXQiOjE3NTA4OTYzNDMsImV4cCI6MTc4MjQzMjM0M30.U0xLVY1VV_ltb_KEnagMZR8RdAzOjpNFSPm46jwaxfw" type="video/mp4" />
         </video>
         
         <div 
@@ -64,7 +64,7 @@ const HeroSection = ({
             videoLoaded ? 'opacity-0' : 'opacity-100'
           }`}
           style={{
-            backgroundImage: `url('https://rckclvsyoyayayqyshaa.supabase.co/storage/v1/object/sign/media/hero-image.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZTkyYTVlNC1kOWMzLTQwYzUtOTYzMC03OGMzNjlhOWJhNjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9oZXJvLWltYWdlLnBuZyIsImlhdCI6MTc1MDc2NjgxOSwiZXhwIjoxNzgyMzAyODE5fQ.4-gP7sBClx0sH9QzIXOS9y3fJB5CzQGzRRoxzcdt-vM')`
+            backgroundImage: `url('https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/ark-background-image.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYmFja2dyb3VuZC1pbWFnZS5wbmciLCJpYXQiOjE3NTA4OTYyODgsImV4cCI6MTc4MjQzMjI4OH0.jXmEi2q5qxP7LzsoEPkHBteavJ8na8Y5N1f_7MH99Xg')`
           }}
         />
         
