@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Home, Lock, Wallet, Link } from 'lucide-react';
+import { Home, Lock, Wallet, Link, Bot } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
+import { useChatContext } from './providers/ChatProvider';
 
 interface MobileDockProps {
   handleConnectWallet?: () => void;
@@ -19,10 +20,15 @@ const MobileDock = ({
 }: MobileDockProps) => {
   const isMobile = useIsMobile();
   const location = useLocation();
+  const { setIsOpen } = useChatContext();
 
   if (!isMobile) return null;
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleOpenAI = () => {
+    setIsOpen(true);
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
@@ -61,6 +67,14 @@ const MobileDock = ({
             <Link size={18} />
             <span className="text-xs font-medium">Bridge</span>
           </a>
+
+          <button 
+            onClick={handleOpenAI}
+            className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 text-gray-400 hover:text-purple-400 hover:bg-purple-500/10"
+          >
+            <Bot size={18} />
+            <span className="text-xs font-medium">AI</span>
+          </button>
 
           {handleConnectWallet && (
             <button 
