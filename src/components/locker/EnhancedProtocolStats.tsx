@@ -58,7 +58,7 @@ const EnhancedProtocolStats = () => {
       emoji: '🏛️',
       icon: Lock,
       color: 'cyan',
-      description: 'From SimplifiedLockerVault',
+      description: 'From ARK Vault',
       change: 8.5,
       gradient: 'from-cyan-500/20 via-blue-500/10 to-transparent',
       border: 'border-cyan-500/30',
