@@ -114,7 +114,7 @@ const HeroSection = ({
                 <div className="text-yellow-400 font-mono text-xs ml-6">
                   → DETECTING FAILED PROJECTS: 47,392 TOKENS
                 </div>
-                <div className="text-red-400 font-mono text-xs ml-6">
+                <div className="text-red-400 font-mono text-xs ml-6 animate-pulse">
                   → FLOOD LEVEL: CRITICAL
                 </div>
               </div>
