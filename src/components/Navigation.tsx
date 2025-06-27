@@ -106,7 +106,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
-              Bridge
+              Bridge↗
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </a>
             
