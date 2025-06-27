@@ -180,10 +180,6 @@ const HeroSection = ({
           <div className="flex justify-center">
             <div className="relative w-96 h-96 flex items-center justify-center">
               
-              {/* Central ❍ Symbol */}
-              <div className="text-[24rem] font-black text-cyan-400 animate-[rotate-3d_15s_linear_infinite] relative z-10 drop-shadow-[0_0_30px_rgba(34,211,238,0.5)]">
-                ❍
-              </div>
               
               {/* Removed the pulsing energy background */}
             </div>
