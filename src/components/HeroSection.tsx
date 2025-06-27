@@ -88,11 +88,7 @@ const HeroSection = ({
 
             {/* Main Title - Static, No Animation */}
             <div className="relative mb-6">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-cyan-400 relative z-10">
-                <span className="inline-block">THE</span>{' '}
-                <span className="inline-block">ARK</span>{' '}
-                <span className="inline-block text-cyan-300">❍</span>
-              </h1>
+
             </div>
 
             {/* Cinematic Text Sequence */}
