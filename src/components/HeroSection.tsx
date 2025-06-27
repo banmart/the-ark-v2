@@ -56,7 +56,7 @@ const HeroSection = ({
             videoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <source src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/ark-background.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYmFja2dyb3VuZC5tcDQiLCJpYXQiOjE3NTA4OTYzNDMsImV4cCI6MTc4MjQzMjM0M30.U0xLVY1VV_ltb_KEnagMZR8RdAzOjpNFSPm46jwaxfw" type="video/mp4" />
+          <source src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/the-ark-background-062025.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS90aGUtYXJrLWJhY2tncm91bmQtMDYyMDI1Lm1wNCIsImlhdCI6MTc1MTA1NDMwOCwiZXhwIjoxNzgyNTkwMzA4fQ.jGe6UHPu3XCKSChM0zdHsKclI8E_s8TXes98G0FTBMM" type="video/mp4" />
         </video>
         
         <div 
