@@ -9,7 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      automation_logs: {
+        Row: {
+          details: Json | null
+          error_message: string | null
+          execution_time: string | null
+          gas_used: number | null
+          id: string
+          operation: string
+          status: string
+          transaction_hash: string | null
+        }
+        Insert: {
+          details?: Json | null
+          error_message?: string | null
+          execution_time?: string | null
+          gas_used?: number | null
+          id?: string
+          operation: string
+          status: string
+          transaction_hash?: string | null
+        }
+        Update: {
+          details?: Json | null
+          error_message?: string | null
+          execution_time?: string | null
+          gas_used?: number | null
+          id?: string
+          operation?: string
+          status?: string
+          transaction_hash?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
