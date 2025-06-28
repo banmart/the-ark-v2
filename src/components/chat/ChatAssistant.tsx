@@ -65,7 +65,7 @@ const ChatAssistant = () => {
       <div className="flex items-center justify-between p-4 border-b border-cyan-500/20 bg-black/40 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 flex items-center justify-center">
-            <span className="text-lg">❍</span>
+            <span className="text-lg text-cyan-400">❍</span>
           </div>
           <div>
             <h3 className="font-bold text-cyan-400 font-mono">ARK Assistant</h3>
@@ -97,7 +97,7 @@ const ChatAssistant = () => {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {welcomeMessage ? (
           <div className="text-center py-4">
-            <div className="text-6xl mb-4">⚓</div>
+            <div className="text-6xl mb-4 text-cyan-400">❍</div>
             <h3 className="text-xl font-bold text-cyan-400 mb-2 font-mono">
               Welcome aboard THE ARK! 🚀
             </h3>
