@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Clock, 
   Zap, 
@@ -22,6 +21,8 @@ import {
   Coins
 } from 'lucide-react';
 import { useLockerData } from '../../hooks/useLockerData';
+import CompactLockPosition from './CompactLockPosition';
+import LockPositionFilters, { FilterOptions } from './LockPositionFilters';
 
 interface EnhancedUserDashboardProps {
   isConnected: boolean;
@@ -40,6 +41,90 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
 
   const [processingClaim, setProcessingClaim] = useState(false);
   const [processingUnlock, setProcessingUnlock] = useState<number | null>(null);
+  
+  // Filter state
+  const [filters, setFilters] = useState<FilterOptions>({
+    tier: 'all',
+    status: 'all',
+    timeRemaining: 'all',
+    sortBy: 'timeRemaining',
+    sortOrder: 'asc',
+    searchTerm: ''
+  });
+
+  // Filter and sort logic
+  const filteredAndSortedLocks = useMemo(() => {
+    if (!userLocks.length) return [];
+
+    let filtered = userLocks.filter(lock => {
+      const now = Date.now() / 1000;
+      const isUnlocked = now >= lock.unlockTime;
+      const tierInfo = lockTiers[lock.tier] || lockTiers[0];
+
+      // Search filter
+      if (filters.searchTerm) {
+        const searchLower = filters.searchTerm.toLowerCase();
+        if (!lock.amount.toString().includes(searchLower) && 
+            !tierInfo.name.toLowerCase().includes(searchLower)) {
+          return false;
+        }
+      }
+
+      // Tier filter
+      if (filters.tier !== 'all' && tierInfo.name.toLowerCase() !== filters.tier) {
+        return false;
+      }
+
+      // Status filter
+      if (filters.status !== 'all') {
+        if (filters.status === 'ready' && !isUnlocked) return false;
+        if (filters.status === 'soon' && (isUnlocked || lock.daysRemaining > 7)) return false;
+        if (filters.status === 'active' && (isUnlocked || lock.daysRemaining <= 7)) return false;
+      }
+
+      // Time remaining filter
+      if (filters.timeRemaining !== 'all') {
+        if (filters.timeRemaining === 'ready' && !isUnlocked) return false;
+        if (filters.timeRemaining === 'week' && (isUnlocked || lock.daysRemaining > 7)) return false;
+        if (filters.timeRemaining === 'month' && (isUnlocked || lock.daysRemaining > 30)) return false;
+        if (filters.timeRemaining === 'long' && (isUnlocked || lock.daysRemaining <= 30)) return false;
+      }
+
+      return true;
+    });
+
+    // Sort logic
+    filtered.sort((a, b) => {
+      let aValue, bValue;
+
+      switch (filters.sortBy) {
+        case 'amount':
+          aValue = a.amount;
+          bValue = b.amount;
+          break;
+        case 'tier':
+          aValue = a.tier;
+          bValue = b.tier;
+          break;
+        case 'rewards':
+          aValue = a.totalRewardsEarned;
+          bValue = b.totalRewardsEarned;
+          break;
+        case 'timeRemaining':
+        default:
+          aValue = a.daysRemaining;
+          bValue = b.daysRemaining;
+          break;
+      }
+
+      if (filters.sortOrder === 'desc') {
+        return bValue - aValue;
+      }
+      return aValue - bValue;
+    });
+
+    return filtered;
+  }, [userLocks, filters, lockTiers]);
 
   const handleUnlock = async (lockId: number) => {
     setProcessingUnlock(lockId);
@@ -60,22 +145,6 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       console.error('Claim failed:', error);
     } finally {
       setTimeout(() => setProcessingClaim(false), 2000);
-    }
-  };
-
-  const getTierInfo = (tierIndex: number) => {
-    return lockTiers[tierIndex] || lockTiers[0];
-  };
-
-  const getTierIconComponent = (tierName: string) => {
-    switch (tierName.toLowerCase()) {
-      case 'bronze': return Shield;
-      case 'silver': return Award;
-      case 'gold': return Crown;
-      case 'diamond': return Star;
-      case 'platinum': return Sparkles;
-      case 'legendary': return Zap;
-      default: return Lock;
     }
   };
 
@@ -224,178 +293,46 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
             </button>
           </div>
         ) : (
-          <div className="space-y-6">
-            {userLocks.map((lock) => {
-              const now = Date.now() / 1000;
-              const isUnlocked = now >= lock.unlockTime;
-              const penalty = calculateEarlyUnlockPenalty(lock);
-              const tierInfo = getTierInfo(lock.tier);
-              const TierIconComponent = getTierIconComponent(tierInfo.name);
-              const progress = Math.max(0, Math.min(100, ((now - lock.lockTime) / (lock.unlockTime - lock.lockTime)) * 100));
-              const daysRemaining = Math.max(0, Math.ceil((lock.unlockTime - now) / (24 * 60 * 60)));
+          <>
+            {/* Filters */}
+            <LockPositionFilters
+              filters={filters}
+              onFiltersChange={setFilters}
+              totalLocks={userLocks.length}
+              filteredCount={filteredAndSortedLocks.length}
+            />
+
+            {/* Lock Positions */}
+            <div className="space-y-4">
+              {filteredAndSortedLocks.map((lock) => (
+                <CompactLockPosition
+                  key={lock.id}
+                  lock={lock}
+                  onUnlock={handleUnlock}
+                  processingUnlock={processingUnlock}
+                />
+              ))}
               
-              return (
-                <div 
-                  key={lock.id} 
-                  className="bg-gradient-to-br from-black/40 via-gray-900/40 to-black/40 rounded-xl p-6 border-2 hover:scale-105 transition-all duration-300 relative overflow-hidden"
-                  style={{ borderColor: tierInfo.color }}
-                >
-                  {/* Background glow */}
-                  <div 
-                    className="absolute top-0 right-0 w-32 h-32 blur-2xl opacity-20"
-                    style={{ background: `radial-gradient(circle, ${tierInfo.color}40 0%, transparent 70%)` }}
-                  ></div>
-
-                  <div className="relative z-10">
-                    {/* Header */}
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="flex items-center gap-4">
-                        <div className="text-4xl">{tierInfo.icon}</div>
-                        <TierIconComponent className="w-8 h-8" style={{ color: tierInfo.color }} />
-                        <div>
-                          <div className="text-2xl font-bold text-white">
-                            {lock.amount.toLocaleString()} ARK
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="text-lg font-bold" style={{ color: tierInfo.color }}>
-                              {tierInfo.name} Tier
-                            </div>
-                            <div className="text-sm text-gray-400">
-                              • {(tierInfo.multiplier / 10000).toFixed(1)}x multiplier
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <div className={`flex items-center gap-2 text-sm mb-2 ${isUnlocked ? 'text-green-400' : 'text-yellow-400'}`}>
-                          {isUnlocked ? (
-                            <>
-                              <CheckCircle className="w-4 h-4" />
-                              <span className="font-semibold">Ready to unlock</span>
-                            </>
-                          ) : (
-                            <>
-                              <Clock className="w-4 h-4" />
-                              <span className="font-semibold">{daysRemaining} days remaining</span>
-                            </>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-green-400">
-                          <TrendingUp className="w-4 h-4" />
-                          <span className="font-bold">+{lock.totalRewardsEarned.toLocaleString()} ARK earned</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="mb-6">
-                      <div className="flex justify-between text-sm text-gray-400 mb-2">
-                        <span>Lock Progress</span>
-                        <span>{progress.toFixed(1)}%</span>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-3">
-                        <div 
-                          className="h-3 rounded-full transition-all duration-500"
-                          style={{ 
-                            width: `${progress}%`,
-                            background: `linear-gradient(to right, ${tierInfo.color}, ${tierInfo.color}80)`
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                    
-                    {/* Lock Details Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                      <div className="bg-black/30 rounded-lg p-4 border border-gray-600/50">
-                        <div className="flex items-center mb-2">
-                          <Calendar className="w-4 h-4 text-gray-400 mr-2" />
-                          <span className="text-gray-400 text-sm">Lock Duration</span>
-                        </div>
-                        <div className="text-white font-bold">{Math.round(lock.lockPeriod / (24 * 60 * 60))} days</div>
-                      </div>
-                      
-                      <div className="bg-black/30 rounded-lg p-4 border border-gray-600/50">
-                        <div className="flex items-center mb-2">
-                          <Award className="w-4 h-4 text-gray-400 mr-2" />
-                          <span className="text-gray-400 text-sm">Weight Contribution</span>
-                        </div>
-                        <div className="text-white font-bold">
-                          {(lock.amount * (tierInfo.multiplier / 10000)).toFixed(0)}
-                        </div>
-                      </div>
-                      
-                      <div className="bg-black/30 rounded-lg p-4 border border-gray-600/50">
-                        <div className="flex items-center mb-2">
-                          <Clock className="w-4 h-4 text-gray-400 mr-2" />
-                          <span className="text-gray-400 text-sm">Unlock Date</span>
-                        </div>
-                        <div className="text-white font-bold">
-                          {new Date(lock.unlockTime * 1000).toLocaleDateString()}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Early Unlock Warning */}
-                    {!isUnlocked && penalty.penalty > 0 && (
-                      <div className="bg-red-900/30 border border-red-500/50 rounded-lg p-4 mb-6">
-                        <div className="flex items-center gap-2 text-red-400 text-sm mb-3">
-                          <AlertTriangle className="w-5 h-5" />
-                          <span className="font-semibold">Early Unlock Penalty Warning</span>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <div className="text-red-400 mb-1">Penalty Amount:</div>
-                            <div className="text-white font-bold">
-                              {penalty.penalty.toFixed(2)} ARK ({penalty.penaltyRate.toFixed(1)}%)
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-red-400 mb-1">You would receive:</div>
-                            <div className="text-white font-bold">{penalty.userReceives.toFixed(2)} ARK</div>
-                          </div>
-                        </div>
-                        <div className="mt-3 p-3 bg-red-800/20 rounded-lg">
-                          <div className="text-xs text-red-300 flex items-center">
-                            <Flame className="w-4 h-4 mr-2" />
-                            50% of penalty is burned forever, 50% distributed to all active lockers
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Action Button */}
-                    <button
-                      onClick={() => handleUnlock(lock.id)}
-                      disabled={processingUnlock === lock.id}
-                      className={`w-full py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3 ${
-                        isUnlocked 
-                          ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-black shadow-lg shadow-green-500/30' 
-                          : 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/30'
-                      }`}
-                    >
-                      {processingUnlock === lock.id ? (
-                        <>
-                          <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                          Processing Transaction...
-                        </>
-                      ) : isUnlocked ? (
-                        <>
-                          <Zap className="w-5 h-5" />
-                          Unlock Tokens - No Penalty
-                        </>
-                      ) : (
-                        <>
-                          <AlertTriangle className="w-5 h-5" />
-                          Early Unlock (With {penalty.penaltyRate.toFixed(1)}% Penalty)
-                        </>
-                      )}
-                    </button>
-                  </div>
+              {filteredAndSortedLocks.length === 0 && userLocks.length > 0 && (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 mb-2">No positions match your current filters</div>
+                  <button 
+                    onClick={() => setFilters({
+                      tier: 'all',
+                      status: 'all',
+                      timeRemaining: 'all',
+                      sortBy: 'timeRemaining',
+                      sortOrder: 'asc',
+                      searchTerm: ''
+                    })}
+                    className="text-cyan-400 hover:text-cyan-300 text-sm underline"
+                  >
+                    Clear all filters
+                  </button>
                 </div>
-              );
-            })}
-          </div>
+              )}
+            </div>
+          </>
         )}
       </div>
 
