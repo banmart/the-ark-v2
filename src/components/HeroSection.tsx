@@ -1,13 +1,10 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Shield, Lock, Zap, Database, Code } from "lucide-react";
-
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
   contractAddress: string;
   setShowOnboarding: (show: boolean) => void;
 }
-
 const HeroSection = ({
   copyToClipboard,
   contractAddress,
@@ -16,14 +13,12 @@ const HeroSection = ({
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [textPhase, setTextPhase] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
-  
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
       const handleCanPlay = () => {
         setVideoLoaded(true);
       };
-      
       video.addEventListener('canplay', handleCanPlay);
       return () => video.removeEventListener('canplay', handleCanPlay);
     }
@@ -31,43 +26,43 @@ const HeroSection = ({
 
   // Cinematic text sequence
   useEffect(() => {
-    const sequence = [
-      { delay: 500, phase: 1 },   // System initializing
-      { delay: 2000, phase: 2 },  // Scanning networks
-      { delay: 3500, phase: 3 },  // ARK detected
-      { delay: 5000, phase: 4 },  // Full revelation
+    const sequence = [{
+      delay: 500,
+      phase: 1
+    },
+    // System initializing
+    {
+      delay: 2000,
+      phase: 2
+    },
+    // Scanning networks
+    {
+      delay: 3500,
+      phase: 3
+    },
+    // ARK detected
+    {
+      delay: 5000,
+      phase: 4
+    } // Full revelation
     ];
-
-    sequence.forEach(({ delay, phase }) => {
+    sequence.forEach(({
+      delay,
+      phase
+    }) => {
       setTimeout(() => setTextPhase(phase), delay);
     });
   }, []);
-  
-  return (
-    <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center overflow-hidden">
+  return <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center overflow-hidden">
       {/* Video Background with Cinematic Fade In */}
       <div className="absolute inset-0 z-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${
-            videoLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
+        <video ref={videoRef} autoPlay muted loop playsInline className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
           <source src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/the-ark-background-062025.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS90aGUtYXJrLWJhY2tncm91bmQtMDYyMDI1Lm1wNCIsImlhdCI6MTc1MTA1NTk0MSwiZXhwIjoxNzgyNTkxOTQxfQ.qkYPr1mP8pwmf692gqVwX6pwGpUF3sCud9HfvUfmGAU" type="video/mp4" />
         </video>
         
-        <div 
-          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${
-            videoLoaded ? 'opacity-0' : 'opacity-100'
-          }`}
-          style={{
-            backgroundImage: `url('https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/IMG_20250503_110007_638.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9JTUdfMjAyNTA1MDNfMTEwMDA3XzYzOC5qcGciLCJpYXQiOjE3NTEwNTU2MTcsImV4cCI6MTc4MjU5MTYxN30.ZNXMfW_4Qd8OINfFHV2szXhEnPXtMhD5Wwsb45RZ8Yk')`
-          }}
-        />
+        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} style={{
+        backgroundImage: `url('https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/IMG_20250503_110007_638.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9JTUdfMjAyNTA1MDNfMTEwMDA3XzYzOC5qcGciLCJpYXQiOjE3NTEwNTU2MTcsImV4cCI6MTc4MjU5MTYxN30.ZNXMfW_4Qd8OINfFHV2szXhEnPXtMhD5Wwsb45RZ8Yk')`
+      }} />
         
         {/* Lighter overlay - only on left side */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent"></div>
@@ -161,18 +156,12 @@ const HeroSection = ({
 
             {/* Action Buttons */}
             <div className={`flex flex-col sm:flex-row gap-4 transition-all duration-1000 delay-2000 ${textPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <button 
-                onClick={() => copyToClipboard(contractAddress)} 
-                className="bg-gradient-to-r from-cyan-500 to-teal-500 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-lg shadow-cyan-500/30 flex items-center gap-2 relative overflow-hidden group"
-              >
+              <button onClick={() => copyToClipboard(contractAddress)} className="bg-gradient-to-r from-cyan-500 to-teal-500 text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-lg shadow-cyan-500/30 flex items-center gap-2 relative overflow-hidden group">
                 <span className="relative z-10">BOARD THE ARK</span>
                 <ArrowRight size={18} className="relative z-10" />
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
-              <button 
-                onClick={() => setShowOnboarding(true)} 
-                className="border border-cyan-500/60 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/20 hover:scale-105 transition-all text-center backdrop-blur-sm relative overflow-hidden group"
-              >
+              <button onClick={() => setShowOnboarding(true)} className="border border-cyan-500/60 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/20 hover:scale-105 transition-all text-center backdrop-blur-sm relative overflow-hidden group">
                 <span className="relative z-10">DECODE PROTOCOL</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
@@ -181,16 +170,10 @@ const HeroSection = ({
 
           {/* Right side - Enhanced ❍ Symbol with NO background overlay */}
           <div className="flex justify-center">
-            <div className="relative w-96 h-96 flex items-center justify-center">
-              
-              
-              {/* Removed the pulsing energy background */}
-            </div>
+            
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
