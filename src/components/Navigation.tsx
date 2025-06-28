@@ -78,7 +78,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
-              Exchange
+              Exchange Fiat
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </a>
             <a 
@@ -87,7 +87,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
-              Wallet
+              Get MetaMask
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </a>
             <a 
@@ -96,7 +96,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
-              Bridge
+              Bridge Assets
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </a>
             <a 
@@ -112,7 +112,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               to="/locker" 
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
-              Vault
+              Vault (Lock)
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </Link>
 
