@@ -127,9 +127,9 @@ const LockPositionFilters = ({
           <SelectContent className="bg-gray-900 border-gray-600">
             <SelectItem value="all">All Time</SelectItem>
             <SelectItem value="ready">Ready Now</SelectItem>
-            <SelectItem value="week">< 7 days</SelectItem>
-            <SelectItem value="month">< 30 days</SelectItem>
-            <SelectItem value="long">> 30 days</SelectItem>
+            <SelectItem value="week">Less than 7 days</SelectItem>
+            <SelectItem value="month">Less than 30 days</SelectItem>
+            <SelectItem value="long">More than 30 days</SelectItem>
           </SelectContent>
         </Select>
 
