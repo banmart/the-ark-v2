@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Shield, Lock, Zap, Database, Code } from "lucide-react";
 
@@ -86,9 +87,11 @@ const HeroSection = ({
               {new Date().toISOString().slice(0, 19)}Z
             </div>
 
-            {/* Main Title - Static, No Animation */}
-            <div className="relative mb-6">
-
+            {/* Main Title - THE ARK ❍ */}
+            <div className="relative mb-8">
+              <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-fade-in">
+                THE ARK ❍
+              </h1>
             </div>
 
             {/* Cinematic Text Sequence */}

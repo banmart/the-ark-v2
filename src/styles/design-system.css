@@ -1,4 +1,5 @@
 
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -101,4 +102,46 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Tech-themed scrollbar styling */
+  * {
+    /* Webkit browsers (Chrome, Safari, Edge) */
+    scrollbar-width: thin;
+    scrollbar-color: #22d3ee #0f1419;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #0f1419;
+    border-radius: 4px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #22d3ee 0%, #14b8a6 100%);
+    border-radius: 4px;
+    border: 1px solid #0f1419;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #0891b2 0%, #0d9488 100%);
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: #0f1419;
+  }
 }
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
