@@ -79,7 +79,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
 
           <div className="hidden md:flex items-center gap-8">
             <button 
-              onClick={() => handleExternalLink('https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge', 'Bridge Assets')}
+              onClick={() => handleExternalLink('https://changenow.app.link/referral?link_id=e49c221824244a', 'Bridge Assets')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
               Bridge Assets
