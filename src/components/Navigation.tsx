@@ -79,20 +79,6 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
 
           <div className="hidden md:flex items-center gap-8">
             <button 
-              onClick={() => handleExternalLink('https://www.coinbase.com', 'Exchange Fiat')}
-              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
-            >
-              Exchange Fiat
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </button>
-            <button 
-              onClick={() => handleExternalLink('https://metamask.io/download', 'Get MetaMask')}
-              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
-            >
-              Get MetaMask
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </button>
-            <button 
               onClick={() => handleExternalLink('https://bridge.pulsechain.com/', 'Bridge Assets')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
