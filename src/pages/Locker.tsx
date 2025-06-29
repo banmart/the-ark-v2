@@ -2,6 +2,8 @@
 import React from 'react';
 import { useWallet } from '../hooks/useWallet';
 import { useLockerData } from '../hooks/useLockerData';
+import { BrowserPopupProvider } from '../components/providers/BrowserPopupProvider';
+import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
 import Navigation from '../components/Navigation';
 import MobileDock from '../components/MobileDock';
 import Footer from '../components/Footer';
@@ -10,8 +12,9 @@ import EmergencyStatus from '../components/locker/EmergencyStatus';
 import TierLegend from '../components/locker/TierLegend';
 import LockerOperations from '../components/locker/LockerOperations';
 import ContractAddressDisplay from '../components/locker/ContractAddressDisplay';
+import MobileBrowserPopup from '../components/MobileBrowserPopup';
 
-const Locker = () => {
+const LockerContent = () => {
   const {
     isConnected,
     account,
@@ -20,6 +23,7 @@ const Locker = () => {
   } = useWallet();
 
   const { emergencyMode, contractPaused } = useLockerData();
+  const { isOpen, url, title, closePopup } = useBrowserPopup();
 
   const handleConnectWallet = async () => {
     try {
@@ -30,106 +34,124 @@ const Locker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Quantum Field Background */}
-      <div className="fixed inset-0 z-0">
-        {/* Base quantum gradient */}
-        <div className="absolute inset-0 bg-gradient-radial from-teal-900/20 via-black to-black"></div>
-        
-        {/* Animated quantum grid */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
-        </div>
-        
-        {/* Floating quantum orbs */}
-        <div className="floating-orb orb1 bg-gradient-radial from-cyan-500/20 to-transparent blur-3xl"></div>
-        <div className="floating-orb orb2 bg-gradient-radial from-teal-500/20 to-transparent blur-3xl"></div>
-        <div className="floating-orb orb3 bg-gradient-radial from-green-500/20 to-transparent blur-3xl"></div>
-        
-        {/* Breathing Gradient Bursts */}
-        <div className="gradient-burst burst1"></div>
-        <div className="gradient-burst burst2"></div>
-        <div className="gradient-burst burst3"></div>
-        <div className="gradient-burst burst4"></div>
-        <div className="gradient-burst burst5"></div>
-        <div className="gradient-burst burst6"></div>
-        
-        {/* Scanning lines */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/50 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
-      </div>
-
-      {/* Navigation */}
-      <div className="relative z-20">
-        <Navigation 
-          handleConnectWallet={handleConnectWallet}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          account={account}
-        />
-      </div>
-
-      <div className="relative z-10 pt-24">
-        {/* Header */}
-        <LockerHeader />
-
-        {/* Emergency Status */}
-        <EmergencyStatus 
-          emergencyMode={emergencyMode} 
-          contractPaused={contractPaused} 
-        />
-
-        {/* Tier Legend */}
-        <TierLegend />
-
-        {/* Operations */}
-        <LockerOperations isConnected={isConnected} />
-
-        {/* Contract Address Section */}
-        <div className="relative max-w-6xl mx-auto px-6 py-16">
-          {/* Quantum Field Background */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0" style={{
-              backgroundImage: `
-                radial-gradient(circle at 25% 25%, rgba(34, 211, 238, 0.2) 1px, transparent 1px),
-                radial-gradient(circle at 75% 75%, rgba(34, 211, 238, 0.1) 1px, transparent 1px)
-              `,
-              backgroundSize: '50px 50px'
-            }}></div>
+    <>
+      <div className="min-h-screen bg-black text-white relative overflow-hidden">
+        {/* Quantum Field Background */}
+        <div className="fixed inset-0 z-0">
+          {/* Base quantum gradient */}
+          <div className="absolute inset-0 bg-gradient-radial from-teal-900/20 via-black to-black"></div>
+          
+          {/* Animated quantum grid */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
           </div>
+          
+          {/* Floating quantum orbs */}
+          <div className="floating-orb orb1 bg-gradient-radial from-cyan-500/20 to-transparent blur-3xl"></div>
+          <div className="floating-orb orb2 bg-gradient-radial from-teal-500/20 to-transparent blur-3xl"></div>
+          <div className="floating-orb orb3 bg-gradient-radial from-green-500/20 to-transparent blur-3xl"></div>
+          
+          {/* Breathing Gradient Bursts */}
+          <div className="gradient-burst burst1"></div>
+          <div className="gradient-burst burst2"></div>
+          <div className="gradient-burst burst3"></div>
+          <div className="gradient-burst burst4"></div>
+          <div className="gradient-burst burst5"></div>
+          <div className="gradient-burst burst6"></div>
+          
+          {/* Scanning lines */}
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/50 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
+        </div>
 
-          <div className="relative">
-            <div className="text-center mb-8">
-              <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.15em]">
-                [CONTRACT_INFORMATION]
-              </div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-2">Smart Contract Address</h3>
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-sm font-mono text-green-400">VERIFIED_ON_PULSECHAIN</span>
-              </div>
+        {/* Navigation */}
+        <div className="relative z-20">
+          <Navigation 
+            handleConnectWallet={handleConnectWallet}
+            isConnecting={isConnecting}
+            isConnected={isConnected}
+            account={account}
+          />
+        </div>
+
+        <div className="relative z-10 pt-24">
+          {/* Header */}
+          <LockerHeader />
+
+          {/* Emergency Status */}
+          <EmergencyStatus 
+            emergencyMode={emergencyMode} 
+            contractPaused={contractPaused} 
+          />
+
+          {/* Tier Legend */}
+          <TierLegend />
+
+          {/* Operations */}
+          <LockerOperations isConnected={isConnected} />
+
+          {/* Contract Address Section */}
+          <div className="relative max-w-6xl mx-auto px-6 py-16">
+            {/* Quantum Field Background */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `
+                  radial-gradient(circle at 25% 25%, rgba(34, 211, 238, 0.2) 1px, transparent 1px),
+                  radial-gradient(circle at 75% 75%, rgba(34, 211, 238, 0.1) 1px, transparent 1px)
+                `,
+                backgroundSize: '50px 50px'
+              }}></div>
             </div>
-            
-            <ContractAddressDisplay />
+
+            <div className="relative">
+              <div className="text-center mb-8">
+                <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.15em]">
+                  [CONTRACT_INFORMATION]
+                </div>
+                <h3 className="text-2xl font-bold text-cyan-400 mb-2">Smart Contract Address</h3>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-mono text-green-400">VERIFIED_ON_PULSECHAIN</span>
+                </div>
+              </div>
+              
+              <ContractAddressDisplay />
+            </div>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="relative z-10">
+          <Footer />
+        </div>
+
+        {/* Mobile Dock */}
+        <div className="relative z-20">
+          <MobileDock 
+            handleConnectWallet={handleConnectWallet}
+            isConnecting={isConnecting}
+            isConnected={isConnected}
+            account={account}
+          />
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="relative z-10">
-        <Footer />
-      </div>
+      {/* Mobile Browser Popup */}
+      <MobileBrowserPopup 
+        isOpen={isOpen}
+        onClose={closePopup}
+        url={url}
+        title={title}
+      />
+    </>
+  );
+};
 
-      {/* Mobile Dock */}
-      <div className="relative z-20">
-        <MobileDock 
-          handleConnectWallet={handleConnectWallet}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          account={account}
-        />
-      </div>
-    </div>
+const Locker = () => {
+  return (
+    <BrowserPopupProvider>
+      <LockerContent />
+    </BrowserPopupProvider>
   );
 };
 
