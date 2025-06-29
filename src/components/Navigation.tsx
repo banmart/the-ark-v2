@@ -79,6 +79,13 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
 
           <div className="hidden md:flex items-center gap-8">
             <button 
+              onClick={() => handleExternalLink('https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge', 'Bridge Assets')}
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
+            >
+              Bridge Assets
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
+            </button>
+            <button 
               onClick={() => handleExternalLink('https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021', 'Buy ARK')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
