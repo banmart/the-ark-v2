@@ -3,6 +3,7 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Zap, Wifi, Bot } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
+import { useBrowserPopup } from './providers/BrowserPopupProvider';
 
 interface NavigationProps {
   handleConnectWallet: () => void;
@@ -15,6 +16,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
   const navigate = useNavigate();
   const location = useLocation();
   const { setIsOpen } = useChatContext();
+  const { openPopup } = useBrowserPopup();
 
   const handleHashNavigation = (hash: string) => {
     if (location.pathname !== '/') {
@@ -33,6 +35,10 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
         element.scrollIntoView({ behavior: 'smooth' });
       }
     }
+  };
+
+  const handleExternalLink = (url: string, title: string) => {
+    openPopup(url, title);
   };
 
   return (
@@ -72,42 +78,34 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
           </div>
 
           <div className="hidden md:flex items-center gap-8">
-            <a 
-              href="https://www.coinbase.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <button 
+              onClick={() => handleExternalLink('https://www.coinbase.com', 'Exchange Fiat')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
               Exchange Fiat
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </a>
-            <a 
-              href="https://metamask.io/download" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            </button>
+            <button 
+              onClick={() => handleExternalLink('https://metamask.io/download', 'Get MetaMask')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
               Get MetaMask
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </a>
-            <a 
-              href="https://bridge.pulsechain.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            </button>
+            <button 
+              onClick={() => handleExternalLink('https://bridge.pulsechain.com/', 'Bridge Assets')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
               Bridge Assets
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </a>
-            <a 
-              href="https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            </button>
+            <button 
+              onClick={() => handleExternalLink('https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021', 'Buy ARK')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
               Buy ARK
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
-            </a>
+            </button>
             <Link 
               to="/locker" 
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
