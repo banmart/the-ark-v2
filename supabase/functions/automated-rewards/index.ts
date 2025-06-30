@@ -21,6 +21,17 @@ const ARK_TOKEN_ABI = [
 const CONTRACT_ADDRESS = "0xACC15eF8fa2e702d0138c3662A9E7d696f40F021";
 const PULSECHAIN_RPC = "https://rpc.pulsechain.com";
 
+// Gas optimization constants
+const GAS_LIMITS = {
+  distribute_rewards: 500000,
+  swap_and_liquify: 800000,
+  burn_lp: 400000
+};
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 5000; // 5 seconds
+const OPERATION_DELAY = 2000; // 2 seconds between operations
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -52,133 +63,41 @@ serve(async (req) => {
 
     console.log('📊 Checking contract status...');
     
-    // Check if contract is paused
-    const isPaused = await contract.paused();
-    if (isPaused) {
-      await logExecution(supabase, 'status_check', 'skipped', null, 0, 'Contract is paused');
+    // Perform health checks
+    const healthCheck = await performHealthChecks(contract, provider, signer);
+    if (!healthCheck.success) {
+      await logExecution(supabase, 'health_check', 'failed', null, 0, healthCheck.error);
       return new Response(
-        JSON.stringify({ success: true, message: 'Contract is paused, skipping automation' }),
+        JSON.stringify({ success: false, message: healthCheck.error }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Check signer balance
-    const signerBalance = await provider.getBalance(signer.address);
-    const minBalance = ethers.parseEther('0.01'); // Minimum 0.01 PLS for gas
-    
-    if (signerBalance < minBalance) {
-      await logExecution(supabase, 'balance_check', 'failed', null, 0, 
-        `Insufficient balance: ${ethers.formatEther(signerBalance)} PLS`);
-      throw new Error('Insufficient balance for gas fees');
-    }
-
-    console.log(`💰 Signer balance: ${ethers.formatEther(signerBalance)} PLS`);
+    console.log(`💰 Signer balance: ${ethers.formatEther(healthCheck.balance)} PLS`);
 
     const results = [];
 
-    // 1. Distribute Locker Rewards
-    try {
-      console.log('🎯 Distributing locker rewards...');
-      const rewardsTx = await contract.distributeLockerRewards({
-        gasLimit: 500000,
-        maxFeePerGas: ethers.parseUnits('20', 'gwei'),
-        maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
-      });
-      
-      console.log(`📝 Rewards tx sent: ${rewardsTx.hash}`);
-      const rewardsReceipt = await rewardsTx.wait();
-      
-      await logExecution(supabase, 'distribute_rewards', 'success', 
-        rewardsTx.hash, rewardsReceipt.gasUsed, null);
-      
-      results.push({
-        operation: 'distribute_rewards',
-        status: 'success',
-        txHash: rewardsTx.hash,
-        gasUsed: rewardsReceipt.gasUsed.toString()
-      });
-      
-      console.log('✅ Locker rewards distributed successfully');
-    } catch (error) {
-      console.error('❌ Failed to distribute rewards:', error);
-      await logExecution(supabase, 'distribute_rewards', 'failed', null, 0, error.message);
-      results.push({
-        operation: 'distribute_rewards',
-        status: 'failed',
-        error: error.message
-      });
-    }
+    // Execute operations with proper error handling and optimization
+    const operations = [
+      { name: 'distribute_rewards', func: 'distributeLockerRewards', gasLimit: GAS_LIMITS.distribute_rewards },
+      { name: 'swap_and_liquify', func: 'manualSwapAndLiquify', gasLimit: GAS_LIMITS.swap_and_liquify },
+      { name: 'burn_lp', func: 'manualBurnLP', gasLimit: GAS_LIMITS.burn_lp }
+    ];
 
-    // Small delay between operations
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
-    // 2. Manual Swap and Liquify
-    try {
-      console.log('🔄 Executing swap and liquify...');
-      const swapTx = await contract.manualSwapAndLiquify({
-        gasLimit: 800000,
-        maxFeePerGas: ethers.parseUnits('20', 'gwei'),
-        maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
-      });
+    for (const operation of operations) {
+      const result = await executeOperationWithRetry(
+        contract, 
+        operation, 
+        provider, 
+        supabase,
+        MAX_RETRIES
+      );
+      results.push(result);
       
-      console.log(`📝 Swap tx sent: ${swapTx.hash}`);
-      const swapReceipt = await swapTx.wait();
-      
-      await logExecution(supabase, 'swap_and_liquify', 'success', 
-        swapTx.hash, swapReceipt.gasUsed, null);
-      
-      results.push({
-        operation: 'swap_and_liquify',
-        status: 'success',
-        txHash: swapTx.hash,
-        gasUsed: swapReceipt.gasUsed.toString()
-      });
-      
-      console.log('✅ Swap and liquify completed successfully');
-    } catch (error) {
-      console.error('❌ Failed to swap and liquify:', error);
-      await logExecution(supabase, 'swap_and_liquify', 'failed', null, 0, error.message);
-      results.push({
-        operation: 'swap_and_liquify',
-        status: 'failed',
-        error: error.message
-      });
-    }
-
-    // Small delay between operations
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
-    // 3. Manual Burn LP
-    try {
-      console.log('🔥 Executing LP burn...');
-      const burnTx = await contract.manualBurnLP({
-        gasLimit: 400000,
-        maxFeePerGas: ethers.parseUnits('20', 'gwei'),
-        maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
-      });
-      
-      console.log(`📝 Burn tx sent: ${burnTx.hash}`);
-      const burnReceipt = await burnTx.wait();
-      
-      await logExecution(supabase, 'burn_lp', 'success', 
-        burnTx.hash, burnReceipt.gasUsed, null);
-      
-      results.push({
-        operation: 'burn_lp',
-        status: 'success',
-        txHash: burnTx.hash,
-        gasUsed: burnReceipt.gasUsed.toString()
-      });
-      
-      console.log('✅ LP burn completed successfully');
-    } catch (error) {
-      console.error('❌ Failed to burn LP:', error);
-      await logExecution(supabase, 'burn_lp', 'failed', null, 0, error.message);
-      results.push({
-        operation: 'burn_lp',
-        status: 'failed',
-        error: error.message
-      });
+      // Small delay between operations to prevent nonce conflicts
+      if (operation !== operations[operations.length - 1]) {
+        await new Promise(resolve => setTimeout(resolve, OPERATION_DELAY));
+      }
     }
 
     // Log overall execution summary
@@ -235,6 +154,209 @@ serve(async (req) => {
     );
   }
 });
+
+// Enhanced health check function
+async function performHealthChecks(contract: any, provider: any, signer: any) {
+  try {
+    // Check if contract is paused
+    const isPaused = await contract.paused();
+    if (isPaused) {
+      return { success: false, error: 'Contract is paused, skipping automation' };
+    }
+
+    // Check signer balance
+    const signerBalance = await provider.getBalance(signer.address);
+    const minBalance = ethers.parseEther('0.02'); // Increased minimum for safety
+    
+    if (signerBalance < minBalance) {
+      return { 
+        success: false, 
+        error: `Insufficient balance: ${ethers.formatEther(signerBalance)} PLS (minimum: 0.02 PLS)` 
+      };
+    }
+
+    // Check network connectivity
+    const blockNumber = await provider.getBlockNumber();
+    if (!blockNumber || blockNumber < 1) {
+      return { success: false, error: 'Network connectivity issue' };
+    }
+
+    return { success: true, balance: signerBalance };
+  } catch (error) {
+    return { success: false, error: `Health check failed: ${error.message}` };
+  }
+}
+
+// Enhanced operation execution with retry logic
+async function executeOperationWithRetry(
+  contract: any, 
+  operation: any, 
+  provider: any, 
+  supabase: any, 
+  maxRetries: number
+) {
+  let lastError = null;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`🎯 Executing ${operation.name} (attempt ${attempt}/${maxRetries})...`);
+      
+      // Get optimized gas parameters
+      const gasParams = await getOptimizedGasParams(provider, operation.gasLimit);
+      
+      // Execute the transaction
+      const tx = await contract[operation.func](gasParams);
+      console.log(`📝 ${operation.name} tx sent: ${tx.hash}`);
+      
+      // Wait for transaction confirmation with timeout
+      const receipt = await waitForTransactionWithTimeout(tx, 60000); // 60 second timeout
+      
+      if (receipt.status === 1) {
+        // Transaction successful
+        await logExecution(supabase, operation.name, 'success', 
+          tx.hash, receipt.gasUsed, null);
+        
+        console.log(`✅ ${operation.name} completed successfully`);
+        return {
+          operation: operation.name,
+          status: 'success',
+          txHash: tx.hash,
+          gasUsed: receipt.gasUsed.toString(),
+          attempt
+        };
+      } else {
+        // Transaction failed
+        const error = `Transaction failed with status: ${receipt.status}`;
+        await logExecution(supabase, operation.name, 'failed', 
+          tx.hash, receipt.gasUsed, error);
+        
+        return {
+          operation: operation.name,
+          status: 'failed',
+          txHash: tx.hash,
+          error,
+          attempt
+        };
+      }
+      
+    } catch (error) {
+      lastError = error;
+      console.error(`❌ ${operation.name} failed (attempt ${attempt}):`, error.message);
+      
+      // Parse contract-specific errors
+      const parsedError = parseContractError(error);
+      
+      // Don't retry if it's a non-recoverable error
+      if (isNonRecoverableError(error)) {
+        await logExecution(supabase, operation.name, 'failed', null, 0, parsedError);
+        return {
+          operation: operation.name,
+          status: 'failed',
+          error: parsedError,
+          attempt,
+          nonRecoverable: true
+        };
+      }
+      
+      // Wait before retry (exponential backoff)
+      if (attempt < maxRetries) {
+        const delay = RETRY_DELAY * Math.pow(2, attempt - 1);
+        console.log(`⏳ Waiting ${delay}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  
+  // All retries exhausted
+  const finalError = parseContractError(lastError);
+  await logExecution(supabase, operation.name, 'failed', null, 0, finalError);
+  
+  return {
+    operation: operation.name,
+    status: 'failed',
+    error: finalError,
+    attempt: maxRetries,
+    retriesExhausted: true
+  };
+}
+
+// Get optimized gas parameters
+async function getOptimizedGasParams(provider: any, baseGasLimit: number) {
+  try {
+    const feeData = await provider.getFeeData();
+    const gasPrice = await provider.getGasPrice();
+    
+    // Use EIP-1559 if available, otherwise use legacy
+    if (feeData.maxFeePerGas && feeData.maxPriorityFeePerGas) {
+      return {
+        gasLimit: Math.floor(baseGasLimit * 1.2), // 20% safety margin
+        maxFeePerGas: feeData.maxFeePerGas,
+        maxPriorityFeePerGas: feeData.maxPriorityFeePerGas
+      };
+    } else {
+      return {
+        gasLimit: Math.floor(baseGasLimit * 1.2),
+        gasPrice: gasPrice
+      };
+    }
+  } catch (error) {
+    console.warn('Failed to get optimized gas params, using defaults:', error.message);
+    return {
+      gasLimit: Math.floor(baseGasLimit * 1.2),
+      gasPrice: ethers.parseUnits('20', 'gwei')
+    };
+  }
+}
+
+// Wait for transaction with timeout
+async function waitForTransactionWithTimeout(tx: any, timeout: number) {
+  return Promise.race([
+    tx.wait(),
+    new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Transaction timeout')), timeout)
+    )
+  ]);
+}
+
+// Parse contract-specific errors
+function parseContractError(error: any): string {
+  if (!error) return 'Unknown error';
+  
+  const message = error.message || error.toString();
+  
+  // Common contract error patterns
+  if (message.includes('execution reverted')) {
+    if (message.includes('Pausable: paused')) return 'Contract is paused';
+    if (message.includes('Ownable: caller is not the owner')) return 'Unauthorized: not contract owner';
+    if (message.includes('insufficient funds')) return 'Insufficient contract funds';
+    if (message.includes('transfer amount exceeds balance')) return 'Insufficient token balance';
+    return `Contract execution reverted: ${message}`;
+  }
+  
+  if (message.includes('insufficient funds')) return 'Insufficient gas funds';
+  if (message.includes('nonce too low')) return 'Transaction nonce conflict';
+  if (message.includes('replacement transaction underpriced')) return 'Gas price too low';
+  if (message.includes('network error')) return 'Network connectivity issue';
+  
+  return message.length > 200 ? message.substring(0, 200) + '...' : message;
+}
+
+// Check if error is non-recoverable
+function isNonRecoverableError(error: any): boolean {
+  if (!error) return false;
+  
+  const message = error.message || error.toString();
+  
+  // Non-recoverable error patterns
+  const nonRecoverablePatterns = [
+    'Contract is paused',
+    'Ownable: caller is not the owner',
+    'Invalid private key',
+    'Invalid contract address'
+  ];
+  
+  return nonRecoverablePatterns.some(pattern => message.includes(pattern));
+}
 
 // Helper function to log execution details
 async function logExecution(
