@@ -161,7 +161,7 @@ const HeroSection = ({
                 <ArrowRight size={18} className="relative z-10" />
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
-              <button onClick={() => setShowOnboarding(true)} className="border border-cyan-500/60 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/20 hover:scale-105 transition-all text-center backdrop-blur-sm relative overflow-hidden group">
+              <button onClick={() => setIsOpen(true)} className="border border-cyan-500/60 px-8 py-3 rounded-full font-semibold hover:bg-cyan-500/20 hover:scale-105 transition-all text-center backdrop-blur-sm relative overflow-hidden group">
                 <span className="relative z-10">DECODE PROTOCOL</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
