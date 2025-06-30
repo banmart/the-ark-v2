@@ -93,6 +93,14 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               Buy ARK
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </button>
+            <button 
+              onClick={() => handleExternalLink('https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0xacc15ef8fa2e702d0138c3662a9e7d696f40f021/0xefD766cCb38EaF1dfd701853BFCe31359239F305', 'Add Liquidity')}
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
+            >
+              Add Liquidity
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
+            </button>
+            
             <Link 
               to="/locker" 
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
