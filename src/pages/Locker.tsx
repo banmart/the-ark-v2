@@ -75,8 +75,6 @@ const LockerContent = () => {
         </div>
 
         <div className="relative z-10 pt-24">
-          {/* Header */}
-          <LockerHeader />
 
           {/* Emergency Status */}
           <EmergencyStatus 
@@ -86,6 +84,9 @@ const LockerContent = () => {
 
           {/* Tier Legend */}
           <TierLegend />
+
+          {/* Header */}
+          <LockerHeader />
 
           {/* Operations */}
           <LockerOperations isConnected={isConnected} />
