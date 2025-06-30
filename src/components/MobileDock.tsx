@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Home, Lock, Wallet, Link, Bot } from 'lucide-react';
+import { Home, Lock, Wallet, Link, Bot, ArrowRight } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
 import { useChatContext } from './providers/ChatProvider';
 
@@ -57,6 +57,16 @@ const MobileDock = ({
             <Lock size={18} />
             <span className="text-xs font-medium">Locker</span>
           </RouterLink>
+
+          <a 
+            href="https://changenow.app.link/referral?link_id=e49c221824244a" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10"
+          >
+            <ArrowRight size={18} />
+            <span className="text-xs font-medium">Change</span>
+          </a>
 
           <a 
             href="https://pulse-bridge-onboard.lovable.app/" 

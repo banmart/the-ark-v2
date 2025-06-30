@@ -1,4 +1,5 @@
 
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -14,6 +15,7 @@ const ARK_TOKEN_ABI = [
   "function manualBurnLP() external",
   "function balanceOf(address) view returns (uint256)",
   "function getTokensForLiquidity() view returns (uint256)",
+  "function getSwapSettings() view returns (uint256 threshold, uint256 maxAmount, bool enabled)",
   "function owner() view returns (address)",
   "function paused() view returns (bool)"
 ];
@@ -21,16 +23,16 @@ const ARK_TOKEN_ABI = [
 const CONTRACT_ADDRESS = "0xACC15eF8fa2e702d0138c3662A9E7d696f40F021";
 const PULSECHAIN_RPC = "https://rpc.pulsechain.com";
 
-// Gas optimization constants
+// Gas optimization constants with swap-specific limits
 const GAS_LIMITS = {
   distribute_rewards: 500000,
-  swap_and_liquify: 800000,
+  swap_and_liquify: 1200000, // Increased for complex swap operations
   burn_lp: 400000
 };
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 seconds
-const OPERATION_DELAY = 2000; // 2 seconds between operations
+const OPERATION_DELAY = 3000; // 3 seconds between operations for swaps
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -94,9 +96,10 @@ serve(async (req) => {
       );
       results.push(result);
       
-      // Small delay between operations to prevent nonce conflicts
+      // Longer delay for swap operations to prevent conflicts
       if (operation !== operations[operations.length - 1]) {
-        await new Promise(resolve => setTimeout(resolve, OPERATION_DELAY));
+        const delay = operation.name === 'swap_and_liquify' ? OPERATION_DELAY : 2000;
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
 
@@ -166,12 +169,12 @@ async function performHealthChecks(contract: any, provider: any, signer: any) {
 
     // Check signer balance
     const signerBalance = await provider.getBalance(signer.address);
-    const minBalance = ethers.parseEther('0.02'); // Increased minimum for safety
+    const minBalance = ethers.parseEther('0.05'); // Increased minimum for swap operations
     
     if (signerBalance < minBalance) {
       return { 
         success: false, 
-        error: `Insufficient balance: ${ethers.formatEther(signerBalance)} PLS (minimum: 0.02 PLS)` 
+        error: `Insufficient balance: ${ethers.formatEther(signerBalance)} PLS (minimum: 0.05 PLS)` 
       };
     }
 
@@ -187,7 +190,7 @@ async function performHealthChecks(contract: any, provider: any, signer: any) {
   }
 }
 
-// Enhanced operation execution with retry logic
+// Enhanced operation execution with swap-specific debugging
 async function executeOperationWithRetry(
   contract: any, 
   operation: any, 
@@ -201,6 +204,26 @@ async function executeOperationWithRetry(
     try {
       console.log(`🎯 Executing ${operation.name} (attempt ${attempt}/${maxRetries})...`);
       
+      // Add swap-specific pre-execution checks
+      if (operation.name === 'swap_and_liquify') {
+        const swapPreCheck = await performSwapPreChecks(contract, provider);
+        if (!swapPreCheck.success) {
+          await logExecution(supabase, operation.name, 'failed', null, 0, swapPreCheck.error, {
+            precheck_failed: true,
+            tokens_available: swapPreCheck.tokensAvailable,
+            swap_enabled: swapPreCheck.swapEnabled
+          });
+          return {
+            operation: operation.name,
+            status: 'failed',
+            error: swapPreCheck.error,
+            attempt,
+            precheckFailed: true
+          };
+        }
+        console.log(`💱 Swap pre-check passed: ${swapPreCheck.tokensAvailable} tokens available`);
+      }
+      
       // Get optimized gas parameters
       const gasParams = await getOptimizedGasParams(provider, operation.gasLimit);
       
@@ -208,13 +231,18 @@ async function executeOperationWithRetry(
       const tx = await contract[operation.func](gasParams);
       console.log(`📝 ${operation.name} tx sent: ${tx.hash}`);
       
-      // Wait for transaction confirmation with timeout
-      const receipt = await waitForTransactionWithTimeout(tx, 60000); // 60 second timeout
+      // Wait for transaction confirmation with extended timeout for swaps
+      const timeout = operation.name === 'swap_and_liquify' ? 120000 : 60000; // 2 minutes for swaps
+      const receipt = await waitForTransactionWithTimeout(tx, timeout);
       
       if (receipt.status === 1) {
-        // Transaction successful
+        // Transaction successful - add swap-specific success logging
+        const successDetails = operation.name === 'swap_and_liquify' 
+          ? await getSwapSuccessDetails(contract, receipt, provider)
+          : {};
+        
         await logExecution(supabase, operation.name, 'success', 
-          tx.hash, receipt.gasUsed, null);
+          tx.hash, receipt.gasUsed, null, successDetails);
         
         console.log(`✅ ${operation.name} completed successfully`);
         return {
@@ -222,7 +250,8 @@ async function executeOperationWithRetry(
           status: 'success',
           txHash: tx.hash,
           gasUsed: receipt.gasUsed.toString(),
-          attempt
+          attempt,
+          details: successDetails
         };
       } else {
         // Transaction failed
@@ -243,12 +272,15 @@ async function executeOperationWithRetry(
       lastError = error;
       console.error(`❌ ${operation.name} failed (attempt ${attempt}):`, error.message);
       
-      // Parse contract-specific errors
-      const parsedError = parseContractError(error);
+      // Parse contract-specific errors with swap-specific handling
+      const parsedError = parseContractError(error, operation.name);
       
       // Don't retry if it's a non-recoverable error
       if (isNonRecoverableError(error)) {
-        await logExecution(supabase, operation.name, 'failed', null, 0, parsedError);
+        await logExecution(supabase, operation.name, 'failed', null, 0, parsedError, {
+          non_recoverable: true,
+          error_type: getErrorType(error)
+        });
         return {
           operation: operation.name,
           status: 'failed',
@@ -268,8 +300,11 @@ async function executeOperationWithRetry(
   }
   
   // All retries exhausted
-  const finalError = parseContractError(lastError);
-  await logExecution(supabase, operation.name, 'failed', null, 0, finalError);
+  const finalError = parseContractError(lastError, operation.name);
+  await logExecution(supabase, operation.name, 'failed', null, 0, finalError, {
+    retries_exhausted: true,
+    final_attempt: maxRetries
+  });
   
   return {
     operation: operation.name,
@@ -280,7 +315,76 @@ async function executeOperationWithRetry(
   };
 }
 
-// Get optimized gas parameters
+// New swap-specific pre-check function
+async function performSwapPreChecks(contract: any, provider: any) {
+  try {
+    // Check if swap is enabled and get settings
+    const [threshold, maxAmount, enabled] = await contract.getSwapSettings();
+    
+    if (!enabled) {
+      return { success: false, error: 'Swap is disabled in contract', swapEnabled: false };
+    }
+    
+    // Check tokens available for liquidity
+    const tokensAvailable = await contract.getTokensForLiquidity();
+    const tokensAvailableFormatted = ethers.formatEther(tokensAvailable);
+    
+    if (tokensAvailable < threshold) {
+      return { 
+        success: false, 
+        error: `Insufficient tokens for swap: ${tokensAvailableFormatted} < ${ethers.formatEther(threshold)}`,
+        tokensAvailable: tokensAvailableFormatted,
+        swapEnabled: enabled
+      };
+    }
+    
+    return { 
+      success: true, 
+      tokensAvailable: tokensAvailableFormatted,
+      swapEnabled: enabled,
+      threshold: ethers.formatEther(threshold),
+      maxAmount: ethers.formatEther(maxAmount)
+    };
+  } catch (error) {
+    return { success: false, error: `Swap pre-check failed: ${error.message}` };
+  }
+}
+
+// Get swap success details for enhanced logging
+async function getSwapSuccessDetails(contract: any, receipt: any, provider: any) {
+  try {
+    const details: any = {
+      gas_used: receipt.gasUsed.toString(),
+      block_number: receipt.blockNumber,
+      transaction_index: receipt.transactionIndex
+    };
+    
+    // Parse swap events from transaction logs
+    const swapEvents = receipt.logs.filter((log: any) => 
+      log.topics.length > 0 && log.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()
+    );
+    
+    if (swapEvents.length > 0) {
+      details.events_count = swapEvents.length;
+      details.swap_events_detected = true;
+    }
+    
+    // Get post-swap token balance
+    try {
+      const tokensAfterSwap = await contract.getTokensForLiquidity();
+      details.tokens_remaining = ethers.formatEther(tokensAfterSwap);
+    } catch (e) {
+      console.warn('Could not get post-swap token balance:', e.message);
+    }
+    
+    return details;
+  } catch (error) {
+    console.warn('Could not get swap success details:', error.message);
+    return { details_error: error.message };
+  }
+}
+
+// Get optimized gas parameters with swap-specific adjustments
 async function getOptimizedGasParams(provider: any, baseGasLimit: number) {
   try {
     const feeData = await provider.getFeeData();
@@ -289,21 +393,21 @@ async function getOptimizedGasParams(provider: any, baseGasLimit: number) {
     // Use EIP-1559 if available, otherwise use legacy
     if (feeData.maxFeePerGas && feeData.maxPriorityFeePerGas) {
       return {
-        gasLimit: Math.floor(baseGasLimit * 1.2), // 20% safety margin
-        maxFeePerGas: feeData.maxFeePerGas,
-        maxPriorityFeePerGas: feeData.maxPriorityFeePerGas
+        gasLimit: Math.floor(baseGasLimit * 1.3), // 30% safety margin for complex operations
+        maxFeePerGas: feeData.maxFeePerGas * BigInt(120) / BigInt(100), // 20% increase
+        maxPriorityFeePerGas: feeData.maxPriorityFeePerGas * BigInt(110) / BigInt(100) // 10% increase
       };
     } else {
       return {
-        gasLimit: Math.floor(baseGasLimit * 1.2),
-        gasPrice: gasPrice
+        gasLimit: Math.floor(baseGasLimit * 1.3),
+        gasPrice: gasPrice * BigInt(120) / BigInt(100) // 20% increase for reliability
       };
     }
   } catch (error) {
     console.warn('Failed to get optimized gas params, using defaults:', error.message);
     return {
-      gasLimit: Math.floor(baseGasLimit * 1.2),
-      gasPrice: ethers.parseUnits('20', 'gwei')
+      gasLimit: Math.floor(baseGasLimit * 1.3),
+      gasPrice: ethers.parseUnits('25', 'gwei') // Higher default for reliability
     };
   }
 }
@@ -318,11 +422,21 @@ async function waitForTransactionWithTimeout(tx: any, timeout: number) {
   ]);
 }
 
-// Parse contract-specific errors
-function parseContractError(error: any): string {
+// Enhanced contract error parsing with swap-specific errors
+function parseContractError(error: any, operationName?: string): string {
   if (!error) return 'Unknown error';
   
   const message = error.message || error.toString();
+  
+  // Swap-specific error patterns
+  if (operationName === 'swap_and_liquify') {
+    if (message.includes('UniswapV2: INSUFFICIENT_LIQUIDITY')) return 'Insufficient DEX liquidity for swap';
+    if (message.includes('UniswapV2: EXCESSIVE_INPUT_AMOUNT')) return 'Swap amount too large for available liquidity';
+    if (message.includes('TransferHelper: TRANSFER_FROM_FAILED')) return 'Token transfer failed during swap';
+    if (message.includes('UniswapV2: K')) return 'DEX invariant violation - potential price manipulation';
+    if (message.includes('EXPIRED')) return 'Swap transaction expired';
+    if (message.includes('UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT')) return 'Slippage too high - insufficient output amount';
+  }
   
   // Common contract error patterns
   if (message.includes('execution reverted')) {
@@ -341,6 +455,21 @@ function parseContractError(error: any): string {
   return message.length > 200 ? message.substring(0, 200) + '...' : message;
 }
 
+// Get error type for categorization
+function getErrorType(error: any): string {
+  if (!error) return 'unknown';
+  
+  const message = error.message || error.toString();
+  
+  if (message.includes('UniswapV2') || message.includes('swap') || message.includes('liquidity')) return 'swap_error';
+  if (message.includes('gas') || message.includes('insufficient funds')) return 'gas_error';
+  if (message.includes('nonce')) return 'nonce_error';
+  if (message.includes('network') || message.includes('timeout')) return 'network_error';
+  if (message.includes('revert')) return 'contract_error';
+  
+  return 'unknown_error';
+}
+
 // Check if error is non-recoverable
 function isNonRecoverableError(error: any): boolean {
   if (!error) return false;
@@ -352,7 +481,8 @@ function isNonRecoverableError(error: any): boolean {
     'Contract is paused',
     'Ownable: caller is not the owner',
     'Invalid private key',
-    'Invalid contract address'
+    'Invalid contract address',
+    'Swap is disabled in contract'
   ];
   
   return nonRecoverablePatterns.some(pattern => message.includes(pattern));
@@ -387,3 +517,4 @@ async function logExecution(
     console.error('Error in logExecution:', error);
   }
 }
+
