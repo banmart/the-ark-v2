@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Zap, Wifi, Bot, ArrowRight } from 'lucide-react';
+import { Zap, Wifi, Bot } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
 
@@ -78,6 +78,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
           </div>
 
           <div className="hidden md:flex items-center gap-8">
+
             <button 
               onClick={() => handleExternalLink('https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge', 'Bridge Assets')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
