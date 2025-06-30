@@ -58,23 +58,6 @@ const MobileDock = ({
             <span className="text-xs font-medium">Locker</span>
           </RouterLink>
 
-          <a 
-            href="https://pulse-bridge-onboard.lovable.app/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10"
-          >
-            <Link size={18} />
-            <span className="text-xs font-medium">Bridge</span>
-          </a>
-
-          <button 
-            onClick={handleOpenAI}
-            className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 text-gray-400 hover:text-purple-400 hover:bg-purple-500/10"
-          >
-            <Bot size={18} />
-            <span className="text-xs font-medium">AI</span>
-          </button>
 
           {handleConnectWallet && (
             <button 
