@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { TrendingUp, Users, DollarSign, Zap } from 'lucide-react';
 import { useContractData } from '../hooks/useContractData';
 import { useLockerData } from '../hooks/useLockerData';
 
 const StatsSection = () => {
-  const { contractData, loading } = useContractData();
+  const { data: contractData, loading } = useContractData();
   const { protocolStats, loading: lockerLoading } = useLockerData();
 
   const formatNumber = (num: number | string) => {
