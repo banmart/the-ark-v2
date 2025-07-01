@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from "@/components/ui/use-toast";
 import { useContractData } from '../../hooks/useContractData';
@@ -123,7 +122,10 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       />
 
       {/* Stats Section */}
-      <StatsSection />
+      <StatsSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
 
       {/* Features Section - Updated Four Pillars */}
       <FeaturesSection />
