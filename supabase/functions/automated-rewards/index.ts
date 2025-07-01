@@ -28,7 +28,13 @@ serve(async (req) => {
   }
 
   try {
-    console.log('🤖 Automated rewards system triggered');
+    console.log('🤖 Automated system triggered');
+    
+    // Parse request body to get operation type
+    const body = await req.json();
+    const operation = body.operation || 'all'; // Default to all operations if not specified
+    
+    console.log(`🎯 Operation requested: ${operation}`);
     
     // Initialize Supabase client
     const supabase = createClient(
@@ -76,128 +82,137 @@ serve(async (req) => {
 
     const results = [];
 
-    // 1. Distribute Locker Rewards
-    try {
-      console.log('🎯 Distributing locker rewards...');
-      const rewardsTx = await contract.distributeLockerRewards({
-        gasLimit: 500000,
-        maxFeePerGas: ethers.parseUnits('20', 'gwei'),
-        maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
-      });
-      
-      console.log(`📝 Rewards tx sent: ${rewardsTx.hash}`);
-      const rewardsReceipt = await rewardsTx.wait();
-      
-      await logExecution(supabase, 'distribute_rewards', 'success', 
-        rewardsTx.hash, rewardsReceipt.gasUsed, null);
-      
-      results.push({
-        operation: 'distribute_rewards',
-        status: 'success',
-        txHash: rewardsTx.hash,
-        gasUsed: rewardsReceipt.gasUsed.toString()
-      });
-      
-      console.log('✅ Locker rewards distributed successfully');
-    } catch (error) {
-      console.error('❌ Failed to distribute rewards:', error);
-      await logExecution(supabase, 'distribute_rewards', 'failed', null, 0, error.message);
-      results.push({
-        operation: 'distribute_rewards',
-        status: 'failed',
-        error: error.message
-      });
+    // Execute operations based on the requested operation
+    if (operation === 'distribute_rewards' || operation === 'all') {
+      try {
+        console.log('🎯 Distributing locker rewards...');
+        const rewardsTx = await contract.distributeLockerRewards({
+          gasLimit: 500000,
+          maxFeePerGas: ethers.parseUnits('20', 'gwei'),
+          maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
+        });
+        
+        console.log(`📝 Rewards tx sent: ${rewardsTx.hash}`);
+        const rewardsReceipt = await rewardsTx.wait();
+        
+        await logExecution(supabase, 'distribute_rewards', 'success', 
+          rewardsTx.hash, rewardsReceipt.gasUsed, null);
+        
+        results.push({
+          operation: 'distribute_rewards',
+          status: 'success',
+          txHash: rewardsTx.hash,
+          gasUsed: rewardsReceipt.gasUsed.toString()
+        });
+        
+        console.log('✅ Locker rewards distributed successfully');
+      } catch (error) {
+        console.error('❌ Failed to distribute rewards:', error);
+        await logExecution(supabase, 'distribute_rewards', 'failed', null, 0, error.message);
+        results.push({
+          operation: 'distribute_rewards',
+          status: 'failed',
+          error: error.message
+        });
+      }
     }
 
     // Small delay between operations
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    if (results.length > 0 && (operation === 'swap_and_liquify' || operation === 'burn_lp' || operation === 'all')) {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    }
 
-    // 2. Manual Swap and Liquify
-    try {
-      console.log('🔄 Executing swap and liquify...');
-      const swapTx = await contract.manualSwapAndLiquify({
-        gasLimit: 800000,
-        maxFeePerGas: ethers.parseUnits('20', 'gwei'),
-        maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
-      });
-      
-      console.log(`📝 Swap tx sent: ${swapTx.hash}`);
-      const swapReceipt = await swapTx.wait();
-      
-      await logExecution(supabase, 'swap_and_liquify', 'success', 
-        swapTx.hash, swapReceipt.gasUsed, null);
-      
-      results.push({
-        operation: 'swap_and_liquify',
-        status: 'success',
-        txHash: swapTx.hash,
-        gasUsed: swapReceipt.gasUsed.toString()
-      });
-      
-      console.log('✅ Swap and liquify completed successfully');
-    } catch (error) {
-      console.error('❌ Failed to swap and liquify:', error);
-      await logExecution(supabase, 'swap_and_liquify', 'failed', null, 0, error.message);
-      results.push({
-        operation: 'swap_and_liquify',
-        status: 'failed',
-        error: error.message
-      });
+    if (operation === 'swap_and_liquify' || operation === 'all') {
+      try {
+        console.log('🔄 Executing swap and liquify...');
+        const swapTx = await contract.manualSwapAndLiquify({
+          gasLimit: 800000,
+          maxFeePerGas: ethers.parseUnits('20', 'gwei'),
+          maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
+        });
+        
+        console.log(`📝 Swap tx sent: ${swapTx.hash}`);
+        const swapReceipt = await swapTx.wait();
+        
+        await logExecution(supabase, 'swap_and_liquify', 'success', 
+          swapTx.hash, swapReceipt.gasUsed, null);
+        
+        results.push({
+          operation: 'swap_and_liquify',
+          status: 'success',
+          txHash: swapTx.hash,
+          gasUsed: swapReceipt.gasUsed.toString()
+        });
+        
+        console.log('✅ Swap and liquify completed successfully');
+      } catch (error) {
+        console.error('❌ Failed to swap and liquify:', error);
+        await logExecution(supabase, 'swap_and_liquify', 'failed', null, 0, error.message);
+        results.push({
+          operation: 'swap_and_liquify',
+          status: 'failed',
+          error: error.message
+        });
+      }
     }
 
     // Small delay between operations
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    if (results.length > 0 && (operation === 'burn_lp' || operation === 'all')) {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    }
 
-    // 3. Manual Burn LP
-    try {
-      console.log('🔥 Executing LP burn...');
-      const burnTx = await contract.manualBurnLP({
-        gasLimit: 400000,
-        maxFeePerGas: ethers.parseUnits('20', 'gwei'),
-        maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
-      });
-      
-      console.log(`📝 Burn tx sent: ${burnTx.hash}`);
-      const burnReceipt = await burnTx.wait();
-      
-      await logExecution(supabase, 'burn_lp', 'success', 
-        burnTx.hash, burnReceipt.gasUsed, null);
-      
-      results.push({
-        operation: 'burn_lp',
-        status: 'success',
-        txHash: burnTx.hash,
-        gasUsed: burnReceipt.gasUsed.toString()
-      });
-      
-      console.log('✅ LP burn completed successfully');
-    } catch (error) {
-      console.error('❌ Failed to burn LP:', error);
-      await logExecution(supabase, 'burn_lp', 'failed', null, 0, error.message);
-      results.push({
-        operation: 'burn_lp',
-        status: 'failed',
-        error: error.message
-      });
+    if (operation === 'burn_lp' || operation === 'all') {
+      try {
+        console.log('🔥 Executing LP burn...');
+        const burnTx = await contract.manualBurnLP({
+          gasLimit: 400000,
+          maxFeePerGas: ethers.parseUnits('20', 'gwei'),
+          maxPriorityFeePerGas: ethers.parseUnits('2', 'gwei')
+        });
+        
+        console.log(`📝 Burn tx sent: ${burnTx.hash}`);
+        const burnReceipt = await burnTx.wait();
+        
+        await logExecution(supabase, 'burn_lp', 'success', 
+          burnTx.hash, burnReceipt.gasUsed, null);
+        
+        results.push({
+          operation: 'burn_lp',
+          status: 'success',
+          txHash: burnTx.hash,
+          gasUsed: burnReceipt.gasUsed.toString()
+        });
+        
+        console.log('✅ LP burn completed successfully');
+      } catch (error) {
+        console.error('❌ Failed to burn LP:', error);
+        await logExecution(supabase, 'burn_lp', 'failed', null, 0, error.message);
+        results.push({
+          operation: 'burn_lp',
+          status: 'failed',
+          error: error.message
+        });
+      }
     }
 
     // Log overall execution summary
     const successCount = results.filter(r => r.status === 'success').length;
     const failCount = results.filter(r => r.status === 'failed').length;
     
-    await logExecution(supabase, 'automation_cycle', 'completed', null, 0, null, {
+    await logExecution(supabase, `${operation}_cycle`, 'completed', null, 0, null, {
       total_operations: results.length,
       successful: successCount,
       failed: failCount,
-      results: results
+      results: results,
+      operation_type: operation
     });
 
-    console.log(`🎉 Automation cycle completed: ${successCount} successful, ${failCount} failed`);
+    console.log(`🎉 ${operation} cycle completed: ${successCount} successful, ${failCount} failed`);
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Automation cycle completed',
+        message: `${operation} cycle completed`,
         results: results,
         summary: {
           total: results.length,

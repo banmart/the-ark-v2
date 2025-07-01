@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
+import { useLockerData } from '../hooks/useLockerData';
 
 interface StatsSectionProps {
   contractData: any;
@@ -12,6 +13,7 @@ const StatsSection = ({
   contractLoading
 }: StatsSectionProps) => {
   const [statsPhase, setStatsPhase] = useState(0);
+  const { protocolStats } = useLockerData();
 
   useEffect(() => {
     // Cinematic reveal sequence
@@ -33,6 +35,15 @@ const StatsSection = ({
     if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
     return `${Math.floor(diffInSeconds / 3600)}h ago`;
+  };
+
+  const formatTVL = (tvl: number) => {
+    if (tvl >= 1000000) {
+      return `${(tvl / 1000000).toFixed(2)}M`;
+    } else if (tvl >= 1000) {
+      return `${(tvl / 1000).toFixed(2)}K`;
+    }
+    return tvl.toFixed(2);
   };
 
   return (
@@ -137,7 +148,7 @@ const StatsSection = ({
             </div>
           </div>
 
-          {/* Holders */}
+          {/* TVL (Total Value Locked) */}
           <div className="relative bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl p-6 hover:scale-105 hover:border-purple-500/60 transition-all duration-500 group overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             
@@ -147,15 +158,15 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-purple-400 font-mono">👥 HOLDERS</h3>
+              <h3 className="text-2xl font-bold mb-4 text-purple-400 font-mono">🏦 TVL (LOCKER)</h3>
               <p className="text-3xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
+                {protocolStats.totalLockedTokens ? (
+                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
                 ) : (
-                  contractData.holders
+                  <span className="animate-pulse">[SCANNING...]</span>
                 )}
               </p>
-              <p className="text-sm text-gray-400 font-mono">[UNIQUE_ADDRESSES]</p>
+              <p className="text-sm text-gray-400 font-mono">[LOCKED_VALUE]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
