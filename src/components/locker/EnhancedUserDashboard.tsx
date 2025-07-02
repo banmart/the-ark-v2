@@ -23,6 +23,8 @@ import {
 import { useLockerData } from '../../hooks/useLockerData';
 import CompactLockPosition from './CompactLockPosition';
 import LockPositionFilters, { FilterOptions } from './LockPositionFilters';
+import { formatLargeNumber } from '../../lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 interface EnhancedUserDashboardProps {
   isConnected: boolean;
@@ -41,6 +43,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
 
   const [processingClaim, setProcessingClaim] = useState(false);
   const [processingUnlock, setProcessingUnlock] = useState<number | null>(null);
+  const [showWeightInfo, setShowWeightInfo] = useState(false);
   
   // Filter state
   const [filters, setFilters] = useState<FilterOptions>({
@@ -202,12 +205,76 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           </div>
 
           <div className="bg-gradient-to-br from-yellow-500/10 via-orange-500/5 to-transparent border border-yellow-500/30 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
-            <Award className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-yellow-400 mb-1">
-              {loading ? <span className="animate-pulse">...</span> : userStats.userWeight.toFixed(0)}
+            <div className="flex items-center justify-center mb-3">
+              <Zap className="w-8 h-8 text-yellow-400 mr-2" />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="w-4 h-4 text-yellow-400/60 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p className="text-sm">
+                      Your influence in the reward pool. Higher = bigger share of weekly rewards. 
+                      Calculated from: locked amount × time remaining × tier bonus
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
-            <div className="text-sm text-gray-400">Weight Score</div>
+            <div className="text-2xl font-bold text-yellow-400 mb-1">
+              {loading ? <span className="animate-pulse">...</span> : formatLargeNumber(userStats.userWeight)}
+            </div>
+            <div className="text-sm text-gray-400">Reward Power</div>
+            <div className="text-xs text-yellow-400/60 mt-1">Your influence in the vault</div>
           </div>
+        </div>
+
+        {/* Reward Power Explanation */}
+        <div className="mt-6">
+          <button
+            onClick={() => setShowWeightInfo(!showWeightInfo)}
+            className="flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+          >
+            <Info className="w-4 h-4" />
+            How does Reward Power work?
+            <span className={`transform transition-transform ${showWeightInfo ? 'rotate-180' : ''}`}>
+              ↓
+            </span>
+          </button>
+          
+          {showWeightInfo && (
+            <div className="mt-4 bg-black/30 border border-cyan-500/20 rounded-lg p-4 text-sm">
+              <div className="space-y-3">
+                <div>
+                  <div className="text-cyan-400 font-semibold mb-1">📊 Your Share Formula:</div>
+                  <div className="text-gray-300">Your Rewards = (Your Power ÷ Total Power) × Weekly Distribution</div>
+                </div>
+                
+                <div>
+                  <div className="text-cyan-400 font-semibold mb-1">⚡ Power Calculation:</div>
+                  <div className="text-gray-300">Locked Amount × Days Remaining × Tier Multiplier</div>
+                  <div className="text-xs text-gray-400 mt-1">
+                    Example: 1,000 ARK × 365 days × 3x Diamond = 1.1M Power
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="text-cyan-400 font-semibold mb-1">📈 Maximize Your Power:</div>
+                  <div className="text-gray-300">• Lock for higher tiers (Diamond = 8x Bronze rewards)</div>
+                  <div className="text-gray-300">• Lock for longer periods</div>
+                  <div className="text-gray-300">• Reinvest claimed rewards into new locks</div>
+                </div>
+                
+                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded p-3">
+                  <div className="text-yellow-400 font-semibold text-xs mb-1">⚠️ Important:</div>
+                  <div className="text-gray-300 text-xs">
+                    Your power decreases over time as lock periods expire. 
+                    Power goes to zero when locks end.
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

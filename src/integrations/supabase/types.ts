@@ -18,6 +18,7 @@ export type Database = {
           id: string
           operation: string
           status: string
+          timestamp: string | null
           transaction_hash: string | null
         }
         Insert: {
@@ -28,6 +29,7 @@ export type Database = {
           id?: string
           operation: string
           status: string
+          timestamp?: string | null
           transaction_hash?: string | null
         }
         Update: {
@@ -38,6 +40,7 @@ export type Database = {
           id?: string
           operation?: string
           status?: string
+          timestamp?: string | null
           transaction_hash?: string | null
         }
         Relationships: []
