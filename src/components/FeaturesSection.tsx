@@ -33,7 +33,7 @@ const FeaturesSection = () => {
       title: 'BURN_PROTOCOL',
       subtitle: 'Molecular Disintegration',
       percentage: '3%',
-      detail: '+ Token Burns',
+      detail: 'LP Token Burns',
       description: 'Permanent molecular disintegration through quantum incineration to void address plus automated LP token annihilation for maximum deflationary cascade.',
       color: 'red',
       status: 'ACTIVE_BURN',
@@ -45,7 +45,7 @@ const FeaturesSection = () => {
       emoji: '🫂',
       title: 'REFLECTION_MATRIX',
       subtitle: 'Quantum Redistribution',
-      percentage: '3%',
+      percentage: '2%',
       detail: 'Auto Redistribution',
       description: 'Autonomous quantum redistribution to all vessel holders based on molecular weight. Extended holding periods amplify reflection coefficients.',
       color: 'blue',
@@ -223,15 +223,15 @@ const FeaturesSection = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
               <div className="text-center p-3 bg-red-500/10 border border-red-500/30 rounded">
                 <div className="text-red-400 mb-1">BURN_RATE</div>
-                <div className="text-white font-bold">3% + LP</div>
+                <div className="text-white font-bold">3%</div>
               </div>
               <div className="text-center p-3 bg-blue-500/10 border border-blue-500/30 rounded">
                 <div className="text-blue-400 mb-1">REFLECTION_FLOW</div>
-                <div className="text-white font-bold">2% AUTO</div>
+                <div className="text-white font-bold">3% AUTO</div>
               </div>
               <div className="text-center p-3 bg-purple-500/10 border border-purple-500/30 rounded">
                 <div className="text-purple-400 mb-1">LIQUIDITY_GEN</div>
-                <div className="text-white font-bold">2% SMART</div>
+                <div className="text-white font-bold">0% OFFLINE</div>
               </div>
               <div className="text-center p-3 bg-green-500/10 border border-green-500/30 rounded">
                 <div className="text-green-400 mb-1">VAULT_REWARDS</div>
