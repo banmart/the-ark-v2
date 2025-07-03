@@ -19,7 +19,7 @@ const FeaturesSection = () => {
 
     // Rotating pillar highlight
     const interval = setInterval(() => {
-      setActivePillar(prev => (prev + 1) % 4);
+      setActivePillar(prev => (prev + 1) % 3);
     }, 3000);
 
     return () => clearInterval(interval);
@@ -45,7 +45,7 @@ const FeaturesSection = () => {
       emoji: '🫂',
       title: 'REFLECTION_MATRIX',
       subtitle: 'Quantum Redistribution',
-      percentage: '2%',
+      percentage: '3%',
       detail: 'Auto Redistribution',
       description: 'Autonomous quantum redistribution to all vessel holders based on molecular weight. Extended holding periods amplify reflection coefficients.',
       color: 'blue',
@@ -54,19 +54,6 @@ const FeaturesSection = () => {
     },
     {
       id: 2,
-      icon: Droplets,
-      emoji: '💧',
-      title: 'LIQUIDITY_ENGINE',
-      subtitle: 'Fluid Dynamics Control',
-      percentage: '2%',
-      detail: 'Smart Threshold',
-      description: 'Automated liquidity synthesis with quantum slippage protection. Threshold: 0.1% supply, Max: 0.2% supply for optimal market equilibrium.',
-      color: 'purple',
-      status: 'STABILIZING',
-      gradient: 'from-purple-500 to-pink-500'
-    },
-    {
-      id: 3,
       icon: Lock,
       emoji: '🔒',
       title: 'VAULT_REWARDS',
@@ -124,7 +111,7 @@ const FeaturesSection = () => {
         </div>
 
         {/* Quantum Pillars Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-1000 delay-500 ${pillarsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-1000 delay-500 ${pillarsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {pillars.map((pillar, index) => {
             const IconComponent = pillar.icon;
             const isActive = activePillar === pillar.id;
@@ -220,18 +207,14 @@ const FeaturesSection = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
               <div className="text-center p-3 bg-red-500/10 border border-red-500/30 rounded">
                 <div className="text-red-400 mb-1">BURN_RATE</div>
                 <div className="text-white font-bold">3% + LP</div>
               </div>
               <div className="text-center p-3 bg-blue-500/10 border border-blue-500/30 rounded">
                 <div className="text-blue-400 mb-1">REFLECTION_FLOW</div>
-                <div className="text-white font-bold">2% AUTO</div>
-              </div>
-              <div className="text-center p-3 bg-purple-500/10 border border-purple-500/30 rounded">
-                <div className="text-purple-400 mb-1">LIQUIDITY_GEN</div>
-                <div className="text-white font-bold">2% SMART</div>
+                <div className="text-white font-bold">3% AUTO</div>
               </div>
               <div className="text-center p-3 bg-green-500/10 border border-green-500/30 rounded">
                 <div className="text-green-400 mb-1">VAULT_REWARDS</div>
