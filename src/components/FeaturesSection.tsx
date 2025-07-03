@@ -45,7 +45,7 @@ const FeaturesSection = () => {
       emoji: '🫂',
       title: 'REFLECTION_MATRIX',
       subtitle: 'Quantum Redistribution',
-      percentage: '2%',
+      percentage: '3%',
       detail: 'Auto Redistribution',
       description: 'Autonomous quantum redistribution to all vessel holders based on molecular weight. Extended holding periods amplify reflection coefficients.',
       color: 'blue',
@@ -58,11 +58,11 @@ const FeaturesSection = () => {
       emoji: '💧',
       title: 'LIQUIDITY_ENGINE',
       subtitle: 'Fluid Dynamics Control',
-      percentage: '2%',
+      percentage: '0%',
       detail: 'Smart Threshold',
       description: 'Automated liquidity synthesis with quantum slippage protection. Threshold: 0.1% supply, Max: 0.2% supply for optimal market equilibrium.',
       color: 'purple',
-      status: 'STABILIZING',
+      status: 'OFFLINE',
       gradient: 'from-purple-500 to-pink-500'
     },
     {
