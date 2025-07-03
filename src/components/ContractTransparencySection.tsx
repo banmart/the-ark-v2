@@ -143,7 +143,7 @@ const ContractTransparencySection = ({
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
                     <div className="text-center p-3 bg-orange-500/10 border border-orange-500/30 rounded">
                       <div className="text-orange-400 mb-1">BURN_RATE</div>
-                      <div className="text-white font-bold">50% AUTO</div>
+                      <div className="text-white font-bold">BURN_ENGINE_PAUSED</div>
                     </div>
                     <div className="text-center p-3 bg-red-500/10 border border-red-500/30 rounded">
                       <div className="text-red-400 mb-1">TRIGGER_EVENT</div>
