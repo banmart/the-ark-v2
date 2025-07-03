@@ -184,7 +184,7 @@ const ContractTransparencySection = ({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
               <div className="text-center p-3 bg-green-500/10 border border-green-500/30 rounded">
                 <div className="text-green-400 mb-1">THRESHOLD</div>
-                <div className="text-white font-bold">0.1% SUPPLY</div>
+                <div className="text-white font-bold">ENGINE_PAUSED</div>
               </div>
               <div className="text-center p-3 bg-blue-500/10 border border-blue-500/30 rounded">
                 <div className="text-blue-400 mb-1">MAX_LIMIT</div>
