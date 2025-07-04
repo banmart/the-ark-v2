@@ -23,6 +23,7 @@ import {
 import { useLockerData } from '../../hooks/useLockerData';
 import CompactLockPosition from './CompactLockPosition';
 import LockPositionFilters, { FilterOptions } from './LockPositionFilters';
+import WeightProgressBar from './WeightProgressBar';
 import { formatLargeNumber } from '../../lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
@@ -33,7 +34,8 @@ interface EnhancedUserDashboardProps {
 const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
   const { 
     userStats, 
-    userLocks, 
+    userLocks,
+    protocolStats,
     calculateEarlyUnlockPenalty, 
     unlockTokens, 
     claimRewards,
@@ -204,7 +206,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
             <div className="text-sm text-gray-400">Active Positions</div>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-500/10 via-orange-500/5 to-transparent border border-yellow-500/30 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
+          <div className="bg-gradient-to-br from-yellow-500/10 via-orange-500/5 to-transparent border border-yellow-500/30 rounded-xl p-6 hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-center mb-3">
               <Zap className="w-8 h-8 text-yellow-400 mr-2" />
               <TooltipProvider>
@@ -221,11 +223,11 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-bold text-yellow-400 mb-1">
-              {loading ? <span className="animate-pulse">...</span> : formatLargeNumber(userStats.userWeight)}
-            </div>
-            <div className="text-sm text-gray-400">Reward Power</div>
-            <div className="text-xs text-yellow-400/60 mt-1">Your influence in the vault</div>
+            <WeightProgressBar 
+              userWeight={userStats.userWeight}
+              totalWeight={protocolStats.totalLockedTokens} 
+              loading={loading}
+            />
           </div>
         </div>
 
