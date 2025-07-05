@@ -23,7 +23,6 @@ import {
 import { useLockerData } from '../../hooks/useLockerData';
 import CompactLockPosition from './CompactLockPosition';
 import LockPositionFilters, { FilterOptions } from './LockPositionFilters';
-import PowerMeter from './PowerMeter';
 import { formatLargeNumber } from '../../lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
@@ -39,8 +38,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
     unlockTokens, 
     claimRewards,
     loading,
-    lockTiers,
-    totalWeight 
+    lockTiers 
   } = useLockerData();
 
   const [processingClaim, setProcessingClaim] = useState(false);
@@ -223,11 +221,9 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <PowerMeter 
-              userWeight={userStats.userWeight}
-              totalWeight={totalWeight}
-              loading={loading}
-            />
+            <div className="text-2xl font-bold text-yellow-400 mb-1">
+              {loading ? <span className="animate-pulse">...</span> : formatLargeNumber(userStats.userWeight)}
+            </div>
             <div className="text-sm text-gray-400">Reward Power</div>
             <div className="text-xs text-yellow-400/60 mt-1">Your influence in the vault</div>
           </div>

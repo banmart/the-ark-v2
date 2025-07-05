@@ -43,7 +43,6 @@ export const useLockerContractData = (userAddress?: string) => {
 
   const [userLocks, setUserLocks] = useState<LockPosition[]>([]);
   const [userWeight, setUserWeight] = useState(0);
-  const [totalWeight, setTotalWeight] = useState(0);
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [contractPaused, setContractPaused] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -78,7 +77,6 @@ export const useLockerContractData = (userAddress?: string) => {
 
       setEmergencyMode(emergency);
       setContractPaused(paused);
-      setTotalWeight(totalLockedTokens); // Use total locked tokens as baseline for percentage
 
       console.log('Protocol stats fetched successfully:', {
         totalLockedTokens,
@@ -180,7 +178,6 @@ export const useLockerContractData = (userAddress?: string) => {
     userStats,
     userLocks,
     userWeight,
-    totalWeight,
     emergencyMode,
     contractPaused,
     loading,
