@@ -57,13 +57,12 @@ export const useLockerContractData = (userAddress?: string) => {
       console.log('Fetching protocol stats from SimplifiedLockerVault contract...');
 
       // Call actual contract methods
-      const [totalLocked, totalRewards, totalLockers, emergency, paused, totalNetworkWeight] = await Promise.all([
+      const [totalLocked, totalRewards, totalLockers, emergency, paused] = await Promise.all([
         contract.totalLockedTokens(),
         contract.totalRewardsDistributed(),
         contract.totalActiveLockers(),
         contract.emergencyMode(),
-        contract.paused(),
-        contract.getTotalWeight()
+        contract.paused()
       ]);
 
       // Convert from wei to tokens (18 decimals)
@@ -79,7 +78,7 @@ export const useLockerContractData = (userAddress?: string) => {
 
       setEmergencyMode(emergency);
       setContractPaused(paused);
-      setTotalWeight(parseFloat(ethers.formatEther(totalNetworkWeight)));
+      setTotalWeight(totalLockedTokens); // Use total locked tokens as baseline for percentage
 
       console.log('Protocol stats fetched successfully:', {
         totalLockedTokens,
