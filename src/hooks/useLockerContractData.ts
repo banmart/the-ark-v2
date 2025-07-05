@@ -43,6 +43,7 @@ export const useLockerContractData = (userAddress?: string) => {
 
   const [userLocks, setUserLocks] = useState<LockPosition[]>([]);
   const [userWeight, setUserWeight] = useState(0);
+  const [totalWeight, setTotalWeight] = useState(0);
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [contractPaused, setContractPaused] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -56,12 +57,13 @@ export const useLockerContractData = (userAddress?: string) => {
       console.log('Fetching protocol stats from SimplifiedLockerVault contract...');
 
       // Call actual contract methods
-      const [totalLocked, totalRewards, totalLockers, emergency, paused] = await Promise.all([
+      const [totalLocked, totalRewards, totalLockers, emergency, paused, totalNetworkWeight] = await Promise.all([
         contract.totalLockedTokens(),
         contract.totalRewardsDistributed(),
         contract.totalActiveLockers(),
         contract.emergencyMode(),
-        contract.paused()
+        contract.paused(),
+        contract.getTotalWeight()
       ]);
 
       // Convert from wei to tokens (18 decimals)
@@ -77,6 +79,7 @@ export const useLockerContractData = (userAddress?: string) => {
 
       setEmergencyMode(emergency);
       setContractPaused(paused);
+      setTotalWeight(parseFloat(ethers.formatEther(totalNetworkWeight)));
 
       console.log('Protocol stats fetched successfully:', {
         totalLockedTokens,
@@ -178,6 +181,7 @@ export const useLockerContractData = (userAddress?: string) => {
     userStats,
     userLocks,
     userWeight,
+    totalWeight,
     emergencyMode,
     contractPaused,
     loading,
