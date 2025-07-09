@@ -68,7 +68,7 @@ const ChatAssistant = () => {
             <span className="text-lg text-cyan-400">❍</span>
           </div>
           <div>
-            <h3 className="font-bold text-cyan-400 font-mono">ARK Assistant</h3>
+            <h3 className="font-bold font-mono">ARK Assistant</h3>
             <p className="text-xs text-gray-400 font-mono">
               {isLoading ? 'Navigating your request...' : 'Your friendly ARK guide'}
             </p>
@@ -98,7 +98,7 @@ const ChatAssistant = () => {
         {welcomeMessage ? (
           <div className="text-center py-4">
             <div className="text-6xl mb-4 text-cyan-400">❍</div>
-            <h3 className="text-xl font-bold text-cyan-400 mb-2 font-mono">
+            <h3 className="text-xl font-bold mb-2 font-mono">
               Welcome aboard THE ARK! 🚀
             </h3>
             <p className="text-gray-300 mb-6 font-mono text-sm leading-relaxed">
@@ -109,7 +109,7 @@ const ChatAssistant = () => {
             <div className="space-y-4 max-w-md mx-auto">
               {quickActions.map((category, categoryIndex) => (
                 <div key={categoryIndex} className="text-left">
-                  <h4 className="text-xs font-bold text-cyan-300 mb-2 font-mono uppercase tracking-wider">
+                  <h4 className="text-xs font-bold mb-2 font-mono uppercase tracking-wider">
                     {category.category}
                   </h4>
                   <div className="space-y-1">

@@ -66,7 +66,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-              <h4 className="font-mono text-cyan-400 text-sm tracking-wider">QUICK_LINKS</h4>
+              <h4 className="font-mono text-sm tracking-wider">QUICK_LINKS</h4>
             </div>
             <ul className="space-y-3 text-sm">
               <li>
@@ -100,7 +100,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-              <h4 className="font-mono text-purple-400 text-sm tracking-wider">COMMUNITY</h4>
+              <h4 className="font-mono text-sm tracking-wider">COMMUNITY</h4>
             </div>
             <ul className="space-y-3 text-sm">
               <li>
@@ -134,7 +134,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></div>
-              <h4 className="font-mono text-teal-400 text-sm tracking-wider">RESOURCES</h4>
+              <h4 className="font-mono text-sm tracking-wider">RESOURCES</h4>
             </div>
             <ul className="space-y-3 text-sm">
               <li>

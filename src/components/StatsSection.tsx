@@ -97,7 +97,7 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 font-mono">💰 MARKET_CAP</h3>
+              <h3 className="text-2xl font-bold mb-4 font-mono">💰 MARKET_CAP</h3>
               <p className="text-3xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
@@ -123,7 +123,7 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-blue-400 font-mono">📈 PRICE_FEED</h3>
+              <h3 className="text-2xl font-bold mb-4 font-mono">📈 PRICE_FEED</h3>
               <div className="flex items-baseline gap-2 mb-2">
                 <p className="text-3xl font-black text-white font-mono">
                   {contractLoading ? (
@@ -158,7 +158,7 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-purple-400 font-mono">🏦 TVL (LOCKER)</h3>
+              <h3 className="text-2xl font-bold mb-4 font-mono">🏦 TVL (LOCKER)</h3>
               <p className="text-3xl font-black text-white mb-2 font-mono">
                 {protocolStats.totalLockedTokens ? (
                   `${formatTVL(protocolStats.totalLockedTokens)} ARK`
@@ -182,7 +182,7 @@ const StatsSection = ({
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             
             <div className="relative z-10">
-              <h3 className="text-xl font-bold mb-4 text-green-400 font-mono">💎 TOTAL_SUPPLY</h3>
+              <h3 className="text-xl font-bold mb-4 font-mono">💎 TOTAL_SUPPLY</h3>
               <p className="text-2xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
@@ -203,7 +203,7 @@ const StatsSection = ({
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             
             <div className="relative z-10">
-              <h3 className="text-xl font-bold mb-4 text-yellow-400 font-mono">🔄 CIRCULATING</h3>
+              <h3 className="text-xl font-bold mb-4 font-mono">🔄 CIRCULATING</h3>
               <p className="text-2xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
@@ -224,7 +224,7 @@ const StatsSection = ({
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             
             <div className="relative z-10">
-              <h3 className="text-xl font-bold mb-4 text-red-400 font-mono">🔥 BURNED</h3>
+              <h3 className="text-xl font-bold mb-4 font-mono">🔥 BURNED</h3>
               <p className="text-2xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
@@ -247,7 +247,7 @@ const StatsSection = ({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Shield className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-lg font-bold text-cyan-400 font-mono">
+                <h3 className="text-lg font-bold font-mono">
                   [STATISTICS_DIAGNOSTICS]
                 </h3>
               </div>

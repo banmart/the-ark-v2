@@ -206,7 +206,7 @@ const UserDashboard = ({ isConnected, pendingRewards, userLocks, calculatePenalt
           <div className="flex items-center">
             <Gift className="w-8 h-8 text-green-400 mr-3" />
             <div>
-              <h2 className="text-2xl font-bold text-green-400">Pending Rewards</h2>
+              <h2 className="text-2xl font-bold">Pending Rewards</h2>
               <p className="text-sm text-gray-400">Ready to be claimed from the sacred vault</p>
             </div>
           </div>
@@ -252,7 +252,7 @@ const UserDashboard = ({ isConnected, pendingRewards, userLocks, calculatePenalt
         <div className="flex items-center mb-6">
           <Lock className="w-8 h-8 text-cyan-400 mr-3" />
           <div>
-            <h2 className="text-2xl font-bold text-cyan-400">Your Sacred Locks</h2>
+            <h2 className="text-2xl font-bold">Your Sacred Locks</h2>
             <p className="text-sm text-gray-400">Ascend through divine tiers and earn multiplied rewards</p>
           </div>
         </div>

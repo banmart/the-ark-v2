@@ -176,7 +176,7 @@ const LockInterface = ({
       <div className="flex items-center mb-8">
         <Lock className="w-8 h-8 text-cyan-400 mr-3" />
         <div>
-          <h2 className="text-2xl font-bold text-cyan-400">Sacred Token Locker</h2>
+          <h2 className="text-2xl font-bold">Sacred Token Locker</h2>
           <p className="text-sm text-gray-400">Lock your ARK tokens to earn multiplied rewards</p>
         </div>
       </div>
@@ -313,7 +313,7 @@ const LockInterface = ({
         {/* Rewards Estimation */}
         {lockAmount && !validationError && (
           <div className="bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-green-500/10 border border-green-500/30 rounded-xl p-6">
-            <h4 className="text-lg font-semibold text-green-400 mb-4 flex items-center">
+            <h4 className="text-lg font-semibold mb-4 flex items-center">
               <Calculator className="w-5 h-5 mr-2" />
               Estimated Rewards
             </h4>
