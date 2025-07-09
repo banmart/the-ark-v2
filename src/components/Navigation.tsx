@@ -51,6 +51,8 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 border-b border-cyan-500/20">
+        {/* Scanning border effect */}
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent animate-scan"></div>
         <div className="flex justify-between items-center">
           {/* Brand with System Status */}
           <div className="flex items-center gap-4">
