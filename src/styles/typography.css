@@ -2,15 +2,11 @@
 /* Typography and Font Styles */
 
 @layer base {
-  /* Global heading styles with Michroma font and hero brand gradient */
+  /* Global heading styles with Michroma font */
   h1, h2, h3, h4, h5, h6 {
     font-family: "Michroma", system-ui;
-    font-weight: 700;
+    font-weight: 400;
     font-style: normal;
-    background: linear-gradient(to right, hsl(187, 85%, 64%), hsl(173, 80%, 64%), hsl(187, 85%, 68%));
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
   }
 }
 

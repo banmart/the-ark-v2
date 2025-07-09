@@ -174,7 +174,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
         <div className="flex items-center mb-8">
           <BarChart3 className="w-8 h-8 text-cyan-400 mr-3" />
           <div>
-            <h2 className="text-2xl font-bold">Your Locker Statistics</h2>
+            <h2 className="text-2xl font-bold text-cyan-400">Your Locker Statistics</h2>
             <p className="text-sm text-gray-400">Complete overview of your ARK locking activity</p>
           </div>
         </div>
@@ -284,7 +284,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           <div className="flex items-center">
             <Gift className="w-8 h-8 text-green-400 mr-3" />
             <div>
-              <h2 className="text-2xl font-bold">Pending Vault Rewards</h2>
+              <h2 className="text-2xl font-bold text-green-400">Pending Vault Rewards</h2>
               <p className="text-sm text-gray-400 mt-1">
                 From 2% locker fees + early unlock penalty distributions
               </p>
@@ -329,7 +329,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
         <div className="flex items-center mb-8">
           <Lock className="w-8 h-8 text-cyan-400 mr-3" />
           <div>
-            <h2 className="text-2xl font-bold">Your Sacred Lock Positions</h2>
+            <h2 className="text-2xl font-bold text-cyan-400">Your Sacred Lock Positions</h2>
             <p className="text-sm text-gray-400">Manage your locked tokens and track earnings</p>
           </div>
         </div>
@@ -407,7 +407,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       <div className="bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-cyan-500/10 border border-purple-500/30 rounded-xl p-6">
         <div className="flex items-center mb-4">
           <Info className="w-6 h-6 text-purple-400 mr-3" />
-          <h3 className="text-lg font-bold">Maximizing Your Rewards</h3>
+          <h3 className="text-lg font-bold text-purple-400">Maximizing Your Rewards</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div className="flex items-start">

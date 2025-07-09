@@ -46,6 +46,8 @@ const LockerHeader = () => {
           </div>
         </div>
 
+        {/* Scanning Effect */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent animate-scan"></div>
       </div>
     </div>
   );
