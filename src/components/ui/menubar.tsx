@@ -19,14 +19,18 @@ const Menubar = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>
 >(({ className, ...props }, ref) => (
-  <MenubarPrimitive.Root
-    ref={ref}
-    className={cn(
-      "flex h-10 items-center space-x-1 rounded-md bg-black/40 backdrop-blur-xl border border-cyan-500/30 p-1",
-      className
-    )}
-    {...props}
-  />
+  <div className="relative">
+    <MenubarPrimitive.Root
+      ref={ref}
+      className={cn(
+        "flex h-10 items-center space-x-1 rounded-md bg-black/40 backdrop-blur-xl border border-cyan-500/30 p-1",
+        className
+      )}
+      {...props}
+    />
+    {/* Scanning Effect */}
+    <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent animate-scan"></div>
+  </div>
 ))
 Menubar.displayName = MenubarPrimitive.Root.displayName
 

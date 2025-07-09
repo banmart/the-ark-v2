@@ -48,8 +48,6 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
         <div className="absolute inset-0 bg-black/50 backdrop-blur-xl"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-teal-500/5"></div>
         
-        {/* Scanning line */}
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent animate-pulse"></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 border-b border-cyan-500/20">
