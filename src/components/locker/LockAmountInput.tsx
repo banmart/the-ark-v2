@@ -39,12 +39,37 @@ const LockAmountInput = ({
           onChange={(e) => setLockAmount(e.target.value)}
           placeholder="0.0"
           disabled={emergencyMode || contractPaused || isProcessing}
-          className="w-full bg-black/50 border border-gray-600 rounded-lg px-4 py-3 pr-20 text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none disabled:opacity-50"
+          className="w-full bg-black/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none disabled:opacity-50"
         />
+      </div>
+      
+      {/* Percentage selector buttons */}
+      <div className="flex gap-2 mt-3">
+        <button
+          onClick={() => setLockAmount((userArkBalance * 0.25).toString())}
+          disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
+          className="flex-1 bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50"
+        >
+          25%
+        </button>
+        <button
+          onClick={() => setLockAmount((userArkBalance * 0.5).toString())}
+          disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
+          className="flex-1 bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50"
+        >
+          50%
+        </button>
+        <button
+          onClick={() => setLockAmount((userArkBalance * 0.75).toString())}
+          disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
+          className="flex-1 bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50"
+        >
+          75%
+        </button>
         <button
           onClick={() => setLockAmount(userArkBalance.toString())}
-          disabled={!isConnected || isProcessing}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50"
+          disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
+          className="flex-1 bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50"
         >
           MAX
         </button>
