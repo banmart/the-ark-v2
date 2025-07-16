@@ -191,21 +191,36 @@ const Leaderboard = () => {
             </div>
 
             {/* Sort Controls */}
-            <div className="flex flex-wrap gap-2 mb-8 justify-center">
-              {(['weight', 'locked', 'rewards', 'activeLocks'] as const).map((criteria) => (
-                <Button
-                  key={criteria}
-                  variant={sortBy === criteria ? "default" : "outline"}
-                  onClick={() => setSortBy(criteria)}
-                  className={`${
-                    sortBy === criteria 
-                      ? 'bg-gradient-to-r from-cyan-500 to-teal-600 text-black' 
-                      : 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10'
-                  }`}
-                >
-                  {getSortLabel(criteria)}
-                </Button>
-              ))}
+            <div className="relative mb-12">
+              <div className="text-center mb-6">
+                <h3 className="text-lg font-semibold text-cyan-400 mb-2">Sort By</h3>
+                <p className="text-sm text-gray-400">Choose how to rank the leaderboard</p>
+              </div>
+              
+              <div className="flex flex-wrap gap-3 justify-center max-w-2xl mx-auto">
+                {(['weight', 'locked', 'rewards', 'activeLocks'] as const).map((criteria) => (
+                  <Button
+                    key={criteria}
+                    variant={sortBy === criteria ? "default" : "outline"}
+                    onClick={() => setSortBy(criteria)}
+                    className={`relative px-6 py-3 rounded-xl font-medium transition-all duration-300 border-2 ${
+                      sortBy === criteria 
+                        ? 'bg-gradient-to-r from-cyan-500 to-teal-600 text-black border-transparent shadow-lg shadow-cyan-500/25 scale-105' 
+                        : 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:shadow-md hover:shadow-cyan-500/10'
+                    }`}
+                  >
+                    <span className="relative z-10">{getSortLabel(criteria)}</span>
+                    {sortBy === criteria && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-teal-500/20 rounded-xl blur-sm"></div>
+                    )}
+                  </Button>
+                ))}
+              </div>
+              
+              {/* Decorative underline */}
+              <div className="flex justify-center mt-6">
+                <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></div>
+              </div>
             </div>
 
             {/* Search Section */}
