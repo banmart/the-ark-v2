@@ -25,17 +25,7 @@ const IndexContent = () => {
 };
 
 const Index = () => {
-  return (
-    <WalletProvider>
-      <SwapProvider>
-        <OnboardingProvider>
-          <BrowserPopupProvider>
-            <IndexContent />
-          </BrowserPopupProvider>
-        </OnboardingProvider>
-      </SwapProvider>
-    </WalletProvider>
-  );
+  return <IndexContent />;
 };
 
 export default Index;

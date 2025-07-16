@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Trophy, Medal, Award, Crown, Star, Search, Zap, Lock, Gift, Users, Copy, CheckCircle } from 'lucide-react';
 import { useLeaderboardData } from '../hooks/useLeaderboardData';
 import { useWallet } from '../hooks/useWallet';
-import PageLayout from '../components/layout/PageLayout';
+import BaseLayout from '../components/layout/BaseLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -120,7 +120,7 @@ const Leaderboard = () => {
   };
 
   return (
-    <PageLayout>
+    <BaseLayout>
       <div className="min-h-screen bg-black text-white">
         {/* Hero Section */}
         <div className="relative py-20 px-6">
@@ -359,7 +359,7 @@ const Leaderboard = () => {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </BaseLayout>
   );
 };
 
