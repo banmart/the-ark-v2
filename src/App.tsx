@@ -9,6 +9,7 @@ import ChatDrawer from "./components/chat/ChatDrawer";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import Locker from "./pages/Locker";
+import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/locker" element={<Locker />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
