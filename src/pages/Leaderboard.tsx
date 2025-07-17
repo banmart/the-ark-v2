@@ -11,20 +11,33 @@ import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { useToast } from '../hooks/use-toast';
 import { tiers } from '../components/locker/tier-legend/tierData';
-
 const Leaderboard = () => {
-  const { isConnected, account } = useWallet();
-  const { users, loading, error, sortBy, setSortBy, totalUsers, refetch, findUserRank } = useLeaderboardData(50);
-  const { protocolStats } = useLockerContractData();
+  const {
+    isConnected,
+    account
+  } = useWallet();
+  const {
+    users,
+    loading,
+    error,
+    sortBy,
+    setSortBy,
+    totalUsers,
+    refetch,
+    findUserRank
+  } = useLeaderboardData(50);
+  const {
+    protocolStats
+  } = useLockerContractData();
   const [searchAddress, setSearchAddress] = useState('');
   const [searchResult, setSearchResult] = useState<any>(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleSearch = async () => {
     if (!searchAddress) return;
-
     setSearchLoading(true);
     try {
       const result = await findUserRank(searchAddress);
@@ -46,13 +59,11 @@ const Leaderboard = () => {
       setSearchLoading(false);
     }
   };
-
   const handleFindMyRank = async () => {
     if (!account) return;
     setSearchAddress(account);
     await handleSearch();
   };
-
   const copyAddress = async (address: string) => {
     try {
       await navigator.clipboard.writeText(address);
@@ -60,7 +71,7 @@ const Leaderboard = () => {
       setTimeout(() => setCopiedAddress(null), 2000);
       toast({
         title: "Copied!",
-        description: "Address copied to clipboard.",
+        description: "Address copied to clipboard."
       });
     } catch (err) {
       toast({
@@ -70,11 +81,9 @@ const Leaderboard = () => {
       });
     }
   };
-
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
-
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
       return `${(num / 1000000).toFixed(2)}M`;
@@ -84,16 +93,50 @@ const Leaderboard = () => {
     }
     return num.toFixed(2);
   };
-
   const getArkTier = (totalWeight: number) => {
-    if (totalWeight >= 800000) return { name: 'NOAH COUNCIL', icon: '⚡', color: 'orange-400', glow: 'orange-500', description: 'Divine Authority' };
-    if (totalWeight >= 500000) return { name: 'ADMIRAL', icon: '⭐', color: 'purple-400', glow: 'purple-500', description: 'Fleet Command' };
-    if (totalWeight >= 300000) return { name: 'CAPTAIN', icon: '💎', color: 'cyan-400', glow: 'cyan-500', description: 'Ark Command' };
-    if (totalWeight >= 150000) return { name: 'NAVIGATOR', icon: '👑', color: 'yellow-400', glow: 'yellow-500', description: 'Storm Guide' };
-    if (totalWeight >= 15000) return { name: 'SURVIVOR', icon: '🛡️', color: 'gray-400', glow: 'gray-500', description: 'Flood Protected' };
-    return { name: 'LOST', icon: '⛵', color: 'red-400', glow: 'red-500', description: 'Seeking Ark' };
+    if (totalWeight >= 800000) return {
+      name: 'NOAH COUNCIL',
+      icon: '⚡',
+      color: 'orange-400',
+      glow: 'orange-500',
+      description: 'Divine Authority'
+    };
+    if (totalWeight >= 500000) return {
+      name: 'ADMIRAL',
+      icon: '⭐',
+      color: 'purple-400',
+      glow: 'purple-500',
+      description: 'Fleet Command'
+    };
+    if (totalWeight >= 300000) return {
+      name: 'CAPTAIN',
+      icon: '💎',
+      color: 'cyan-400',
+      glow: 'cyan-500',
+      description: 'Ark Command'
+    };
+    if (totalWeight >= 150000) return {
+      name: 'NAVIGATOR',
+      icon: '👑',
+      color: 'yellow-400',
+      glow: 'yellow-500',
+      description: 'Storm Guide'
+    };
+    if (totalWeight >= 15000) return {
+      name: 'SURVIVOR',
+      icon: '🛡️',
+      color: 'gray-400',
+      glow: 'gray-500',
+      description: 'Flood Protected'
+    };
+    return {
+      name: 'LOST',
+      icon: '⛵',
+      color: 'red-400',
+      glow: 'red-500',
+      description: 'Seeking Ark'
+    };
   };
-
   const getRankIcon = (rank: number, totalWeight: number) => {
     const arkTier = getArkTier(totalWeight);
     switch (rank) {
@@ -107,7 +150,6 @@ const Leaderboard = () => {
         return <span className="text-2xl animate-pulse">{arkTier.icon}</span>;
     }
   };
-
   const getRankBadge = (rank: number, totalWeight: number) => {
     const arkTier = getArkTier(totalWeight);
     if (rank <= 3) {
@@ -120,28 +162,45 @@ const Leaderboard = () => {
     }
     return `bg-gradient-to-r from-${arkTier.color} to-${arkTier.color} text-black shadow-lg shadow-${arkTier.glow}/50 border border-${arkTier.glow}/30`;
   };
-
   const getAchievementBadges = (user: any) => {
     const badges = [];
-    if (user.totalWeight >= 800000) badges.push({ name: 'Noah', color: 'orange', icon: '⚡' });
-    if (user.activeLocksCount >= 10) badges.push({ name: 'Multi-Lock', color: 'purple', icon: '🔒' });
-    if (user.totalRewardsEarned >= 100000) badges.push({ name: 'Reward Master', color: 'green', icon: '💰' });
-    if (user.totalLocked >= 500000) badges.push({ name: 'Whale', color: 'blue', icon: '🐋' });
+    if (user.totalWeight >= 800000) badges.push({
+      name: 'Noah',
+      color: 'orange',
+      icon: '⚡'
+    });
+    if (user.activeLocksCount >= 10) badges.push({
+      name: 'Multi-Lock',
+      color: 'purple',
+      icon: '🔒'
+    });
+    if (user.totalRewardsEarned >= 100000) badges.push({
+      name: 'Reward Master',
+      color: 'green',
+      icon: '💰'
+    });
+    if (user.totalLocked >= 500000) badges.push({
+      name: 'Whale',
+      color: 'blue',
+      icon: '🐋'
+    });
     return badges;
   };
-
   const getSortLabel = (criteria: string) => {
     switch (criteria) {
-      case 'weight': return 'Ark Authority';
-      case 'locked': return 'Vault Holdings';
-      case 'rewards': return 'Divine Rewards';
-      case 'activeLocks': return 'Active Covenants';
-      default: return 'Ark Authority';
+      case 'weight':
+        return 'Ark Authority';
+      case 'locked':
+        return 'Vault Holdings';
+      case 'rewards':
+        return 'Divine Rewards';
+      case 'activeLocks':
+        return 'Active Covenants';
+      default:
+        return 'Ark Authority';
     }
   };
-
-  return (
-    <BaseLayout>
+  return <BaseLayout>
       <div className="min-h-screen bg-black text-white">
         {/* Quantum ARK Header */}
         <div className="relative">
@@ -163,9 +222,7 @@ const Leaderboard = () => {
               <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
                 [DIVINE_ASCENSION_PROTOCOL]
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">
-                ARK ASCENSION
-              </h1>
+              <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">ARK LEADERBOARD</h1>
               <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
                 [NOAH_COUNCIL_RANKINGS]
               </div>
@@ -259,26 +316,13 @@ const Leaderboard = () => {
               </div>
               
               <div className="flex flex-wrap gap-3 justify-center max-w-2xl mx-auto">
-                {(['weight', 'locked', 'rewards', 'activeLocks'] as const).map((criteria) => (
-                  <Button
-                    key={criteria}
-                    variant={sortBy === criteria ? "default" : "outline"}
-                    onClick={() => setSortBy(criteria)}
-                    className={`relative px-6 py-3 rounded-xl font-medium transition-all duration-300 border-2 hover:scale-105 ${
-                      sortBy === criteria 
-                        ? 'bg-gradient-to-r from-cyan-500 to-teal-600 text-black border-transparent shadow-lg shadow-cyan-500/50 scale-105 animate-pulse' 
-                        : 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-500/20'
-                    }`}
-                  >
+                {(['weight', 'locked', 'rewards', 'activeLocks'] as const).map(criteria => <Button key={criteria} variant={sortBy === criteria ? "default" : "outline"} onClick={() => setSortBy(criteria)} className={`relative px-6 py-3 rounded-xl font-medium transition-all duration-300 border-2 hover:scale-105 ${sortBy === criteria ? 'bg-gradient-to-r from-cyan-500 to-teal-600 text-black border-transparent shadow-lg shadow-cyan-500/50 scale-105 animate-pulse' : 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-500/20'}`}>
                     <span className="relative z-10 font-mono tracking-wide">{getSortLabel(criteria)}</span>
-                    {sortBy === criteria && (
-                      <>
+                    {sortBy === criteria && <>
                         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-teal-500/20 rounded-xl blur-sm"></div>
                         <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-xl opacity-30 animate-[ping_2s_ease-in-out_infinite]"></div>
-                      </>
-                    )}
-                  </Button>
-                ))}
+                      </>}
+                  </Button>)}
               </div>
               
               {/* Decorative quantum field */}
@@ -302,33 +346,16 @@ const Leaderboard = () => {
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="flex gap-2 mb-4">
-                  <Input
-                    placeholder="Enter divine address to locate..."
-                    value={searchAddress}
-                    onChange={(e) => setSearchAddress(e.target.value)}
-                    className="bg-black/50 border-cyan-500/30 text-white font-mono placeholder:text-gray-500"
-                  />
-                  <Button 
-                    onClick={handleSearch}
-                    disabled={searchLoading || !searchAddress}
-                    className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform"
-                  >
+                  <Input placeholder="Enter divine address to locate..." value={searchAddress} onChange={e => setSearchAddress(e.target.value)} className="bg-black/50 border-cyan-500/30 text-white font-mono placeholder:text-gray-500" />
+                  <Button onClick={handleSearch} disabled={searchLoading || !searchAddress} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform">
                     {searchLoading ? 'SEEKING...' : 'DIVINE_SEEK'}
                   </Button>
-                  {isConnected && (
-                    <Button 
-                      onClick={handleFindMyRank}
-                      disabled={searchLoading}
-                      variant="outline"
-                      className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 font-mono tracking-wide"
-                    >
+                  {isConnected && <Button onClick={handleFindMyRank} disabled={searchLoading} variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 font-mono tracking-wide">
                       MY_ASCENSION
-                    </Button>
-                  )}
+                    </Button>}
                 </div>
 
-                {searchResult && (
-                  <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30 relative overflow-hidden">
+                {searchResult && <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30 relative overflow-hidden">
                     <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-purple-500/5 to-pink-500/5"></div>
                     <CardContent className="p-4 relative z-10">
                       <div className="flex items-center justify-between">
@@ -352,8 +379,7 @@ const Leaderboard = () => {
                         </div>
                       </div>
                     </CardContent>
-                  </Card>
-                )}
+                  </Card>}
               </CardContent>
             </Card>
           </div>
@@ -362,40 +388,24 @@ const Leaderboard = () => {
         {/* Divine Ascension Leaderboard */}
         <div className="px-6 pb-20">
           <div className="max-w-6xl mx-auto">
-            {loading ? (
-              <div className="space-y-4">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <Skeleton key={i} className="h-24 w-full bg-gray-800 animate-pulse" />
-                ))}
-              </div>
-            ) : error ? (
-              <Card className="bg-red-500/10 border-red-500/30">
+            {loading ? <div className="space-y-4">
+                {Array.from({
+              length: 10
+            }).map((_, i) => <Skeleton key={i} className="h-24 w-full bg-gray-800 animate-pulse" />)}
+              </div> : error ? <Card className="bg-red-500/10 border-red-500/30">
                 <CardContent className="p-6 text-center">
                   <p className="text-red-400 mb-4 font-mono">[ERROR] {error}</p>
                   <Button onClick={refetch} variant="outline" className="border-red-500/30 text-red-400 font-mono">
                     RETRY_CONNECTION
                   </Button>
                 </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
+              </Card> : <div className="space-y-4">
                 {users.map((user, index) => {
-                  const arkTier = getArkTier(user.totalWeight);
-                  const achievements = getAchievementBadges(user);
-                  
-                  return (
-                    <Card 
-                      key={user.address} 
-                      className={`relative bg-black/50 hover:bg-black/70 transition-all duration-500 hover:scale-[1.02] overflow-hidden group ${
-                        user.rank <= 3 
-                          ? `ring-2 ring-${arkTier.glow}/50 shadow-lg shadow-${arkTier.glow}/20` 
-                          : `border-${arkTier.glow}/30 hover:border-${arkTier.glow}/50`
-                      }`}
-                    >
+              const arkTier = getArkTier(user.totalWeight);
+              const achievements = getAchievementBadges(user);
+              return <Card key={user.address} className={`relative bg-black/50 hover:bg-black/70 transition-all duration-500 hover:scale-[1.02] overflow-hidden group ${user.rank <= 3 ? `ring-2 ring-${arkTier.glow}/50 shadow-lg shadow-${arkTier.glow}/20` : `border-${arkTier.glow}/30 hover:border-${arkTier.glow}/50`}`}>
                       {/* Animated background for top ranks */}
-                      {user.rank <= 3 && (
-                        <div className={`absolute inset-0 bg-gradient-to-r from-${arkTier.glow}/5 via-transparent to-${arkTier.glow}/5 animate-pulse`}></div>
-                      )}
+                      {user.rank <= 3 && <div className={`absolute inset-0 bg-gradient-to-r from-${arkTier.glow}/5 via-transparent to-${arkTier.glow}/5 animate-pulse`}></div>}
                       
                       {/* Scanning effect for hover */}
                       <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>
@@ -405,13 +415,9 @@ const Leaderboard = () => {
                           {/* Left: Rank and User Info */}
                           <div className="flex items-center gap-4">
                             <div className="flex items-center gap-3">
-                              <Badge 
-                                className={`px-3 py-2 font-bold text-sm relative overflow-hidden ${getRankBadge(user.rank, user.totalWeight)}`}
-                              >
+                              <Badge className={`px-3 py-2 font-bold text-sm relative overflow-hidden ${getRankBadge(user.rank, user.totalWeight)}`}>
                                 <span className="relative z-10">#{user.rank}</span>
-                                {user.rank <= 3 && (
-                                  <div className="absolute inset-0 animate-pulse bg-white/10"></div>
-                                )}
+                                {user.rank <= 3 && <div className="absolute inset-0 animate-pulse bg-white/10"></div>}
                               </Badge>
                               <div className="relative">
                                 {getRankIcon(user.rank, user.totalWeight)}
@@ -423,17 +429,8 @@ const Leaderboard = () => {
                                 <p className="font-mono text-lg text-cyan-400">
                                   {formatAddress(user.address)}
                                 </p>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => copyAddress(user.address)}
-                                  className="h-6 w-6 p-0 hover:bg-cyan-500/20"
-                                >
-                                  {copiedAddress === user.address ? (
-                                    <CheckCircle className="w-3 h-3 text-green-400" />
-                                  ) : (
-                                    <Copy className="w-3 h-3 text-gray-400" />
-                                  )}
+                                <Button size="sm" variant="ghost" onClick={() => copyAddress(user.address)} className="h-6 w-6 p-0 hover:bg-cyan-500/20">
+                                  {copiedAddress === user.address ? <CheckCircle className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-gray-400" />}
                                 </Button>
                               </div>
                               
@@ -446,11 +443,9 @@ const Leaderboard = () => {
                               
                               <div className="flex items-center gap-1">
                                 <p className="text-sm text-gray-400">Top {user.percentile}% •</p>
-                                {achievements.slice(0, 2).map((achievement, i) => (
-                                  <Badge key={i} className={`text-xs px-1 py-0.5 bg-${achievement.color}-500/20 text-${achievement.color}-400 border border-${achievement.color}-500/30`}>
+                                {achievements.slice(0, 2).map((achievement, i) => <Badge key={i} className={`text-xs px-1 py-0.5 bg-${achievement.color}-500/20 text-${achievement.color}-400 border border-${achievement.color}-500/30`}>
                                     {achievement.icon}
-                                  </Badge>
-                                ))}
+                                  </Badge>)}
                               </div>
                             </div>
                           </div>
@@ -476,16 +471,12 @@ const Leaderboard = () => {
                           </div>
                         </div>
                       </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
+                    </Card>;
+            })}
+              </div>}
           </div>
         </div>
       </div>
-    </BaseLayout>
-  );
+    </BaseLayout>;
 };
-
 export default Leaderboard;
