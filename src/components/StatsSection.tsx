@@ -1,42 +1,49 @@
-
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
-
 interface StatsSectionProps {
   contractData: any;
   contractLoading: boolean;
 }
-
 const StatsSection = ({
   contractData,
   contractLoading
 }: StatsSectionProps) => {
   const [statsPhase, setStatsPhase] = useState(0);
-  const { protocolStats } = useLockerData();
-
+  const {
+    protocolStats
+  } = useLockerData();
   useEffect(() => {
     // Cinematic reveal sequence
-    const phases = [
-      { delay: 300, phase: 1 },   // System scan
-      { delay: 1000, phase: 2 },  // Matrix detected
-      { delay: 1800, phase: 3 },  // Full activation
+    const phases = [{
+      delay: 300,
+      phase: 1
+    },
+    // System scan
+    {
+      delay: 1000,
+      phase: 2
+    },
+    // Matrix detected
+    {
+      delay: 1800,
+      phase: 3
+    } // Full activation
     ];
-
-    phases.forEach(({ delay, phase }) => {
+    phases.forEach(({
+      delay,
+      phase
+    }) => {
       setTimeout(() => setStatsPhase(phase), delay);
     });
   }, []);
-
   const formatLastUpdated = (date: Date) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
     if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
     return `${Math.floor(diffInSeconds / 3600)}h ago`;
   };
-
   const formatTVL = (tvl: number) => {
     if (tvl >= 1000000) {
       return `${(tvl / 1000000).toFixed(2)}M`;
@@ -45,20 +52,18 @@ const StatsSection = ({
     }
     return tvl.toFixed(2);
   };
-
-  return (
-    <section id="stats" className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
+  return <section id="stats" className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
-          backgroundImage: `
+        backgroundImage: `
             radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
             radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
             radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
             radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px)
           `,
-          backgroundSize: '100px 100px'
-        }}></div>
+        backgroundSize: '100px 100px'
+      }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -77,12 +82,10 @@ const StatsSection = ({
             <span className="animate-[glitch_4s_ease-in-out_1.5s_infinite]">NUMBERS</span>
           </h2>
 
-          {contractData.lastUpdated && (
-            <div className="flex items-center justify-center gap-2 text-sm text-cyan-400/60 font-mono">
+          {contractData.lastUpdated && <div className="flex items-center justify-center gap-2 text-sm text-cyan-400/60 font-mono">
               <RefreshCw className="w-4 h-4 animate-spin" />
               <span>[LAST_SYNC: {formatLastUpdated(contractData.lastUpdated)}]</span>
-            </div>
-          )}
+            </div>}
         </div>
 
         {/* Primary Stats Grid */}
@@ -99,11 +102,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-4 text-cyan-400 font-mono">💰 MARKET_CAP</h3>
               <p className="text-3xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                ) : (
-                  `$${contractData.marketCap}`
-                )}
+                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `$${contractData.marketCap}`}
               </p>
               <p className="text-sm text-gray-400 font-mono">[REAL_TIME_VALUATION]</p>
             </div>
@@ -126,19 +125,11 @@ const StatsSection = ({
               <h3 className="text-2xl font-bold mb-4 text-blue-400 font-mono">📈 PRICE_FEED</h3>
               <div className="flex items-baseline gap-2 mb-2">
                 <p className="text-3xl font-black text-white font-mono">
-                  {contractLoading ? (
-                    <span className="animate-pulse">[SCANNING...]</span>
-                  ) : (
-                    `$${contractData.price}`
-                  )}
+                  {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `$${contractData.price}`}
                 </p>
-                {!contractLoading && contractData.priceChange24h && (
-                  <span className={`text-sm font-bold font-mono ${
-                    contractData.priceChange24h.startsWith('+') ? 'text-green-400' : 'text-red-400'
-                  }`}>
+                {!contractLoading && contractData.priceChange24h && <span className={`text-sm font-bold font-mono ${contractData.priceChange24h.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
                     {contractData.priceChange24h}%
-                  </span>
-                )}
+                  </span>}
               </div>
               <p className="text-sm text-gray-400 font-mono">[24H_DELTA]</p>
             </div>
@@ -160,11 +151,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-4 text-purple-400 font-mono">🏦 TVL (LOCKER)</h3>
               <p className="text-3xl font-black text-white mb-2 font-mono">
-                {protocolStats.totalLockedTokens ? (
-                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
-                ) : (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                )}
+                {protocolStats.totalLockedTokens ? `${formatTVL(protocolStats.totalLockedTokens)} ARK` : <span className="animate-pulse">[SCANNING...]</span>}
               </p>
               <p className="text-sm text-gray-400 font-mono">[LOCKED_VALUE]</p>
             </div>
@@ -184,11 +171,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-xl font-bold mb-4 text-green-400 font-mono">💎 TOTAL_SUPPLY</h3>
               <p className="text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                ) : (
-                  `${contractData.totalSupply} ARK`
-                )}
+                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${contractData.totalSupply} ARK`}
               </p>
               <p className="text-sm text-gray-400 font-mono">[CONTRACT_SOURCE]</p>
             </div>
@@ -205,11 +188,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-xl font-bold mb-4 text-yellow-400 font-mono">🔄 CIRCULATING</h3>
               <p className="text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                ) : (
-                  `${contractData.circulatingSupply} ARK`
-                )}
+                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${contractData.circulatingSupply} ARK`}
               </p>
               <p className="text-sm text-gray-400 font-mono">[MARKET_AVAILABLE]</p>
             </div>
@@ -226,11 +205,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-xl font-bold mb-4 text-red-400 font-mono">🔥 BURNED</h3>
               <p className="text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                ) : (
-                  `${contractData.burnedTokens} ARK`
-                )}
+                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${contractData.burnedTokens} ARK`}
               </p>
               <p className="text-sm text-gray-400 font-mono">[VOID_ADDRESS]</p>
             </div>
@@ -242,47 +217,7 @@ const StatsSection = ({
         </div>
 
         {/* System Diagnostics */}
-        <div className={`transition-all duration-1000 delay-1500 ${statsPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-lg font-bold text-cyan-400 font-mono">
-                  [STATISTICS_DIAGNOSTICS]
-                </h3>
-              </div>
-              <div className="flex items-center gap-2 text-green-400 font-mono text-sm">
-                <Zap className="w-4 h-4 animate-pulse" />
-                <span>ALL_SYSTEMS_OPERATIONAL</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
-              <div className="text-center p-3 bg-cyan-500/10 border border-cyan-500/30 rounded">
-                <div className="text-cyan-400 mb-1">MARKET_CAP</div>
-                <div className="text-white font-bold">REALTIME</div>
-              </div>
-              <div className="text-center p-3 bg-blue-500/10 border border-blue-500/30 rounded">
-                <div className="text-blue-400 mb-1">PRICE_FEED</div>
-                <div className="text-white font-bold">LIVE</div>
-              </div>
-              <div className="text-center p-3 bg-purple-500/10 border border-purple-500/30 rounded">
-                <div className="text-purple-400 mb-1">HOLDERS</div>
-                <div className="text-white font-bold">TRACKING</div>
-              </div>
-              <div className="text-center p-3 bg-green-500/10 border border-green-500/30 rounded">
-                <div className="text-green-400 mb-1">BLOCKCHAIN</div>
-                <div className="text-white font-bold">SYNCED</div>
-              </div>
-            </div>
-
-            <div className="text-center mt-6">
-              <p className="text-sm text-gray-500 font-mono">
-                [DATA_SOURCE: PULSECHAIN_BLOCKCHAIN] • [AUTO_REFRESH: 30S_INTERVAL]
-              </p>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       <style>{`
@@ -299,8 +234,6 @@ const StatsSection = ({
           50% { transform: translateX(0); }
         }
       `}</style>
-    </section>
-  );
+    </section>;
 };
-
 export default StatsSection;
