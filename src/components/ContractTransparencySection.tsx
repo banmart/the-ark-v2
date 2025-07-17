@@ -1,43 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Lock, Target, Zap, Database, Activity, Cpu } from 'lucide-react';
-
 interface ContractTransparencySectionProps {
   contractData: any;
   contractLoading: boolean;
 }
-
 const ContractTransparencySection = ({
   contractData,
   contractLoading
 }: ContractTransparencySectionProps) => {
   const [liquidityPhase, setLiquidityPhase] = useState(0);
-
   useEffect(() => {
     // Cinematic reveal sequence
-    const phases = [
-      { delay: 300, phase: 1 },   // System scan
-      { delay: 1000, phase: 2 },  // Engine detected
-      { delay: 1800, phase: 3 },  // Full activation
+    const phases = [{
+      delay: 300,
+      phase: 1
+    },
+    // System scan
+    {
+      delay: 1000,
+      phase: 2
+    },
+    // Engine detected
+    {
+      delay: 1800,
+      phase: 3
+    } // Full activation
     ];
-
-    phases.forEach(({ delay, phase }) => {
+    phases.forEach(({
+      delay,
+      phase
+    }) => {
       setTimeout(() => setLiquidityPhase(phase), delay);
     });
   }, []);
-
-  return (
-    <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
+  return <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
-          backgroundImage: `
+        backgroundImage: `
             radial-gradient(circle at 25% 25%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
             radial-gradient(circle at 75% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
             radial-gradient(circle at 25% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px),
             radial-gradient(circle at 75% 75%, rgba(251, 146, 60, 0.3) 2px, transparent 2px)
           `,
-          backgroundSize: '100px 100px'
-        }}></div>
+        backgroundSize: '100px 100px'
+      }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -159,41 +166,7 @@ const ContractTransparencySection = ({
         </div>
 
         {/* Additional System Information */}
-        <div className={`mt-16 transition-all duration-1000 delay-1000 ${liquidityPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-lg font-bold text-cyan-400 font-mono">
-                  [LIQUIDITY_SYSTEM_STATUS]
-                </h3>
-              </div>
-              <div className="flex items-center gap-2 text-green-400 font-mono text-sm">
-                <Database className="w-4 h-4 animate-pulse" />
-                <span>ENGINE_OPERATIONAL</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
-              <div className="text-center p-3 bg-green-500/10 border border-green-500/30 rounded">
-                <div className="text-green-400 mb-1">THRESHOLD</div>
-                <div className="text-white font-bold">0.1% SUPPLY</div>
-              </div>
-              <div className="text-center p-3 bg-blue-500/10 border border-blue-500/30 rounded">
-                <div className="text-blue-400 mb-1">MAX_LIMIT</div>
-                <div className="text-white font-bold">0.2% SUPPLY</div>
-              </div>
-              <div className="text-center p-3 bg-purple-500/10 border border-purple-500/30 rounded">
-                <div className="text-purple-400 mb-1">SLIPPAGE</div>
-                <div className="text-white font-bold">PROTECTED</div>
-              </div>
-              <div className="text-center p-3 bg-orange-500/10 border border-orange-500/30 rounded">
-                <div className="text-orange-400 mb-1">LP_BURN</div>
-                <div className="text-white font-bold">50% AUTO</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       <style>{`
@@ -210,8 +183,6 @@ const ContractTransparencySection = ({
           50% { transform: translateX(0); }
         }
       `}</style>
-    </section>
-  );
+    </section>;
 };
-
 export default ContractTransparencySection;
