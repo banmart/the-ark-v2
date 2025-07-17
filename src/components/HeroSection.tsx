@@ -2,13 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Shield, Lock, Zap, Database, Code } from "lucide-react";
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
-
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
   contractAddress: string;
   setShowOnboarding: (show: boolean) => void;
 }
-
 const HeroSection = ({
   copyToClipboard,
   contractAddress,
@@ -19,9 +17,12 @@ const HeroSection = ({
   const [scanProgress, setScanProgress] = useState(0);
   const [scanningActive, setScanningActive] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { setIsOpen } = useChatContext();
-  const { openPopup } = useBrowserPopup();
-
+  const {
+    setIsOpen
+  } = useChatContext();
+  const {
+    openPopup
+  } = useBrowserPopup();
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
@@ -68,7 +69,6 @@ const HeroSection = ({
     if (textPhase >= 2) {
       setScanningActive(true);
       setScanProgress(0);
-      
       const progressInterval = setInterval(() => {
         setScanProgress(prev => {
           if (prev >= 100) {
@@ -80,19 +80,15 @@ const HeroSection = ({
           return Math.min(prev + increment, 100);
         });
       }, 50);
-
       return () => clearInterval(progressInterval);
     }
   }, [textPhase]);
-
   const handleBoardTheArk = () => {
     openPopup('https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021', 'Buy ARK');
   };
-
   const handleDecodeProtocol = () => {
     setIsOpen(true);
   };
-
   return <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center overflow-hidden">
       {/* Video Background with Cinematic Fade In */}
       <div className="absolute inset-0 z-0">
@@ -124,9 +120,7 @@ const HeroSection = ({
 
             {/* Main Title - THE ARK ❍ */}
             <div className="relative mb-8">
-              <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-fade-in">
-                THE ARK ❍
-              </h1>
+              <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-fade-in">BUY ONCE, EARN FOREVER</h1>
             </div>
 
             {/* Cinematic Text Sequence */}
@@ -143,11 +137,7 @@ const HeroSection = ({
               <div className={`transition-all duration-1000 delay-500 ${textPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <div className="flex items-center gap-2 text-green-400 font-mono text-sm mb-2">
                   <Zap className="w-4 h-4 animate-pulse" />
-                  <span>SCANNING PULSECHAIN NETWORKS... [{
-                    scanningActive 
-                      ? `${'█'.repeat(Math.floor(scanProgress / 8))}${'▓'.repeat(12 - Math.floor(scanProgress / 8))}`
-                      : '▓▓▓▓▓▓▓▓▓▓▓▓'
-                  }] {Math.round(scanProgress)}%</span>
+                  <span>SCANNING PULSECHAIN NETWORKS... [{scanningActive ? `${'█'.repeat(Math.floor(scanProgress / 8))}${'▓'.repeat(12 - Math.floor(scanProgress / 8))}` : '▓▓▓▓▓▓▓▓▓▓▓▓'}] {Math.round(scanProgress)}%</span>
                 </div>
                 <div className="text-yellow-400 font-mono text-xs ml-6">
                   → DETECTING FAILED PROJECTS: 47,392 TOKENS
@@ -220,5 +210,4 @@ const HeroSection = ({
       </div>
     </section>;
 };
-
 export default HeroSection;
