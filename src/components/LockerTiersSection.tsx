@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, Lock, TrendingUp, Users, Gift, Database, Activity, Shield, Zap } from "lucide-react";
-
 interface LockerTiersSectionProps {
   contractData: any;
   contractLoading: boolean;
 }
-
 const LockerTiersSection = ({
   contractData,
   contractLoading
 }: LockerTiersSectionProps) => {
   const [systemPhase, setSystemPhase] = useState(0);
   const [activeTier, setActiveTier] = useState(0);
-
   useEffect(() => {
     // System initialization sequence
-    const phases = [
-      { delay: 300, phase: 1 },   // System scan
-      { delay: 1000, phase: 2 },  // Tiers detected
-      { delay: 1800, phase: 3 },  // Full activation
+    const phases = [{
+      delay: 300,
+      phase: 1
+    },
+    // System scan
+    {
+      delay: 1000,
+      phase: 2
+    },
+    // Tiers detected
+    {
+      delay: 1800,
+      phase: 3
+    } // Full activation
     ];
-
-    phases.forEach(({ delay, phase }) => {
+    phases.forEach(({
+      delay,
+      phase
+    }) => {
       setTimeout(() => setSystemPhase(phase), delay);
     });
 
@@ -30,10 +39,8 @@ const LockerTiersSection = ({
     const interval = setInterval(() => {
       setActiveTier(prev => (prev + 1) % 6);
     }, 4000);
-
     return () => clearInterval(interval);
   }, []);
-
   const tiers = [{
     name: 'BRONZE',
     icon: '⛵',
@@ -114,14 +121,12 @@ const LockerTiersSection = ({
     special: true,
     status: 'LEGENDARY'
   }];
-
-  const TierCard = ({ tier, index }) => {
+  const TierCard = ({
+    tier,
+    index
+  }) => {
     const isActive = activeTier === index;
-    
-    return (
-      <div className={`relative bg-black/40 backdrop-blur-xl border-2 ${tier.border} rounded-xl p-6 hover:scale-105 transition-all duration-300 group overflow-hidden ${
-        tier.special ? 'shadow-2xl shadow-orange-500/30' : ''
-      } ${isActive ? `shadow-lg shadow-${tier.color}/20` : ''}`}>
+    return <div className={`relative bg-black/40 backdrop-blur-xl border-2 ${tier.border} rounded-xl p-6 hover:scale-105 transition-all duration-300 group overflow-hidden ${tier.special ? 'shadow-2xl shadow-orange-500/30' : ''} ${isActive ? `shadow-lg shadow-${tier.color}/20` : ''}`}>
         
         {/* System Status Indicator */}
         <div className="absolute top-2 right-2 flex items-center gap-1">
@@ -132,19 +137,15 @@ const LockerTiersSection = ({
         </div>
 
         {/* Special Badge for Legendary */}
-        {tier.special && (
-          <div className="absolute top-2 left-2 bg-orange-500/20 backdrop-blur border border-orange-500/40 text-orange-400 px-2 py-1 rounded text-xs font-mono animate-pulse">
+        {tier.special && <div className="absolute top-2 left-2 bg-orange-500/20 backdrop-blur border border-orange-500/40 text-orange-400 px-2 py-1 rounded text-xs font-mono animate-pulse">
             [LEGENDARY]
-          </div>
-        )}
+          </div>}
 
         {/* Quantum Field Background */}
         <div className={`absolute inset-0 bg-gradient-to-br ${tier.gradient} rounded-xl`}></div>
         
         {/* Active Tier Pulse */}
-        {isActive && (
-          <div className={`absolute inset-0 bg-gradient-to-br ${tier.gradient} opacity-30 animate-pulse rounded-xl`}></div>
-        )}
+        {isActive && <div className={`absolute inset-0 bg-gradient-to-br ${tier.gradient} opacity-30 animate-pulse rounded-xl`}></div>}
 
         <div className="relative z-10">
           {/* Tier Icon */}
@@ -173,21 +174,14 @@ const LockerTiersSection = ({
           
           {/* Features List */}
           <ul className="space-y-2 text-sm text-gray-300 mb-6">
-            {tier.features.map((feature, index) => (
-              <li key={index} className="flex items-center font-mono text-xs">
+            {tier.features.map((feature, index) => <li key={index} className="flex items-center font-mono text-xs">
                 <span className="text-green-400 mr-2 font-mono">&gt;</span>
                 {feature}
-              </li>
-            ))}
+              </li>)}
           </ul>
           
           {/* Action Button */}
-          <Link 
-            to="/locker" 
-            className={`block w-full bg-gradient-to-r ${tier.buttonGradient} text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-10 font-mono text-sm ${
-              tier.special ? 'shadow-lg shadow-orange-500/30' : ''
-            }`}
-          >
+          <Link to="/locker" className={`block w-full bg-gradient-to-r ${tier.buttonGradient} text-black font-bold py-3 rounded-lg text-center hover:scale-105 transition-transform relative z-10 font-mono text-sm ${tier.special ? 'shadow-lg shadow-orange-500/30' : ''}`}>
             {tier.special ? '[ASCEND_TO_LEGEND]' : `[ENTER_${tier.name}]`}
           </Link>
         </div>
@@ -196,22 +190,19 @@ const LockerTiersSection = ({
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
           <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${tier.buttonGradient} animate-[scan_2s_ease-in-out_infinite]`}></div>
         </div>
-      </div>
-    );
+      </div>;
   };
-
-  return (
-    <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 via-cyan-500/5 to-black/20">
+  return <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 via-cyan-500/5 to-black/20">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
-          backgroundImage: `
+        backgroundImage: `
             radial-gradient(circle at 20% 30%, rgba(34, 211, 238, 0.3) 2px, transparent 2px),
             radial-gradient(circle at 80% 70%, rgba(34, 211, 238, 0.2) 2px, transparent 2px),
             radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.2) 2px, transparent 2px)
           `,
-          backgroundSize: '150px 150px'
-        }}></div>
+        backgroundSize: '150px 150px'
+      }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -238,11 +229,7 @@ const LockerTiersSection = ({
             <div className="flex items-center justify-center gap-2 mt-4">
               <TrendingUp className="w-4 h-4 text-cyan-400" />
               <span className="text-sm text-gray-400 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[LOADING_VAULT_DATA...]</span>
-                ) : (
-                  `[VAULT_ALLOCATION: ${contractData.currentFees.locker}% OF_ALL_TRANSACTIONS]`
-                )}
+                {contractLoading ? <span className="animate-pulse">[LOADING_VAULT_DATA...]</span> : `[VAULT_ALLOCATION: ${contractData.currentFees.locker}% OF_ALL_TRANSACTIONS]`}
               </span>
             </div>
           </div>
@@ -250,43 +237,16 @@ const LockerTiersSection = ({
 
         {/* Tier Grid */}
         <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 transition-all duration-1000 delay-500 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {tiers.map((tier, index) => (
-            <TierCard key={tier.name} tier={tier} index={index} />
-          ))}
+          {tiers.map((tier, index) => <TierCard key={tier.name} tier={tier} index={index} />)}
         </div>
 
         {/* System Diagnostics */}
         <div className={`transition-all duration-1000 delay-1000 ${systemPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-lg font-bold text-cyan-400 font-mono">
-                  [TIER_SYSTEM_DIAGNOSTICS]
-                </h3>
-              </div>
-              <div className="flex items-center gap-2 text-green-400 font-mono text-sm">
-                <Zap className="w-4 h-4 animate-pulse" />
-                <span>VAULT_OPERATIONAL</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-xs font-mono">
-              {tiers.map((tier) => (
-                <div key={tier.name} className={`text-center p-3 bg-${tier.color}/10 border border-${tier.color}/30 rounded`}>
-                  <div className={`text-${tier.color} mb-1`}>{tier.name}</div>
-                  <div className="text-white font-bold">{tier.multiplier}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          
 
           {/* Call to Action */}
           <div className="text-center">
-            <Link 
-              to="/locker" 
-              className="inline-flex items-center bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 font-mono"
-            >
+            <Link to="/locker" className="inline-flex items-center bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 font-mono">
               <Sparkles className="w-5 h-5 mr-2" />
               [ENTER_SACRED_LOCKER]
               <Lock className="w-5 h-5 ml-2" />
@@ -301,8 +261,6 @@ const LockerTiersSection = ({
           100% { transform: translateX(100vw); }
         }
       `}</style>
-    </section>
-  );
+    </section>;
 };
-
 export default LockerTiersSection;
