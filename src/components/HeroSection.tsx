@@ -2,13 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Shield, Lock, Zap, Database, Code } from "lucide-react";
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
-
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
   contractAddress: string;
   setShowOnboarding: (show: boolean) => void;
 }
-
 const HeroSection = ({
   copyToClipboard,
   contractAddress,
@@ -19,15 +17,12 @@ const HeroSection = ({
   const [scanProgress, setScanProgress] = useState(0);
   const [scanningActive, setScanningActive] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  
   const {
     setIsOpen
   } = useChatContext();
-  
   const {
     openPopup
   } = useBrowserPopup();
-
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
@@ -61,7 +56,6 @@ const HeroSection = ({
       phase: 4
     } // Full revelation
     ];
-
     sequence.forEach(({
       delay,
       phase
@@ -89,17 +83,13 @@ const HeroSection = ({
       return () => clearInterval(progressInterval);
     }
   }, [textPhase]);
-
   const handleBoardTheArk = () => {
     openPopup('https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021', 'Buy ARK');
   };
-
   const handleDecodeProtocol = () => {
     setIsOpen(true);
   };
-
-  return (
-    <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center overflow-hidden">
+  return <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center overflow-hidden">
       {/* Video Background with Cinematic Fade In */}
       <div className="absolute inset-0 z-0">
         <video ref={videoRef} autoPlay muted loop playsInline className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
@@ -212,61 +202,12 @@ const HeroSection = ({
             </div>
           </div>
 
-          {/* Right side - Noah Icon with Spinning Effect */}
-          <div className="flex justify-center relative">
-            {/* Divine Authority HUD Elements */}
-            <div className={`absolute -top-8 -left-4 text-cyan-400/40 text-xs font-mono transition-all duration-1000 delay-1500 ${textPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              [DIVINE_AUTHORITY_DETECTED]
-            </div>
-            <div className={`absolute -top-8 -right-4 text-cyan-400/40 text-xs font-mono transition-all duration-1000 delay-1500 ${textPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              [NOAH_PROTOCOL_ACTIVE]
-            </div>
-
-            {/* Main Noah Icon */}
-            <div className={`relative transition-all duration-2000 delay-2000 ${textPhase >= 3 ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
-              {/* Outer Glow Ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400/20 via-teal-400/30 to-cyan-400/20 blur-xl animate-pulse scale-110"></div>
-              
-              {/* Inner Rotating Ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-cyan-400/30 animate-spin-slow scale-105"></div>
-              
-              {/* Noah Icon Container */}
-              <div className="relative w-80 h-80 md:w-96 md:h-96 rounded-full bg-gradient-to-br from-cyan-500/10 to-teal-500/10 backdrop-blur-sm border border-cyan-400/20 flex items-center justify-center animate-rotate-3d">
-                {/* Icon Image */}
-                <img 
-                  src="/lovable-uploads/d158c3b4-7c7b-4f79-b5a6-cc9e22aad894.png" 
-                  alt="Noah - Divine Authority" 
-                  className="w-64 h-64 md:w-80 md:h-80 object-contain filter drop-shadow-2xl animate-float"
-                />
-                
-                {/* Particle Effects */}
-                <div className="absolute inset-0 rounded-full">
-                  <div className="absolute top-4 left-8 w-2 h-2 bg-cyan-400 rounded-full animate-ping"></div>
-                  <div className="absolute top-12 right-6 w-1 h-1 bg-teal-400 rounded-full animate-pulse delay-1000"></div>
-                  <div className="absolute bottom-8 left-12 w-1.5 h-1.5 bg-cyan-300 rounded-full animate-ping delay-500"></div>
-                  <div className="absolute bottom-16 right-10 w-1 h-1 bg-teal-300 rounded-full animate-pulse delay-1500"></div>
-                </div>
-              </div>
-
-              {/* Bottom Status Indicator */}
-              <div className={`absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center transition-all duration-1000 delay-2500 ${textPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <div className="bg-black/20 border border-cyan-500/40 rounded-lg px-4 py-2 backdrop-blur-sm">
-                  <div className="text-cyan-400 font-mono text-xs">SALVATION_STATUS</div>
-                  <div className="text-white font-semibold">NOAH AWAKENED</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Scanning Lines Effect */}
-            <div className={`absolute inset-0 pointer-events-none transition-all duration-1000 delay-1000 ${textPhase >= 3 ? 'opacity-100' : 'opacity-0'}`}>
-              <div className="absolute top-1/4 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent animate-scan"></div>
-              <div className="absolute top-3/4 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-teal-400/50 to-transparent animate-scan-reverse"></div>
-            </div>
+          {/* Right side - Enhanced ❍ Symbol with NO background overlay */}
+          <div className="flex justify-center">
+            
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;

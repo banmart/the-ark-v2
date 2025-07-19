@@ -117,55 +117,13 @@ export default {
 				'heroFadeIn': {
 					'0%': { opacity: '0' },
 					'100%': { opacity: '1' }
-				},
-				'rotate-3d': {
-					'0%': { transform: 'rotateY(0deg) rotateX(0deg)' },
-					'100%': { transform: 'rotateY(360deg) rotateX(360deg)' }
-				},
-				'float': {
-					'0%, 100%': { transform: 'translate(0, 0) scale(1)' },
-					'50%': { transform: 'translate(0, -10px) scale(1.05)' }
-				},
-				'spin-slow': {
-					'0%': { transform: 'rotate(0deg)' },
-					'100%': { transform: 'rotate(360deg)' }
-				},
-				'scan-reverse': {
-					'0%': { transform: 'translateX(100%)' },
-					'100%': { transform: 'translateX(-100%)' }
-				},
-				'divine-glow': {
-					'0%, 100%': { 
-						boxShadow: '0 0 20px rgba(34, 211, 238, 0.3), 0 0 40px rgba(20, 184, 166, 0.2)',
-						filter: 'hue-rotate(0deg)'
-					},
-					'50%': { 
-						boxShadow: '0 0 30px rgba(34, 211, 238, 0.5), 0 0 60px rgba(20, 184, 166, 0.3)',
-						filter: 'hue-rotate(15deg)'
-					}
-				},
-				'tier-glow': {
-					'0%, 100%': { boxShadow: '0 0 15px rgba(239, 68, 68, 0.5)' },
-					'50%': { boxShadow: '0 0 25px rgba(239, 68, 68, 0.8), 0 0 35px rgba(251, 146, 60, 0.4)' }
-				},
-				'tier-border-flow': {
-					'0%': { backgroundPosition: '0% 50%' },
-					'50%': { backgroundPosition: '100% 50%' },
-					'100%': { backgroundPosition: '0% 50%' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'scan': 'scan 3s ease-in-out infinite',
-				'fade-in': 'fade-in 0.3s ease-out',
-				'rotate-3d': 'rotate-3d 20s linear infinite',
-				'float': 'float 6s ease-in-out infinite',
-				'spin-slow': 'spin-slow 8s linear infinite',
-				'scan-reverse': 'scan-reverse 4s linear infinite',
-				'divine-glow': 'divine-glow 3s ease-in-out infinite',
-				'tier-glow': 'tier-glow 2s ease-in-out infinite',
-				'tier-border-flow': 'tier-border-flow 3s ease infinite'
+				'fade-in': 'fade-in 0.3s ease-out'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
