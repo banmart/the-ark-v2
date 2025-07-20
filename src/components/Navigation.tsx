@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Zap, Wifi, Bot } from 'lucide-react';
+import { Zap, Wifi } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
+import MobileHamburgerMenu from './MobileHamburgerMenu';
 
 interface NavigationProps {
   handleConnectWallet: () => void;
@@ -54,12 +55,19 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 border-b border-cyan-500/20">
         <div className="flex justify-between items-center">
-          {/* Brand with System Status */}
+          {/* Brand with Doves Logo and System Status */}
           <div className="flex items-center gap-4">
             <Link 
               to="/" 
-              className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform relative group"
+              className="flex items-center gap-2 text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform relative group"
             >
+              {/* 2 Doves Logo */}
+              <img 
+                src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/ark-logo-2-doves.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstbG9nby0yLWRvdmVzLnBuZyIsImlhdCI6MTc1MzAyMTYxMSwiZXhwIjoxNzg0NTU3NjExfQ.45L9Zf0mzSDfADbxbiWKl6A_6RFENSO92dnwtosCPTI"
+                alt="ARK Doves Logo"
+                className="w-8 h-8 md:w-10 md:h-10 object-contain filter drop-shadow-lg"
+                style={{ filter: 'drop-shadow(0 0 8px rgba(34, 211, 238, 0.3))' }}
+              />
               ARK
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </Link>
@@ -77,8 +85,8 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
             </div>
           </div>
 
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-
             <button 
               onClick={() => handleExternalLink('https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge', 'Bridge Assets')}
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
@@ -137,6 +145,14 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               )}
             </button>
           </div>
+
+          {/* Mobile Hamburger Menu */}
+          <MobileHamburgerMenu
+            handleConnectWallet={handleConnectWallet}
+            isConnecting={isConnecting}
+            isConnected={isConnected}
+            account={account}
+          />
         </div>
       </div>
     </nav>
