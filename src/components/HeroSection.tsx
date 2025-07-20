@@ -202,9 +202,15 @@ const HeroSection = ({
             </div>
           </div>
 
-          {/* Right side - Enhanced ❍ Symbol with NO background overlay */}
+          {/* Right side - ARK Logo with 3D Spinning Effect */}
           <div className="flex justify-center">
-            
+            <div className={`transition-all duration-2000 delay-1500 ${textPhase >= 3 ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+              <img 
+                src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/ark-a-round-logo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstYS1yb3VuZC1sb2dvLnBuZyIsImlhdCI6MTc1Mjk1ODAyNSwiZXhwIjoxNzg0NDk0MDI1fQ.ZR3kdiONbn8QemCw-M0vocmBgjoQlaEnpyiv71ZAXk4"
+                alt="ARK Protocol Logo"
+                className="w-80 h-80 md:w-96 md:h-96 animate-rotate-3d shadow-2xl shadow-cyan-500/20"
+              />
+            </div>
           </div>
         </div>
       </div>
