@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Shield, Lock, Zap, Database, Code } from "lucide-react";
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
+
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
   contractAddress: string;
   setShowOnboarding: (show: boolean) => void;
 }
+
 const HeroSection = ({
   copyToClipboard,
   contractAddress,
@@ -17,12 +19,14 @@ const HeroSection = ({
   const [scanProgress, setScanProgress] = useState(0);
   const [scanningActive, setScanningActive] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
   const {
     setIsOpen
   } = useChatContext();
   const {
     openPopup
   } = useBrowserPopup();
+
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
@@ -83,12 +87,15 @@ const HeroSection = ({
       return () => clearInterval(progressInterval);
     }
   }, [textPhase]);
+
   const handleBoardTheArk = () => {
     openPopup('https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021', 'Buy ARK');
   };
+
   const handleDecodeProtocol = () => {
     setIsOpen(true);
   };
+
   return <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center overflow-hidden">
       {/* Video Background with Cinematic Fade In */}
       <div className="absolute inset-0 z-0">
@@ -202,12 +209,23 @@ const HeroSection = ({
             </div>
           </div>
 
-          {/* Right side - Enhanced ❍ Symbol with NO background overlay */}
-          <div className="flex justify-center">
-            
+          {/* Right side - 3D Spinning ARK Logo */}
+          <div className="flex justify-center items-center" style={{ perspective: '1000px' }}>
+            <div className={`transition-all duration-2000 delay-1500 ${textPhase >= 3 ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
+              <img 
+                src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/ark-logo-2-doves.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9hcmstbG9nby0yLWRvdmVzLnBuZyIsImlhdCI6MTc1MzAyMTYxMSwiZXhwIjoxNzg0NTU3NjExfQ.45L9Zf0mzSDfADbxbiWKl6A_6RFENSO92dnwtosCPTI"
+                alt="The ARK Protocol Logo"
+                className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain animate-[rotate-3d_12s_linear_infinite] drop-shadow-2xl"
+                style={{ 
+                  filter: 'drop-shadow(0 0 30px rgba(34, 211, 238, 0.3)) drop-shadow(0 0 60px rgba(20, 184, 166, 0.2))',
+                  transformStyle: 'preserve-3d'
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
     </section>;
 };
+
 export default HeroSection;
