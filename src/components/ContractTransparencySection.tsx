@@ -50,31 +50,7 @@ const ContractTransparencySection = ({
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* System Header */}
-        <div className={`text-center mb-16 transition-all duration-1000 ${liquidityPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
-            <Database className="w-3 h-3 animate-pulse" />
-            <span>[TOKENOMICS_TRANSPARENCY_MATRIX]</span>
-            <Database className="w-3 h-3 animate-pulse" />
-          </div>
-          
-          <h3 className="text-4xl md:text-5xl font-black mb-6 text-cyan-400 font-mono">
-            <span className="animate-[glitch_4s_ease-in-out_infinite]">FIXED</span>{' '}
-            <span className="animate-[glitch_4s_ease-in-out_0.5s_infinite]">FEE</span>{' '}
-            <span className="animate-[glitch_4s_ease-in-out_1s_infinite]">SYSTEM</span>
-          </h3>
-          
-          <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
-            <p className="text-lg text-gray-200 mb-2 font-mono">
-              <span className="text-cyan-400 font-mono">[IMMUTABLE_PROTOCOL]</span> Fixed fee structure with 
-              <span className="text-teal-400 font-bold"> automatic liquidity generation</span>, 
-              <span className="text-green-400 font-semibold"> reflection rewards</span>, and 
-              <span className="text-purple-400 font-bold"> locker distributions</span>.
-            </p>
-            <div className="text-sm text-gray-400 font-mono">
-              Total transaction fee: 9% fixed | No variable fees | Immutable contract settings
-            </div>
-          </div>
-        </div>
+        
 
         {/* Fixed Fee Structure */}
         <div className={`transition-all duration-1000 delay-500 ${liquidityPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
