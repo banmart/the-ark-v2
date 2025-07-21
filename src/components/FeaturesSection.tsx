@@ -37,19 +37,19 @@ const FeaturesSection = () => {
     id: 0,
     icon: Flame,
     emoji: '🔥',
-    title: 'BURN_PROTOCOL',
+    title: 'BURN PROTOCOL',
     subtitle: 'Molecular Disintegration',
     percentage: '2%',
     detail: '+ LP Token Burns',
     description: 'Permanent molecular disintegration through quantum incineration to void address plus automated LP token annihilation for maximum deflationary cascade.',
     color: 'red',
-    status: 'ACTIVE_BURN',
+    status: 'ACTIVE BURN',
     gradient: 'from-red-500 to-orange-500'
   }, {
     id: 1,
     icon: Users,
     emoji: '🫂',
-    title: 'REFLECTION_MATRIX',
+    title: 'REFLECTION MATRIX',
     subtitle: 'Quantum Redistribution',
     percentage: '2%',
     detail: 'Auto Redistribution',
@@ -61,7 +61,7 @@ const FeaturesSection = () => {
     id: 2,
     icon: Droplets,
     emoji: '💧',
-    title: 'LIQUIDITY_ENGINE',
+    title: 'LIQUIDITY ENGINE',
     subtitle: 'Fluid Dynamics Control',
     percentage: '3%',
     detail: 'Smart Threshold',
@@ -73,7 +73,7 @@ const FeaturesSection = () => {
     id: 3,
     icon: Lock,
     emoji: '🔒',
-    title: 'VAULT_REWARDS',
+    title: 'VAULT REWARDS',
     subtitle: 'Temporal Amplification',
     percentage: '2%',
     detail: 'Vault Accumulation',
@@ -101,7 +101,7 @@ const FeaturesSection = () => {
         <div className={`text-center mb-16 transition-all duration-1000 ${pillarsPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
             <Database className="w-3 h-3 animate-pulse" />
-            <span>[QUANTUM_ARCHITECTURE_SCAN]</span>
+            <span>[QUANTUM ARCHITECTURE SCAN]</span>
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
@@ -113,7 +113,7 @@ const FeaturesSection = () => {
           
           <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
             <p className="text-lg text-gray-200 mb-2">
-              <span className="text-cyan-400 font-mono">[ARCHITECTURE_BRIEF]</span> The ARK's quantum foundation rests upon four 
+              <span className="text-cyan-400 font-mono">[ARCHITECTURE BRIEF]</span> The ARK's quantum foundation rests upon four 
               <span className="text-purple-400 font-bold"> divine pillars</span>, creating a 
               <span className="text-teal-400 font-semibold"> deflationary ecosystem</span> with maximum security protocols 
               and amplified rewards for the faithful.
@@ -181,7 +181,7 @@ const FeaturesSection = () => {
                 <div className="mt-4 pt-4 border-t border-gray-600/30">
                   <div className="flex items-center justify-center gap-2 text-xs font-mono">
                     <Activity className={`w-3 h-3 text-${pillar.color}-400 animate-pulse`} />
-                    <span className={`text-${pillar.color}-400`}>QUANTUM_FIELD_ACTIVE</span>
+                    <span className={`text-${pillar.color}-400`}>QUANTUM FIELD ACTIVE</span>
                   </div>
                 </div>
 
