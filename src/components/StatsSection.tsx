@@ -85,7 +85,7 @@ const StatsSection = ({
         }`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
             <Database className="w-3 h-3 animate-pulse" />
-            <span>[ARK_STATISTICS_MATRIX]</span>
+            <span>[ARK STATISTICS MATRIX]</span>
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
@@ -118,7 +118,7 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 font-mono">💰 MARKET_CAP</h3>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 font-mono">💰 MARKET CAP</h3>
               <p className="text-3xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
@@ -126,7 +126,7 @@ const StatsSection = ({
                   `$${formatNumber(contractData.marketCap)}`
                 )}
               </p>
-              <p className="text-sm text-gray-400 font-mono">[REAL_TIME_VALUATION]</p>
+              <p className="text-sm text-gray-400 font-mono">[REAL TIME VALUATION]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -144,7 +144,7 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-blue-400 font-mono">📈 PRICE_FEED</h3>
+              <h3 className="text-2xl font-bold mb-4 text-blue-400 font-mono">📈 PRICE FEED</h3>
               <div className="flex items-baseline gap-2 mb-2">
                 <p className="text-3xl font-black text-white font-mono">
                   {contractLoading ? (
@@ -161,7 +161,7 @@ const StatsSection = ({
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-400 font-mono">[24H_DELTA]</p>
+              <p className="text-sm text-gray-400 font-mono">[24H DELTA]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -187,7 +187,7 @@ const StatsSection = ({
                   <span className="animate-pulse">[SCANNING...]</span>
                 )}
               </p>
-              <p className="text-sm text-gray-400 font-mono">[LOCKED_VALUE]</p>
+              <p className="text-sm text-gray-400 font-mono">[LOCKED VALUE]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -205,7 +205,7 @@ const StatsSection = ({
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             
             <div className="relative z-10">
-              <h3 className="text-xl font-bold mb-4 text-green-400 font-mono">💎 TOTAL_SUPPLY</h3>
+              <h3 className="text-xl font-bold mb-4 text-green-400 font-mono">💎 TOTAL SUPPLY</h3>
               <p className="text-2xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
@@ -213,7 +213,7 @@ const StatsSection = ({
                   `${formatNumber(contractData.totalSupply)} ARK`
                 )}
               </p>
-              <p className="text-sm text-gray-400 font-mono">[CONTRACT_SOURCE]</p>
+              <p className="text-sm text-gray-400 font-mono">[CONTRACT SOURCE]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -234,7 +234,7 @@ const StatsSection = ({
                   `${formatNumber(contractData.circulatingSupply)} ARK`
                 )}
               </p>
-              <p className="text-sm text-gray-400 font-mono">[MARKET_AVAILABLE]</p>
+              <p className="text-sm text-gray-400 font-mono">[MARKET AVAILABLE]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -255,7 +255,7 @@ const StatsSection = ({
                   `${formatNumber(contractData.burnedTokens)} ARK`
                 )}
               </p>
-              <p className="text-sm text-gray-400 font-mono">[VOID_ADDRESS]</p>
+              <p className="text-sm text-gray-400 font-mono">[VOID ADDRESS]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
