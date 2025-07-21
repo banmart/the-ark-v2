@@ -5,14 +5,17 @@ import { ContractConstants, DEFAULT_CONSTANTS } from './lockTiers';
 
 export const fetchContractConstants = async (): Promise<ContractConstants> => {
   try {
-    console.log('Fetching real contract constants...');
+    console.log('Fetching enhanced contract constants...');
     const rpcProvider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
     const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, rpcProvider);
     
-    const [minDuration, maxDuration, basisPoints] = await Promise.all([
+    const [minDuration, maxDuration, basisPoints, earlyPenalty, burnShare, rewardShare] = await Promise.all([
       contract.MIN_LOCK_DURATION(),
       contract.MAX_LOCK_DURATION(),
-      contract.BASIS_POINTS()
+      contract.BASIS_POINTS(),
+      contract.earlyUnlockPenalty(),
+      contract.penaltyBurnShare(),
+      contract.penaltyRewardShare()
     ]);
 
     const minDurationDays = Math.ceil(parseInt(minDuration.toString()) / (24 * 60 * 60));
@@ -22,12 +25,12 @@ export const fetchContractConstants = async (): Promise<ContractConstants> => {
       MIN_LOCK_DURATION: minDurationDays,
       MAX_LOCK_DURATION: maxDurationDays,
       BASIS_POINTS: parseInt(basisPoints.toString()),
-      EARLY_UNLOCK_PENALTY: 5000,
-      PENALTY_BURN_SHARE: 5000,
-      PENALTY_REWARD_SHARE: 5000
+      EARLY_UNLOCK_PENALTY: parseInt(earlyPenalty.toString()),
+      PENALTY_BURN_SHARE: parseInt(burnShare.toString()),
+      PENALTY_REWARD_SHARE: parseInt(rewardShare.toString())
     };
 
-    console.log('Real contract constants fetched:', constants);
+    console.log('Enhanced contract constants fetched:', constants);
     return constants;
     
   } catch (error) {
@@ -52,6 +55,32 @@ export const fetchUserTokenData = async (account: string, provider: any) => {
   } catch (error) {
     console.error('Error fetching user token data:', error);
     return { balance: 0, allowance: 0 };
+  }
+};
+
+export const calculatePenaltyPreview = async (
+  userAddress: string,
+  lockId: number,
+  provider: any
+): Promise<{ penaltyAmount: number; userReceives: number; penaltyRate: number } | null> => {
+  try {
+    const lockerContract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
+    
+    const [penaltyAmount, userReceives] = await lockerContract.calculateEarlyUnlockPenalty(userAddress, lockId);
+    
+    const penalty = parseFloat(ethers.formatEther(penaltyAmount));
+    const receives = parseFloat(ethers.formatEther(userReceives));
+    const totalAmount = penalty + receives;
+    const penaltyRate = totalAmount > 0 ? (penalty / totalAmount) * 100 : 0;
+
+    return {
+      penaltyAmount: penalty,
+      userReceives: receives,
+      penaltyRate
+    };
+  } catch (error) {
+    console.error('Error calculating penalty preview:', error);
+    return null;
   }
 };
 

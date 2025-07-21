@@ -2,6 +2,7 @@
 import React from 'react';
 import EnhancedLockInterface from './EnhancedLockInterface';
 import EnhancedUserDashboard from './EnhancedUserDashboard';
+import EnhancedProtocolStats from './EnhancedProtocolStats';
 
 interface LockerOperationsProps {
   isConnected: boolean;
@@ -10,8 +11,13 @@ interface LockerOperationsProps {
 const LockerOperations = ({ isConnected }: LockerOperationsProps) => {
   return (
     <div className="max-w-6xl mx-auto px-6 pb-20 space-y-8">
-      {/* Lock Interface */}
+      {/* Enhanced Protocol Stats */}
       <div className="animate-fade-in">
+        <EnhancedProtocolStats />
+      </div>
+
+      {/* Lock Interface */}
+      <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
         <EnhancedLockInterface isConnected={isConnected} />
       </div>
 

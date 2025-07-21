@@ -20,23 +20,25 @@ export const CONTRACT_ADDRESSES = {
   WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27', // Wrapped PLS
   DAI: '0xefD766cCb38EaF1dfd701853BFCe31359239F305', // DAI token on PulseChain
   ARK_DAI_PAIR: '0x03f0bdb4f14e76a35a39ef0ffd87c8bb6d451366', // ARK/DAI pair
-  DEAD_ADDRESS: '0x000000000000000000000000000000000000dEaD',
+  DEAD_ADDRESS: '0x0000000000000000000000000000000000000369',
 };
 
-// Complete SimplifiedLockerVault ABI from the contract
+// Complete SimplifiedLockerVault ABI - UPDATED FOR LATEST CONTRACT
 export const LOCKER_VAULT_ABI = [
   // View functions
   'function totalLockedTokens() view returns (uint256)',
   'function totalRewardsDistributed() view returns (uint256)',
   'function totalActiveLockers() view returns (uint256)',
+  'function rewardPool() view returns (uint256)',
   'function getUserLocks(address user) view returns (tuple(uint256 amount, uint256 lockTime, uint256 unlockTime, uint256 lockPeriod, uint8 tier, uint256 totalRewardsEarned, bool active)[])',
   'function getUserActiveLocks(address user) view returns (tuple(uint256 amount, uint256 lockTime, uint256 unlockTime, uint256 lockPeriod, uint8 tier, uint256 totalRewardsEarned, bool active)[])',
   'function calculateUserWeight(address user) view returns (uint256)',
   'function calculateEarlyUnlockPenalty(address user, uint256 lockId) view returns (uint256 penaltyAmount, uint256 userReceives)',
-  'function getProtocolStats() view returns (uint256 _totalLockedTokens, uint256 _totalRewardsDistributed, uint256 _totalActiveLockers)',
+  'function getProtocolStats() view returns (uint256 _totalLockedTokens, uint256 _totalRewardsDistributed, uint256 _totalActiveLockers, uint256 _rewardPool)',
   'function getLockTierInfo(uint8 tier) view returns (tuple(uint256 minDuration, uint256 multiplier, string name))',
   'function pendingRewards(address user) view returns (uint256)',
   'function userStats(address user) view returns (tuple(uint256 totalLocked, uint256 totalRewardsEarned, uint256 pendingRewards, uint256 activeLocksCount))',
+  'function getActiveLockers() view returns (address[])',
   
   // State variables
   'function emergencyMode() view returns (bool)',
@@ -45,6 +47,9 @@ export const LOCKER_VAULT_ABI = [
   'function earlyUnlockPenalty() view returns (uint256)',
   'function penaltyBurnShare() view returns (uint256)',
   'function penaltyRewardShare() view returns (uint256)',
+  'function emergencyUnlockTime() view returns (uint256)',
+  'function authorizedDistributor() view returns (address)',
+  'function isActiveLocker(address) view returns (bool)',
   
   // Constants
   'function MIN_LOCK_DURATION() view returns (uint256)',
@@ -58,11 +63,22 @@ export const LOCKER_VAULT_ABI = [
   'function unlockTokens(uint256 lockId)',
   'function claimRewards()',
   
+  // Admin functions
+  'function receiveRewards(uint256 amount)',
+  'function distributeRewards(uint256 amount)',
+  'function updateEarlyUnlockSettings(uint256 _penalty, bool _enabled)',
+  'function updatePenaltyDistribution(uint256 _burnShare, uint256 _rewardShare)',
+  'function cleanupActiveLockers()',
+  'function enableEmergencyMode()',
+  'function disableEmergencyMode()',
+  'function setAuthorizedDistributor(address _distributor)',
+  
   // Events
   'event TokensLocked(address indexed user, uint256 amount, uint256 lockPeriod, uint256 unlockTime)',
   'event TokensUnlocked(address indexed user, uint256 amount)',
   'event RewardsDistributed(uint256 totalRewards, uint256 totalRecipients)',
   'event RewardsClaimed(address indexed user, uint256 amount)',
+  'event LockExtended(address indexed user, uint256 lockId, uint256 newUnlockTime)',
   'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount)',
 ];
 
@@ -81,7 +97,7 @@ export const LOCK_TIERS = {
 
 // Locker contract constants matching the smart contract
 export const LOCKER_CONSTANTS = {
-  MIN_LOCK_DURATION_DAYS: 1,
+  MIN_LOCK_DURATION_DAYS: 30, // Updated to match contract (30 days)
   MAX_LOCK_DURATION_DAYS: 1826, // 5 years
   BASIS_POINTS: 10000,
   EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
@@ -89,7 +105,7 @@ export const LOCKER_CONSTANTS = {
   PENALTY_BURN_SHARE: 5000, // 50% burned
   PENALTY_REWARD_SHARE: 5000, // 50% to lockers
   
-  // Tier multipliers (in basis points)
+  // Tier multipliers (in basis points) - Updated to match contract
   TIER_MULTIPLIERS: {
     BRONZE: 10000,   // 1x
     SILVER: 15000,   // 1.5x
