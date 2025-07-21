@@ -1,55 +1,56 @@
-
 import React, { useState, useEffect } from 'react';
 import { Shield, Lock, Target, Zap, Database, Activity, Cpu, Info } from 'lucide-react';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
-
 interface ContractTransparencySectionProps {
   contractData: any;
   contractLoading: boolean;
 }
-
-const ContractTransparencySection = ({ 
-  contractData, 
-  contractLoading 
+const ContractTransparencySection = ({
+  contractData,
+  contractLoading
 }: ContractTransparencySectionProps) => {
   const [liquidityPhase, setLiquidityPhase] = useState(0);
-
   useEffect(() => {
     // Cinematic reveal sequence
-    const phases = [
-      { delay: 300, phase: 1 }, // System scan
-      { delay: 1000, phase: 2 }, // Engine detected  
-      { delay: 1800, phase: 3 } // Full activation
+    const phases = [{
+      delay: 300,
+      phase: 1
+    },
+    // System scan
+    {
+      delay: 1000,
+      phase: 2
+    },
+    // Engine detected  
+    {
+      delay: 1800,
+      phase: 3
+    } // Full activation
     ];
-
-    phases.forEach(({ delay, phase }) => {
+    phases.forEach(({
+      delay,
+      phase
+    }) => {
       setTimeout(() => setLiquidityPhase(phase), delay);
     });
   }, []);
-
-  return (
-    <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
+  return <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
+        <div className="absolute inset-0" style={{
+        backgroundImage: `
               radial-gradient(circle at 25% 25%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
               radial-gradient(circle at 75% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
               radial-gradient(circle at 25% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px),
               radial-gradient(circle at 75% 75%, rgba(251, 146, 60, 0.3) 2px, transparent 2px)
             `,
-            backgroundSize: '100px 100px'
-          }}
-        />
+        backgroundSize: '100px 100px'
+      }} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* System Header */}
-        <div className={`text-center mb-16 transition-all duration-1000 ${
-          liquidityPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
+        <div className={`text-center mb-16 transition-all duration-1000 ${liquidityPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
             <Database className="w-3 h-3 animate-pulse" />
             <span>[TOKENOMICS_TRANSPARENCY_MATRIX]</span>
@@ -76,58 +77,8 @@ const ContractTransparencySection = ({
         </div>
 
         {/* Fixed Fee Structure */}
-        <div className={`transition-all duration-1000 delay-500 ${
-          liquidityPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {/* Liquidity Fee */}
-            <div className="relative bg-black/40 backdrop-blur-xl border-2 border-cyan-500/30 rounded-xl p-6 hover:scale-105 hover:border-cyan-500/60 transition-all duration-500 group overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-radial from-cyan-500/20 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              <div className="relative z-10 text-center">
-                <div className="text-4xl mb-3">🏊</div>
-                <h4 className="text-lg font-bold text-cyan-400 mb-2 font-mono">LIQUIDITY</h4>
-                <div className="text-3xl font-black text-white mb-2">3%</div>
-                <div className="text-xs text-gray-400">Auto LP Generation</div>
-              </div>
-            </div>
-
-            {/* Reflection Fee */}
-            <div className="relative bg-black/40 backdrop-blur-xl border-2 border-blue-500/30 rounded-xl p-6 hover:scale-105 hover:border-blue-500/60 transition-all duration-500 group overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-radial from-blue-500/20 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              <div className="relative z-10 text-center">
-                <div className="text-4xl mb-3">💎</div>
-                <h4 className="text-lg font-bold text-blue-400 mb-2 font-mono">REFLECTION</h4>
-                <div className="text-3xl font-black text-white mb-2">2%</div>
-                <div className="text-xs text-gray-400">Holder Rewards</div>
-              </div>
-            </div>
-
-            {/* Locker Fee */}
-            <div className="relative bg-black/40 backdrop-blur-xl border-2 border-purple-500/30 rounded-xl p-6 hover:scale-105 hover:border-purple-500/60 transition-all duration-500 group overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-radial from-purple-500/20 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              <div className="relative z-10 text-center">
-                <div className="text-4xl mb-3">🏦</div>
-                <h4 className="text-lg font-bold text-purple-400 mb-2 font-mono">LOCKER</h4>
-                <div className="text-3xl font-black text-white mb-2">2%</div>
-                <div className="text-xs text-gray-400">Staking Rewards</div>
-              </div>
-            </div>
-
-            {/* Burn Fee */}
-            <div className="relative bg-black/40 backdrop-blur-xl border-2 border-red-500/30 rounded-xl p-6 hover:scale-105 hover:border-red-500/60 transition-all duration-500 group overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-radial from-red-500/20 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              <div className="relative z-10 text-center">
-                <div className="text-4xl mb-3">🔥</div>
-                <h4 className="text-lg font-bold text-red-400 mb-2 font-mono">BURN</h4>
-                <div className="text-3xl font-black text-white mb-2">2%</div>
-                <div className="text-xs text-gray-400">Deflationary</div>
-              </div>
-            </div>
-          </div>
+        <div className={`transition-all duration-1000 delay-500 ${liquidityPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          
 
           {/* Swap Settings Display */}
           <div className="relative bg-black/40 backdrop-blur-xl border-2 border-green-500/30 rounded-xl p-8 overflow-hidden group hover:scale-105 hover:border-green-500/60 transition-all duration-500 mb-12">
@@ -254,8 +205,6 @@ const ContractTransparencySection = ({
           50% { transform: translateX(0); }
         }
       `}</style>
-    </section>
-  );
+    </section>;
 };
-
 export default ContractTransparencySection;
