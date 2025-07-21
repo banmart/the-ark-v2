@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { RefreshCw, BarChart3, Database, Activity, Zap, Shield } from 'lucide-react';
 import { useChartData } from '../hooks/useChartData';
 import TrendChart from './charts/TrendChart';
-
 const ChartSection = () => {
   const {
     timeSeriesData,
@@ -12,17 +11,13 @@ const ChartSection = () => {
     baseCurrency,
     priceDataPoints
   } = useChartData();
-  
   const [refreshing, setRefreshing] = useState(false);
-  
   const handleRefresh = () => {
     setRefreshing(true);
     // Simulate refresh delay
     setTimeout(() => setRefreshing(false), 1000);
   };
-
-  return (
-    <section id="chart" className="relative z-10 py-20 px-6 overflow-hidden">
+  return <section id="chart" className="relative z-10 py-20 px-6 overflow-hidden">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 z-0">
         {/* Base quantum gradient */}
@@ -39,7 +34,9 @@ const ChartSection = () => {
         
         {/* Scanning lines */}
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent animate-scan"></div>
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/40 to-transparent animate-scan" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/40 to-transparent animate-scan" style={{
+        animationDelay: '2s'
+      }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -75,11 +72,7 @@ const ChartSection = () => {
               {/* Data Source Status */}
               <div className="flex items-center justify-center gap-3">
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${
-                    dataSource === 'PulseX' ? 'bg-green-400 animate-pulse' :
-                    dataSource === 'Error' ? 'bg-red-400 animate-pulse' :
-                    'bg-yellow-400 animate-pulse'
-                  }`}></div>
+                  <div className={`w-3 h-3 rounded-full ${dataSource === 'PulseX' ? 'bg-green-400 animate-pulse' : dataSource === 'Error' ? 'bg-red-400 animate-pulse' : 'bg-yellow-400 animate-pulse'}`}></div>
                   <span className="font-mono text-cyan-400 text-sm">ARK: {dataSource}</span>
                 </div>
               </div>
@@ -103,11 +96,7 @@ const ChartSection = () => {
               
               {/* Refresh Control */}
               <div className="flex items-center justify-center">
-                <button 
-                  onClick={handleRefresh} 
-                  disabled={refreshing} 
-                  className="flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-sm border border-cyan-500/30 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-400/10 transition-all duration-300 disabled:opacity-50 font-mono text-sm"
-                >
+                <button onClick={handleRefresh} disabled={refreshing} className="flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-sm border border-cyan-500/30 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-400/10 transition-all duration-300 disabled:opacity-50 font-mono text-sm">
                   <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                   {refreshing ? 'SYNCING...' : 'SYNC_DATA'}
                 </button>
@@ -118,77 +107,12 @@ const ChartSection = () => {
 
         {/* Enhanced Price Chart */}
         <div className="mb-8">
-          <TrendChart 
-            data={timeSeriesData} 
-            dataSource={dataSource}
-            baseCurrency={baseCurrency}
-            priceDataPoints={priceDataPoints}
-          />
+          <TrendChart data={timeSeriesData} dataSource={dataSource} baseCurrency={baseCurrency} priceDataPoints={priceDataPoints} />
         </div>
 
         {/* Enhanced Data Source Info */}
-        <div className="text-center">
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-8 inline-block max-w-4xl relative overflow-hidden">
-            {/* Scanning effect */}
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent animate-scan"></div>
-            
-            {/* System Header */}
-            <div className="flex items-center justify-center mb-4">
-              <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
-                <Shield className="w-4 h-4 text-cyan-400" />
-                <span className="font-mono text-cyan-400 text-xs tracking-wider">DIRECT_PAIR_PROTOCOL</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-center mb-4">
-              <BarChart3 className="w-6 h-6 text-cyan-400 mr-3" />
-              <span className="text-xl font-mono text-white font-semibold">ARK/DAI Direct Pricing</span>
-            </div>
-            
-            {/* Enhanced System Diagnostics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-black/30 backdrop-blur-sm border border-green-500/20 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <Zap className="w-3 h-3 text-green-400" />
-                  <span className="font-mono text-green-400 text-xs">UPDATE_RATE</span>
-                </div>
-                <div className="font-mono text-green-300 text-sm">30 seconds</div>
-              </div>
-              
-              <div className="bg-black/30 backdrop-blur-sm border border-cyan-500/20 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <Database className="w-3 h-3 text-cyan-400" />
-                  <span className="font-mono text-cyan-400 text-xs">TRADING_PAIR</span>
-                </div>
-                <div className="font-mono text-cyan-300 text-sm">ARK/DAI</div>
-              </div>
-              
-              <div className="bg-black/30 backdrop-blur-sm border border-teal-500/20 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <Activity className="w-3 h-3 text-teal-400" />
-                  <span className="font-mono text-teal-400 text-xs">PRECISION</span>
-                </div>
-                <div className="font-mono text-teal-300 text-sm">8 decimals</div>
-              </div>
-            </div>
-            
-            <p className="text-sm text-gray-400 mb-4 font-mono">
-              🔗 Direct ARK/DAI pair pricing • DAI ≈ USD for accurate valuation
-            </p>
-            
-            <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/20 rounded-lg p-4">
-              <p className="text-xs text-gray-500 font-mono">
-                ARK_CONTRACT: 0xACC15eF8fa2e702d0138c3662A9E7d696f40F021 | PAIR: 0x03f0bdb4f14e76a35a39ef0ffd87c8bb6d451366
-              </p>
-            </div>
-            
-            {/* Bottom scanning effect */}
-            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/60 to-transparent animate-scan" style={{ animationDelay: '1s' }}></div>
-          </div>
-        </div>
+        
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default ChartSection;
