@@ -1,9 +1,6 @@
-
 import React from 'react';
-
 const LockerHeader = () => {
-  return (
-    <div className="relative">
+  return <div className="relative">
       {/* Quantum field background */}
       <div className="absolute inset-0 -top-20 -bottom-20">
         <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent blur-3xl"></div>
@@ -47,10 +44,8 @@ const LockerHeader = () => {
         </div>
 
         {/* Scanning Effect */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent animate-scan"></div>
+        
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default LockerHeader;

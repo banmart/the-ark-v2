@@ -9,16 +9,16 @@ import TierDisplay from './TierDisplay';
 import ApprovalStatus from './ApprovalStatus';
 import SecurityInfoPanel from './SecurityInfoPanel';
 import LockButton from './LockButton';
-
 interface EnhancedLockInterfaceProps {
   isConnected: boolean;
 }
-
-const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
-  const { 
-    lockTiers, 
-    determineLockTier, 
-    CONTRACT_CONSTANTS, 
+const EnhancedLockInterface = ({
+  isConnected
+}: EnhancedLockInterfaceProps) => {
+  const {
+    lockTiers,
+    determineLockTier,
+    CONTRACT_CONSTANTS,
     lockTokens,
     emergencyMode,
     contractPaused,
@@ -28,32 +28,24 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
     isProcessingApproval,
     isProcessingLock
   } = useLockerData();
-  
   const [lockAmount, setLockAmount] = useState('');
   const [lockDuration, setLockDuration] = useState(30);
-
   const currentTier = determineLockTier(lockDuration);
   const amount = parseFloat(lockAmount || '0');
   const needsApproval = amount > 0 && currentAllowance < amount;
   const hasInsufficientBalance = amount > userArkBalance;
   const isProcessing = isProcessingApproval || isProcessingLock;
-  const isValidDuration = lockDuration >= CONTRACT_CONSTANTS.MIN_LOCK_DURATION && 
-                         lockDuration <= CONTRACT_CONSTANTS.MAX_LOCK_DURATION;
-
+  const isValidDuration = lockDuration >= CONTRACT_CONSTANTS.MIN_LOCK_DURATION && lockDuration <= CONTRACT_CONSTANTS.MAX_LOCK_DURATION;
   const handleLock = async () => {
     if (!lockAmount || !isConnected || hasInsufficientBalance) return;
-    
     try {
       await lockTokens(amount, lockDuration);
-      
       toast({
         title: "Success!",
-        description: `Successfully locked ${amount} ARK tokens for ${lockDuration} days`,
+        description: `Successfully locked ${amount} ARK tokens for ${lockDuration} days`
       });
-      
       setLockAmount('');
       setLockDuration(30);
-      
     } catch (error: any) {
       console.error('Lock failed:', error);
       toast({
@@ -63,9 +55,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
       });
     }
   };
-
-  return (
-    <div className="relative">
+  return <div className="relative">
       {/* Quantum field background */}
       <div className="absolute inset-0 -inset-4">
         <div className="absolute inset-0 bg-gradient-radial from-cyan-500/5 via-transparent to-transparent blur-2xl"></div>
@@ -80,12 +70,10 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
             <span className="text-xs font-mono text-cyan-400 tracking-wider">LOCK_PROTOCOL</span>
           </div>
           <div className="flex-1 h-px bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
-          {(emergencyMode || contractPaused) && (
-            <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/30 rounded-lg">
+          {(emergencyMode || contractPaused) && <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/30 rounded-lg">
               <AlertTriangle className="w-4 h-4 text-red-400 animate-pulse" />
               <span className="text-xs font-mono text-red-400 tracking-wider">ALERT</span>
-            </div>
-          )}
+            </div>}
         </div>
 
         {/* Main Title */}
@@ -103,59 +91,22 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
         <EmergencyModeAlert emergencyMode={emergencyMode} />
 
         <div className="space-y-8">
-          <LockAmountInput
-            lockAmount={lockAmount}
-            setLockAmount={setLockAmount}
-            userArkBalance={userArkBalance}
-            isConnected={isConnected}
-            emergencyMode={emergencyMode}
-            contractPaused={contractPaused}
-            isProcessing={isProcessing}
-          />
+          <LockAmountInput lockAmount={lockAmount} setLockAmount={setLockAmount} userArkBalance={userArkBalance} isConnected={isConnected} emergencyMode={emergencyMode} contractPaused={contractPaused} isProcessing={isProcessing} />
 
-          <LockDurationSlider
-            lockDuration={lockDuration}
-            setLockDuration={setLockDuration}
-            CONTRACT_CONSTANTS={CONTRACT_CONSTANTS}
-            emergencyMode={emergencyMode}
-            contractPaused={contractPaused}
-            isProcessing={isProcessing}
-          />
+          <LockDurationSlider lockDuration={lockDuration} setLockDuration={setLockDuration} CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} emergencyMode={emergencyMode} contractPaused={contractPaused} isProcessing={isProcessing} />
 
-          <TierDisplay
-            currentTier={currentTier}
-            lockAmount={lockAmount}
-            lockDuration={lockDuration}
-            CONTRACT_CONSTANTS={CONTRACT_CONSTANTS}
-          />
+          <TierDisplay currentTier={currentTier} lockAmount={lockAmount} lockDuration={lockDuration} CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} />
 
-          <ApprovalStatus
-            lockAmount={lockAmount}
-            isConnected={isConnected}
-            needsApproval={needsApproval}
-            currentAllowance={currentAllowance}
-          />
+          <ApprovalStatus lockAmount={lockAmount} isConnected={isConnected} needsApproval={needsApproval} currentAllowance={currentAllowance} />
 
           <SecurityInfoPanel CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} />
 
-          <LockButton
-            isConnected={isConnected}
-            lockAmount={lockAmount}
-            isValidDuration={isValidDuration}
-            emergencyMode={emergencyMode}
-            contractPaused={contractPaused}
-            isProcessing={isProcessing}
-            hasInsufficientBalance={hasInsufficientBalance}
-            needsApproval={needsApproval}
-            onLock={handleLock}
-          />
+          <LockButton isConnected={isConnected} lockAmount={lockAmount} isValidDuration={isValidDuration} emergencyMode={emergencyMode} contractPaused={contractPaused} isProcessing={isProcessing} hasInsufficientBalance={hasInsufficientBalance} needsApproval={needsApproval} onLock={handleLock} />
         </div>
 
         {/* Scanning Effect */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent animate-scan"></div>
+        
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default EnhancedLockInterface;
