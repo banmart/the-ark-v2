@@ -68,7 +68,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
             <div className="hidden md:flex items-center gap-3">
               <div className="flex items-center gap-1 px-2 py-1 bg-green-500/10 border border-green-500/30 rounded">
                 <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-xs font-mono text-green-400">BETA</span>
+                <span className="text-xs font-mono text-green-400">LIVE</span>
               </div>
               <div className="flex items-center gap-1">
                 <Wifi className="w-3 h-3 text-cyan-400" />
