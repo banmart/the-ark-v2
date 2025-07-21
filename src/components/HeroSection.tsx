@@ -112,7 +112,7 @@ const HeroSection = ({
           <div className="relative">
             {/* Tech HUD Elements */}
             <div className="absolute -top-8 -left-4 text-cyan-400/40 text-xs font-mono">
-              [SYSTEM_INIT] 0xACC15eF8fa2e...
+              [SYSTEM INIT] 0xACC15eF8fa2e...
             </div>
             <div className="absolute -top-8 right-0 text-cyan-400/40 text-xs font-mono">
               {new Date().toISOString().slice(0, 19)}Z
@@ -154,10 +154,10 @@ const HeroSection = ({
                   <span className="text-cyan-300 font-bold">ARK PROTOCOL DETECTED</span>
                 </div>
                 <div className="text-cyan-400 font-mono text-xs ml-6 space-y-1">
-                  <div>→ DEFLATIONARY_ENGINE: ACTIVE</div>
-                  <div>→ REFLECTION_MATRIX: OPERATIONAL</div>
-                  <div>→ SECURITY_LEVEL: MAXIMUM</div>
-                  <div>→ SALVATION_PROBABILITY: 99.97%</div>
+                  <div>→ DEFLATIONARY ENGINE: ACTIVE</div>
+                  <div>→ REFLECTION MATRIX: OPERATIONAL</div>
+                  <div>→ SECURITY LEVEL: MAXIMUM</div>
+                  <div>→ SALVATION PROBABILITY: 99.97%</div>
                 </div>
               </div>
 
@@ -165,7 +165,7 @@ const HeroSection = ({
               <div className={`transition-all duration-2000 delay-1500 ${textPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <div className="border-l-2 border-cyan-400 pl-4 my-6">
                   <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-                    <span className="text-cyan-400">[TRANSMISSION_DECODED]</span>
+                    <span className="text-cyan-400">[TRANSMISSION DECODED]</span>
                   </h3>
                   <p className="text-sm text-gray-200 leading-relaxed">
                     The digital waters are rising. Projects sink beneath the waves daily, their promises dissolved into the endless ocean of failed tokens. But from the storm clouds emerges a beacon of hope—
