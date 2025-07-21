@@ -156,40 +156,7 @@ const ProphecySection = () => {
 
         {/* System Integration Protocol */}
         <div className={`transition-all duration-1000 delay-1000 ${phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <Cpu className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-lg font-bold text-cyan-400 font-mono">
-                  [ARK_INTEGRATION_PROTOCOL]
-                </h3>
-              </div>
-              <div className="flex items-center gap-2 text-green-400 font-mono text-sm">
-                <Activity className="w-4 h-4 animate-pulse" />
-                <span>PROPHECY_ENGINE_OPERATIONAL</span>
-              </div>
-            </div>
-            
-            <div className="text-center mb-6">
-              <p className="text-gray-300 mb-6 leading-relaxed font-mono">
-                <span className="text-cyan-400">[INTEGRATION_QUERY]:</span> Prophecy matrix indicates unfolding sequence active. 
-                Will you initialize boarding protocol for Noah's ARK vessel and achieve safe passage 
-                through crypto storm matrices to the promised financial freedom coordinates?
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 font-mono">
-                [BOARD_ARK_PROTOCOL]
-              </button>
-              <button className="bg-transparent border-2 border-cyan-500/50 text-cyan-400 font-bold px-8 py-3 rounded-full hover:bg-cyan-500/10 hover:border-cyan-500 transition-all font-mono">
-                [ANALYZE_MATRIX]
-              </button>
-            </div>
-
-            {/* System Status Panel */}
-            
-          </div>
+          
         </div>
       </div>
 
