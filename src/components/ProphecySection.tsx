@@ -28,28 +28,28 @@ const ProphecySection = () => {
   }, []);
   const prophecies = [{
     id: 'flood',
-    title: '[FLOOD_PROTOCOL]',
+    title: '[FLOOD PROTOCOL]',
     emoji: '🌊',
     icon: Waves,
     description: 'System analysis indicates catastrophic market liquidation event imminent. Only ARK protocol holders maintain operational integrity during crypto matrix purge sequence.',
     color: 'cyan',
-    statusCode: 'FLOOD_SIM_ACTIVE'
+    statusCode: 'FLOOD SIM ACTIVE'
   }, {
     id: 'chosen',
-    title: '[CHOSEN_ALGORITHM]',
+    title: '[CHOSEN ALGORITHM]',
     emoji: '⚡',
     icon: Zap,
     description: 'ARK token holders identified as prime candidates for survival protocol. Divine tokenomics engine provides navigation through market storm matrices.',
     color: 'yellow',
-    statusCode: 'SELECTION_PROTOCOL'
+    statusCode: 'SELECTION PROTOCOL'
   }, {
     id: 'newworld',
-    title: '[GENESIS_REBUILD]',
+    title: '[GENESIS REBUILD]',
     emoji: '🕊️',
     icon: Bird,
     description: 'Post-flood reconstruction algorithms engage. ARK passengers designated as foundational nodes for next-generation crypto ecosystem architecture.',
     color: 'emerald',
-    statusCode: 'REBUILD_SEQUENCE'
+    statusCode: 'REBUILD SEQUENCE'
   }];
   const ProphecyModule = ({
     prophecy
@@ -127,17 +127,17 @@ const ProphecySection = () => {
         <div className={`text-center mb-16 transition-all duration-1000 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
             <Database className="w-3 h-3 animate-pulse" />
-            <span>[PROPHECY_MATRIX_ANALYSIS]</span>
+            <span>[PROPHECY MATRIX ANALYSIS]</span>
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
           <h2 className="text-4xl md:text-6xl font-black mb-6 text-cyan-400 font-mono">
-            [NOAH_ARK_PROTOCOL]
+            [NOAH ARK PROTOCOL]
           </h2>
           
           <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
             <p className="text-lg text-gray-200 mb-2 font-mono">
-              <span className="text-cyan-400 font-mono">[ANCIENT_WISDOM_MATRIX]</span> Prophetic algorithms merged with 
+              <span className="text-cyan-400 font-mono">[ANCIENT WISDOM MATRIX]</span> Prophetic algorithms merged with 
               <span className="text-teal-400 font-bold"> quantum innovation protocols</span>. Three-pillar ecosystem 
               <span className="text-green-400 font-semibold"> guidance system</span> activated.
             </p>
