@@ -16,11 +16,11 @@ export const NETWORKS = {
 
 export const CONTRACT_ADDRESSES = {
   ARK_TOKEN: '0xACC15eF8fa2e702d0138c3662A9E7d696f40F021',
-  PULSEX_V2_ROUTER: '0x98bf93ebf5c380C0e6Ae8e192A7e2AE08edAcc02', // Real PulseX V2 Router
+  PULSEX_V2_ROUTER: '0x636f6407B90661b73b1C0F7e24F4C79f624d0738', // Updated from contract
   WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27', // Wrapped PLS
   DAI: '0xefD766cCb38EaF1dfd701853BFCe31359239F305', // DAI token on PulseChain
   ARK_DAI_PAIR: '0x03f0bdb4f14e76a35a39ef0ffd87c8bb6d451366', // ARK/DAI pair
-  DEAD_ADDRESS: '0x0000000000000000000000000000000000000369',
+  DEAD_ADDRESS: '0x0000000000000000000000000000000000000369', // Updated from contract
 };
 
 // Complete SimplifiedLockerVault ABI - UPDATED FOR LATEST CONTRACT
@@ -116,7 +116,7 @@ export const LOCKER_CONSTANTS = {
   }
 };
 
-// Complete ARK Token ABI from the contract
+// Updated ARK Token ABI matching the actual contract
 export const ARK_TOKEN_ABI = [
   // Standard ERC20 functions
   'function name() view returns (string)',
@@ -130,46 +130,43 @@ export const ARK_TOKEN_ABI = [
   'function transferFrom(address sender, address recipient, uint256 amount) returns (bool)',
   
   // Reflection functions
-  'function isExcluded(address account) view returns (bool)',
-  'function totalFeesCollected() view returns (uint256)',
+  'function isExcludedFromReward(address account) view returns (bool)',
   'function tokenFromReflection(uint256 rAmount) view returns (uint256)',
-  'function reflectionFromToken(uint256 tAmount, bool deductTransferFee) view returns (uint256)',
   
-  // Fee and tokenomics functions
-  'function getCurrentFees() view returns (uint256 burnFee, uint256 reflectionFee, uint256 liquidityFee, uint256 lockerFee, uint256 totalFees)',
-  'function getMaxFees() view returns (uint256 maxBurn, uint256 maxReflection, uint256 maxLiquidity, uint256 maxLocker, uint256 maxTotal)',
-  'function updateFees(uint256 _burnFee, uint256 _reflectionFee, uint256 _liquidityFee, uint256 _lockerFee)',
+  // Fee structure (immutable values)
+  'function liquidityFee() view returns (uint256)',
+  'function reflectionFee() view returns (uint256)',
+  'function lockerFee() view returns (uint256)',
+  'function burnFee() view returns (uint256)',
+  'function divider() view returns (uint256)',
   
-  // Locker vault functions
-  'function getLockerRewardsInfo() view returns (address vault, uint256 pending, uint256 distributed)',
-  'function setLockerVault(address _vault)',
-  'function distributeLockerRewards()',
+  // Contract settings
+  'function swapThreshold() view returns (uint256)',
+  'function ARKLocker() view returns (address)',
+  'function pulseXPair() view returns (address)',
+  'function pulseXRouter() view returns (address)',
+  'function burnAddress() view returns (address)',
   
-  // Swap and liquidity functions
-  'function getSwapSettings() view returns (uint256 threshold, uint256 maxAmount, bool enabled)',
-  'function updateSwapSettings(uint256 _threshold, uint256 _maxAmount)',
-  'function setSwapEnabled(bool _enabled)',
-  'function updateSlippageTolerance(uint256 _slippage)',
-  'function getTokensForLiquidity() view returns (uint256)',
-  'function manualSwapAndLiquify()',
-  'function manualBurnLP()',
+  // Admin functions
+  'function excludeFromReward(address account)',
+  'function includeInReward(address account)',
+  'function updateSwapThreshold(uint256 amount)',
+  'function excludeWalletFromFee(address wallet, bool status)',
+  'function setLiquidityPair(address pair, bool status)',
+  'function setARKLocker(address newAddress)',
   
-  // Security functions
-  'function pause()',
-  'function unpause()',
-  'function paused() view returns (bool)',
+  // State variables
+  'function isExcludedFromFee(address) view returns (bool)',
+  'function isLiquidityPair(address) view returns (bool)',
   'function owner() view returns (address)',
   
-  // Account management
-  'function excludeAccount(address account)',
-  'function includeAccount(address account)',
-  
   // Events
-  'event SwapAndLiquify(uint256 tokensSwapped, uint256 plsReceived, uint256 tokensIntoLiquidity)',
-  'event LPTokensBurned(uint256 amount)',
-  'event FeesUpdated(uint256 burnFee, uint256 reflectionFee, uint256 liquidityFee, uint256 lockerFee)',
-  'event SwapSettingsUpdated(uint256 threshold, uint256 maxAmount)',
-  'event LockerRewardsDistributed(uint256 amount)',
+  'event SwapThresholdUpdated(uint256 amount)',
+  'event WalletExcludeFromFee(address indexed wallet, bool status)',
+  'event LiquidityPairUpdated(address indexed pair, bool status)',
+  'event ARKLockerUpdated(address indexed newAddress)',
+  'event ExcludedFromReward(address indexed account)',
+  'event IncludedInReward(address indexed account)',
 ];
 
 // Real PulseX V2 Router ABI
@@ -183,15 +180,21 @@ export const DEX_ROUTER_ABI = [
   'function factory() external pure returns (address)',
 ];
 
-// Contract constants from the Solidity code
+// Contract constants from the Solidity code - UPDATED TO MATCH ACTUAL CONTRACT
 export const CONTRACT_CONSTANTS = {
-  MAX_BURN_FEE: 3,
-  MAX_REFLECTION_FEE: 3,
-  MAX_LIQUIDITY_FEE: 2,
-  MAX_LOCKER_FEE: 2,
-  MAX_TOTAL_FEES: 9,
-  MIN_SWAP_THRESHOLD: 1000, // in tokens (before decimals)
-  MAX_SWAP_THRESHOLD: 50000, // in tokens (before decimals)
-  MAX_SLIPPAGE: 500, // 5% in basis points
-  DEFAULT_SLIPPAGE: 200, // 2% in basis points
+  // Fixed fee structure from contract (immutable values)
+  LIQUIDITY_FEE: 300, // 3%
+  REFLECTION_FEE: 200, // 2%
+  LOCKER_FEE: 200, // 2%
+  BURN_FEE: 200, // 2%
+  TOTAL_FEES: 900, // 9%
+  DIVIDER: 10000, // Basis points
+  
+  // Swap settings
+  DEFAULT_SWAP_THRESHOLD: 50000, // 50,000 tokens
+  MIN_SWAP_THRESHOLD: 1000, // 1,000 tokens minimum
+  
+  // Token supply
+  TOTAL_SUPPLY: 1000000000, // 1 billion tokens
+  DECIMALS: 18,
 };
