@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -146,6 +147,20 @@
 
   .animate-scale-in {
     animation: scale-in 0.3s ease-out;
+  }
+
+  /* Scanning animation for onboarding */
+  @keyframes scan {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-scan {
+    animation: scan 2s ease-in-out infinite;
   }
 }
 
