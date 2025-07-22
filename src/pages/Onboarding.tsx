@@ -152,7 +152,7 @@ const Onboarding = () => {
                   name={service.name}
                   description={service.description}
                   icon={service.icon}
-                  color={service.color}
+                  color={service.color as "blue" | "green" | "purple" | "yellow" | "cyan"}
                   onClick={() => handleExternalLink(service.url, service.name)}
                   isAvailable={service.isAvailable}
                 />
@@ -221,7 +221,7 @@ const Onboarding = () => {
                   <Button 
                     onClick={() => {
                       // This will trigger wallet connection from the navigation
-                      document.querySelector('nav button')?.click();
+                      (document.querySelector('nav button') as HTMLButtonElement)?.click();
                     }}
                     className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 font-mono font-bold tracking-wide hover:scale-105 transition-all"
                   >

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Bridge, ShoppingCart, Lock, Gift } from 'lucide-react';
+import { ArrowRight, GitBranch, ShoppingCart, Lock, Gift } from 'lucide-react';
 
 const ProcessFlow = () => {
   const steps = [
@@ -8,7 +8,7 @@ const ProcessFlow = () => {
       id: 1,
       title: 'BRIDGE',
       description: 'Move assets to PulseChain',
-      icon: Bridge,
+      icon: GitBranch,
       color: 'blue'
     },
     {
