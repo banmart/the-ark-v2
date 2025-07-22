@@ -120,7 +120,7 @@ const HeroSection = ({
 
             {/* Main Title - THE ARK ❍ */}
             <div className="relative mb-8">
-              <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-fade-in">REWARDS FOR TRUE BELIEVERS</h1>
+              <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-fade-in">CRYPTO THAT GIVES REWARDS</h1>
             </div>
 
             {/* Cinematic Text Sequence */}
