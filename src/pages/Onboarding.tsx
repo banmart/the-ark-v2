@@ -93,9 +93,7 @@ const Onboarding = () => {
               <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
                 [INITIALIZATION_SEQUENCE]
               </div>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent">
-                Ready to get started with ARK?
-              </h1>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent">GET STARTED WITH ARK?</h1>
               <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
                 [DIVINE_ASCENSION_AWAITS]
               </div>
