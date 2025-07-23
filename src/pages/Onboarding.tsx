@@ -33,7 +33,7 @@ const Onboarding = () => {
       description: 'Fast fiat on-ramp service',
       icon: Zap,
       color: 'green',
-      url: 'https://ramp.network',
+      url: 'https://app.rampnow.io/',
       isAvailable: true
     },
     {
@@ -41,7 +41,7 @@ const Onboarding = () => {
       description: 'Exchange crypto instantly',
       icon: ArrowRight,
       color: 'purple',
-      url: 'https://changenow.io',
+      url: 'https://changenow.app.link/referral?link_id=e49c221824244a',
       isAvailable: true
     }
   ];
