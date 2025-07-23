@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Zap, DollarSign, Lock, Gift, ExternalLink } from 'lucide-react';
+import { ArrowRight, Zap, DollarSign, Lock, Gift, ExternalLink, Wallet } from 'lucide-react';
 import BaseLayout from '../components/layout/BaseLayout';
 import ProcessFlow from '../components/onboarding/ProcessFlow';
 import ServiceCard from '../components/onboarding/ServiceCard';
@@ -9,6 +9,7 @@ import { Button } from '../components/ui/button';
 import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
 import { useNavigate } from 'react-router-dom';
 import { useWalletContext } from '../components/providers/WalletProvider';
+
 const Onboarding = () => {
   const {
     openPopup,
@@ -21,9 +22,11 @@ const Onboarding = () => {
   const {
     isConnected
   } = useWalletContext();
+
   const handleExternalLink = (url: string, title: string) => {
     openPopup(url, title);
   };
+
   const paymentServices = [{
     name: '0xCoast',
     description: 'Buy crypto with credit card',
@@ -45,7 +48,15 @@ const Onboarding = () => {
     color: 'purple',
     url: 'https://changenow.app.link/referral?link_id=e49c221824244a',
     isAvailable: true
+  }, {
+    name: 'MetaMask',
+    description: 'Crypto wallet browser extension',
+    icon: Wallet,
+    color: 'yellow',
+    url: 'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en',
+    isAvailable: true
   }];
+
   const arkActions = [{
     name: 'Bridge Assets',
     description: 'Move assets to PulseChain',
@@ -71,6 +82,7 @@ const Onboarding = () => {
     icon: '🔒',
     external: false
   }];
+
   return <BaseLayout>
       <div className="min-h-screen bg-black text-white">
         {/* Hero Section */}
@@ -124,7 +136,7 @@ const Onboarding = () => {
         <div className="px-6 mb-16">
           <div className="max-w-6xl mx-auto">
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {paymentServices.map(service => <ServiceCard key={service.name} name={service.name} description={service.description} icon={service.icon} color={service.color as "blue" | "green" | "purple" | "yellow" | "cyan"} onClick={() => handleExternalLink(service.url, service.name)} isAvailable={service.isAvailable} />)}
             </div>
           </div>
@@ -192,4 +204,5 @@ const Onboarding = () => {
       <MobileBrowserPopup isOpen={isOpen} onClose={closePopup} url={url} title={title} />
     </BaseLayout>;
 };
+
 export default Onboarding;
