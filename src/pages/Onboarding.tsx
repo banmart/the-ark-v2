@@ -4,6 +4,7 @@ import { ArrowRight, Zap, DollarSign, Lock, Gift, ExternalLink } from 'lucide-re
 import BaseLayout from '../components/layout/BaseLayout';
 import ProcessFlow from '../components/onboarding/ProcessFlow';
 import ServiceCard from '../components/onboarding/ServiceCard';
+import MobileBrowserPopup from '../components/MobileBrowserPopup';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
@@ -11,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWalletContext } from '../components/providers/WalletProvider';
 
 const Onboarding = () => {
-  const { openPopup } = useBrowserPopup();
+  const { openPopup, isOpen, closePopup, url, title } = useBrowserPopup();
   const navigate = useNavigate();
   const { isConnected } = useWalletContext();
 
@@ -233,6 +234,14 @@ const Onboarding = () => {
           </div>
         )}
       </div>
+      
+      {/* Mobile Browser Popup */}
+      <MobileBrowserPopup
+        isOpen={isOpen}
+        onClose={closePopup}
+        url={url}
+        title={title}
+      />
     </BaseLayout>
   );
 };
