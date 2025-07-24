@@ -9,7 +9,6 @@ import { Button } from '../components/ui/button';
 import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
 import { useNavigate } from 'react-router-dom';
 import { useWalletContext } from '../components/providers/WalletProvider';
-
 const Onboarding = () => {
   const {
     openPopup,
@@ -22,11 +21,9 @@ const Onboarding = () => {
   const {
     isConnected
   } = useWalletContext();
-
   const handleExternalLink = (url: string, title: string) => {
     openPopup(url, title);
   };
-
   const paymentServices = [{
     name: '0xCoast',
     description: 'Buy crypto with credit card',
@@ -56,7 +53,6 @@ const Onboarding = () => {
     url: 'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en',
     isAvailable: true
   }];
-
   const arkActions = [{
     name: 'Bridge Assets',
     description: 'Move assets to PulseChain',
@@ -82,7 +78,6 @@ const Onboarding = () => {
     icon: '🔒',
     external: false
   }];
-
   return <BaseLayout>
       <div className="min-h-screen bg-black text-white">
         {/* Hero Section */}
@@ -112,15 +107,7 @@ const Onboarding = () => {
             </div>
 
             {/* Description */}
-            <div className="max-w-3xl mx-auto mb-12">
-              <div className="bg-black/30 backdrop-blur-xl border border-teal-500/30 rounded-xl p-6">
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  Join the ARK protocol and begin your divine ascension. Follow our guided process to bridge assets, acquire ARK tokens, and start earning rewards through our innovative vault system.
-                  <br />
-                  <span className="text-teal-400 font-mono text-sm mt-2 block">Your journey to Noah's Council starts here.</span>
-                </p>
-              </div>
-            </div>
+            
           </div>
         </div>
 
@@ -204,5 +191,4 @@ const Onboarding = () => {
       <MobileBrowserPopup isOpen={isOpen} onClose={closePopup} url={url} title={title} />
     </BaseLayout>;
 };
-
 export default Onboarding;
