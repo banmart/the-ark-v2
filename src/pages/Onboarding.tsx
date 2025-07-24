@@ -129,6 +129,16 @@ const Onboarding = () => {
           </div>
         </div>
 
+        {/* Payment Services - Duplicate */}
+        <div className="px-6 mb-16">
+          <div className="max-w-6xl mx-auto">
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {paymentServices.map(service => <ServiceCard key={`duplicate-${service.name}`} name={service.name} description={service.description} icon={service.icon} color={service.color as "blue" | "green" | "purple" | "yellow" | "cyan"} onClick={() => handleExternalLink(service.url, service.name)} isAvailable={service.isAvailable} />)}
+            </div>
+          </div>
+        </div>
+
         {/* ARK Ecosystem Actions */}
         <div className="px-6 mb-20">
           <div className="max-w-6xl mx-auto">
