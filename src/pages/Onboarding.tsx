@@ -45,6 +45,13 @@ const Onboarding = () => {
         color: 'green',
         url: 'https://app.rampnow.io/',
         isAvailable: true
+      }, {
+        name: 'MetaMask',
+        description: 'Crypto wallet browser extension',
+        icon: Wallet,
+        color: 'yellow',
+        url: 'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en',
+        isAvailable: true
       }],
       actions: []
     },
@@ -94,14 +101,7 @@ const Onboarding = () => {
       title: 'LOCK',
       subtitle: 'Lock tokens for rewards',
       color: 'purple',
-      services: [{
-        name: 'MetaMask',
-        description: 'Crypto wallet browser extension',
-        icon: Wallet,
-        color: 'yellow',
-        url: 'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en',
-        isAvailable: true
-      }],
+      services: [],
       actions: [{
         name: 'Vault (Locker)',
         description: 'Lock tokens for rewards',
@@ -170,7 +170,7 @@ const Onboarding = () => {
 
               {/* Services Grid */}
               {section.services && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className={`grid gap-6 mb-6 justify-items-center ${section.services.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`}>
                   {section.services.map(service => (
                     <ServiceCard 
                       key={service.name} 
@@ -187,7 +187,7 @@ const Onboarding = () => {
 
               {/* Actions Grid */}
               {section.actions && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center">
                   {section.actions.map((action) => (
                     <Card key={action.name} className="bg-black/50 border-cyan-500/30 hover:bg-black/70 transition-all duration-300 hover:scale-105 group relative overflow-hidden">
                       {/* Scanning effect */}
