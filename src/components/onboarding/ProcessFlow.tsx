@@ -124,6 +124,47 @@ const ProcessFlow = () => {
         })}
       </div>
 
+      {/* Duplicate Desktop Flow */}
+      <div className="hidden md:flex items-center justify-center gap-8 mt-16">
+        {steps.map((step, index) => {
+          const colors = getColorClasses(step.color);
+          return (
+            <div key={`duplicate-${step.id}`} className="flex items-center">
+              {/* Step Circle */}
+              <div className="flex flex-col items-center group">
+                <div className={`
+                  w-20 h-20 rounded-full border-2 ${colors.border} ${colors.bg} 
+                  flex items-center justify-center relative overflow-hidden
+                  transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg ${colors.glow}
+                `}>
+                  {/* Scanning effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent 
+                    translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000`}></div>
+                  
+                  <step.icon className={`w-8 h-8 ${colors.text} relative z-10`} />
+                </div>
+                
+                <div className="mt-4 text-center">
+                  <div className={`font-mono font-bold ${colors.text} text-sm tracking-wider`}>
+                    {step.title}
+                  </div>
+                  <div className="text-gray-400 text-xs mt-1 max-w-24">
+                    {step.description}
+                  </div>
+                </div>
+              </div>
+
+              {/* Arrow (except for last step) */}
+              {index < steps.length - 1 && (
+                <div className="mx-6">
+                  <ArrowRight className="w-6 h-6 text-cyan-400/60 animate-pulse" />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
       {/* Mobile Flow */}
       <div className="md:hidden space-y-6">
         {steps.map((step, index) => {
