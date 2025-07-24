@@ -1,46 +1,37 @@
-
 import React from 'react';
 import { ArrowRight, GitBranch, ShoppingCart, Lock, Gift, Building } from 'lucide-react';
-
 const ProcessFlow = () => {
-  const steps = [
-    {
-      id: 1,
-      title: 'BANK',
-      description: 'Connect bank account',
-      icon: Building,
-      color: 'cyan'
-    },
-    {
-      id: 2,
-      title: 'BRIDGE',
-      description: 'Move assets to PulseChain',
-      icon: GitBranch,
-      color: 'blue'
-    },
-    {
-      id: 3,
-      title: 'BUY',
-      description: 'Purchase ARK tokens',
-      icon: ShoppingCart,
-      color: 'green'
-    },
-    {
-      id: 4,
-      title: 'VAULT',
-      description: 'Lock tokens for rewards',
-      icon: Lock,
-      color: 'purple'
-    },
-    {
-      id: 5,
-      title: 'EARN',
-      description: 'Generate divine rewards',
-      icon: Gift,
-      color: 'yellow'
-    }
-  ];
-
+  const steps = [{
+    id: 1,
+    title: 'BANK',
+    description: 'Connect bank account',
+    icon: Building,
+    color: 'cyan'
+  }, {
+    id: 2,
+    title: 'BRIDGE',
+    description: 'Move assets to PulseChain',
+    icon: GitBranch,
+    color: 'blue'
+  }, {
+    id: 3,
+    title: 'BUY',
+    description: 'Purchase ARK tokens',
+    icon: ShoppingCart,
+    color: 'green'
+  }, {
+    id: 4,
+    title: 'VAULT',
+    description: 'Lock tokens for rewards',
+    icon: Lock,
+    color: 'purple'
+  }, {
+    id: 5,
+    title: 'EARN',
+    description: 'Generate divine rewards',
+    icon: Gift,
+    color: 'yellow'
+  }];
   const getColorClasses = (color: string) => {
     switch (color) {
       case 'blue':
@@ -80,15 +71,12 @@ const ProcessFlow = () => {
         };
     }
   };
-
-  return (
-    <div className="relative">
+  return <div className="relative">
       {/* Desktop Flow */}
       <div className="hidden md:flex items-center justify-center gap-8">
         {steps.map((step, index) => {
-          const colors = getColorClasses(step.color);
-          return (
-            <div key={step.id} className="flex items-center">
+        const colors = getColorClasses(step.color);
+        return <div key={step.id} className="flex items-center">
               {/* Step Circle */}
               <div className="flex flex-col items-center group">
                 <div className={`
@@ -114,63 +102,21 @@ const ProcessFlow = () => {
               </div>
 
               {/* Arrow (except for last step) */}
-              {index < steps.length - 1 && (
-                <div className="mx-6">
+              {index < steps.length - 1 && <div className="mx-6">
                   <ArrowRight className="w-6 h-6 text-cyan-400/60 animate-pulse" />
-                </div>
-              )}
-            </div>
-          );
-        })}
+                </div>}
+            </div>;
+      })}
       </div>
 
       {/* Duplicate Desktop Flow */}
-      <div className="hidden md:flex items-center justify-center gap-8 mt-16">
-        {steps.map((step, index) => {
-          const colors = getColorClasses(step.color);
-          return (
-            <div key={`duplicate-${step.id}`} className="flex items-center">
-              {/* Step Circle */}
-              <div className="flex flex-col items-center group">
-                <div className={`
-                  w-20 h-20 rounded-full border-2 ${colors.border} ${colors.bg} 
-                  flex items-center justify-center relative overflow-hidden
-                  transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg ${colors.glow}
-                `}>
-                  {/* Scanning effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent 
-                    translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000`}></div>
-                  
-                  <step.icon className={`w-8 h-8 ${colors.text} relative z-10`} />
-                </div>
-                
-                <div className="mt-4 text-center">
-                  <div className={`font-mono font-bold ${colors.text} text-sm tracking-wider`}>
-                    {step.title}
-                  </div>
-                  <div className="text-gray-400 text-xs mt-1 max-w-24">
-                    {step.description}
-                  </div>
-                </div>
-              </div>
-
-              {/* Arrow (except for last step) */}
-              {index < steps.length - 1 && (
-                <div className="mx-6">
-                  <ArrowRight className="w-6 h-6 text-cyan-400/60 animate-pulse" />
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      
 
       {/* Mobile Flow */}
       <div className="md:hidden space-y-6">
         {steps.map((step, index) => {
-          const colors = getColorClasses(step.color);
-          return (
-            <div key={step.id} className="flex flex-col items-center">
+        const colors = getColorClasses(step.color);
+        return <div key={step.id} className="flex flex-col items-center">
               {/* Step Circle */}
               <div className="flex items-center gap-4 w-full">
                 <div className={`
@@ -192,22 +138,17 @@ const ProcessFlow = () => {
               </div>
 
               {/* Arrow (except for last step) */}
-              {index < steps.length - 1 && (
-                <div className="my-4">
+              {index < steps.length - 1 && <div className="my-4">
                   <div className="w-0.5 h-8 bg-gradient-to-b from-cyan-400/60 to-transparent"></div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+                </div>}
+            </div>;
+      })}
       </div>
 
       {/* Quantum field effect */}
       <div className="absolute inset-0 -z-10 opacity-30">
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent animate-pulse"></div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ProcessFlow;
