@@ -1,32 +1,39 @@
 
 import React from 'react';
-import { ArrowRight, GitBranch, ShoppingCart, Lock, Gift } from 'lucide-react';
+import { ArrowRight, GitBranch, ShoppingCart, Lock, Gift, Building } from 'lucide-react';
 
 const ProcessFlow = () => {
   const steps = [
     {
       id: 1,
+      title: 'BANK',
+      description: 'Connect bank account',
+      icon: Building,
+      color: 'cyan'
+    },
+    {
+      id: 2,
       title: 'BRIDGE',
       description: 'Move assets to PulseChain',
       icon: GitBranch,
       color: 'blue'
     },
     {
-      id: 2,
+      id: 3,
       title: 'BUY',
       description: 'Purchase ARK tokens',
       icon: ShoppingCart,
       color: 'green'
     },
     {
-      id: 3,
+      id: 4,
       title: 'VAULT',
       description: 'Lock tokens for rewards',
       icon: Lock,
       color: 'purple'
     },
     {
-      id: 4,
+      id: 5,
       title: 'EARN',
       description: 'Generate divine rewards',
       icon: Gift,
