@@ -24,60 +24,93 @@ const Onboarding = () => {
   const handleExternalLink = (url: string, title: string) => {
     openPopup(url, title);
   };
-  const paymentServices = [{
-    name: '0xCoast',
-    description: 'Buy crypto with credit card',
-    icon: DollarSign,
-    color: 'blue',
-    url: 'https://0xcoast.com',
-    isAvailable: true
-  }, {
-    name: 'RampNow',
-    description: 'Fast fiat on-ramp service',
-    icon: Zap,
-    color: 'green',
-    url: 'https://app.rampnow.io/',
-    isAvailable: true
-  }, {
-    name: 'ChangeNow',
-    description: 'Exchange crypto instantly',
-    icon: ArrowRight,
-    color: 'purple',
-    url: 'https://changenow.app.link/referral?link_id=e49c221824244a',
-    isAvailable: true
-  }, {
-    name: 'MetaMask',
-    description: 'Crypto wallet browser extension',
-    icon: Wallet,
-    color: 'yellow',
-    url: 'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en',
-    isAvailable: true
-  }];
-  const arkActions = [{
-    name: 'Bridge Assets',
-    description: 'Move assets to PulseChain',
-    url: 'https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge',
-    icon: '🌉',
-    external: true
-  }, {
-    name: 'Buy ARK',
-    description: 'Purchase ARK tokens on PulseX',
-    url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021',
-    icon: '💰',
-    external: true
-  }, {
-    name: 'Add Liquidity',
-    description: 'Provide liquidity to earn fees',
-    url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0xacc15ef8fa2e702d0138c3662a9e7d696f40f021/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
-    icon: '💧',
-    external: true
-  }, {
-    name: 'Vault (Locker)',
-    description: 'Lock tokens for rewards',
-    url: '/locker',
-    icon: '🔒',
-    external: false
-  }];
+  // Grouped sections for organized onboarding
+  const groupedSections = {
+    bank: {
+      id: 'bank',
+      title: 'BANK',
+      subtitle: 'Connect bank account',
+      color: 'cyan',
+      services: [{
+        name: '0xCoast',
+        description: 'Buy crypto with credit card',
+        icon: DollarSign,
+        color: 'blue',
+        url: 'https://0xcoast.com',
+        isAvailable: true
+      }, {
+        name: 'RampNow',
+        description: 'Fast fiat on-ramp service',
+        icon: Zap,
+        color: 'green',
+        url: 'https://app.rampnow.io/',
+        isAvailable: true
+      }],
+      actions: []
+    },
+    bridge: {
+      id: 'bridge',
+      title: 'BRIDGE',
+      subtitle: 'Move assets to PulseChain',
+      color: 'blue',
+      services: [{
+        name: 'ChangeNow',
+        description: 'Exchange crypto instantly',
+        icon: ArrowRight,
+        color: 'purple',
+        url: 'https://changenow.app.link/referral?link_id=e49c221824244a',
+        isAvailable: true
+      }],
+      actions: [{
+        name: 'Bridge Assets',
+        description: 'Move assets to PulseChain',
+        url: 'https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge',
+        icon: '🌉',
+        external: true
+      }]
+    },
+    buy: {
+      id: 'buy',
+      title: 'BUY',
+      subtitle: 'Purchase ARK tokens',
+      color: 'green',
+      services: [],
+      actions: [{
+        name: 'Buy ARK',
+        description: 'Purchase ARK tokens on PulseX',
+        url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021',
+        icon: '💰',
+        external: true
+      }, {
+        name: 'Add Liquidity',
+        description: 'Provide liquidity to earn fees',
+        url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0xacc15ef8fa2e702d0138c3662a9e7d696f40f021/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
+        icon: '💧',
+        external: true
+      }]
+    },
+    lock: {
+      id: 'lock',
+      title: 'LOCK',
+      subtitle: 'Lock tokens for rewards',
+      color: 'purple',
+      services: [{
+        name: 'MetaMask',
+        description: 'Crypto wallet browser extension',
+        icon: Wallet,
+        color: 'yellow',
+        url: 'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en',
+        isAvailable: true
+      }],
+      actions: [{
+        name: 'Vault (Locker)',
+        description: 'Lock tokens for rewards',
+        url: '/locker',
+        icon: '🔒',
+        external: false
+      }]
+    }
+  };
   return <BaseLayout>
       <div className="min-h-screen bg-black text-white">
         {/* Hero Section */}
@@ -119,48 +152,73 @@ const Onboarding = () => {
           </div>
         </div>
 
-        {/* Payment Services */}
-        <div className="px-6 mb-16">
-          <div className="max-w-6xl mx-auto">
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {paymentServices.map(service => <ServiceCard key={service.name} name={service.name} description={service.description} icon={service.icon} color={service.color as "blue" | "green" | "purple" | "yellow" | "cyan"} onClick={() => handleExternalLink(service.url, service.name)} isAvailable={service.isAvailable} />)}
-            </div>
-          </div>
-        </div>
+        {/* Grouped Onboarding Sections */}
+        {Object.values(groupedSections).map((section) => (
+          <div key={section.id} id={section.id} className="px-6 mb-16">
+            <div className="max-w-6xl mx-auto">
+              {/* Section Header */}
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                  <span className="text-xs font-mono text-cyan-400 tracking-wider">{section.title}_PROTOCOL</span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent font-mono">
+                  {section.title}
+                </h2>
+                <p className="text-gray-400 text-sm">{section.subtitle}</p>
+              </div>
 
-        {/* ARK Ecosystem Actions */}
-        <div className="px-6 mb-20">
-          <div className="max-w-6xl mx-auto">
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {arkActions.map((action, index) => <Card key={action.name} className="bg-black/50 border-cyan-500/30 hover:bg-black/70 transition-all duration-300 hover:scale-105 group relative overflow-hidden">
-                  {/* Scanning effect */}
-                  <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>
-                  
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-3 text-cyan-400">
-                      <span className="text-2xl">{action.icon}</span>
-                      <span className="font-mono text-sm">{action.name}</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-400 text-sm mb-4">{action.description}</p>
-                    <Button onClick={() => {
-                  if (action.external) {
-                    handleExternalLink(action.url, action.name);
-                  } else {
-                    navigate(action.url);
-                  }
-                }} className="w-full bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform">
-                      {action.external ? 'OPEN' : 'NAVIGATE'}
-                      {action.external && <ExternalLink className="w-4 h-4 ml-2" />}
-                    </Button>
-                  </CardContent>
-                </Card>)}
+              {/* Services Grid */}
+              {section.services && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {section.services.map(service => (
+                    <ServiceCard 
+                      key={service.name} 
+                      name={service.name} 
+                      description={service.description} 
+                      icon={service.icon} 
+                      color={service.color as "blue" | "green" | "purple" | "yellow" | "cyan"} 
+                      onClick={() => handleExternalLink(service.url, service.name)} 
+                      isAvailable={service.isAvailable} 
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Actions Grid */}
+              {section.actions && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {section.actions.map((action) => (
+                    <Card key={action.name} className="bg-black/50 border-cyan-500/30 hover:bg-black/70 transition-all duration-300 hover:scale-105 group relative overflow-hidden">
+                      {/* Scanning effect */}
+                      <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>
+                      
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center gap-3 text-cyan-400">
+                          <span className="text-2xl">{action.icon}</span>
+                          <span className="font-mono text-sm">{action.name}</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-gray-400 text-sm mb-4">{action.description}</p>
+                        <Button onClick={() => {
+                          if (action.external) {
+                            handleExternalLink(action.url, action.name);
+                          } else {
+                            navigate(action.url);
+                          }
+                        }} className="w-full bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform">
+                          {action.external ? 'OPEN' : 'NAVIGATE'}
+                          {action.external && <ExternalLink className="w-4 h-4 ml-2" />}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        ))}
 
         {/* Wallet Connection CTA */}
         {!isConnected && <div className="px-6 mb-20">

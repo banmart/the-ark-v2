@@ -6,32 +6,46 @@ const ProcessFlow = () => {
     title: 'BANK',
     description: 'Connect bank account',
     icon: Building,
-    color: 'cyan'
+    color: 'cyan',
+    sectionId: 'bank'
   }, {
     id: 2,
     title: 'BRIDGE',
     description: 'Move assets to PulseChain',
     icon: GitBranch,
-    color: 'blue'
+    color: 'blue',
+    sectionId: 'bridge'
   }, {
     id: 3,
     title: 'BUY',
     description: 'Purchase ARK tokens',
     icon: ShoppingCart,
-    color: 'green'
+    color: 'green',
+    sectionId: 'buy'
   }, {
     id: 4,
-    title: 'VAULT',
+    title: 'LOCK',
     description: 'Lock tokens for rewards',
     icon: Lock,
-    color: 'purple'
+    color: 'purple',
+    sectionId: 'lock'
   }, {
     id: 5,
     title: 'EARN',
     description: 'Generate divine rewards',
     icon: Gift,
-    color: 'yellow'
+    color: 'yellow',
+    sectionId: null // No corresponding section yet
   }];
+
+  const scrollToSection = (sectionId: string | null) => {
+    if (sectionId) {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
   const getColorClasses = (color: string) => {
     switch (color) {
       case 'blue':
@@ -79,17 +93,22 @@ const ProcessFlow = () => {
         return <div key={step.id} className="flex items-center">
               {/* Step Circle */}
               <div className="flex flex-col items-center group">
-                <div className={`
-                  w-20 h-20 rounded-full border-2 ${colors.border} ${colors.bg} 
-                  flex items-center justify-center relative overflow-hidden
-                  transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg ${colors.glow}
-                `}>
+                <button 
+                  onClick={() => scrollToSection(step.sectionId)}
+                  className={`
+                    w-20 h-20 rounded-full border-2 ${colors.border} ${colors.bg} 
+                    flex items-center justify-center relative overflow-hidden
+                    transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg ${colors.glow}
+                    ${step.sectionId ? 'cursor-pointer hover:brightness-110' : 'cursor-default'}
+                  `}
+                  disabled={!step.sectionId}
+                >
                   {/* Scanning effect */}
                   <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent 
                     translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000`}></div>
                   
                   <step.icon className={`w-8 h-8 ${colors.text} relative z-10`} />
-                </div>
+                </button>
                 
                 <div className="mt-4 text-center">
                   <div className={`font-mono font-bold ${colors.text} text-sm tracking-wider`}>
@@ -119,13 +138,18 @@ const ProcessFlow = () => {
         return <div key={step.id} className="flex flex-col items-center">
               {/* Step Circle */}
               <div className="flex items-center gap-4 w-full">
-                <div className={`
-                  w-16 h-16 rounded-full border-2 ${colors.border} ${colors.bg} 
-                  flex items-center justify-center relative overflow-hidden
-                  transition-all duration-300 hover:scale-105 hover:shadow-lg ${colors.glow}
-                `}>
+                <button 
+                  onClick={() => scrollToSection(step.sectionId)}
+                  className={`
+                    w-16 h-16 rounded-full border-2 ${colors.border} ${colors.bg} 
+                    flex items-center justify-center relative overflow-hidden
+                    transition-all duration-300 hover:scale-105 hover:shadow-lg ${colors.glow}
+                    ${step.sectionId ? 'cursor-pointer hover:brightness-110' : 'cursor-default'}
+                  `}
+                  disabled={!step.sectionId}
+                >
                   <step.icon className={`w-6 h-6 ${colors.text}`} />
-                </div>
+                </button>
                 
                 <div className="flex-1">
                   <div className={`font-mono font-bold ${colors.text} text-lg tracking-wider`}>
