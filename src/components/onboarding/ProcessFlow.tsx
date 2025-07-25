@@ -1,41 +1,41 @@
 import React from 'react';
-import { ArrowRight, GitBranch, ShoppingCart, Lock, Gift, Building } from 'lucide-react';
+import { ArrowRight, GitBranch, ShoppingCart, Lock, Building, Wallet } from 'lucide-react';
 const ProcessFlow = () => {
   const steps = [{
     id: 1,
+    title: 'WALLET',
+    description: 'Setup crypto wallet',
+    icon: Wallet,
+    color: 'purple',
+    sectionId: 'wallet'
+  }, {
+    id: 2,
     title: 'BANK',
     description: 'Connect bank account',
     icon: Building,
     color: 'cyan',
     sectionId: 'bank'
   }, {
-    id: 2,
+    id: 3,
     title: 'BRIDGE',
     description: 'Move assets to PulseChain',
     icon: GitBranch,
     color: 'blue',
     sectionId: 'bridge'
   }, {
-    id: 3,
+    id: 4,
     title: 'BUY',
     description: 'Purchase ARK tokens',
     icon: ShoppingCart,
     color: 'green',
     sectionId: 'buy'
   }, {
-    id: 4,
+    id: 5,
     title: 'LOCK',
     description: 'Lock tokens for rewards',
     icon: Lock,
-    color: 'purple',
-    sectionId: 'lock'
-  }, {
-    id: 5,
-    title: 'EARN',
-    description: 'Generate divine rewards',
-    icon: Gift,
     color: 'yellow',
-    sectionId: null // No corresponding section yet
+    sectionId: 'lock'
   }];
 
   const scrollToSection = (sectionId: string | null) => {
