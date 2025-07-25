@@ -24,6 +24,10 @@ const Onboarding = () => {
   const handleExternalLink = (url: string, title: string) => {
     openPopup(url, title);
   };
+
+  const handleNewTabLink = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
   // Grouped sections for organized onboarding
   const groupedSections = {
     wallet: {
@@ -186,7 +190,13 @@ const Onboarding = () => {
                       description={service.description} 
                       icon={service.icon} 
                       color={service.color as "blue" | "green" | "purple" | "yellow" | "cyan"} 
-                      onClick={() => handleExternalLink(service.url, service.name)} 
+                      onClick={() => {
+                        if (service.name === 'MetaMask' || service.name === 'ChangeNow') {
+                          handleNewTabLink(service.url);
+                        } else {
+                          handleExternalLink(service.url, service.name);
+                        }
+                      }}
                       isAvailable={service.isAvailable} 
                     />
                   ))}
@@ -211,7 +221,7 @@ const Onboarding = () => {
                         <p className="text-gray-400 text-sm mb-4">{action.description}</p>
                         <Button onClick={() => {
                           if (action.external) {
-                            handleExternalLink(action.url, action.name);
+                            handleNewTabLink(action.url);
                           } else {
                             navigate(action.url);
                           }
