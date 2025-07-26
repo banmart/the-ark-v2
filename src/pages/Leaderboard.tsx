@@ -200,6 +200,21 @@ const Leaderboard = () => {
         return 'Ark Authority';
     }
   };
+
+  const getSortLabelMobile = (criteria: string) => {
+    switch (criteria) {
+      case 'weight':
+        return 'Authority';
+      case 'locked':
+        return 'Vault';
+      case 'rewards':
+        return 'Rewards';
+      case 'activeLocks':
+        return 'Locks';
+      default:
+        return 'Authority';
+    }
+  };
   return <BaseLayout>
       <div className="min-h-screen bg-black text-white">
         {/* Quantum ARK Header */}
@@ -222,7 +237,7 @@ const Leaderboard = () => {
               <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
                 [DIVINE_ASCENSION_PROTOCOL]
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">ARK LEADERBOARD</h1>
+              <h1 className="text-3xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">ARK LEADERBOARD</h1>
               <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
                 [NOAH_COUNCIL_RANKINGS]
               </div>
@@ -252,7 +267,7 @@ const Leaderboard = () => {
         {/* Stats Overview */}
         <div className="px-6 -mt-8">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <Card className="bg-black/50 border-cyan-500/30">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
@@ -315,9 +330,12 @@ const Leaderboard = () => {
                 <p className="text-sm text-gray-400">Choose your divine ascension metric</p>
               </div>
               
-              <div className="flex flex-wrap gap-3 justify-center max-w-2xl mx-auto">
-                {(['weight', 'locked', 'rewards', 'activeLocks'] as const).map(criteria => <Button key={criteria} variant={sortBy === criteria ? "default" : "outline"} onClick={() => setSortBy(criteria)} className={`relative px-6 py-3 rounded-xl font-medium transition-all duration-300 border-2 hover:scale-105 ${sortBy === criteria ? 'bg-gradient-to-r from-cyan-500 to-teal-600 text-black border-transparent shadow-lg shadow-cyan-500/50 scale-105 animate-pulse' : 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-500/20'}`}>
-                    <span className="relative z-10 font-mono tracking-wide">{getSortLabel(criteria)}</span>
+              <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 md:gap-3 justify-center max-w-2xl mx-auto">
+                {(['weight', 'locked', 'rewards', 'activeLocks'] as const).map(criteria => <Button key={criteria} variant={sortBy === criteria ? "default" : "outline"} onClick={() => setSortBy(criteria)} className={`relative px-3 md:px-6 py-2 md:py-3 rounded-xl font-medium transition-all duration-300 border-2 hover:scale-105 ${sortBy === criteria ? 'bg-gradient-to-r from-cyan-500 to-teal-600 text-black border-transparent shadow-lg shadow-cyan-500/50 scale-105 animate-pulse' : 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-500/20'}`}>
+                    <span className="relative z-10 font-mono tracking-wide text-xs md:text-sm">
+                      <span className="md:hidden">{getSortLabelMobile(criteria)}</span>
+                      <span className="hidden md:inline">{getSortLabel(criteria)}</span>
+                    </span>
                     {sortBy === criteria && <>
                         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-teal-500/20 rounded-xl blur-sm"></div>
                         <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-xl opacity-30 animate-[ping_2s_ease-in-out_infinite]"></div>
@@ -345,14 +363,16 @@ const Leaderboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative z-10">
-                <div className="flex gap-2 mb-4">
-                  <Input placeholder="Enter divine address to locate..." value={searchAddress} onChange={e => setSearchAddress(e.target.value)} className="bg-black/50 border-cyan-500/30 text-white font-mono placeholder:text-gray-500" />
-                  <Button onClick={handleSearch} disabled={searchLoading || !searchAddress} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform">
-                    {searchLoading ? 'SEEKING...' : 'DIVINE_SEEK'}
-                  </Button>
-                  {isConnected && <Button onClick={handleFindMyRank} disabled={searchLoading} variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 font-mono tracking-wide">
-                      MY_ASCENSION
-                    </Button>}
+                <div className="flex flex-col sm:flex-row gap-2 mb-4">
+                  <Input placeholder="Enter divine address to locate..." value={searchAddress} onChange={e => setSearchAddress(e.target.value)} className="bg-black/50 border-cyan-500/30 text-white font-mono placeholder:text-gray-500 text-sm" />
+                  <div className="flex gap-2">
+                    <Button onClick={handleSearch} disabled={searchLoading || !searchAddress} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform px-4 py-2 text-xs sm:text-sm flex-1 sm:flex-none">
+                      {searchLoading ? 'SEEKING...' : 'DIVINE_SEEK'}
+                    </Button>
+                    {isConnected && <Button onClick={handleFindMyRank} disabled={searchLoading} variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 font-mono tracking-wide px-4 py-2 text-xs sm:text-sm flex-1 sm:flex-none">
+                        MY_ASCENSION
+                      </Button>}
+                  </div>
                 </div>
 
                 {searchResult && <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30 relative overflow-hidden">
@@ -410,12 +430,12 @@ const Leaderboard = () => {
                       {/* Scanning effect for hover */}
                       <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>
                       
-                      <CardContent className="p-6 relative z-10">
-                        <div className="flex items-center justify-between">
-                          {/* Left: Rank and User Info */}
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-3">
-                              <Badge className={`px-3 py-2 font-bold text-sm relative overflow-hidden ${getRankBadge(user.rank, user.totalWeight)}`}>
+                      <CardContent className="p-4 md:p-6 relative z-10">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                          {/* Top Section: Rank and User Info */}
+                          <div className="flex items-center gap-3 md:gap-4">
+                            <div className="flex items-center gap-2 md:gap-3">
+                              <Badge className={`px-2 md:px-3 py-1 md:py-2 font-bold text-xs md:text-sm relative overflow-hidden ${getRankBadge(user.rank, user.totalWeight)}`}>
                                 <span className="relative z-10">#{user.rank}</span>
                                 {user.rank <= 3 && <div className="absolute inset-0 animate-pulse bg-white/10"></div>}
                               </Badge>
@@ -424,49 +444,50 @@ const Leaderboard = () => {
                               </div>
                             </div>
                             
-                            <div>
-                              <div className="flex items-center gap-2 mb-2">
-                                <p className="font-mono text-lg text-cyan-400">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1 md:mb-2">
+                                <p className="font-mono text-sm md:text-lg text-cyan-400 truncate">
                                   {formatAddress(user.address)}
                                 </p>
-                                <Button size="sm" variant="ghost" onClick={() => copyAddress(user.address)} className="h-6 w-6 p-0 hover:bg-cyan-500/20">
+                                <Button size="sm" variant="ghost" onClick={() => copyAddress(user.address)} className="h-8 w-8 md:h-6 md:w-6 p-0 hover:bg-cyan-500/20 flex-shrink-0">
                                   {copiedAddress === user.address ? <CheckCircle className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-gray-400" />}
                                 </Button>
                               </div>
                               
-                              <div className="flex items-center gap-2 mb-2">
-                                <Badge className={`text-xs px-2 py-1 bg-${arkTier.color}/20 text-${arkTier.color} border border-${arkTier.color}/30`}>
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1 md:mb-2">
+                                <Badge className={`text-xs px-2 py-1 bg-${arkTier.color}/20 text-${arkTier.color} border border-${arkTier.color}/30 w-fit`}>
                                   {arkTier.name}
                                 </Badge>
-                                <span className="text-xs text-gray-500 font-mono">{arkTier.description}</span>
+                                <span className="text-xs text-gray-500 font-mono hidden sm:inline">{arkTier.description}</span>
                               </div>
                               
-                              <div className="flex items-center gap-1">
-                                <p className="text-sm text-gray-400">Top {user.percentile}% •</p>
-                                {achievements.slice(0, 2).map((achievement, i) => <Badge key={i} className={`text-xs px-1 py-0.5 bg-${achievement.color}-500/20 text-${achievement.color}-400 border border-${achievement.color}-500/30`}>
+                              <div className="flex items-center gap-1 flex-wrap">
+                                <p className="text-xs md:text-sm text-gray-400">Top {user.percentile}%</p>
+                                <span className="hidden md:inline text-gray-400">•</span>
+                                {achievements.slice(0, 1).map((achievement, i) => <Badge key={i} className={`text-xs px-1 py-0.5 bg-${achievement.color}-500/20 text-${achievement.color}-400 border border-${achievement.color}-500/30`}>
                                     {achievement.icon}
                                   </Badge>)}
                               </div>
                             </div>
                           </div>
 
-                          {/* Right: Divine Stats */}
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-right">
+                          {/* Bottom Section: Divine Stats - 2x2 grid on mobile */}
+                          <div className="grid grid-cols-2 gap-3 md:gap-4 text-left md:text-right min-w-0 md:min-w-[300px]">
                             <div>
-                              <p className="text-xs text-gray-400 font-mono">AUTHORITY</p>
-                              <p className={`font-bold text-${arkTier.color} text-lg`}>{formatNumber(user.totalWeight)}</p>
+                              <p className="text-xs text-gray-400 font-mono">AUTH</p>
+                              <p className={`font-bold text-${arkTier.color} text-sm md:text-lg truncate`}>{formatNumber(user.totalWeight)}</p>
                             </div>
                             <div>
                               <p className="text-xs text-gray-400 font-mono">VAULT</p>
-                              <p className="font-bold text-green-400">{formatNumber(user.totalLocked)} ARK</p>
+                              <p className="font-bold text-green-400 text-sm md:text-base truncate">{formatNumber(user.totalLocked)}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-gray-400 font-mono">DIVINE_REWARDS</p>
-                              <p className="font-bold text-purple-400">{formatNumber(user.totalRewardsEarned)} ARK</p>
+                              <p className="text-xs text-gray-400 font-mono">REWARDS</p>
+                              <p className="font-bold text-purple-400 text-sm md:text-base truncate">{formatNumber(user.totalRewardsEarned)}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-gray-400 font-mono">COVENANTS</p>
-                              <p className="font-bold text-yellow-400">{user.activeLocksCount}</p>
+                              <p className="text-xs text-gray-400 font-mono">LOCKS</p>
+                              <p className="font-bold text-yellow-400 text-sm md:text-base">{user.activeLocksCount}</p>
                             </div>
                           </div>
                         </div>
