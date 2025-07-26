@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Zap, Wifi, Bot } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
+import MobileMenu from './MobileMenu';
 
 interface NavigationProps {
   handleConnectWallet: () => void;
@@ -77,7 +78,17 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
             </div>
           </div>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="flex items-center gap-4">
+            {/* Mobile Menu */}
+            <MobileMenu 
+              handleConnectWallet={handleConnectWallet}
+              isConnecting={isConnecting}
+              isConnected={isConnected}
+              account={account}
+            />
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
 
             <button 
               onClick={() => handleExternalLink('https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge', 'Bridge Assets')}
@@ -144,6 +155,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/50 to-transparent animate-scan"></div>
               )}
             </button>
+            </div>
           </div>
         </div>
       </div>

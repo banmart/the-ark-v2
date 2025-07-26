@@ -57,24 +57,6 @@ const MobileDock = ({
             <Lock size={18} />
             <span className="text-xs font-medium">Locker</span>
           </RouterLink>
-
-
-          {handleConnectWallet && (
-            <button 
-              onClick={handleConnectWallet}
-              disabled={isConnecting}
-              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 ${
-                isConnected 
-                  ? 'bg-green-500/20 text-green-400' 
-                  : 'text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10'
-              } disabled:opacity-50`}
-            >
-              <Wallet size={18} />
-              <span className="text-xs font-medium">
-                {isConnecting ? 'Connecting...' : isConnected ? 'Connected' : 'Wallet'}
-              </span>
-            </button>
-          )}
         </div>
       </div>
     </div>
