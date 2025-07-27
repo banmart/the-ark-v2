@@ -83,34 +83,6 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
           {/* Navigation Links */}
           <div className="flex-1 px-6 py-4 space-y-6">
             {/* External Links Section */}
-            <div>
-              <h3 className="text-sm font-mono text-gray-400 mb-3 uppercase tracking-wider">External</h3>
-              <div className="space-y-2">
-                <button 
-                  onClick={() => handleNewTabLink('https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge')}
-                  className="w-full flex items-center justify-between p-3 text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-all duration-200 font-mono text-sm group"
-                >
-                  <span>Bridge Assets</span>
-                  <ExternalLink className="w-4 h-4 opacity-50 group-hover:opacity-100" />
-                </button>
-                
-                <button 
-                  onClick={() => handleNewTabLink('https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021')}
-                  className="w-full flex items-center justify-between p-3 text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-all duration-200 font-mono text-sm group"
-                >
-                  <span>Buy ARK</span>
-                  <ExternalLink className="w-4 h-4 opacity-50 group-hover:opacity-100" />
-                </button>
-                
-                <button 
-                  onClick={() => handleNewTabLink('https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0xacc15ef8fa2e702d0138c3662a9e7d696f40f021/0xefD766cCb38EaF1dfd701853BFCe31359239F305')}
-                  className="w-full flex items-center justify-between p-3 text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-all duration-200 font-mono text-sm group"
-                >
-                  <span>Add Liquidity</span>
-                  <ExternalLink className="w-4 h-4 opacity-50 group-hover:opacity-100" />
-                </button>
-              </div>
-            </div>
 
             {/* Internal Links Section */}
             <div>

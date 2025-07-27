@@ -64,6 +64,13 @@ const Onboarding = () => {
         color: 'green',
         url: 'https://app.rampnow.io/',
         isAvailable: true
+      }, {
+        name: 'Coinbase',
+        description: 'Leading cryptocurrency exchange',
+        icon: DollarSign,
+        color: 'cyan',
+        url: 'https://www.coinbase.com/',
+        isAvailable: true
       }],
       actions: []
     },
