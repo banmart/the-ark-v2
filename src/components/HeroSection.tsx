@@ -93,11 +93,11 @@ const HeroSection = ({
       {/* Video Background with Cinematic Fade In */}
       <div className="absolute inset-0 z-0">
         <video ref={videoRef} autoPlay muted loop playsInline className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
-          <source src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/the-ark-background-062025.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS90aGUtYXJrLWJhY2tncm91bmQtMDYyMDI1Lm1wNCIsImlhdCI6MTc1MTA1NTk0MSwiZXhwIjoxNzgyNTkxOTQxfQ.qkYPr1mP8pwmf692gqVwX6pwGpUF3sCud9HfvUfmGAU" type="video/mp4" />
+          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeignph2ijbdsmqcilohtmssksq3waygzjsdc3j74ncy2vlahpbvjlq" type="video/mp4" />
         </video>
         
         <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} style={{
-        backgroundImage: `url('https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/sign/media/IMG_20250503_110007_638.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMGFhNjdlYy05ZmJhLTQ4MTEtODhmYy02ZTBiNzYyODZhOTQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9JTUdfMjAyNTA1MDNfMTEwMDA3XzYzOC5qcGciLCJpYXQiOjE3NTEwNTU2MTcsImV4cCI6MTc4MjU5MTYxN30.ZNXMfW_4Qd8OINfFHV2szXhEnPXtMhD5Wwsb45RZ8Yk')`
+        backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreifc7dz6zfjtgbc5dn7ocr7rtfjwwzrurrtbmgwbi5e2e447ixa5ei')`
       }} />
         
         {/* Lighter overlay - only on left side */}
