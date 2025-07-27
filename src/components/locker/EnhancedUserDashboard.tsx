@@ -17,6 +17,7 @@ import { useLockerData } from '../../hooks/useLockerData';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
 import CompactLockPosition from './CompactLockPosition';
 import PenaltyCalculatorCard from './PenaltyCalculatorCard';
+import LockPositionFilters, { FilterOptions } from './LockPositionFilters';
 import { toast } from "@/components/ui/use-toast";
 
 interface EnhancedUserDashboardProps {
@@ -29,6 +30,16 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
   const [claimingRewards, setClaimingRewards] = useState(false);
   const [processingUnlock, setProcessingUnlock] = useState<number | null>(null);
   const [selectedLockForPenalty, setSelectedLockForPenalty] = useState<number | null>(null);
+  
+  // Filter state
+  const [filters, setFilters] = useState<FilterOptions>({
+    tier: 'all',
+    status: 'all',
+    timeRemaining: 'all',
+    sortBy: 'timeRemaining',
+    sortOrder: 'asc',
+    searchTerm: ''
+  });
 
   // Mock data for demonstration when not connected
   const mockLocks = [
@@ -62,6 +73,88 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
 
   const displayLocks = isConnected ? userLocks : mockLocks;
   const displayRewards = isConnected ? userStats.pendingRewards : 12847;
+  
+  // Filter and sort locks
+  const getFilteredAndSortedLocks = () => {
+    let filtered = displayLocks.filter(lock => {
+      // Tier filter
+      if (filters.tier !== 'all') {
+        const tierNames = {
+          'bronze': 'Bronze',
+          'silver': 'Silver', 
+          'gold': 'Gold',
+          'diamond': 'Diamond',
+          'platinum': 'Platinum',
+          'legendary': 'Legendary'
+        };
+        if (lock.tierName !== tierNames[filters.tier as keyof typeof tierNames]) return false;
+      }
+
+      // Status filter
+      if (filters.status !== 'all') {
+        const now = Date.now() / 1000;
+        const daysUntilUnlock = (lock.unlockTime - now) / (24 * 60 * 60);
+        
+        if (filters.status === 'ready' && daysUntilUnlock > 0) return false;
+        if (filters.status === 'soon' && (daysUntilUnlock <= 0 || daysUntilUnlock > 7)) return false;
+        if (filters.status === 'active' && daysUntilUnlock <= 0) return false;
+      }
+
+      // Time remaining filter
+      if (filters.timeRemaining !== 'all') {
+        const now = Date.now() / 1000;
+        const daysUntilUnlock = (lock.unlockTime - now) / (24 * 60 * 60);
+        
+        if (filters.timeRemaining === 'ready' && daysUntilUnlock > 0) return false;
+        if (filters.timeRemaining === 'week' && (daysUntilUnlock <= 0 || daysUntilUnlock > 7)) return false;
+        if (filters.timeRemaining === 'month' && (daysUntilUnlock <= 0 || daysUntilUnlock > 30)) return false;
+        if (filters.timeRemaining === 'long' && daysUntilUnlock <= 30) return false;
+      }
+
+      // Search filter
+      if (filters.searchTerm) {
+        const searchTerm = filters.searchTerm.toLowerCase();
+        const matchesAmount = lock.amount.toString().includes(searchTerm);
+        const matchesTier = lock.tierName.toLowerCase().includes(searchTerm);
+        if (!matchesAmount && !matchesTier) return false;
+      }
+
+      return true;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (filters.sortBy) {
+        case 'amount':
+          aValue = a.amount;
+          bValue = b.amount;
+          break;
+        case 'tier':
+          aValue = a.tier;
+          bValue = b.tier;
+          break;
+        case 'rewards':
+          aValue = a.totalRewardsEarned;
+          bValue = b.totalRewardsEarned;
+          break;
+        case 'timeRemaining':
+        default:
+          aValue = a.unlockTime;
+          bValue = b.unlockTime;
+          break;
+      }
+      
+      const comparison = aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      return filters.sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    return filtered;
+  };
+
+  const filteredLocks = getFilteredAndSortedLocks();
+  
   const displayStats = isConnected ? userStats : {
     totalLocked: 150000,
     totalRewardsEarned: 23500,
@@ -257,7 +350,27 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           </div>
         </div>
         
-        {displayLocks.length === 0 ? (
+        {/* Lock Position Filters */}
+        {displayLocks.length > 0 && (
+          <LockPositionFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            totalLocks={displayLocks.length}
+            filteredCount={filteredLocks.length}
+          />
+        )}
+        
+        {filteredLocks.length === 0 && displayLocks.length > 0 ? (
+          <div className="text-center py-12">
+            <Lock className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+            <div className="text-gray-400 mb-4">
+              No locks match your filters
+            </div>
+            <div className="text-sm text-gray-500 mb-6">
+              Try adjusting your filter criteria
+            </div>
+          </div>
+        ) : displayLocks.length === 0 ? (
           <div className="text-center py-12">
             <Lock className="w-16 h-16 text-gray-500 mx-auto mb-4" />
             <div className="text-gray-400 mb-4">
@@ -269,7 +382,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           </div>
         ) : (
           <div className="space-y-4">
-            {displayLocks.map((lock) => (
+            {filteredLocks.map((lock) => (
               <div key={lock.id} className="space-y-4">
                 <CompactLockPosition
                   lock={lock}
