@@ -86,6 +86,13 @@ const Onboarding = () => {
         color: 'purple',
         url: 'https://changenow.app.link/referral?link_id=e49c221824244a',
         isAvailable: true
+      }, {
+        name: 'Liberty Swap',
+        description: 'Decentralized exchange for crypto swaps',
+        icon: ArrowRight,
+        color: 'blue',
+        url: 'https://libertyswap.finance/',
+        isAvailable: true
       }],
       actions: [{
         name: 'Bridge Assets',

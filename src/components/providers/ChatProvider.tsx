@@ -1,6 +1,5 @@
 
 import React, { createContext, useContext, ReactNode, useState, useCallback } from 'react';
-import { supabase } from "@/integrations/supabase/client";
 
 interface ChatMessage {
   id: string;
@@ -78,25 +77,15 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     setIsLoading(true);
 
     try {
-      // Call the Gemini edge function
-      const { data, error } = await supabase.functions.invoke('chat-assistant', {
-        body: { 
-          message: content,
-          chatHistory: messages.slice(-10) // Send last 10 messages for context
-        }
-      });
-
-      if (error) throw error;
-
-      // Add AI response
-      addMessage(data.response, 'assistant');
+      // Chat functionality temporarily disabled for decentralization
+      addMessage('Chat functionality is temporarily unavailable as we transition to a fully decentralized system.', 'assistant');
     } catch (error) {
       console.error('Chat error:', error);
       addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
     } finally {
       setIsLoading(false);
     }
-  }, [addMessage, isLoading, messages]);
+  }, [addMessage, isLoading]);
 
   const clearChat = useCallback(() => {
     setMessages([]);
