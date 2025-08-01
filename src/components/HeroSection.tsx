@@ -82,7 +82,7 @@ const HeroSection = ({
       {/* Speaker Icon */}
       <button
         onClick={toggleAudio}
-        className="absolute top-36 right-4 md:top-44 md:right-8 z-40 bg-black/20 backdrop-blur-sm border border-white/10 rounded-full p-3 hover:bg-black/30 hover:scale-110 transition-all duration-200 text-cyan-400 hover:text-cyan-300"
+        className="absolute top-36 right-4 md:top-44 md:right-8 z-40 bg-black/20 backdrop-blur-sm border border-video-cyan/10 rounded-full p-3 hover:bg-black/30 hover:scale-110 transition-all duration-200 text-video-cyan hover:text-video-gold"
         aria-label={isMuted ? "Unmute video" : "Mute video"}
       >
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}

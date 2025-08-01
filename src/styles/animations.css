@@ -1,7 +1,7 @@
 /* Custom Animations and Effects */
 
 @layer utilities {
-  /* Animated Grid Pattern */
+  /* Animated Grid Pattern with video colors */
   .pulse-grid {
     position: absolute;
     width: 200%;
@@ -9,30 +9,60 @@
     top: -50%;
     left: -50%;
     background-image: 
-      linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+      linear-gradient(hsl(var(--video-cyan) / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--video-blue) / 0.05) 1px, transparent 1px);
     background-size: 50px 50px;
     animation: grid-move 20s linear infinite;
   }
 
-  /* Floating Orbs */
+  /* Floating Orbs with video color variants */
   .floating-orb {
     position: absolute;
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent);
     filter: blur(40px);
     animation: float 15s ease-in-out infinite;
   }
 
-  /* Breathing Gradient Bursts */
+  .video-blue-orb {
+    background: radial-gradient(circle, hsl(var(--video-blue) / 0.15), transparent);
+  }
+
+  .video-cyan-orb {
+    background: radial-gradient(circle, hsl(var(--video-cyan) / 0.15), transparent);
+  }
+
+  .video-gold-orb {
+    background: radial-gradient(circle, hsl(var(--video-gold) / 0.15), transparent);
+  }
+
+  .video-brown-orb {
+    background: radial-gradient(circle, hsl(var(--video-brown) / 0.15), transparent);
+  }
+
+  /* Breathing Gradient Bursts with video color variants */
   .gradient-burst {
     position: absolute;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(34, 211, 238, 0.5), transparent);
     filter: blur(50px);
     animation: breathe ease-in-out infinite;
+  }
+
+  .video-blue-burst {
+    background: radial-gradient(circle, hsl(var(--video-blue) / 0.3), transparent);
+  }
+
+  .video-cyan-burst {
+    background: radial-gradient(circle, hsl(var(--video-cyan) / 0.3), transparent);
+  }
+
+  .video-gold-burst {
+    background: radial-gradient(circle, hsl(var(--video-gold) / 0.3), transparent);
+  }
+
+  .video-brown-burst {
+    background: radial-gradient(circle, hsl(var(--video-brown) / 0.3), transparent);
   }
 
   .burst1 {
@@ -128,6 +158,12 @@
     animation-delay: 10s; 
   }
 
+  .orb4 { 
+    top: 40%; 
+    right: 30%; 
+    animation-delay: 15s; 
+  }
+
   /* Tech Toast Styling */
   .tech-glow-border {
     position: relative;
@@ -143,7 +179,7 @@
     bottom: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(45deg, rgba(34, 211, 238, 0.5), rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0.5));
+    background: linear-gradient(45deg, hsl(var(--video-cyan) / 0.5), hsl(var(--video-blue) / 0.2), hsl(var(--video-gold) / 0.5));
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: xor;
     animation: tech-border-flow 3s linear infinite;
@@ -163,7 +199,7 @@
     bottom: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(45deg, rgba(34, 211, 238, 0.7), rgba(34, 211, 238, 0.4), rgba(34, 211, 238, 0.7));
+    background: linear-gradient(45deg, hsl(var(--video-gold) / 0.7), hsl(var(--video-cyan) / 0.4), hsl(var(--video-blue) / 0.7));
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: xor;
     animation: tech-border-flow 2s linear infinite;
@@ -190,7 +226,7 @@
 
   .tech-close-hover:hover {
     transform: scale(1.1);
-    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.5));
+    filter: drop-shadow(0 0 8px hsl(var(--video-cyan) / 0.5));
   }
 
   /* Tech Grid Pattern Overlay */
@@ -201,8 +237,8 @@
     right: 0;
     bottom: 0;
     background-image: 
-      linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+      linear-gradient(hsl(var(--video-cyan) / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--video-blue) / 0.03) 1px, transparent 1px);
     background-size: 20px 20px;
     pointer-events: none;
     opacity: 0.5;
@@ -216,7 +252,7 @@
     left: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.8), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--video-cyan) / 0.8), transparent);
     animation: tech-scan 4s linear infinite;
   }
 
@@ -224,19 +260,19 @@
   .glass-nav {
     background: rgba(10, 10, 10, 0.5);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    border-bottom: 1px solid hsl(var(--video-cyan) / 0.2);
   }
 
   .glass-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    border: 1px solid hsl(var(--video-blue) / 0.2);
   }
 
   .glass-strong {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(25px);
-    border: 1px solid rgba(0, 255, 255, 0.3);
+    border: 1px solid hsl(var(--video-gold) / 0.3);
   }
 
   /* Scan Animation for Feature Cards */
@@ -247,7 +283,7 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--video-cyan)), transparent);
     animation: scan 3s linear infinite;
   }
 
