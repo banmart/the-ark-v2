@@ -101,11 +101,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         setShowOnboarding={setShowOnboarding}
       />
 
-      {/* Contract Address Section */}
-      <ContractAddressSection 
-        contractAddress={contractAddress}
-        copyToClipboard={copyToClipboard}
-      />
 
       {/* Swap Section */}
       <SwapSection 
