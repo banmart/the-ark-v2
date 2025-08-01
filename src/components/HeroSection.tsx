@@ -43,7 +43,7 @@ const HeroSection = ({
   };
 
   return (
-    <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col justify-between items-center overflow-hidden">
+    <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col items-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video 
