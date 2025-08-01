@@ -42,7 +42,7 @@ const HeroSection = ({
   };
 
   return (
-    <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex flex-col justify-between items-center overflow-hidden">
+    <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col justify-between items-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video 
@@ -71,7 +71,7 @@ const HeroSection = ({
       {/* Content */}
       <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col justify-end h-full">
         {/* Bottom Section - Contract Address */}
-        <div className="flex justify-center pb-8">
+        <div className="flex justify-center pb-2">
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-2">Contract Address</p>
             <button
