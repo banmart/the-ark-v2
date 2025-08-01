@@ -70,8 +70,10 @@ const HeroSection = ({
       </div>
       
       {/* Content */}
-      <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col justify-end h-full">
-        {/* Bottom Section - Contract Address */}
+      <div className="flex-grow" />
+      
+      {/* Bottom Section - Contract Address */}
+      <div className="max-w-7xl mx-auto w-full relative z-20">
         <div className="flex justify-center pb-8">
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-2">Contract Address</p>
