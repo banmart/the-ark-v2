@@ -1,5 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
 
@@ -15,6 +16,7 @@ const HeroSection = ({
   setShowOnboarding
 }: HeroSectionProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
     setIsOpen
@@ -40,6 +42,14 @@ const HeroSection = ({
   
   const handleDecodeProtocol = () => {
     setIsOpen(true);
+  };
+
+  const toggleAudio = () => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
   };
 
   return (
@@ -68,6 +78,15 @@ const HeroSection = ({
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:bg-gradient-to-r lg:from-black/20 lg:via-transparent lg:to-transparent"></div>
       </div>
+      
+      {/* Speaker Icon */}
+      <button
+        onClick={toggleAudio}
+        className="absolute top-4 right-4 md:top-8 md:right-8 z-30 bg-black/20 backdrop-blur-sm border border-white/10 rounded-full p-3 hover:bg-black/30 hover:scale-110 transition-all duration-200 text-cyan-400 hover:text-cyan-300"
+        aria-label={isMuted ? "Unmute video" : "Mute video"}
+      >
+        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      </button>
       
       {/* Content */}
       <div className="flex-grow" />
