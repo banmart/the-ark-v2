@@ -101,21 +101,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         setShowOnboarding={setShowOnboarding}
       />
 
-
-      {/* Swap Section */}
-      <SwapSection 
-        fromAmount={fromAmount}
-        toAmount={toAmount}
-        plsBalance={plsBalance}
-        arkBalance={arkBalance}
-        swapLoading={swapLoading}
-        slippage={slippage}
-        canSwap={canSwap}
-        isConnected={isConnected}
-        setFromAmount={setFromAmount}
-        handleSwap={handleSwap}
-      />
-
       {/* Stats Section */}
       <StatsSection 
         contractData={contractData}
