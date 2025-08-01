@@ -1,27 +1,4 @@
-function App() {
-  const [isModalOpen, setIsModalOpen] = React.useState(true);
-  
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-white mb-8 bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
-          ARK Token Demo
-        </h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-bold rounded-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30"
-        >
-          Open Onboarding
-        </button>
-      </div>
-      
-      <OnboardingModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
-    </div>
-  );
-}
+import React from 'react';
 
 // Optimized Dialog Components
 const Dialog = ({ open, onOpenChange, children }) => {
@@ -595,3 +572,5 @@ const OnboardingModal = ({ isOpen, onClose }) => {
     </Dialog>
   );
 };
+
+export default OnboardingModal;
