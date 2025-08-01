@@ -1,4 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
 
@@ -14,6 +16,7 @@ const HeroSection = ({
   setShowOnboarding
 }: HeroSectionProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
     setIsOpen
@@ -41,8 +44,16 @@ const HeroSection = ({
     setIsOpen(true);
   };
 
+  const toggleAudio = () => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   return (
-    <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex flex-col justify-between items-center overflow-hidden">
+    <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col items-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video 
@@ -53,7 +64,7 @@ const HeroSection = ({
           playsInline 
           className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
-          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeia6kmp7xf5ut3sm4qatwxcg3yxcfbkth673scf5uvev33w3nyr6mi" type="video/mp4" />
+          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeiaf2bqhh6mf5ozqxjsqackzi2cfto6oy3voocaikbhfpqhnmmp3zy" type="video/mp4" />
         </video>
         
         <div 
@@ -68,20 +79,21 @@ const HeroSection = ({
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:bg-gradient-to-r lg:from-black/20 lg:via-transparent lg:to-transparent"></div>
       </div>
       
+      {/* Speaker Icon */}
+      <button
+        onClick={toggleAudio}
+        className="absolute top-36 right-4 md:top-44 md:right-8 z-40 bg-black/20 backdrop-blur-sm border border-video-cyan/10 rounded-full p-3 hover:bg-black/30 hover:scale-110 transition-all duration-200 text-video-cyan hover:text-video-gold"
+        aria-label={isMuted ? "Unmute video" : "Mute video"}
+      >
+        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      </button>
+      
       {/* Content */}
-      <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col justify-between h-full">
-        {/* Top Section - Centered H1 */}
-        <div className="flex justify-center pt-16">
-          <h1 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-            CRYPTO THAT REWARDS
-          </h1>
-        </div>
-        
-        {/* Middle Section - Spacer */}
-        <div className="flex-1"></div>
-        
-        {/* Bottom Section - Contract Address */}
-        <div className="flex justify-center pb-16">
+      <div className="flex-grow" />
+      
+      {/* Bottom Section - Contract Address */}
+      <div className="max-w-7xl mx-auto w-full relative z-20">
+        <div className="flex justify-center pb-8">
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-2">Contract Address</p>
             <button
