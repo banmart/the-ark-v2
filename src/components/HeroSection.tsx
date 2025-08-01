@@ -1,21 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, Shield, Lock, Zap, Database, Code } from "lucide-react";
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
+
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
   contractAddress: string;
   setShowOnboarding: (show: boolean) => void;
 }
+
 const HeroSection = ({
   copyToClipboard,
   contractAddress,
   setShowOnboarding
 }: HeroSectionProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [textPhase, setTextPhase] = useState(0);
-  const [scanProgress, setScanProgress] = useState(0);
-  const [scanningActive, setScanningActive] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
     setIsOpen
@@ -23,6 +21,7 @@ const HeroSection = ({
   const {
     openPopup
   } = useBrowserPopup();
+  
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
@@ -34,170 +33,68 @@ const HeroSection = ({
     }
   }, []);
 
-  // Cinematic text sequence
-  useEffect(() => {
-    const sequence = [{
-      delay: 500,
-      phase: 1
-    },
-    // System initializing
-    {
-      delay: 2000,
-      phase: 2
-    },
-    // Scanning networks
-    {
-      delay: 3500,
-      phase: 3
-    },
-    // ARK detected
-    {
-      delay: 5000,
-      phase: 4
-    } // Full revelation
-    ];
-    sequence.forEach(({
-      delay,
-      phase
-    }) => {
-      setTimeout(() => setTextPhase(phase), delay);
-    });
-  }, []);
-
-  // Progress animation for scanning
-  useEffect(() => {
-    if (textPhase >= 2) {
-      setScanningActive(true);
-      setScanProgress(0);
-      const progressInterval = setInterval(() => {
-        setScanProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(progressInterval);
-            return 100;
-          }
-          // Easing function: faster in middle, slower at ends
-          const increment = prev < 20 ? 2 : prev < 80 ? 4 : 1;
-          return Math.min(prev + increment, 100);
-        });
-      }, 50);
-      return () => clearInterval(progressInterval);
-    }
-  }, [textPhase]);
   const handleBoardTheArk = () => {
     openPopup('https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xACC15eF8fa2e702d0138c3662A9E7d696f40F021', 'Buy ARK');
   };
+  
   const handleDecodeProtocol = () => {
     setIsOpen(true);
   };
-  return <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex items-center overflow-hidden">
-      {/* Video Background with Cinematic Fade In */}
+
+  return (
+    <section className="relative z-10 pt-32 md:pt-40 pb-12 px-6 min-h-screen flex flex-col justify-between items-center overflow-hidden">
+      {/* Video Background */}
       <div className="absolute inset-0 z-0">
-        <video ref={videoRef} autoPlay muted loop playsInline className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        <video 
+          ref={videoRef} 
+          autoPlay 
+          muted 
+          loop 
+          playsInline 
+          className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+        >
           <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeia6kmp7xf5ut3sm4qatwxcg3yxcfbkth673scf5uvev33w3nyr6mi" type="video/mp4" />
         </video>
         
-        <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} style={{
-        backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreic2svvnfyvpp3obxoay4ek5i7xpatawhah3lbtaexvdfgvx3lxlke')`
-      }} />
+        <div 
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
+          style={{
+            backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreic2svvnfyvpp3obxoay4ek5i7xpatawhah3lbtaexvdfgvx3lxlke')`
+          }} 
+        />
         
-        {/* Lighter overlay - only on left side */}
+        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:bg-gradient-to-r lg:from-black/20 lg:via-transparent lg:to-transparent"></div>
       </div>
       
       {/* Content */}
-      <div className="max-w-7xl mx-auto w-full relative z-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Cinematic Text */}
-          <div className="relative">
-            {/* Tech HUD Elements */}
-            <div className="absolute -top-8 -left-4 text-cyan-400/40 text-xs font-mono">
-              [SYSTEM INIT] 0xACC15eF8fa2e...
-            </div>
-            <div className="absolute -top-8 right-0 text-cyan-400/40 text-xs font-mono">
-              {new Date().toISOString().slice(0, 19)}Z
-            </div>
-
-            {/* Main Title - THE ARK ❍ */}
-            <div className="relative mb-8">
-              <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent animate-fade-in">CRYPTO THAT REWARDS</h1>
-            </div>
-
-            {/* Cinematic Text Sequence */}
-            <div className="space-y-4 mb-8">
-              {/* Phase 1: System Initializing */}
-              <div className={`transition-all duration-1000 ${textPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <div className="flex items-center gap-2 text-cyan-400 font-mono text-sm mb-2">
-                  <Database className="w-4 h-4 animate-spin" />
-                  <span className="animate-[typing_2s_steps(20)_infinite]">INITIALIZING QUANTUM PROTOCOL...</span>
-                </div>
-              </div>
-
-              {/* Phase 2: Network Scan */}
-              <div className={`transition-all duration-1000 delay-500 ${textPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <div className="flex items-center gap-2 text-green-400 font-mono text-sm mb-2">
-                  <Zap className="w-4 h-4 animate-pulse" />
-                  <span>SCANNING PULSECHAIN NETWORKS... [{scanningActive ? `${'█'.repeat(Math.floor(scanProgress / 8))}${'▓'.repeat(12 - Math.floor(scanProgress / 8))}` : '▓▓▓▓▓▓▓▓▓▓▓▓'}] {Math.round(scanProgress)}%</span>
-                </div>
-                <div className="text-yellow-400 font-mono text-xs ml-6">
-                  → DETECTING FAILED PROJECTS: 47,392 TOKENS
-                </div>
-                <div className="text-red-400 font-mono text-xs ml-6 animate-pulse">
-                  → FLOOD LEVEL: CRITICAL
-                </div>
-              </div>
-
-              {/* Phase 3: ARK Detection */}
-              <div className={`transition-all duration-1000 delay-1000 ${textPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <div className="flex items-center gap-2 text-cyan-300 font-mono text-sm mb-2">
-                  <Code className="w-4 h-4 animate-bounce" />
-                  <span className="text-cyan-300 font-bold">ARK PROTOCOL DETECTED</span>
-                </div>
-                <div className="text-cyan-400 font-mono text-xs ml-6 space-y-1">
-                  <div>→ DEFLATIONARY ENGINE: ACTIVE</div>
-                  <div>→ REFLECTION MATRIX: OPERATIONAL</div>
-                  <div>→ SECURITY LEVEL: MAXIMUM</div>
-                  <div>→ SALVATION PROBABILITY: 99.97%</div>
-                </div>
-              </div>
-
-              {/* Phase 4: Full Message */}
-              <div className={`transition-all duration-2000 delay-1500 ${textPhase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <div className="border-l-2 border-cyan-400 pl-4 my-6">
-                  <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-                    <span className="text-cyan-400">[TRANSMISSION DECODED]</span>
-                  </h3>
-                  <p className="text-sm text-gray-200 leading-relaxed">
-                    The digital waters are rising. Projects sink beneath the waves daily, their promises dissolved into the endless ocean of failed tokens. But from the storm clouds emerges a beacon of hope—
-                    <span className="text-cyan-400 font-bold"> The ARK</span>, where 
-                    <span className="text-teal-400 font-semibold"> deflation meets devotion</span>, and only the faithful shall inherit the new world.
-                  </p>
-                </div>
-
-                {/* Tech Stats */}
-                <div className="grid grid-cols-2 gap-4 mb-6 font-mono text-xs">
-                  <div className="bg-black/20 border border-cyan-500/40 rounded p-2">
-                    <div className="text-cyan-400">CONTRACT_ADDR</div>
-                    <div className="text-white truncate">0xACC15eF8...</div>
-                  </div>
-                  <div className="bg-black/20 border border-green-500/40 rounded p-2">
-                    <div className="text-green-400">SECURITY_STATUS</div>
-                    <div className="text-white">RENOUNCED</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            
-          </div>
-
-          {/* Right side - Enhanced ❍ Symbol with NO background overlay */}
-          <div className="flex justify-center">
-            
+      <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col justify-between h-full">
+        {/* Top Section - Centered H1 */}
+        <div className="flex justify-center pt-16">
+          <h1 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+            CRYPTO THAT REWARDS
+          </h1>
+        </div>
+        
+        {/* Middle Section - Spacer */}
+        <div className="flex-1"></div>
+        
+        {/* Bottom Section - Contract Address */}
+        <div className="flex justify-center pb-16">
+          <div className="text-center">
+            <p className="text-sm text-gray-400 mb-2">Contract Address</p>
+            <button
+              onClick={() => copyToClipboard(contractAddress)}
+              className="text-cyan-400 font-mono text-sm hover:text-cyan-300 transition-colors duration-200 cursor-pointer"
+            >
+              {contractAddress}
+            </button>
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default HeroSection;
