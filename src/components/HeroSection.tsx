@@ -93,11 +93,11 @@ const HeroSection = ({
       {/* Video Background with Cinematic Fade In */}
       <div className="absolute inset-0 z-0">
         <video ref={videoRef} autoPlay muted loop playsInline className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
-          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeignph2ijbdsmqcilohtmssksq3waygzjsdc3j74ncy2vlahpbvjlq" type="video/mp4" />
+          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeia6kmp7xf5ut3sm4qatwxcg3yxcfbkth673scf5uvev33w3nyr6mi" type="video/mp4" />
         </video>
         
         <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} style={{
-        backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreifc7dz6zfjtgbc5dn7ocr7rtfjwwzrurrtbmgwbi5e2e447ixa5ei')`
+        backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreic2svvnfyvpp3obxoay4ek5i7xpatawhah3lbtaexvdfgvx3lxlke')`
       }} />
         
         {/* Lighter overlay - only on left side */}
