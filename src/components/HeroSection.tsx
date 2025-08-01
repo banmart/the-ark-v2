@@ -69,17 +69,7 @@ const HeroSection = ({
       </div>
       
       {/* Content */}
-      <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col justify-between h-full">
-        {/* Top Section - Centered H1 */}
-        <div className="flex justify-center pt-16">
-          <h1 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-            CRYPTO THAT REWARDS
-          </h1>
-        </div>
-        
-        {/* Middle Section - Spacer */}
-        <div className="flex-1"></div>
-        
+      <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col justify-end h-full">
         {/* Bottom Section - Contract Address */}
         <div className="flex justify-center pb-16">
           <div className="text-center">
