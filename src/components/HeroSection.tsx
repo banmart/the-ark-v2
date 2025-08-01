@@ -53,7 +53,7 @@ const HeroSection = ({
           playsInline 
           className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
-          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeia6kmp7xf5ut3sm4qatwxcg3yxcfbkth673scf5uvev33w3nyr6mi" type="video/mp4" />
+          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeiaf2bqhh6mf5ozqxjsqackzi2cfto6oy3voocaikbhfpqhnmmp3zy" type="video/mp4" />
         </video>
         
         <div 
