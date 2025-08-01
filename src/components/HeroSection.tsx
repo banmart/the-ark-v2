@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
@@ -69,9 +70,9 @@ const HeroSection = ({
       </div>
       
       {/* Content */}
-      <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col justify-end h-full">
-        {/* Bottom Section - Contract Address */}
-        <div className="flex justify-center pb-2">
+      <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col h-full">
+        {/* Top Section - Contract Address */}
+        <div className="flex justify-center pt-8">
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-2">Contract Address</p>
             <button
