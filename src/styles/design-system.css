@@ -1,99 +1,94 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-
+/* =============================================================================
+   DESIGN SYSTEM - Color Tokens & Variables
+   ============================================================================= */
 @layer base {
   :root {
+    /* Core UI Colors */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
+    
+    /* Brand Colors */
     --primary: 218 89% 24%;
     --primary-foreground: 210 40% 98%;
-
     --secondary: 30 88% 32%;
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
     --accent: 45 98% 51%;
     --accent-foreground: 222.2 47.4% 11.2%;
-
+    
+    /* State Colors */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
+    
+    /* Interactive Elements */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 188 95% 48%;
-
-    /* Video-inspired color palette */
+    
+    /* Video Theme Palette */
     --video-blue: 218 89% 24%;
     --video-brown: 30 88% 32%;
     --video-gold: 45 98% 51%;
     --video-cyan: 188 95% 48%;
-
+    
+    /* Layout & Spacing */
     --radius: 0.5rem;
-
+    
+    /* Sidebar Colors */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
+    /* Core UI Colors - Dark Mode */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
+    
+    /* Brand Colors - Dark Mode */
     --primary: 218 89% 65%;
     --primary-foreground: 222.2 47.4% 11.2%;
-
     --secondary: 30 88% 45%;
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 45 98% 65%;
     --accent-foreground: 222.2 47.4% 11.2%;
-
+    
+    /* State Colors - Dark Mode */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
+    
+    /* Interactive Elements - Dark Mode */
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 188 95% 65%;
-
-    /* Video-inspired color palette for dark mode */
+    
+    /* Video Theme Palette - Dark Mode */
     --video-blue: 218 89% 65%;
     --video-brown: 30 88% 45%;
     --video-gold: 45 98% 65%;
     --video-cyan: 188 95% 65%;
+    
+    /* Sidebar Colors - Dark Mode */
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -105,20 +100,27 @@
   }
 }
 
+/* =============================================================================
+   BASE STYLES & RESETS
+   ============================================================================= */
 @layer base {
   * {
     @apply border-border;
   }
-
+  
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
   }
+}
 
-  /* Video-themed scrollbar styling */
+/* =============================================================================
+   CUSTOM SCROLLBAR STYLING
+   ============================================================================= */
+@layer base {
   * {
-    /* Webkit browsers (Chrome, Safari, Edge) */
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--video-cyan)) #0f1419;
+    scrollbar-color: hsl(var(--video-cyan) / 0.8) hsl(var(--background));
   }
 
   *::-webkit-scrollbar {
@@ -127,61 +129,97 @@
   }
 
   *::-webkit-scrollbar-track {
-    background: #0f1419;
-    border-radius: 4px;
+    background: hsl(var(--background));
+    border-radius: calc(var(--radius) * 0.8);
   }
 
   *::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, hsl(var(--video-cyan)) 0%, hsl(var(--video-blue)) 100%);
-    border-radius: 4px;
-    border: 1px solid #0f1419;
+    background: linear-gradient(
+      180deg, 
+      hsl(var(--video-cyan) / 0.8) 0%, 
+      hsl(var(--video-blue) / 0.8) 100%
+    );
+    border-radius: calc(var(--radius) * 0.8);
+    border: 1px solid hsl(var(--border));
+    transition: background 0.2s ease;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, hsl(var(--video-gold)) 0%, hsl(var(--video-brown)) 100%);
+    background: linear-gradient(
+      180deg, 
+      hsl(var(--video-gold) / 0.9) 0%, 
+      hsl(var(--video-brown) / 0.9) 100%
+    );
   }
 
   *::-webkit-scrollbar-corner {
-    background: #0f1419;
+    background: hsl(var(--background));
   }
+}
 
-  /* Animation for mobile browser popup */
+/* =============================================================================
+   ANIMATIONS & KEYFRAMES
+   ============================================================================= */
+@layer base {
   @keyframes scale-in {
-    0% {
+    from {
       opacity: 0;
-      transform: scale(0.9) translateY(20px);
+      transform: scale(0.95) translateY(8px);
     }
-    100% {
+    to {
       opacity: 1;
       transform: scale(1) translateY(0);
     }
   }
 
-  .animate-scale-in {
-    animation: scale-in 0.3s ease-out;
+  @keyframes scan {
+    0%, 10% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    90%, 100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
   }
 
-  /* Scanning animation for onboarding */
-  @keyframes scan {
-    0% {
-      transform: translateX(-100%);
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
     }
-    100% {
-      transform: translateX(100%);
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
+  }
+
+  /* Animation Classes */
+  .animate-scale-in {
+    animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .animate-scan {
-    animation: scan 2s ease-in-out infinite;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
+    animation: scan 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out;
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-scale-in,
+    .animate-scan,
+    .animate-fade-in {
+      animation: none;
+    }
+    
+    *::-webkit-scrollbar-thumb {
+      transition: none;
+    }
   }
 }
