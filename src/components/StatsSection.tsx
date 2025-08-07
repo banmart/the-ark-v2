@@ -118,7 +118,7 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400 font-mono">💰 MARKET CAP</h3>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 MARKET CAP</h3>
               <p className="text-3xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
