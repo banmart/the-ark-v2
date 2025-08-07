@@ -89,7 +89,7 @@ const StatsSection = ({
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-black mb-6 text-cyan-400 font-mono">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">
             <span className="animate-[glitch_4s_ease-in-out_infinite]">$ARK</span>{' '}
             <span className="animate-[glitch_4s_ease-in-out_0.5s_infinite]">BY</span>{' '}
             <span className="animate-[glitch_4s_ease-in-out_1s_infinite]">THE</span>{' '}
@@ -118,7 +118,7 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-cyan-400">💰 MARKET CAP</h3>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 font-mono">💰 MARKET CAP</h3>
               <p className="text-3xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
