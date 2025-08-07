@@ -28,7 +28,7 @@ const ProphecySection = () => {
   }, []);
   const prophecies = [{
     id: 'flood',
-    title: '[FLOOD PROTOCOL]',
+    title: 'FLOOD PROTOCOL',
     emoji: '🌊',
     icon: Waves,
     description: 'System analysis indicates catastrophic market liquidation event imminent. Only ARK protocol holders maintain operational integrity during crypto matrix purge sequence.',
@@ -36,7 +36,7 @@ const ProphecySection = () => {
     statusCode: 'FLOOD SIM ACTIVE'
   }, {
     id: 'chosen',
-    title: '[CHOSEN ALGORITHM]',
+    title: 'CHOSEN ALGORITHM',
     emoji: '⚡',
     icon: Zap,
     description: 'ARK token holders identified as prime candidates for survival protocol. Divine tokenomics engine provides navigation through market storm matrices.',
@@ -44,7 +44,7 @@ const ProphecySection = () => {
     statusCode: 'SELECTION PROTOCOL'
   }, {
     id: 'newworld',
-    title: '[GENESIS REBUILD]',
+    title: 'GENESIS REBUILD',
     emoji: '🕊️',
     icon: Bird,
     description: 'Post-flood reconstruction algorithms engage. ARK passengers designated as foundational nodes for next-generation crypto ecosystem architecture.',
