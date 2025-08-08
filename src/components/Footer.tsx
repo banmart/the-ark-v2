@@ -179,7 +179,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="text-center text-gray-400 text-sm font-mono">
-              &copy; 2025 THE ARK ❍ | 0xACC15eF8fa2e702d0138c3662A9E7d696f40F021
+              &copy; 2025 THE ARK ❍ | 0x4d547181427Ee90342b4781E0eF2cd46F189cb2C
             </div>
           </div>
         </div>

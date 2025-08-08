@@ -20,7 +20,7 @@ const ARK_TOKEN_ABI = [
   "function paused() view returns (bool)"
 ];
 
-const CONTRACT_ADDRESS = "0xACC15eF8fa2e702d0138c3662A9E7d696f40F021";
+const CONTRACT_ADDRESS = "0x4d547181427Ee90342b4781E0eF2cd46F189cb2C";
 const PULSECHAIN_RPC = "https://rpc.pulsechain.com";
 
 // Network conditions and retry configuration
