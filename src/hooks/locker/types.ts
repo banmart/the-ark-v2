@@ -44,6 +44,7 @@ export interface ProtocolStats {
   totalLockedTokens: number;
   totalRewardsDistributed: number;
   totalActiveLockers: number;
+  rewardPool: number;
   averageAPY: number;
 }
 
@@ -58,6 +59,7 @@ export interface ContractConstants {
   MAX_LOCK_DURATION: number;
   BASIS_POINTS: number;
   EARLY_UNLOCK_PENALTY: number;
+  MAX_EARLY_PENALTY: number;
   PENALTY_BURN_SHARE: number;
   PENALTY_REWARD_SHARE: number;
 }

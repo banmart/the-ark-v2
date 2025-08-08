@@ -9,10 +9,11 @@ export const fetchContractConstants = async (): Promise<ContractConstants> => {
     const rpcProvider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
     const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, rpcProvider);
     
-    const [minDuration, maxDuration, basisPoints, earlyPenalty, burnShare, rewardShare] = await Promise.all([
+    const [minDuration, maxDuration, basisPoints, maxEarlyPenalty, earlyPenalty, burnShare, rewardShare] = await Promise.all([
       contract.MIN_LOCK_DURATION(),
       contract.MAX_LOCK_DURATION(),
       contract.BASIS_POINTS(),
+      contract.MAX_EARLY_PENALTY(),
       contract.earlyUnlockPenalty(),
       contract.penaltyBurnShare(),
       contract.penaltyRewardShare()
@@ -26,6 +27,7 @@ export const fetchContractConstants = async (): Promise<ContractConstants> => {
       MAX_LOCK_DURATION: maxDurationDays,
       BASIS_POINTS: parseInt(basisPoints.toString()),
       EARLY_UNLOCK_PENALTY: parseInt(earlyPenalty.toString()),
+      MAX_EARLY_PENALTY: parseInt(maxEarlyPenalty.toString()),
       PENALTY_BURN_SHARE: parseInt(burnShare.toString()),
       PENALTY_REWARD_SHARE: parseInt(rewardShare.toString())
     };

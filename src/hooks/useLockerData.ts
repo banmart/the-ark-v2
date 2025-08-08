@@ -70,6 +70,7 @@ export const useLockerData = () => {
     totalLockedTokens: contractProtocolStats.totalLockedTokens,
     totalRewardsDistributed: contractProtocolStats.totalRewardsDistributed,
     totalActiveLockers: contractProtocolStats.totalActiveLockers,
+    rewardPool: contractProtocolStats.rewardPool,
     averageAPY: 82.5
   };
 

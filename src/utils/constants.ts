@@ -50,6 +50,7 @@ export const LOCKER_VAULT_ABI = [
   'function emergencyUnlockTime() view returns (uint256)',
   'function authorizedDistributor() view returns (address)',
   'function isActiveLocker(address) view returns (bool)',
+  'function token() view returns (address)',
   
   // Constants
   'function MIN_LOCK_DURATION() view returns (uint256)',
@@ -72,6 +73,9 @@ export const LOCKER_VAULT_ABI = [
   'function enableEmergencyMode()',
   'function disableEmergencyMode()',
   'function setAuthorizedDistributor(address _distributor)',
+  'function pause()',
+  'function unpause()',
+  'function recoverTokens(address tokenAddress, uint256 amount)',
   
   // Events
   'event TokensLocked(address indexed user, uint256 amount, uint256 lockPeriod, uint256 unlockTime)',
@@ -98,7 +102,7 @@ export const LOCK_TIERS = {
 // Locker contract constants matching the smart contract
 export const LOCKER_CONSTANTS = {
   MIN_LOCK_DURATION_DAYS: 30, // Updated to match contract (30 days)
-  MAX_LOCK_DURATION_DAYS: 1826, // 5 years
+  MAX_LOCK_DURATION_DAYS: 1826, // 5 years (1826 days)
   BASIS_POINTS: 10000,
   EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
   MAX_EARLY_PENALTY: 7500, // 75% maximum
