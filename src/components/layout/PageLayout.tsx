@@ -7,7 +7,6 @@ import { useOnboardingContext } from '../providers/OnboardingProvider';
 import OnboardingModal from '../OnboardingModal';
 import AnimatedBackground from '../AnimatedBackground';
 import Navigation from '../Navigation';
-import MobileDock from '../MobileDock';
 import HeroSection from '../HeroSection';
 import ContractAddressSection from '../ContractAddressSection';
 import SwapSection from '../SwapSection';
@@ -133,14 +132,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
       {/* Footer */}
       <Footer />
-
-      {/* Mobile Dock */}
-      <MobileDock 
-        handleConnectWallet={handleConnectWallet}
-        isConnecting={isConnecting}
-        isConnected={isConnected}
-        account={account}
-      />
     </div>
   );
 };

@@ -5,7 +5,6 @@ import { useOnboardingContext } from '../providers/OnboardingProvider';
 import OnboardingModal from '../OnboardingModal';
 import AnimatedBackground from '../AnimatedBackground';
 import Navigation from '../Navigation';
-import MobileDock from '../MobileDock';
 import Footer from '../Footer';
 
 interface BaseLayoutProps {
@@ -70,14 +69,6 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
 
       {/* Footer */}
       <Footer />
-
-      {/* Mobile Dock */}
-      <MobileDock 
-        handleConnectWallet={handleConnectWallet}
-        isConnecting={isConnecting}
-        isConnected={isConnected}
-        account={account}
-      />
     </div>
   );
 };

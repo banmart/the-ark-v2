@@ -5,7 +5,6 @@ import { useLockerData } from '../hooks/useLockerData';
 import { BrowserPopupProvider } from '../components/providers/BrowserPopupProvider';
 import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
 import Navigation from '../components/Navigation';
-import MobileDock from '../components/MobileDock';
 import Footer from '../components/Footer';
 import LockerHeader from '../components/locker/LockerHeader';
 import EmergencyStatus from '../components/locker/EmergencyStatus';
@@ -125,15 +124,6 @@ const LockerContent = () => {
           <Footer />
         </div>
 
-        {/* Mobile Dock */}
-        <div className="relative z-20">
-          <MobileDock 
-            handleConnectWallet={handleConnectWallet}
-            isConnecting={isConnecting}
-            isConnected={isConnected}
-            account={account}
-          />
-        </div>
       </div>
 
       {/* Mobile Browser Popup */}
