@@ -218,13 +218,22 @@ export const useContractData = () => {
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
       const arkToken = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
       
-      const burnedBalance = await arkToken.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS);
-      const burnedAmount = parseFloat(ethers.formatEther(burnedBalance));
+      const [burnedBalance, totalSupply, decimals] = await Promise.all([
+        arkToken.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS),
+        arkToken.totalSupply(),
+        arkToken.decimals()
+      ]);
+      
+      // Format with proper decimals
+      const burnedAmount = parseFloat(ethers.formatUnits(burnedBalance, decimals));
+      const totalSupplyAmount = parseFloat(ethers.formatUnits(totalSupply, decimals));
+      const circulatingAmount = totalSupplyAmount - burnedAmount;
       
       setData(prev => ({
         ...prev,
-        burnedTokens: burnedAmount.toFixed(2),
-        circulatingSupply: (CONTRACT_CONSTANTS.TOTAL_SUPPLY - burnedAmount).toFixed(2)
+        burnedTokens: burnedAmount.toString(),
+        circulatingSupply: circulatingAmount.toString(),
+        totalSupply: totalSupplyAmount.toString()
       }));
     } catch (error) {
       console.error('Error fetching burned tokens:', error);

@@ -80,34 +80,36 @@ export const useARKTokenData = () => {
         eventsCount: recentEvents.length 
       });
 
-      // Format total supply
-      const formattedTotalSupply = ethers.formatUnits(totalSupply, decimals);
+      // Format total supply with proper precision
+      const totalSupplyFormatted = ethers.formatUnits(totalSupply, decimals);
       
-      // Use live burned tokens from blockchain data
-      const formattedBurnedTokens = burnData.totalBurned;
+      // Use live burned tokens from blockchain data  
+      const burnedTokensFormatted = burnData.totalBurned;
       
-      // Calculate circulating supply
-      const circulatingSupply = (parseFloat(formattedTotalSupply) - parseFloat(formattedBurnedTokens)).toString();
+      // Calculate circulating supply maintaining precision
+      const totalSupplyNum = parseFloat(totalSupplyFormatted);
+      const burnedTokensNum = parseFloat(burnedTokensFormatted);
+      const circulatingSupplyNum = totalSupplyNum - burnedTokensNum;
 
-      // Calculate market cap with live price
-      const marketCap = (parseFloat(circulatingSupply) * priceData.price).toFixed(0);
+      // Calculate market cap with full precision
+      const marketCapNum = circulatingSupplyNum * priceData.price;
 
       setData({
-        totalSupply: parseInt(formattedTotalSupply).toLocaleString(),
-        marketCap: parseInt(marketCap).toLocaleString(),
-        holders: holderCount.toLocaleString(),
+        totalSupply: totalSupplyNum.toString(),
+        marketCap: marketCapNum.toString(),
+        holders: holderCount.toString(),
         price: priceData.price.toFixed(6),
         priceChange24h: priceData.priceChange24h > 0 
           ? `+${priceData.priceChange24h.toFixed(1)}` 
           : priceData.priceChange24h.toFixed(1),
-        circulatingSupply: parseInt(circulatingSupply).toLocaleString(),
-        burnedTokens: parseInt(formattedBurnedTokens).toLocaleString(),
-        volume24h: volumeData.volume24h.toLocaleString(),
+        circulatingSupply: circulatingSupplyNum.toString(),
+        burnedTokens: burnedTokensNum.toString(),
+        volume24h: volumeData.volume24h.toString(),
         volumeChange24h: volumeData.volumeChange > 0 
           ? `+${volumeData.volumeChange.toFixed(1)}` 
           : volumeData.volumeChange.toFixed(1),
-        liquidity: priceData.liquidity.toLocaleString(),
-        dailyBurnRate: burnData.dailyBurnRate.toLocaleString(),
+        liquidity: priceData.liquidity.toString(),
+        dailyBurnRate: burnData.dailyBurnRate.toString(),
         lastUpdated: new Date(),
       });
 

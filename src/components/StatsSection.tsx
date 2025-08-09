@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
+import { formatTokenAmount } from '../lib/utils';
 
 interface StatsSectionProps {
   contractData: any;
@@ -47,17 +48,20 @@ const StatsSection = ({
   };
 
   const formatNumber = (num: string | number) => {
-    const numValue = typeof num === 'string' ? parseFloat(num) : num;
+    const numValue = typeof num === 'string' ? parseFloat(num.replace(/,/g, '')) : num;
     if (isNaN(numValue)) return '0';
     
     if (numValue >= 1000000000) {
-      return `${(numValue / 1000000000).toFixed(1)}B`;
+      return `${(numValue / 1000000000).toFixed(2)}B`;
     } else if (numValue >= 1000000) {
-      return `${(numValue / 1000000).toFixed(1)}M`;
+      return `${(numValue / 1000000).toFixed(2)}M`;
     } else if (numValue >= 1000) {
-      return `${(numValue / 1000).toFixed(1)}K`;
+      return `${(numValue / 1000).toFixed(2)}K`;
     }
-    return numValue.toFixed(2);
+    return numValue.toLocaleString('en-US', { 
+      minimumFractionDigits: 0, 
+      maximumFractionDigits: 2 
+    });
   };
 
   return (
