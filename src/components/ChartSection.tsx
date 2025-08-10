@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { RefreshCw, BarChart3, Database, Activity, Zap, Shield } from 'lucide-react';
+please optimize my react code for my chart section. Please update it so that it is daily prices and the chart is in the background of the section. I want a gradient with he chart to see it.
+
+import React, { useMemo, useState } from 'react';
+import { RefreshCw, BarChart3, Database, Activity } from 'lucide-react';
 import { useChartData } from '../hooks/useChartData';
 import TrendChart from './charts/TrendChart';
 const ChartSection = () => {
@@ -11,13 +13,32 @@ const ChartSection = () => {
     baseCurrency,
     priceDataPoints
   } = useChartData();
+
+  // Memoize daily candles from raw timeSeriesData
+  const dailyData = useMemo(() => {
+    if (!Array.isArray(timeSeriesData)) return [];
+    // Group by YYYY-MM-DD and take last price of the day
+    const byDay = new Map();
+    for (const p of timeSeriesData) {
+      const t = typeof p.time === 'number' ? new Date(p.time) : new Date(p.time);
+      const key = `${t.getUTCFullYear()}-${String(t.getUTCMonth()+1).padStart(2,'0')}-${String(t.getUTCDate()).padStart(2,'0')}`;
+      if (!byDay.has(key)) byDay.set(key, p);
+      // always keep the latest within the day (assuming ascending or carry max time)
+      else byDay.set(key, p);
+    }
+    // Sort by date
+    const out = Array.from(byDay.entries())
+      .sort((a,b) => (a[0] < b[0] ? -1 : 1))
+      .map(([k, v]) => ({ ...v, time: new Date(k + 'T00:00:00Z').getTime() }));
+    return out;
+  }, [timeSeriesData]);
   const [refreshing, setRefreshing] = useState(false);
   const handleRefresh = () => {
     setRefreshing(true);
     // Simulate refresh delay
     setTimeout(() => setRefreshing(false), 1000);
   };
-  return <section id="chart" className="relative z-10 py-20 px-6 overflow-hidden">
+  return <section id="chart" className="relative z-0 py-20 px-6 overflow-hidden">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 z-0">
         {/* Base quantum gradient */}
@@ -105,9 +126,18 @@ const ChartSection = () => {
           </div>
         </div>
 
-        {/* Enhanced Price Chart */}
-        <div className="mb-8">
-          <TrendChart data={timeSeriesData} dataSource={dataSource} baseCurrency={baseCurrency} priceDataPoints={priceDataPoints} />
+        {/* Enhanced Price Chart as background */}
+        <div className="pointer-events-none absolute inset-0 z-0">
+          {/* gradient overlay to ensure readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cyan-900/30 via-black/20 to-black/60" />
+          <div className="absolute inset-0 opacity-60">
+            <TrendChart
+              data={dailyData}
+              dataSource={dataSource}
+              baseCurrency={baseCurrency}
+              priceDataPoints={priceDataPoints}
+            />
+          </div>
         </div>
 
         {/* Enhanced Data Source Info */}
