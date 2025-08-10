@@ -1,431 +1,290 @@
-// Types
-interface PriceData {
-  timestamp: number;
-  price: number;
-  blockNumber: number;
+
+import React, { useState, useEffect } from 'react';
+import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
+import { useLockerData } from '../hooks/useLockerData';
+import { formatTokenAmount, formatPrice } from '../lib/utils';
+
+interface StatsSectionProps {
+  contractData: any;
+  contractLoading: boolean;
 }
 
-interface TokenInfo {
-  name: string;
-  symbol: string;
-  decimals: number;
-  totalSupply: string;
-}
-
-// ARK Token Contract Address
-const ARK_TOKEN_ADDRESS = '0x4d547181427Ee90342b4781E0eF2cd46F189cb2C';
-const PULSEX_FACTORY = '0x1715a3E4A142d8b698131108995174F37aEBA10D';
-const DAI_ADDRESS = '0xefD766cCb38EaF1dfd701853BFCe31359239F305';
-
-// RPC Configuration
-const PULSE_RPC_URL = 'https://rpc.pulsechain.com';
-
-// Custom hook for fetching ARK token data
-const useARKTokenData = () => {
-  const [priceData, setPriceData] = useState<PriceData[]>([]);
-  const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-
-  // Fetch token info
-  const fetchTokenInfo = async () => {
-    try {
-      const response = await fetch(PULSE_RPC_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'eth_call',
-          params: [{
-            to: ARK_TOKEN_ADDRESS,
-            data: '0x95d89b41' // symbol()
-          }, 'latest'],
-          id: 1
-        })
-      });
-
-      const result = await response.json();
-      if (result.result) {
-        // Decode hex to string for symbol
-        const symbol = Buffer.from(result.result.slice(2), 'hex').toString().replace(/\0/g, '');
-        
-        setTokenInfo({
-          name: 'ARK',
-          symbol: symbol || 'ARK',
-          decimals: 18,
-          totalSupply: '0'
-        });
-      }
-    } catch (err) {
-      console.error('Error fetching token info:', err);
-    }
-  };
-
-  // Fetch price data from PulseX pair
-  const fetchPriceData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Get current block number
-      const blockResponse = await fetch(PULSE_RPC_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'eth_blockNumber',
-          params: [],
-          id: 1
-        })
-      });
-
-      const blockResult = await blockResponse.json();
-      const currentBlock = parseInt(blockResult.result, 16);
-
-      // Generate price data for the last 30 days (simulate historical data)
-      const priceHistory: PriceData[] = [];
-      const now = Date.now();
-      const msPerDay = 24 * 60 * 60 * 1000;
-
-      // Simulate price data with realistic ARK price movements
-      let basePrice = 0.0001; // Starting price in DAI
-      
-      for (let i = 29; i >= 0; i--) {
-        const timestamp = now - (i * msPerDay);
-        
-        // Add some realistic price volatility
-        const volatility = (Math.random() - 0.5) * 0.1; // ±10% daily volatility
-        const trendFactor = Math.sin(i * 0.2) * 0.05; // Longer term trend
-        
-        basePrice = basePrice * (1 + volatility + trendFactor);
-        basePrice = Math.max(basePrice, 0.00001); // Minimum price floor
-        
-        priceHistory.push({
-          timestamp,
-          price: basePrice,
-          blockNumber: currentBlock - (i * 2880) // Approximate blocks per day
-        });
-      }
-
-      setPriceData(priceHistory);
-      setLastUpdated(new Date());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch price data');
-      console.error('Error fetching price data:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+const StatsSection = ({
+  contractData,
+  contractLoading
+}: StatsSectionProps) => {
+  const [statsPhase, setStatsPhase] = useState(0);
+  const { protocolStats } = useLockerData();
 
   useEffect(() => {
-    fetchTokenInfo();
-    fetchPriceData();
+    // Cinematic reveal sequence
+    const phases = [
+      { delay: 300, phase: 1 }, // System scan
+      { delay: 1000, phase: 2 }, // Matrix detected
+      { delay: 1800, phase: 3 } // Full activation
+    ];
+
+    phases.forEach(({ delay, phase }) => {
+      setTimeout(() => setStatsPhase(phase), delay);
+    });
   }, []);
 
-  return {
-    priceData,
-    tokenInfo,
-    loading,
-    error,
-    lastUpdated,
-    refetch: fetchPriceData
-  };
-};
-
-// Simple Line Chart Component
-const ARKChart: React.FC<{ data: PriceData[] }> = ({ data }) => {
-  if (!data.length) return null;
-
-  const prices = data.map(d => d.price);
-  const minPrice = Math.min(...prices);
-  const maxPrice = Math.max(...prices);
-  const priceRange = maxPrice - minPrice;
-
-  // Generate SVG path
-  const width = 800;
-  const height = 300;
-  const padding = 40;
-
-  const pathData = data.map((point, index) => {
-    const x = padding + (index / (data.length - 1)) * (width - 2 * padding);
-    const y = height - padding - ((point.price - minPrice) / priceRange) * (height - 2 * padding);
-    return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-
-  // Generate area path for gradient fill
-  const areaPath = pathData + 
-    ` L ${width - padding} ${height - padding} L ${padding} ${height - padding} Z`;
-
-  return (
-    <div className="w-full h-full flex items-center justify-center">
-      <svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
-        <defs>
-          <linearGradient id="arkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(34, 211, 238, 0.3)" />
-            <stop offset="100%" stopColor="rgba(34, 211, 238, 0.05)" />
-          </linearGradient>
-          <linearGradient id="arkLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(34, 211, 238, 0.8)" />
-            <stop offset="50%" stopColor="rgba(20, 184, 166, 0.9)" />
-            <stop offset="100%" stopColor="rgba(34, 211, 238, 0.8)" />
-          </linearGradient>
-        </defs>
-        
-        {/* Area fill */}
-        <path
-          d={areaPath}
-          fill="url(#arkGradient)"
-          className="opacity-60"
-        />
-        
-        {/* Price line */}
-        <path
-          d={pathData}
-          fill="none"
-          stroke="url(#arkLineGradient)"
-          strokeWidth="2"
-          className="drop-shadow-sm"
-        />
-        
-        {/* Data points */}
-        {data.map((point, index) => {
-          const x = padding + (index / (data.length - 1)) * (width - 2 * padding);
-          const y = height - padding - ((point.price - minPrice) / priceRange) * (height - 2 * padding);
-          
-          return (
-            <circle
-              key={index}
-              cx={x}
-              cy={y}
-              r="2"
-              fill="rgba(34, 211, 238, 0.9)"
-              className="opacity-70"
-            />
-          );
-        })}
-      </svg>
-    </div>
-  );
-};
-
-// Main App Component
-const App: React.FC = () => {
-  const { priceData, tokenInfo, loading, error, lastUpdated, refetch } = useARKTokenData();
-  const [refreshing, setRefreshing] = useState(false);
-
-  // Memoize daily data (already daily in this case)
-  const dailyData = useMemo(() => priceData, [priceData]);
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setTimeout(() => setRefreshing(false), 1000);
+  const formatLastUpdated = (date: Date) => {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    return `${Math.floor(diffInSeconds / 3600)}h ago`;
   };
 
-  const currentPrice = dailyData[dailyData.length - 1]?.price || 0;
-  const previousPrice = dailyData[dailyData.length - 2]?.price || 0;
-  const priceChange = currentPrice - previousPrice;
-  const priceChangePercent = previousPrice ? (priceChange / previousPrice) * 100 : 0;
+  const formatTVL = (tvl: number) => {
+    if (tvl >= 1000000) {
+      return `${(tvl / 1000000).toFixed(2)}M`;
+    } else if (tvl >= 1000) {
+      return `${(tvl / 1000).toFixed(2)}K`;
+    }
+    return tvl.toFixed(2);
+  };
+
+  const formatNumber = (num: string | number) => {
+    const numValue = typeof num === 'string' ? parseFloat(num.replace(/,/g, '')) : num;
+    if (isNaN(numValue)) return '0';
+    
+    if (numValue >= 1000000000) {
+      return `${(numValue / 1000000000).toFixed(2)}B`;
+    } else if (numValue >= 1000000) {
+      return `${(numValue / 1000000).toFixed(2)}M`;
+    } else if (numValue >= 1000) {
+      return `${(numValue / 1000).toFixed(2)}K`;
+    }
+    return numValue.toLocaleString('en-US', { 
+      minimumFractionDigits: 0, 
+      maximumFractionDigits: 2 
+    });
+  };
 
   return (
-    <section id="chart" className="relative z-0 py-20 px-6 overflow-hidden min-h-screen">
+    <section id="stats" className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
-      <div className="absolute inset-0 z-0">
-        {/* Base quantum gradient */}
-        <div className="absolute inset-0 bg-gradient-radial from-cyan-900/10 via-black to-black"></div>
-        
-        {/* Animated quantum grid */}
-        <div className="absolute inset-0 opacity-15">
-          <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
-        </div>
-        
-        {/* Floating quantum orbs */}
-        <div className="floating-orb orb1 bg-gradient-radial from-cyan-500/10 to-transparent blur-3xl"></div>
-        <div className="floating-orb orb2 bg-gradient-radial from-teal-500/10 to-transparent blur-3xl"></div>
-        
-        {/* Scanning lines */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent animate-scan"></div>
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/40 to-transparent animate-scan" style={{
-          animationDelay: '2s'
-        }}></div>
-      </div>
-
-      {/* Background Chart */}
-      <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-cyan-900/20 via-black/30 to-black/70" />
-        <div className="absolute inset-0 opacity-40">
-          {!loading && !error && dailyData.length > 0 && (
-            <ARKChart data={dailyData} />
-          )}
-        </div>
+      <div className="absolute inset-0 opacity-10">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
+              radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
+              radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
+              radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px)
+            `,
+            backgroundSize: '100px 100px'
+          }}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* System Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
-              <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
-              <span className="font-mono text-cyan-400 text-sm tracking-wider">
-                ARK/DAI_LIVE_PRICE_ORACLE
-              </span>
-              <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
-            </div>
+        <div className={`text-center mb-16 transition-all duration-1000 ${
+          statsPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
+          <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
+            <Database className="w-3 h-3 animate-pulse" />
+            <h3>[ARK STATISTICS MATRIX]</h3>
+            <Database className="w-3 h-3 animate-pulse" />
           </div>
           
-          <div className="flex items-center justify-center mb-4">
-            <BarChart3 className="w-10 h-10 text-cyan-400 mr-3" />
-            <h2 className="text-4xl md:text-5xl font-black text-cyan-400 font-mono">
-              [LIVE_PRICE_MATRIX]
-            </h2>
-            <BarChart3 className="w-10 h-10 text-cyan-400 ml-3" />
-          </div>
-          
-          <p className="text-gray-300 text-lg mb-6 max-w-4xl mx-auto leading-relaxed font-mono">
-            Real-time ARK token pricing from PulseChain RPC
-            <br />
-            <code className="text-cyan-400 text-sm bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg mt-2 inline-block border border-cyan-500/20">
-              Contract: {ARK_TOKEN_ADDRESS}
-            </code>
-          </p>
+          <h2 className="text-4xl md:text-5xl font-black mb-6 text-cyan-400 font-mono">
+            <span className="animate-[glitch_4s_ease-in-out_infinite]">$ARK</span>{' '}
+            <span className="animate-[glitch_4s_ease-in-out_0.5s_infinite]">BY</span>{' '}
+            <span className="animate-[glitch_4s_ease-in-out_1s_infinite]">THE</span>{' '}
+            <span className="animate-[glitch_4s_ease-in-out_1.5s_infinite]">NUMBERS</span>
+          </h2>
 
-          {/* Price Display */}
-          {!loading && !error && (
-            <div className="mb-8">
-              <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 max-w-2xl mx-auto">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-cyan-400 font-mono mb-2">
-                    ${currentPrice.toFixed(8)} DAI
-                  </div>
-                  <div className={`text-lg font-mono ${priceChangePercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {priceChangePercent >= 0 ? '+' : ''}{priceChangePercent.toFixed(2)}%
-                    <span className="text-gray-400 ml-2">
-                      ({priceChangePercent >= 0 ? '+' : ''}${priceChange.toFixed(8)})
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {/* System Controls */}
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Data Source Status */}
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${
-                    error ? 'bg-red-400 animate-pulse' : 
-                    loading ? 'bg-yellow-400 animate-pulse' : 
-                    'bg-green-400 animate-pulse'
-                  }`}></div>
-                  <span className="font-mono text-cyan-400 text-sm">
-                    RPC: {error ? 'ERROR' : loading ? 'LOADING' : 'CONNECTED'}
-                  </span>
-                </div>
-              </div>
-              
-              {/* Token Info */}
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse"></div>
-                  <span className="font-mono text-cyan-400 text-sm">
-                    TOKEN: {tokenInfo?.symbol || 'ARK'}
-                  </span>
-                </div>
-              </div>
-              
-              {/* Data Stream Status */}
-              <div className="flex items-center justify-center gap-3">
-                <Activity className="w-4 h-4 text-cyan-400" />
-                <div className="text-center">
-                  <div className="font-mono text-cyan-400 text-xs">LAST_SYNC</div>
-                  <div className="font-mono text-cyan-300 text-sm">
-                    {lastUpdated?.toLocaleTimeString() || '--:--:--'}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Refresh Control */}
-              <div className="flex items-center justify-center">
-                <button 
-                  onClick={handleRefresh} 
-                  disabled={refreshing || loading} 
-                  className="flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-sm border border-cyan-500/30 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-400/10 transition-all duration-300 disabled:opacity-50 font-mono text-sm"
-                >
-                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                  {refreshing ? 'SYNCING...' : 'SYNC_DATA'}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Error Display */}
-          {error && (
-            <div className="mt-6 bg-red-900/20 backdrop-blur-xl border border-red-500/30 rounded-xl p-4 max-w-2xl mx-auto">
-              <div className="flex items-center gap-2 text-red-400">
-                <AlertCircle className="w-5 h-5" />
-                <span className="font-mono text-sm">ERROR: {error}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Loading State */}
-          {loading && (
-            <div className="mt-6 bg-yellow-900/20 backdrop-blur-xl border border-yellow-500/30 rounded-xl p-4 max-w-2xl mx-auto">
-              <div className="flex items-center gap-2 text-yellow-400">
-                <RefreshCw className="w-5 h-5 animate-spin" />
-                <span className="font-mono text-sm">Loading ARK token data...</span>
-              </div>
+          {contractData.lastUpdated && (
+            <div className="flex items-center justify-center gap-2 text-sm text-cyan-400/60 font-mono">
+              <RefreshCw className="w-4 h-4 animate-spin" />
+              <span>[LAST_SYNC: {formatLastUpdated(contractData.lastUpdated)}]</span>
             </div>
           )}
         </div>
+
+        {/* Primary Stats Grid */}
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 transition-all duration-1000 delay-500 ${
+          statsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
+          {/* Market Cap */}
+          <div className="relative bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 hover:scale-105 hover:border-cyan-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="absolute top-2 right-2 flex items-center gap-1">
+              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+              <span className="text-cyan-400 font-mono text-xs">ACTIVE</span>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400 font-mono">💰 MARKET CAP</h3>
+              <p className="text-3xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  `$${formatNumber(contractData.marketCap)}`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[REAL TIME VALUATION]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
+          </div>
+
+          {/* Current Price */}
+          <div className="relative bg-black/40 backdrop-blur-xl border border-blue-500/30 rounded-xl p-6 hover:scale-105 hover:border-blue-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="absolute top-2 right-2 flex items-center gap-1">
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              <span className="text-blue-400 font-mono text-xs">LIVE</span>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl font-bold mb-4 text-blue-400 font-mono">📈 PRICE FEED</h3>
+              <div className="flex items-baseline gap-2 mb-2">
+                <p className="text-3xl font-black text-white font-mono">
+                  {contractLoading ? (
+                    <span className="animate-pulse">[SCANNING...]</span>
+                  ) : (
+                    `$${formatPrice(contractData.price)}`
+                  )}
+                </p>
+                {!contractLoading && contractData.priceChange24h && (
+                  <span className={`text-sm font-bold font-mono ${
+                    contractData.priceChange24h.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {contractData.priceChange24h}%
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-gray-400 font-mono">[24H DELTA]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
+          </div>
+
+          {/* TVL (Total Value Locked) */}
+          <div className="relative bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl p-6 hover:scale-105 hover:border-purple-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="absolute top-2 right-2 flex items-center gap-1">
+              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+              <span className="text-purple-400 font-mono text-xs">TRACKING</span>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl font-bold mb-4 text-purple-400 font-mono">🏦 TVL (LOCKER)</h3>
+              <p className="text-3xl font-black text-white mb-2 font-mono">
+                {protocolStats.totalLockedTokens ? (
+                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
+                ) : (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[LOCKED VALUE]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Secondary Stats Grid */}
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 transition-all duration-1000 delay-1000 ${
+          statsPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
+          {/* Total Supply */}
+          <div className="relative bg-black/40 backdrop-blur-xl border border-green-500/30 rounded-xl p-6 hover:scale-105 hover:border-green-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="relative z-10">
+              <h3 className="text-xl font-bold mb-4 text-green-400 font-mono">💎 TOTAL SUPPLY</h3>
+              <p className="text-2xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  `${formatNumber(contractData.totalSupply)} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[CONTRACT SOURCE]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
+          </div>
+
+          {/* Circulating Supply */}
+          <div className="relative bg-black/40 backdrop-blur-xl border border-yellow-500/30 rounded-xl p-6 hover:scale-105 hover:border-yellow-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="relative z-10">
+              <h3 className="text-xl font-bold mb-4 text-yellow-400 font-mono">🔄 CIRCULATING</h3>
+              <p className="text-2xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  `${formatNumber(contractData.circulatingSupply)} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[MARKET AVAILABLE]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
+          </div>
+
+          {/* Burned Tokens */}
+          <div className="relative bg-black/40 backdrop-blur-xl border border-red-500/30 rounded-xl p-6 hover:scale-105 hover:border-red-500/60 transition-all duration-500 group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+            
+            <div className="relative z-10">
+              <h3 className="text-xl font-bold mb-4 text-red-400 font-mono">🔥 BURNED</h3>
+              <p className="text-2xl font-black text-white mb-2 font-mono">
+                {contractLoading ? (
+                  <span className="animate-pulse">[SCANNING...]</span>
+                ) : (
+                  `${formatNumber(contractData.burnedTokens)} ARK`
+                )}
+              </p>
+              <p className="text-sm text-gray-400 font-mono">[VOID ADDRESS]</p>
+            </div>
+
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <style jsx>{`
-        .floating-orb {
-          position: absolute;
-          border-radius: 50%;
-          animation: float 6s ease-in-out infinite;
-        }
-        .orb1 {
-          width: 300px;
-          height: 300px;
-          top: 20%;
-          left: 10%;
-          animation-delay: 0s;
-        }
-        .orb2 {
-          width: 200px;
-          height: 200px;
-          bottom: 30%;
-          right: 15%;
-          animation-delay: 3s;
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(180deg); }
-        }
+      <style>{`
         @keyframes scan {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(100vw); }
         }
-        .animate-scan {
-          animation: scan 4s linear infinite;
-        }
-        .pulse-grid {
-          background-image: 
-            linear-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(34, 211, 238, 0.1) 1px, transparent 1px);
-          background-size: 50px 50px;
-        }
-        .bg-gradient-radial {
-          background: radial-gradient(circle, var(--tw-gradient-stops));
+        @keyframes glitch {
+          0%, 100% { transform: translateX(0); }
+          10% { transform: translateX(-2px); }
+          20% { transform: translateX(2px); }
+          30% { transform: translateX(-2px); }
+          40% { transform: translateX(2px); }
+          50% { transform: translateX(0); }
         }
       `}</style>
     </section>
   );
 };
 
-App;
+export default StatsSection;
