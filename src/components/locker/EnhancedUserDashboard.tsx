@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useLockerData } from '../../hooks/useLockerData';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
+import { formatPercentage } from '../../lib/utils';
 import CompactLockPosition from './CompactLockPosition';
 import PenaltyCalculatorCard from './PenaltyCalculatorCard';
 import LockPositionFilters, { FilterOptions } from './LockPositionFilters';
@@ -26,7 +27,7 @@ interface EnhancedUserDashboardProps {
 
 const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
   const { userStats, userLocks, unlockTokens, claimRewards } = useLockerData();
-  const { protocolStats, earlyUnlockSettings } = useLockerContractData();
+  const { protocolStats, earlyUnlockSettings, totalProtocolWeight } = useLockerContractData();
   const [claimingRewards, setClaimingRewards] = useState(false);
   const [processingUnlock, setProcessingUnlock] = useState<number | null>(null);
   const [selectedLockForPenalty, setSelectedLockForPenalty] = useState<number | null>(null);
@@ -267,11 +268,11 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           <div className="flex items-center justify-between mb-3">
             <BarChart3 className="w-8 h-8 text-purple-400" />
             <div className="text-right">
-              <div className="text-sm text-gray-400">User Weight</div>
+              <div className="text-sm text-gray-400">Pool Share</div>
               <div className="text-xl font-bold text-purple-300">
-                {displayStats.userWeight.toLocaleString()}
+                {totalProtocolWeight > 0 ? formatPercentage(displayStats.userWeight, totalProtocolWeight) : '0.00%'}
               </div>
-              <div className="text-xs text-gray-500">Weight</div>
+              <div className="text-xs text-gray-500">of pool</div>
             </div>
           </div>
         </div>

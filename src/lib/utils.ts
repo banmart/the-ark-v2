@@ -36,3 +36,30 @@ export function formatTokenAmount(amount: string | number, decimals: number = 18
     maximumFractionDigits: 2 
   });
 }
+
+export function formatPrice(price: string | number, decimals: number = 18): string {
+  const numValue = typeof price === 'string' ? parseFloat(price) : price;
+  if (isNaN(numValue)) return '0.000000';
+  
+  // For prices, show more decimal places for precision
+  if (numValue >= 1) {
+    return numValue.toFixed(6);
+  } else if (numValue >= 0.001) {
+    return numValue.toFixed(8);
+  } else {
+    return numValue.toFixed(12);
+  }
+}
+
+export function formatPercentage(value: number, total: number): string {
+  if (total === 0) return '0.00%';
+  const percentage = (value / total) * 100;
+  
+  if (percentage < 0.01) {
+    return '<0.01%';
+  } else if (percentage < 1) {
+    return percentage.toFixed(2) + '%';
+  } else {
+    return percentage.toFixed(1) + '%';
+  }
+}

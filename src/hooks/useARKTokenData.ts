@@ -91,14 +91,14 @@ export const useARKTokenData = () => {
       const burnedTokensNum = parseFloat(burnedTokensFormatted);
       const circulatingSupplyNum = totalSupplyNum - burnedTokensNum;
 
-      // Calculate market cap with full precision
+      // Calculate market cap with full precision maintaining 18 decimals
       const marketCapNum = circulatingSupplyNum * priceData.price;
 
       setData({
-        totalSupply: totalSupplyNum.toString(),
-        marketCap: marketCapNum.toString(),
+        totalSupply: totalSupplyNum.toFixed(2),
+        marketCap: marketCapNum.toFixed(2),
         holders: holderCount.toString(),
-        price: priceData.price.toFixed(6),
+        price: priceData.price.toString(), // Keep full precision
         priceChange24h: priceData.priceChange24h > 0 
           ? `+${priceData.priceChange24h.toFixed(1)}` 
           : priceData.priceChange24h.toFixed(1),

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
-import { formatTokenAmount } from '../lib/utils';
+import { formatTokenAmount, formatPrice } from '../lib/utils';
 
 interface StatsSectionProps {
   contractData: any;
@@ -154,7 +154,7 @@ const StatsSection = ({
                   {contractLoading ? (
                     <span className="animate-pulse">[SCANNING...]</span>
                   ) : (
-                    `$${contractData.price}`
+                    `$${formatPrice(contractData.price)}`
                   )}
                 </p>
                 {!contractLoading && contractData.priceChange24h && (

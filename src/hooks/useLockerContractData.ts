@@ -58,6 +58,7 @@ export const useLockerContractData = (userAddress?: string) => {
 
   const [userLocks, setUserLocks] = useState<LockPosition[]>([]);
   const [userWeight, setUserWeight] = useState(0);
+  const [totalProtocolWeight, setTotalProtocolWeight] = useState(0);
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [contractPaused, setContractPaused] = useState(false);
   const [earlyUnlockSettings, setEarlyUnlockSettings] = useState<EarlyUnlockSettings>({
@@ -77,12 +78,13 @@ export const useLockerContractData = (userAddress?: string) => {
       
       console.log('Fetching enhanced protocol stats from SimplifiedLockerVault contract...');
 
-      // Use new getProtocolStats function that returns reward pool
-      const [totalLocked, totalRewards, totalLockers, rewardPool, emergency, paused, earlyUnlockEnabled, earlyPenalty, burnShare, rewardShare, emergencyTime] = await Promise.all([
+      // Use new getProtocolStats function that returns reward pool and total weight
+      const [totalLocked, totalRewards, totalLockers, rewardPool, totalWeight, emergency, paused, earlyUnlockEnabled, earlyPenalty, burnShare, rewardShare, emergencyTime] = await Promise.all([
         contract.totalLockedTokens(),
         contract.totalRewardsDistributed(),
         contract.totalActiveLockers(),
         contract.rewardPool(),
+        contract.calculateTotalProtocolWeight ? contract.calculateTotalProtocolWeight() : ethers.parseEther("0"),
         contract.emergencyMode(),
         contract.paused(),
         contract.earlyUnlockEnabled(),
@@ -105,6 +107,7 @@ export const useLockerContractData = (userAddress?: string) => {
         rewardPool: rewardPoolAmount
       });
 
+      setTotalProtocolWeight(parseFloat(ethers.formatEther(totalWeight)));
       setEmergencyMode(emergency);
       setContractPaused(paused);
       setEmergencyUnlockTime(parseInt(emergencyTime.toString()));
@@ -246,6 +249,7 @@ export const useLockerContractData = (userAddress?: string) => {
     userStats,
     userLocks,
     userWeight,
+    totalProtocolWeight,
     emergencyMode,
     contractPaused,
     earlyUnlockSettings,
