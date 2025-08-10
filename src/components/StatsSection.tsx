@@ -89,7 +89,7 @@ const StatsSection = ({
         }`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
             <Database className="w-3 h-3 animate-pulse" />
-            <span>[ARK STATISTICS MATRIX]</span>
+            <h3>[ARK STATISTICS MATRIX]</h3>
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
