@@ -1,5 +1,3 @@
-please optimize my react code for my chart section. Please update it so that it is daily prices and the chart is in the background of the section. I want a gradient with he chart to see it.
-
 import React, { useMemo, useState } from 'react';
 import { RefreshCw, BarChart3, Database, Activity } from 'lucide-react';
 import { useChartData } from '../hooks/useChartData';
@@ -43,16 +41,16 @@ const ChartSection = () => {
       <div className="absolute inset-0 z-0">
         {/* Base quantum gradient */}
         <div className="absolute inset-0 bg-gradient-radial from-cyan-900/10 via-black to-black"></div>
-        
+      
         {/* Animated quantum grid */}
         <div className="absolute inset-0 opacity-15">
           <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
         </div>
-        
+      
         {/* Floating quantum orbs */}
         <div className="floating-orb orb1 bg-gradient-radial from-cyan-500/10 to-transparent blur-3xl"></div>
         <div className="floating-orb orb2 bg-gradient-radial from-teal-500/10 to-transparent blur-3xl"></div>
-        
+      
         {/* Scanning lines */}
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent animate-scan"></div>
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/40 to-transparent animate-scan" style={{
@@ -70,7 +68,7 @@ const ChartSection = () => {
               <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
             </div>
           </div>
-          
+        
           <div className="flex items-center justify-center mb-4">
             <BarChart3 className="w-10 h-10 text-cyan-400 mr-3" />
             <h2 className="text-4xl md:text-5xl font-black text-cyan-400 font-mono">
@@ -78,7 +76,7 @@ const ChartSection = () => {
             </h2>
             <BarChart3 className="w-10 h-10 text-cyan-400 ml-3" />
           </div>
-          
+        
           <p className="text-gray-300 text-lg mb-6 max-w-4xl mx-auto leading-relaxed font-mono">
             Direct ARK/DAI pair pricing for accurate USD valuation
             <br />
@@ -86,7 +84,7 @@ const ChartSection = () => {
               PulseX DEX • ARK/DAI Pair • Real-time Updates
             </code>
           </p>
-          
+        
           {/* Enhanced System Controls */}
           <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -97,7 +95,7 @@ const ChartSection = () => {
                   <span className="font-mono text-cyan-400 text-sm">ARK: {dataSource}</span>
                 </div>
               </div>
-              
+            
               {/* Base Currency */}
               <div className="flex items-center justify-center gap-3">
                 <div className="flex items-center gap-2">
@@ -105,7 +103,7 @@ const ChartSection = () => {
                   <span className="font-mono text-cyan-400 text-sm">BASE: {baseCurrency}</span>
                 </div>
               </div>
-              
+            
               {/* Data Stream Status */}
               <div className="flex items-center justify-center gap-3">
                 <Activity className="w-4 h-4 text-cyan-400" />
@@ -114,7 +112,7 @@ const ChartSection = () => {
                   <div className="font-mono text-cyan-300 text-sm">{lastUpdated?.toLocaleTimeString()}</div>
                 </div>
               </div>
-              
+            
               {/* Refresh Control */}
               <div className="flex items-center justify-center">
                 <button onClick={handleRefresh} disabled={refreshing} className="flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-sm border border-cyan-500/30 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-400/10 transition-all duration-300 disabled:opacity-50 font-mono text-sm">
@@ -141,7 +139,7 @@ const ChartSection = () => {
         </div>
 
         {/* Enhanced Data Source Info */}
-        
+      
       </div>
     </section>;
 };
