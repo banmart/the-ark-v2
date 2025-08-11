@@ -95,11 +95,14 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         setShowOnboarding={setShowOnboarding}
       />
 
+      {/* Stats Section */}
+      <StatsSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
       {/* Content Sections - New ARK Features */}
       <ContentSections />
-
-      {/* Chart Section */}
-      <ChartSection />
 
       {/* Render children if provided */}
       {children}
