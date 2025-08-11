@@ -1,18 +1,5 @@
 // Optimized React locker system with grid-based tier selection
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useWallet } from '../hooks/useWallet';
-import { useLockerData } from '../hooks/useLockerData';
-import { BrowserPopupProvider } from '../components/providers/BrowserPopupProvider';
-import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
-import Navigation from '../components/Navigation';
-import Footer from '../components/Footer';
-import LockerHeader from '../components/locker/LockerHeader';
-import EmergencyStatus from '../components/locker/EmergencyStatus';
-import TierLegend from '../components/locker/TierLegend';
-import OptimizedLockerOperations from '../components/locker/OptimizedLockerOperations';
-import ContractAddressDisplay from '../components/locker/ContractAddressDisplay';
-import MobileBrowserPopup from '../components/MobileBrowserPopup';
 
 const LockerContent = () => {
   const {
@@ -120,8 +107,16 @@ const LockerContent = () => {
           {/* Tier Legend */}
           <TierLegend />
 
-          {/* Operations */}
-          <LockerOperations isConnected={isConnected} />
+          {/* Operations - Now with enhanced props for grid functionality */}
+          <LockerOperations 
+            isConnected={isConnected}
+            tiers={tierThresholds}
+            selectedTier={selectedTier}
+            highlightedTier={highlightedTier}
+            duration={duration}
+            onTierSelect={handleTierSelect}
+            onDurationChange={handleDurationChange}
+          />
 
           {/* Contract Address Section */}
           <div className="relative max-w-6xl mx-auto px-6 py-16">
@@ -179,4 +174,4 @@ const Locker = () => {
   );
 };
 
-export default Locker;
+Locker;
