@@ -8,8 +8,13 @@ import OnboardingModal from '../OnboardingModal';
 import AnimatedBackground from '../AnimatedBackground';
 import Navigation from '../Navigation';
 import HeroSection from '../HeroSection';
+import ContractAddressSection from '../ContractAddressSection';
+import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
-import ContentSections from '../ContentSections';
+import FeaturesSection from '../FeaturesSection';
+import ContractTransparencySection from '../ContractTransparencySection';
+import LockerTiersSection from '../LockerTiersSection';
+import ProphecySection from '../ProphecySection';
 import ChartSection from '../ChartSection';
 import Footer from '../Footer';
 
@@ -66,8 +71,8 @@ const PageLayout = ({ children }: PageLayoutProps) => {
     });
   };
 
-  // Updated to use the new ARK contract address
-  const contractAddress = '0xACC15eF8fa2e702d0138c3662A9E7d696f40F021';
+  // Updated to use the live ARK contract address
+  const contractAddress = '0x4d547181427Ee90342b4781E0eF2cd46F189cb2C';
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
@@ -94,9 +99,33 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         contractAddress={contractAddress}
         setShowOnboarding={setShowOnboarding}
       />
-      
-      {/* Content Sections - New ARK Features */}
-      <ContentSections />
+
+      {/* Stats Section */}
+      <StatsSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Features Section - Updated Four Pillars */}
+      <FeaturesSection />
+
+      {/* NEW: Contract Transparency Section */}
+      <ContractTransparencySection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Locker Tiers Section */}
+      <LockerTiersSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Prophecy Section */}
+      <ProphecySection />
+
+      {/* Chart Section */}
+      <ChartSection />
 
       {/* Render children if provided */}
       {children}
