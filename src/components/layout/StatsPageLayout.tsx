@@ -8,12 +8,8 @@ import OnboardingModal from '../OnboardingModal';
 import AnimatedBackground from '../AnimatedBackground';
 import Navigation from '../Navigation';
 import ContractAddressSection from '../ContractAddressSection';
-import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
-import FeaturesSection from '../FeaturesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
-import LockerTiersSection from '../LockerTiersSection';
-import ProphecySection from '../ProphecySection';
 import ChartSection from '../ChartSection';
 import Footer from '../Footer';
 
@@ -98,23 +94,11 @@ const StatsPageLayout = ({ children }: StatsPageLayoutProps) => {
         contractLoading={contractLoading}
       />
 
-      {/* Features Section - Updated Four Pillars */}
-      <FeaturesSection />
-
       {/* NEW: Contract Transparency Section */}
       <ContractTransparencySection 
         contractData={contractData}
         contractLoading={contractLoading}
       />
-
-      {/* Locker Tiers Section */}
-      <LockerTiersSection 
-        contractData={contractData}
-        contractLoading={contractLoading}
-      />
-
-      {/* Prophecy Section */}
-      <ProphecySection />
 
       {/* Chart Section */}
       <ChartSection />
