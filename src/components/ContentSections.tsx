@@ -1,5 +1,5 @@
 import React from 'react';
-import arkVessel from 'https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreifc7dz6zfjtgbc5dn7ocr7rtfjwwzrurrtbmgwbi5e2e447ixa5ei';
+import arkVessel from '@/assets/ark-vessel.jpg';
 import tokenomicsPillars from '@/assets/tokenomics-pillars.jpg';
 import burnProtocol from '@/assets/burn-protocol.jpg';
 import reflectionMatrix from '@/assets/reflection-matrix.jpg';
