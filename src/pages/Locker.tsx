@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react';
+
+import React from 'react';
 import { useWallet } from '../hooks/useWallet';
 import { useLockerData } from '../hooks/useLockerData';
 import { BrowserPopupProvider } from '../components/providers/BrowserPopupProvider';
@@ -12,15 +13,7 @@ import LockerOperations from '../components/locker/LockerOperations';
 import ContractAddressDisplay from '../components/locker/ContractAddressDisplay';
 import MobileBrowserPopup from '../components/MobileBrowserPopup';
 
-interface Tier {
-  id: string;
-  name: string;
-  minDays: number;
-  maxDays: number;
-  color: string;
-}
-
-const LockerContent: React.FC = () => {
+const LockerContent = () => {
   const {
     isConnected,
     account,
@@ -31,46 +24,13 @@ const LockerContent: React.FC = () => {
   const { emergencyMode, contractPaused } = useLockerData();
   const { isOpen, url, title, closePopup } = useBrowserPopup();
 
-  // State for tier selection and duration
-  const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
-  const [duration, setDuration] = useState<number>(30); // Default 30 days
-
-  // Define tier thresholds based on duration
-  const tierThresholds = useMemo<Tier[]>(() => [
-    { id: 'bronze', name: 'Bronze', minDays: 1, maxDays: 90, color: 'amber' },
-    { id: 'silver', name: 'Silver', minDays: 91, maxDays: 180, color: 'gray' },
-    { id: 'gold', name: 'Gold', minDays: 181, maxDays: 365, color: 'yellow' },
-    { id: 'platinum', name: 'Platinum', minDays: 366, maxDays: 730, color: 'blue' },
-    { id: 'diamond', name: 'Diamond', minDays: 731, maxDays: 1095, color: 'purple' },
-  ], []);
-
-  // Get highlighted tier based on duration
-  const highlightedTier = useMemo<Tier | undefined>(() => {
-    return tierThresholds.find(tier => 
-      duration >= tier.minDays && duration <= tier.maxDays
-    );
-  }, [duration, tierThresholds]);
-
-  const handleConnectWallet = useCallback(async () => {
+  const handleConnectWallet = async () => {
     try {
       await connectWallet();
     } catch (error) {
       console.error('Error connecting wallet:', error);
     }
-  }, [connectWallet]);
-
-  const handleTierSelect = useCallback((tier: Tier) => {
-    setSelectedTier(tier);
-    // Set duration to middle of tier range
-    const midDuration = Math.floor((tier.minDays + tier.maxDays) / 2);
-    setDuration(midDuration);
-  }, []);
-
-  const handleDurationChange = useCallback((newDuration: number) => {
-    setDuration(newDuration);
-    // Clear selected tier when sliding, let highlighting take over
-    setSelectedTier(null);
-  }, []);
+  };
 
   return (
     <>
@@ -126,16 +86,8 @@ const LockerContent: React.FC = () => {
           {/* Tier Legend */}
           <TierLegend />
 
-          {/* Operations - Now with enhanced props for grid functionality */}
-          <LockerOperations 
-            isConnected={isConnected}
-            tiers={tierThresholds}
-            selectedTier={selectedTier}
-            highlightedTier={highlightedTier}
-            duration={duration}
-            onTierSelect={handleTierSelect}
-            onDurationChange={handleDurationChange}
-          />
+          {/* Operations */}
+          <LockerOperations isConnected={isConnected} />
 
           {/* Contract Address Section */}
           <div className="relative max-w-6xl mx-auto px-6 py-16">
@@ -185,7 +137,7 @@ const LockerContent: React.FC = () => {
   );
 };
 
-const Locker: React.FC = () => {
+const Locker = () => {
   return (
     <BrowserPopupProvider>
       <LockerContent />
