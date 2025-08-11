@@ -1,7 +1,26 @@
-// Optimized React locker system with grid-based tier selection
+import React, { useState, useCallback, useMemo } from 'react';
+import { useWallet } from '../hooks/useWallet';
+import { useLockerData } from '../hooks/useLockerData';
+import { BrowserPopupProvider } from '../components/providers/BrowserPopupProvider';
+import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
+import Navigation from '../components/Navigation';
+import Footer from '../components/Footer';
+import LockerHeader from '../components/locker/LockerHeader';
+import EmergencyStatus from '../components/locker/EmergencyStatus';
+import TierLegend from '../components/locker/TierLegend';
+import LockerOperations from '../components/locker/LockerOperations';
+import ContractAddressDisplay from '../components/locker/ContractAddressDisplay';
+import MobileBrowserPopup from '../components/MobileBrowserPopup';
 
+interface Tier {
+  id: string;
+  name: string;
+  minDays: number;
+  maxDays: number;
+  color: string;
+}
 
-const LockerContent = () => {
+const LockerContent: React.FC = () => {
   const {
     isConnected,
     account,
@@ -13,11 +32,11 @@ const LockerContent = () => {
   const { isOpen, url, title, closePopup } = useBrowserPopup();
 
   // State for tier selection and duration
-  const [selectedTier, setSelectedTier] = useState(null);
-  const [duration, setDuration] = useState(30); // Default 30 days
+  const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
+  const [duration, setDuration] = useState<number>(30); // Default 30 days
 
   // Define tier thresholds based on duration
-  const tierThresholds = useMemo(() => [
+  const tierThresholds = useMemo<Tier[]>(() => [
     { id: 'bronze', name: 'Bronze', minDays: 1, maxDays: 90, color: 'amber' },
     { id: 'silver', name: 'Silver', minDays: 91, maxDays: 180, color: 'gray' },
     { id: 'gold', name: 'Gold', minDays: 181, maxDays: 365, color: 'yellow' },
@@ -26,7 +45,7 @@ const LockerContent = () => {
   ], []);
 
   // Get highlighted tier based on duration
-  const highlightedTier = useMemo(() => {
+  const highlightedTier = useMemo<Tier | undefined>(() => {
     return tierThresholds.find(tier => 
       duration >= tier.minDays && duration <= tier.maxDays
     );
@@ -40,14 +59,14 @@ const LockerContent = () => {
     }
   }, [connectWallet]);
 
-  const handleTierSelect = useCallback((tier) => {
+  const handleTierSelect = useCallback((tier: Tier) => {
     setSelectedTier(tier);
     // Set duration to middle of tier range
     const midDuration = Math.floor((tier.minDays + tier.maxDays) / 2);
     setDuration(midDuration);
   }, []);
 
-  const handleDurationChange = useCallback((newDuration) => {
+  const handleDurationChange = useCallback((newDuration: number) => {
     setDuration(newDuration);
     // Clear selected tier when sliding, let highlighting take over
     setSelectedTier(null);
@@ -166,7 +185,7 @@ const LockerContent = () => {
   );
 };
 
-const Locker = () => {
+const Locker: React.FC = () => {
   return (
     <BrowserPopupProvider>
       <LockerContent />
@@ -174,4 +193,4 @@ const Locker = () => {
   );
 };
 
-Locker;
+export default Locker;
