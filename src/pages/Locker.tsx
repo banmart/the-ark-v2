@@ -1,5 +1,6 @@
+// Optimized React locker system with grid-based tier selection
 
-import React from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useWallet } from '../hooks/useWallet';
 import { useLockerData } from '../hooks/useLockerData';
 import { BrowserPopupProvider } from '../components/providers/BrowserPopupProvider';
@@ -9,7 +10,7 @@ import Footer from '../components/Footer';
 import LockerHeader from '../components/locker/LockerHeader';
 import EmergencyStatus from '../components/locker/EmergencyStatus';
 import TierLegend from '../components/locker/TierLegend';
-import LockerOperations from '../components/locker/LockerOperations';
+import OptimizedLockerOperations from '../components/locker/OptimizedLockerOperations';
 import ContractAddressDisplay from '../components/locker/ContractAddressDisplay';
 import MobileBrowserPopup from '../components/MobileBrowserPopup';
 
@@ -24,13 +25,46 @@ const LockerContent = () => {
   const { emergencyMode, contractPaused } = useLockerData();
   const { isOpen, url, title, closePopup } = useBrowserPopup();
 
-  const handleConnectWallet = async () => {
+  // State for tier selection and duration
+  const [selectedTier, setSelectedTier] = useState(null);
+  const [duration, setDuration] = useState(30); // Default 30 days
+
+  // Define tier thresholds based on duration
+  const tierThresholds = useMemo(() => [
+    { id: 'bronze', name: 'Bronze', minDays: 1, maxDays: 90, color: 'amber' },
+    { id: 'silver', name: 'Silver', minDays: 91, maxDays: 180, color: 'gray' },
+    { id: 'gold', name: 'Gold', minDays: 181, maxDays: 365, color: 'yellow' },
+    { id: 'platinum', name: 'Platinum', minDays: 366, maxDays: 730, color: 'blue' },
+    { id: 'diamond', name: 'Diamond', minDays: 731, maxDays: 1095, color: 'purple' },
+  ], []);
+
+  // Get highlighted tier based on duration
+  const highlightedTier = useMemo(() => {
+    return tierThresholds.find(tier => 
+      duration >= tier.minDays && duration <= tier.maxDays
+    );
+  }, [duration, tierThresholds]);
+
+  const handleConnectWallet = useCallback(async () => {
     try {
       await connectWallet();
     } catch (error) {
       console.error('Error connecting wallet:', error);
     }
-  };
+  }, [connectWallet]);
+
+  const handleTierSelect = useCallback((tier) => {
+    setSelectedTier(tier);
+    // Set duration to middle of tier range
+    const midDuration = Math.floor((tier.minDays + tier.maxDays) / 2);
+    setDuration(midDuration);
+  }, []);
+
+  const handleDurationChange = useCallback((newDuration) => {
+    setDuration(newDuration);
+    // Clear selected tier when sliding, let highlighting take over
+    setSelectedTier(null);
+  }, []);
 
   return (
     <>
