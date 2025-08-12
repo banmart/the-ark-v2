@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { ArrowRight, Zap, DollarSign, Lock, Gift, ExternalLink, Wallet, CheckCircle } from 'lucide-react';
+import { ArrowRight, Zap, DollarSign, Lock, Gift, ExternalLink, Wallet } from 'lucide-react';
+import BaseLayout from '../components/layout/BaseLayout';
+import ProcessFlow from '../components/onboarding/ProcessFlow';
+import ServiceCard from '../components/onboarding/ServiceCard';
+import MobileBrowserPopup from '../components/MobileBrowserPopup';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
+import { useNavigate } from 'react-router-dom';
+import { useWalletContext } from '../components/providers/WalletProvider';
 
 // Mock the imported components to match original structure
 const BaseLayout = ({ children }) => children;
