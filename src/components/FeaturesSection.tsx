@@ -111,17 +111,6 @@ const FeaturesSection = () => {
             <span className="animate-[glitch_4s_ease-in-out_1s_infinite]">PILLARS</span>
           </h2>
           
-          <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
-            <p className="text-lg text-gray-200 mb-2">
-              <span className="text-cyan-400 font-mono">[ARCHITECTURE BRIEF]</span> The ARK's quantum foundation rests upon four 
-              <span className="text-purple-400 font-bold"> divine pillars</span>, creating a 
-              <span className="text-teal-400 font-semibold"> deflationary ecosystem</span> with maximum security protocols 
-              and amplified rewards for the faithful.
-            </p>
-            <div className="text-sm text-gray-400 font-mono">
-              Each pillar operates autonomously while maintaining quantum entanglement with the core matrix.
-            </div>
-          </div>
         </div>
 
         {/* Quantum Pillars Grid */}
