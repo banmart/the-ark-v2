@@ -41,13 +41,24 @@ export function formatPrice(price: string | number, decimals: number = 18): stri
   const numValue = typeof price === 'string' ? parseFloat(price) : price;
   if (isNaN(numValue)) return '0.000000';
   
-  // For prices, show more decimal places for precision
-  if (numValue >= 1) {
-    return numValue.toFixed(6);
-  } else if (numValue >= 0.001) {
-    return numValue.toFixed(8);
-  } else {
-    return numValue.toFixed(12);
+  // Convert from wei (18 decimals) to actual price
+  const priceInEther = numValue / Math.pow(10, decimals);
+  
+  // For very small prices, use exponential notation
+  if (priceInEther < 0.000001) {
+    return priceInEther.toExponential(4);
+  }
+  // For small prices, show more decimal places
+  else if (priceInEther < 0.01) {
+    return priceInEther.toFixed(8);
+  }
+  // For medium prices, show 6 decimal places
+  else if (priceInEther < 1) {
+    return priceInEther.toFixed(6);
+  }
+  // For larger prices, show fewer decimals
+  else {
+    return priceInEther.toFixed(4);
   }
 }
 
