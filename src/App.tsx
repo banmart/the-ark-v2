@@ -12,6 +12,7 @@ import { BrowserPopupProvider } from "./components/providers/BrowserPopupProvide
 import ChatDrawer from "./components/chat/ChatDrawer";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
+import Stats from "./pages/Stats";
 import Onboarding from "./pages/Onboarding";
 import Locker from "./pages/Locker";
 import Leaderboard from "./pages/Leaderboard";
@@ -33,6 +34,7 @@ const App = () => (
                   <ScrollToTop />
                   <Routes>
                     <Route path="/" element={<Index />} />
+                    <Route path="/stats" element={<Stats />} />
                     <Route path="/onboarding" element={<Onboarding />} />
                     <Route path="/locker" element={<Locker />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
