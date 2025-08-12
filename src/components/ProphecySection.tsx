@@ -135,16 +135,6 @@ const ProphecySection = () => {
             [NOAH ARK PROTOCOL]
           </h2>
           
-          <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
-            <p className="text-lg text-gray-200 mb-2 font-mono">
-              <span className="text-cyan-400 font-mono">[ANCIENT WISDOM MATRIX]</span> Prophetic algorithms merged with 
-              <span className="text-teal-400 font-bold"> quantum innovation protocols</span>. Three-pillar ecosystem 
-              <span className="text-green-400 font-semibold"> guidance system</span> activated.
-            </p>
-            <div className="text-sm text-gray-400 font-mono">
-              Navigation through crypto realm turbulence via predictive modeling algorithms.
-            </div>
-          </div>
         </div>
 
         {/* Prophecy Modules */}
