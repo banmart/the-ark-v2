@@ -220,19 +220,6 @@ const LockerTiersSection = ({
             <Lock className="inline w-10 h-10 ml-3 text-cyan-400" />
           </h2>
           
-          <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6">
-            <p className="text-lg text-gray-200 mb-2 font-mono">
-              <span className="text-cyan-400 font-mono">[QUANTUM LOCKER PROTOCOL]</span> Lock your ARK tokens in the sacred vault and ascend through divine tiers. 
-              <span className="text-purple-400 font-bold"> Temporal commitment</span> amplifies your 
-              <span className="text-teal-400 font-semibold"> reward coefficients</span>.
-            </p>
-            <div className="flex items-center justify-center gap-2 mt-4">
-              <TrendingUp className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm text-gray-400 font-mono">
-                {contractLoading ? <span className="animate-pulse">[LOADING VAULT DATA...]</span> : `[VAULT_ALLOCATION: ${contractData.currentFees.locker}% OF_ALL_TRANSACTIONS]`}
-              </span>
-            </div>
-          </div>
         </div>
 
         {/* Tier Grid */}
