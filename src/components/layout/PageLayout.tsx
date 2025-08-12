@@ -72,7 +72,7 @@ const PageLayout = ({ children }: PageLayoutProps) => {
   };
 
   // Updated to use the live ARK contract address
-  const contractAddress = '0x4d547181427Ee90342b4781E0eF2cd46F189cb2C';
+  const contractAddress = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67';
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">

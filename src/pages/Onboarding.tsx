@@ -111,7 +111,7 @@ const Onboarding = () => {
       actions: [{
         name: 'Buy ARK',
         description: 'Purchase ARK tokens on PulseX',
-        url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0x4d547181427Ee90342b4781E0eF2cd46F189cb2C',
+        url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67',
         icon: '💰',
         external: true
       }]
@@ -131,7 +131,7 @@ const Onboarding = () => {
       }, {
         name: 'Add Liquidity',
         description: 'Provide liquidity to earn fees',
-        url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0x4d547181427Ee90342b4781E0eF2cd46F189cb2C/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
+        url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
         icon: '💧',
         external: true
       }]
