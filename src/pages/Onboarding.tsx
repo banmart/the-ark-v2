@@ -1,284 +1,369 @@
-import React from 'react';
-import { ArrowRight, Zap, DollarSign, Lock, Gift, ExternalLink, Wallet } from 'lucide-react';
-import BaseLayout from '../components/layout/BaseLayout';
-import ProcessFlow from '../components/onboarding/ProcessFlow';
-import ServiceCard from '../components/onboarding/ServiceCard';
-import MobileBrowserPopup from '../components/MobileBrowserPopup';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
-import { useNavigate } from 'react-router-dom';
-import { useWalletContext } from '../components/providers/WalletProvider';
-const Onboarding = () => {
-  const {
-    openPopup,
-    isOpen,
-    closePopup,
-    url,
-    title
-  } = useBrowserPopup();
-  const navigate = useNavigate();
-  const {
-    isConnected
-  } = useWalletContext();
-  const handleExternalLink = (url: string, title: string) => {
-    openPopup(url, title);
+import React, { useState, useEffect } from 'react';
+import { ArrowRight, Zap, DollarSign, Lock, Gift, ExternalLink, Wallet, CheckCircle, Circle, ArrowDown, Sparkles, Shield, Coins, ArrowLeftRight, TrendingUp } from 'lucide-react';
+
+const OptimizedOnboarding = () => {
+  const [completedSteps, setCompletedSteps] = useState(new Set());
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isConnected, setIsConnected] = useState(false);
+
+  // Optimized data structure with better organization
+  const onboardingSteps = [
+    {
+      id: 'wallet',
+      title: 'Setup Wallet',
+      subtitle: 'Your gateway to DeFi',
+      icon: Wallet,
+      color: 'from-purple-500 to-violet-600',
+      description: 'Install and configure your crypto wallet to access the ARK ecosystem',
+      services: [
+        {
+          name: 'MetaMask',
+          description: 'Most popular crypto wallet',
+          icon: Wallet,
+          url: 'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en',
+          isPrimary: true
+        }
+      ],
+      estimatedTime: '2-3 min'
+    },
+    {
+      id: 'fund',
+      title: 'Fund Account',
+      subtitle: 'Add money to your wallet',
+      icon: DollarSign,
+      color: 'from-emerald-500 to-teal-600',
+      description: 'Purchase cryptocurrency using your preferred payment method',
+      services: [
+        {
+          name: '0xCoast',
+          description: 'Buy crypto with credit card',
+          icon: DollarSign,
+          url: 'https://0xcoast.com',
+          isPrimary: true
+        },
+        {
+          name: 'RampNow',
+          description: 'Fast fiat on-ramp service',
+          icon: Zap,
+          url: 'https://app.rampnow.io/',
+          isPrimary: false
+        },
+        {
+          name: 'Coinbase',
+          description: 'Leading crypto exchange',
+          icon: TrendingUp,
+          url: 'https://www.coinbase.com/',
+          isPrimary: false
+        }
+      ],
+      estimatedTime: '5-10 min'
+    },
+    {
+      id: 'bridge',
+      title: 'Bridge Assets',
+      subtitle: 'Move to PulseChain',
+      icon: ArrowLeftRight,
+      color: 'from-blue-500 to-cyan-600',
+      description: 'Transfer your assets to PulseChain network for ARK access',
+      services: [
+        {
+          name: 'ChangeNow',
+          description: 'Exchange crypto instantly',
+          icon: ArrowRight,
+          url: 'https://changenow.app.link/referral?link_id=e49c221824244a',
+          isPrimary: true
+        },
+        {
+          name: 'Liberty Swap',
+          description: 'Decentralized exchange',
+          icon: ArrowRight,
+          url: 'https://libertyswap.finance/',
+          isPrimary: false
+        }
+      ],
+      actions: [
+        {
+          name: 'Official Bridge',
+          description: 'Use the official PulseChain bridge',
+          url: 'https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge',
+          icon: ArrowLeftRight
+        }
+      ],
+      estimatedTime: '3-5 min'
+    },
+    {
+      id: 'acquire',
+      title: 'Get ARK Tokens',
+      subtitle: 'Purchase your ARK',
+      icon: Coins,
+      color: 'from-amber-500 to-orange-600',
+      description: 'Buy ARK tokens on PulseX decentralized exchange',
+      actions: [
+        {
+          name: 'Buy ARK on PulseX',
+          description: 'Get ARK tokens now',
+          url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0x4d547181427Ee90342b4781E0eF2cd46F189cb2C',
+          icon: Coins
+        }
+      ],
+      estimatedTime: '2-3 min'
+    },
+    {
+      id: 'stake',
+      title: 'Lock & Earn',
+      subtitle: 'Maximize your rewards',
+      icon: Lock,
+      color: 'from-rose-500 to-pink-600',
+      description: 'Lock your ARK tokens to earn rewards and participate in governance',
+      actions: [
+        {
+          name: 'Vault (Locker)',
+          description: 'Lock tokens for rewards',
+          url: '/locker',
+          icon: Lock,
+          isInternal: true
+        },
+        {
+          name: 'Add Liquidity',
+          description: 'Provide liquidity to earn fees',
+          url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0x4d547181427Ee90342b4781E0eF2cd46F189cb2C/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
+          icon: Zap
+        }
+      ],
+      estimatedTime: '2-3 min'
+    }
+  ];
+
+  const handleStepComplete = (stepId) => {
+    setCompletedSteps(prev => new Set([...prev, stepId]));
   };
 
-  const handleNewTabLink = (url: string) => {
+  const handleExternalLink = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
-  // Grouped sections for organized onboarding
-  const groupedSections = {
-    wallet: {
-      id: 'wallet',
-      title: 'WALLET',
-      subtitle: 'Setup your crypto wallet',
-      color: 'purple',
-      services: [{
-        name: 'MetaMask',
-        description: 'Crypto wallet browser extension',
-        icon: Wallet,
-        color: 'yellow',
-        url: 'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en',
-        isAvailable: true
-      }],
-      actions: []
-    },
-    bank: {
-      id: 'bank',
-      title: 'BANK',
-      subtitle: 'Connect bank account',
-      color: 'cyan',
-      services: [{
-        name: '0xCoast',
-        description: 'Buy crypto with credit card',
-        icon: DollarSign,
-        color: 'blue',
-        url: 'https://0xcoast.com',
-        isAvailable: true
-      }, {
-        name: 'RampNow',
-        description: 'Fast fiat on-ramp service',
-        icon: Zap,
-        color: 'green',
-        url: 'https://app.rampnow.io/',
-        isAvailable: true
-      }, {
-        name: 'Coinbase',
-        description: 'Leading cryptocurrency exchange',
-        icon: DollarSign,
-        color: 'cyan',
-        url: 'https://www.coinbase.com/',
-        isAvailable: true
-      }],
-      actions: []
-    },
-    bridge: {
-      id: 'bridge',
-      title: 'BRIDGE',
-      subtitle: 'Move assets to PulseChain',
-      color: 'blue',
-      services: [{
-        name: 'ChangeNow',
-        description: 'Exchange crypto instantly',
-        icon: ArrowRight,
-        color: 'purple',
-        url: 'https://changenow.app.link/referral?link_id=e49c221824244a',
-        isAvailable: true
-      }, {
-        name: 'Liberty Swap',
-        description: 'Decentralized exchange for crypto swaps',
-        icon: ArrowRight,
-        color: 'blue',
-        url: 'https://libertyswap.finance/',
-        isAvailable: true
-      }],
-      actions: [{
-        name: 'Bridge Assets',
-        description: 'Move assets to PulseChain',
-        url: 'https://bridge.mypinata.cloud/ipfs/bafybeif242ld54nzjg2aqxvfse23wpbkqbyqasj3usgslccuajnykonzo4/#/bridge',
-        icon: '🌉',
-        external: true
-      }]
-    },
-    buy: {
-      id: 'buy',
-      title: 'BUY',
-      subtitle: 'Purchase ARK tokens',
-      color: 'green',
-      services: [],
-      actions: [{
-        name: 'Buy ARK',
-        description: 'Purchase ARK tokens on PulseX',
-        url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67',
-        icon: '💰',
-        external: true
-      }]
-    },
-    lock: {
-      id: 'lock',
-      title: 'LOCK',
-      subtitle: 'Lock tokens for rewards',
-      color: 'purple',
-      services: [],
-      actions: [{
-        name: 'Vault (Locker)',
-        description: 'Lock tokens for rewards',
-        url: '/locker',
-        icon: '🔒',
-        external: false
-      }, {
-        name: 'Add Liquidity',
-        description: 'Provide liquidity to earn fees',
-        url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
-        icon: '💧',
-        external: true
-      }]
-    }
+
+  const calculateProgress = () => {
+    return Math.round((completedSteps.size / onboardingSteps.length) * 100);
   };
-  return <BaseLayout>
-      <div className="min-h-screen bg-black text-white">
-        {/* Hero Section */}
-        <div className="relative">
-          {/* Quantum field background */}
-          <div className="absolute inset-0 -top-20 -bottom-20">
-            <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent blur-3xl"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-conic from-cyan-500/20 via-teal-500/20 to-cyan-500/20 rounded-full blur-3xl animate-[spin_20s_linear_infinite]"></div>
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-purple-500/5 animate-pulse"></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-radial from-cyan-500/10 to-transparent rounded-full blur-3xl animate-[pulse_4s_ease-in-out_infinite]"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-radial from-purple-500/10 to-transparent rounded-full blur-3xl animate-[pulse_6s_ease-in-out_infinite]"></div>
+      </div>
+
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 mb-6 px-6 py-3 bg-black/30 backdrop-blur-xl border border-cyan-500/30 rounded-full">
+            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-sm font-mono text-green-400 tracking-wider">SYSTEM_ONLINE</span>
           </div>
+          
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
+            Welcome to ARK
+          </h1>
+          
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+            Follow these steps to join the ARK ecosystem and start your journey to divine ascension
+          </p>
 
-          <div className="relative z-10 text-center py-16 px-6">
-            {/* System Status Indicator */}
-            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-xs font-mono text-green-400 tracking-wider">ARK_ONBOARDING_PROTOCOL</span>
+          {/* Progress Bar */}
+          <div className="max-w-md mx-auto mb-8">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-mono text-cyan-400">PROGRESS</span>
+              <span className="text-sm font-mono text-cyan-400">{calculateProgress()}%</span>
             </div>
-
-            {/* Main Title */}
-            <div className="mb-8">
-              <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
-                [INITIALIZATION_SEQUENCE]
-              </div>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent">GET STARTED WITH ARK</h1>
-              <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
-                [DIVINE_ASCENSION_AWAITS]
-              </div>
+            <div className="h-2 bg-black/50 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all duration-500 ease-out"
+                style={{ width: `${calculateProgress()}%` }}
+              ></div>
             </div>
-
-            {/* Description */}
-            
+            <div className="text-xs text-gray-400 mt-1">{completedSteps.size} of {onboardingSteps.length} steps completed</div>
           </div>
         </div>
 
-        {/* Process Flow */}
-        <div className="px-6 mb-16">
-          <div className="max-w-6xl mx-auto">
-            
-            <ProcessFlow />
-          </div>
+        {/* Steps Timeline */}
+        <div className="max-w-4xl mx-auto">
+          {onboardingSteps.map((step, index) => (
+            <div key={step.id} className="relative mb-8">
+              {/* Connection Line */}
+              {index < onboardingSteps.length - 1 && (
+                <div className="absolute left-8 top-20 w-0.5 h-20 bg-gradient-to-b from-cyan-500/50 to-transparent z-0"></div>
+              )}
+              
+              {/* Step Card */}
+              <div className={`relative bg-black/40 backdrop-blur-xl border transition-all duration-500 hover:scale-[1.02] group ${
+                completedSteps.has(step.id) 
+                  ? 'border-green-500/50 shadow-green-500/20' 
+                  : 'border-gray-600/30 hover:border-cyan-500/50'
+              } rounded-2xl overflow-hidden`}>
+                
+                {/* Animated Border Effect */}
+                <div className={`absolute inset-0 bg-gradient-to-r ${step.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl`}></div>
+                
+                <div className="relative z-10 p-6 md:p-8">
+                  <div className="flex items-start gap-6">
+                    {/* Step Number & Icon */}
+                    <div className="flex-shrink-0">
+                      <div className={`relative w-16 h-16 rounded-full bg-gradient-to-r ${step.color} flex items-center justify-center mb-4 shadow-lg`}>
+                        <step.icon className="w-8 h-8 text-white" />
+                        {completedSteps.has(step.id) && (
+                          <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-4 h-4 text-white" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs font-mono text-gray-400">STEP {index + 1}</div>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-grow min-w-0">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-2xl font-bold text-white">{step.title}</h3>
+                        <div className="text-xs font-mono text-gray-400 bg-black/30 px-2 py-1 rounded">
+                          {step.estimatedTime}
+                        </div>
+                      </div>
+                      <p className="text-cyan-300 text-sm mb-2">{step.subtitle}</p>
+                      <p className="text-gray-300 mb-6">{step.description}</p>
+
+                      {/* Services */}
+                      {step.services && (
+                        <div className="grid gap-3 mb-4">
+                          {step.services.map((service) => (
+                            <div key={service.name} className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 cursor-pointer hover:scale-105 ${
+                              service.isPrimary 
+                                ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30' 
+                                : 'bg-black/30 border border-gray-600/30 hover:border-gray-500/50'
+                            }`}
+                            onClick={() => handleExternalLink(service.url)}>
+                              <div className="flex items-center gap-3">
+                                <service.icon className="w-6 h-6 text-cyan-400" />
+                                <div>
+                                  <div className="font-semibold text-white">{service.name}</div>
+                                  <div className="text-sm text-gray-400">{service.description}</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {service.isPrimary && (
+                                  <span className="text-xs bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-2 py-1 rounded font-mono">
+                                    RECOMMENDED
+                                  </span>
+                                )}
+                                <ExternalLink className="w-4 h-4 text-gray-400" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Actions */}
+                      {step.actions && (
+                        <div className="grid gap-3 mb-4">
+                          {step.actions.map((action) => (
+                            <button
+                              key={action.name}
+                              onClick={() => handleExternalLink(action.url)}
+                              className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-xl hover:scale-105 transition-all duration-300 group"
+                            >
+                              <div className="flex items-center gap-3">
+                                <action.icon className="w-6 h-6 text-emerald-400" />
+                                <div className="text-left">
+                                  <div className="font-semibold text-white">{action.name}</div>
+                                  <div className="text-sm text-gray-400">{action.description}</div>
+                                </div>
+                              </div>
+                              <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Complete Button */}
+                      <button
+                        onClick={() => handleStepComplete(step.id)}
+                        disabled={completedSteps.has(step.id)}
+                        className={`w-full mt-4 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                          completedSteps.has(step.id)
+                            ? 'bg-green-500/20 border border-green-500/50 text-green-400 cursor-default'
+                            : 'bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-black font-bold hover:scale-105'
+                        }`}
+                      >
+                        {completedSteps.has(step.id) ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <CheckCircle className="w-5 h-5" />
+                            STEP COMPLETED
+                          </div>
+                        ) : (
+                          'MARK AS COMPLETED'
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Grouped Onboarding Sections */}
-        {Object.values(groupedSections).map((section) => (
-          <div key={section.id} id={section.id} className="px-6 mb-16">
-            <div className="max-w-6xl mx-auto">
-              {/* Section Header */}
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
-                  <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                  <span className="text-xs font-mono text-cyan-400 tracking-wider">{section.title}_PROTOCOL</span>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent font-mono">
-                  {section.title}
-                </h2>
-                <p className="text-gray-400 text-sm">{section.subtitle}</p>
-              </div>
-
-              {/* Services Grid */}
-              {section.services && (
-                <div className="grid grid-cols-1 gap-6 mb-6 justify-items-center">
-                  {section.services.map(service => (
-                    <ServiceCard 
-                      key={service.name} 
-                      name={service.name} 
-                      description={service.description} 
-                      icon={service.icon} 
-                      color={service.color as "blue" | "green" | "purple" | "yellow" | "cyan"} 
-                      onClick={() => {
-                        if (service.name === 'MetaMask' || service.name === 'ChangeNow') {
-                          handleNewTabLink(service.url);
-                        } else {
-                          handleExternalLink(service.url, service.name);
-                        }
-                      }}
-                      isAvailable={service.isAvailable} 
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Actions Grid */}
-              {section.actions && (
-                <div className="grid grid-cols-1 gap-6 justify-items-center">
-                  {section.actions.map((action) => (
-                    <Card key={action.name} className="bg-black/50 border-cyan-500/30 hover:bg-black/70 transition-all duration-300 hover:scale-105 group relative overflow-hidden">
-                      {/* Scanning effect */}
-                      <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>
-                      
-                      <CardHeader className="pb-4">
-                        <CardTitle className="flex items-center gap-3 text-cyan-400">
-                          <span className="text-2xl">{action.icon}</span>
-                          <span className="font-mono text-sm">{action.name}</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-gray-400 text-sm mb-4">{action.description}</p>
-                        <Button onClick={() => {
-                          if (action.external) {
-                            handleNewTabLink(action.url);
-                          } else {
-                            navigate(action.url);
-                          }
-                        }} className="w-full bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform">
-                          {action.external ? 'OPEN' : 'NAVIGATE'}
-                          {action.external && <ExternalLink className="w-4 h-4 ml-2" />}
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+        {/* Completion Celebration */}
+        {completedSteps.size === onboardingSteps.length && (
+          <div className="max-w-2xl mx-auto mt-12 text-center">
+            <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-2xl p-8 backdrop-blur-xl">
+              <div className="text-6xl mb-4">🎉</div>
+              <h3 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-4">
+                Onboarding Complete!
+              </h3>
+              <p className="text-gray-300 mb-6">
+                Welcome to the ARK ecosystem! You're now ready to begin your journey to divine ascension.
+              </p>
+              <button className="bg-gradient-to-r from-green-500 to-emerald-500 text-black px-8 py-3 rounded-xl font-bold hover:scale-105 transition-all duration-300">
+                ENTER ARK ECOSYSTEM
+              </button>
             </div>
           </div>
-        ))}
+        )}
 
         {/* Wallet Connection CTA */}
-        {!isConnected && <div className="px-6 mb-20">
-            <div className="max-w-4xl mx-auto">
-              <Card className="bg-gradient-to-r from-cyan-500/10 to-teal-500/10 border-cyan-500/30 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-teal-500/5 to-purple-500/5 animate-pulse"></div>
-                <CardContent className="p-8 text-center relative z-10">
-                  <div className="mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Zap className="w-8 h-8 text-black" />
-                    </div>
-                    <h4 className="text-xl font-bold text-cyan-400 mb-2 font-mono">WALLET CONNECTION REQUIRED</h4>
-                    <p className="text-gray-400">Connect your wallet to access the full ARK ecosystem</p>
-                  </div>
-                  <Button onClick={() => {
-                // This will trigger wallet connection from the navigation
-                (document.querySelector('nav button') as HTMLButtonElement)?.click();
-              }} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 font-mono font-bold tracking-wide hover:scale-105 transition-all">
-                    INITIALIZE_WALLET_CONNECTION
-                  </Button>
-                </CardContent>
-              </Card>
+        {!isConnected && (
+          <div className="max-w-2xl mx-auto mt-12">
+            <div className="bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-2xl p-8 backdrop-blur-xl text-center">
+              <Shield className="w-16 h-16 mx-auto mb-4 text-orange-400" />
+              <h3 className="text-2xl font-bold text-orange-400 mb-4">Connect Your Wallet</h3>
+              <p className="text-gray-300 mb-6">
+                Connect your wallet to access all ARK features and track your progress automatically.
+              </p>
+              <button 
+                onClick={() => setIsConnected(true)}
+                className="bg-gradient-to-r from-orange-500 to-red-500 text-black px-8 py-3 rounded-xl font-bold hover:scale-105 transition-all duration-300"
+              >
+                CONNECT WALLET
+              </button>
             </div>
-          </div>}
+          </div>
+        )}
       </div>
-      
-      {/* Mobile Browser Popup */}
-      <MobileBrowserPopup isOpen={isOpen} onClose={closePopup} url={url} title={title} />
-    </BaseLayout>;
+
+      {/* Custom Styles */}
+      <style jsx>{`
+        @keyframes gradient {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradient 3s ease infinite;
+        }
+      `}</style>
+    </div>
+  );
 };
-export default Onboarding;
+
+export default OptimizedOnboarding;
