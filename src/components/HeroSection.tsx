@@ -33,7 +33,7 @@ const HeroSection = ({
         // Start the intro fade sequence
         setTimeout(() => {
           setShowIntro(false);
-        }, 1000); // Wait 1 second after video loads before starting fade
+        }, 2500); // Wait 2.5 seconds after video loads before starting fade
       };
       video.addEventListener('canplay', handleCanPlay);
       return () => video.removeEventListener('canplay', handleCanPlay);
@@ -60,7 +60,7 @@ const HeroSection = ({
     <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col items-center overflow-hidden">
       {/* Black Intro Overlay */}
       <div 
-        className={`absolute inset-0 bg-black z-30 transition-opacity duration-[2000ms] ease-out ${
+        className={`absolute inset-0 bg-black z-30 transition-opacity duration-[4000ms] ease-in-out ${
           showIntro ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       />
