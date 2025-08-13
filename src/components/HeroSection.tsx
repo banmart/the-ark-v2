@@ -123,7 +123,7 @@ const HeroSection = ({
           <h1>
             <TextGenerateEffect
               words="The ARK"
-              className="text-7xl md:text-8xl lg:text-9xl xl:text-[8rem] font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
+              className="text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
               duration={0.8}
             />
           </h1>
