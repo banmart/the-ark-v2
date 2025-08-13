@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLockerData } from '../../hooks/useLockerData';
 import { AlertTriangle, Lock, Zap } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
@@ -20,6 +20,7 @@ const EnhancedLockInterface = ({
     determineLockTier,
     CONTRACT_CONSTANTS,
     lockTokens,
+    approveTokens,
     emergencyMode,
     contractPaused,
     loading,
@@ -30,12 +31,46 @@ const EnhancedLockInterface = ({
   } = useLockerData();
   const [lockAmount, setLockAmount] = useState('');
   const [lockDuration, setLockDuration] = useState(30);
+  const [currentStep, setCurrentStep] = useState(1);
   const currentTier = determineLockTier(lockDuration);
   const amount = parseFloat(lockAmount || '0');
   const needsApproval = amount > 0 && currentAllowance < amount;
   const hasInsufficientBalance = amount > userArkBalance;
   const isProcessing = isProcessingApproval || isProcessingLock;
   const isValidDuration = lockDuration >= CONTRACT_CONSTANTS.MIN_LOCK_DURATION && lockDuration <= CONTRACT_CONSTANTS.MAX_LOCK_DURATION;
+
+  // Reset step when amount changes or approval is no longer needed
+  useEffect(() => {
+    if (!needsApproval) {
+      setCurrentStep(1);
+    } else if (needsApproval && currentAllowance >= amount && amount > 0) {
+      setCurrentStep(2);
+    } else {
+      setCurrentStep(1);
+    }
+  }, [needsApproval, currentAllowance, amount]);
+
+  const handleApproval = async () => {
+    if (!lockAmount || !isConnected || hasInsufficientBalance) return;
+    
+    try {
+      const success = await approveTokens(amount);
+      if (success) {
+        setCurrentStep(2);
+        toast({
+          title: "Approval Successful!",
+          description: `Approved ${amount} ARK tokens for locking`
+        });
+      }
+    } catch (error: any) {
+      console.error('Approval failed:', error);
+      toast({
+        variant: "destructive",
+        title: "Approval Failed",
+        description: error.message || "Failed to approve tokens"
+      });
+    }
+  };
   const handleLock = async () => {
     if (!lockAmount || !isConnected || hasInsufficientBalance) return;
     try {
@@ -46,6 +81,7 @@ const EnhancedLockInterface = ({
       });
       setLockAmount('');
       setLockDuration(30);
+      setCurrentStep(1);
     } catch (error: any) {
       console.error('Lock failed:', error);
       toast({
@@ -101,7 +137,19 @@ const EnhancedLockInterface = ({
 
           <SecurityInfoPanel CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} />
 
-          <LockButton isConnected={isConnected} lockAmount={lockAmount} isValidDuration={isValidDuration} emergencyMode={emergencyMode} contractPaused={contractPaused} isProcessing={isProcessing} hasInsufficientBalance={hasInsufficientBalance} needsApproval={needsApproval} onLock={handleLock} />
+          <LockButton 
+            isConnected={isConnected} 
+            lockAmount={lockAmount} 
+            isValidDuration={isValidDuration} 
+            emergencyMode={emergencyMode} 
+            contractPaused={contractPaused} 
+            isProcessing={isProcessing} 
+            hasInsufficientBalance={hasInsufficientBalance} 
+            needsApproval={needsApproval}
+            currentStep={currentStep}
+            onApprove={handleApproval}
+            onLock={handleLock} 
+          />
         </div>
 
         {/* Scanning Effect */}
