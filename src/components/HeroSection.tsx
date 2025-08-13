@@ -34,7 +34,7 @@ const HeroSection = ({
         // Start the intro fade sequence
         setTimeout(() => {
           setShowIntro(false);
-        }, 2500); // Wait 2.5 seconds after video loads before starting fade
+        }, 800); // Wait 0.8 seconds after video loads before starting fade
       };
       video.addEventListener('canplay', handleCanPlay);
       return () => video.removeEventListener('canplay', handleCanPlay);
@@ -115,7 +115,7 @@ const HeroSection = ({
 
       {/* Logo Section - The ARK */}
       <div 
-        className={`relative z-20 pt-8 md:pt-12 transition-all duration-1000 ease-out ${
+        className={`relative z-20 pt-8 md:pt-12 transition-all duration-600 ease-out ${
           showIntro ? 'opacity-0 translate-y-12' : 'opacity-100 translate-y-0'
         }`}
       >
@@ -124,7 +124,7 @@ const HeroSection = ({
             <TextGenerateEffect
               words="The ARK"
               className="text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
-              duration={0.8}
+              duration={0.5}
             />
           </h1>
         </div>

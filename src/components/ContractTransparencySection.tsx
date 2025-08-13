@@ -89,6 +89,9 @@ const ContractTransparencySection = ({
                       {contractLoading ? '[SCANNING...]' : `${parseFloat(contractData.swapSettings.threshold || '50000').toLocaleString()}`}
                     </div>
                     <div className="text-xs text-gray-400 font-mono mt-2">[TOKENS]</div>
+                    <div className="text-xs text-cyan-400 font-mono mt-1">
+                      Last updated: {contractLoading ? 'Scanning...' : new Date(contractData.lastUpdated).toLocaleTimeString()}
+                    </div>
                   </div>
                   
                   <div className="bg-black/30 backdrop-blur-sm border border-green-500/30 rounded-xl p-6 text-center hover:border-green-500/50 transition-all duration-300">
