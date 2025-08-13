@@ -116,21 +116,17 @@ const HeroSection = ({
       {/* Logo Section - The ARK */}
       <div 
         className={`relative z-20 pt-8 md:pt-12 transition-all duration-1000 ease-out ${
-          showIntro ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'
+          showIntro ? 'opacity-0 translate-y-12' : 'opacity-100 translate-y-0'
         }`}
       >
         <div className="text-center">
           <h1>
             <TextGenerateEffect
               words="The ARK"
-              className="text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
+              className="text-7xl md:text-8xl lg:text-9xl xl:text-[8rem] font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
               duration={0.8}
             />
           </h1>
-          <div className="absolute inset-0 text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] font-bold bg-gradient-to-r from-cyan-400/20 via-teal-300/20 to-yellow-400/20 bg-clip-text text-transparent blur-sm -z-10" 
-               style={{ filter: 'blur(8px)' }}>
-            The ARK
-          </div>
         </div>
       </div>
             
