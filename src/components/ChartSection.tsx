@@ -61,48 +61,11 @@ const ChartSection = () => {
           <p className="text-gray-300 text-lg mb-6 max-w-4xl mx-auto leading-relaxed font-mono">
             Direct ARK/DAI pair pricing for accurate USD valuation
             <br />
-            <code className="text-cyan-400 text-sm bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg mt-2 inline-block border border-cyan-500/20">
-              PulseX DEX • ARK/DAI Pair • Real-time Updates
-            </code>
+            
           </p>
           
           {/* Enhanced System Controls */}
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Data Source Status */}
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${dataSource === 'PulseX' ? 'bg-green-400 animate-pulse' : dataSource === 'Error' ? 'bg-red-400 animate-pulse' : 'bg-yellow-400 animate-pulse'}`}></div>
-                  <span className="font-mono text-cyan-400 text-sm">ARK: {dataSource}</span>
-                </div>
-              </div>
-              
-              {/* Base Currency */}
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse"></div>
-                  <span className="font-mono text-cyan-400 text-sm">BASE: {baseCurrency}</span>
-                </div>
-              </div>
-              
-              {/* Data Stream Status */}
-              <div className="flex items-center justify-center gap-3">
-                <Activity className="w-4 h-4 text-cyan-400" />
-                <div className="text-center">
-                  <div className="font-mono text-cyan-400 text-xs">LAST_SYNC</div>
-                  <div className="font-mono text-cyan-300 text-sm">{lastUpdated?.toLocaleTimeString()}</div>
-                </div>
-              </div>
-              
-              {/* Refresh Control */}
-              <div className="flex items-center justify-center">
-                <button onClick={handleRefresh} disabled={refreshing} className="flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-sm border border-cyan-500/30 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-400/10 transition-all duration-300 disabled:opacity-50 font-mono text-sm">
-                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                  {refreshing ? 'SYNCING...' : 'SYNC_DATA'}
-                </button>
-              </div>
-            </div>
-          </div>
+          
         </div>
 
         {/* Enhanced Price Chart */}
