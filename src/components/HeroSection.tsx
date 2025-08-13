@@ -120,12 +120,14 @@ const HeroSection = ({
         }`}
       >
         <div className="text-center">
-          <TextGenerateEffect
-            words="The ARK"
-            className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
-            duration={0.8}
-          />
-          <div className="absolute inset-0 text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-cyan-400/20 via-teal-300/20 to-yellow-400/20 bg-clip-text text-transparent blur-sm -z-10" 
+          <h1>
+            <TextGenerateEffect
+              words="The ARK"
+              className="text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
+              duration={0.8}
+            />
+          </h1>
+          <div className="absolute inset-0 text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] font-bold bg-gradient-to-r from-cyan-400/20 via-teal-300/20 to-yellow-400/20 bg-clip-text text-transparent blur-sm -z-10" 
                style={{ filter: 'blur(8px)' }}>
             The ARK
           </div>
