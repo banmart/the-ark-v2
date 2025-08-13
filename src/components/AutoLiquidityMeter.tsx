@@ -6,65 +6,94 @@ interface AutoLiquidityMeterProps {
   currentAccumulation: number;
   threshold: number;
   loading: boolean;
+  isThresholdReached: boolean;
+  isPendingSwap: boolean;
+  lastSwapTimestamp: number;
+  estimatedNextSwap: number | null;
 }
 
-type MeterState = 'ACCUMULATING' | 'THRESHOLD_REACHED' | 'PROCESSING_SWAP' | 'SWAP_COMPLETED';
+type MeterState = 'MONITORING' | 'ACCUMULATING' | 'THRESHOLD_REACHED' | 'PENDING_SWAP' | 'COMPLETED';
 
-const AutoLiquidityMeter = ({ currentAccumulation, threshold, loading }: AutoLiquidityMeterProps) => {
-  const [meterState, setMeterState] = useState<MeterState>('ACCUMULATING');
-  const [animationPhase, setAnimationPhase] = useState(0);
+const AutoLiquidityMeter = ({ 
+  currentAccumulation, 
+  threshold, 
+  loading, 
+  isThresholdReached, 
+  isPendingSwap, 
+  lastSwapTimestamp, 
+  estimatedNextSwap 
+}: AutoLiquidityMeterProps) => {
+  const [meterState, setMeterState] = useState<MeterState>('MONITORING');
+  const [lastKnownSwapTime, setLastKnownSwapTime] = useState(0);
   
   const percentage = Math.min((currentAccumulation / threshold) * 100, 100);
-  const isThresholdReached = percentage >= 100;
   
+  // Update state based on real blockchain data
   useEffect(() => {
-    if (isThresholdReached && meterState === 'ACCUMULATING') {
-      setMeterState('THRESHOLD_REACHED');
+    if (loading) return;
+
+    // Check if a new swap occurred
+    if (lastSwapTimestamp > lastKnownSwapTime && lastKnownSwapTime > 0) {
+      setMeterState('COMPLETED');
+      setLastKnownSwapTime(lastSwapTimestamp);
       
-      // Start animation sequence
+      // Show completed state briefly, then reset to monitoring
       setTimeout(() => {
-        setMeterState('PROCESSING_SWAP');
-        setAnimationPhase(1);
-        
-        // Phase 1: Token conversion
-        setTimeout(() => setAnimationPhase(2), 1000);
-        
-        // Phase 2: LP creation
-        setTimeout(() => setAnimationPhase(3), 2000);
-        
-        // Phase 3: LP burn
-        setTimeout(() => setAnimationPhase(4), 3000);
-        
-        // Phase 4: Reset
-        setTimeout(() => {
-          setMeterState('SWAP_COMPLETED');
-          setAnimationPhase(0);
-          
-          // Reset to accumulating after showing completed state
-          setTimeout(() => setMeterState('ACCUMULATING'), 1500);
-        }, 4000);
-      }, 2000);
+        setMeterState('MONITORING');
+      }, 3000);
+      return;
     }
-  }, [isThresholdReached, meterState]);
+
+    // Update last known swap time
+    if (lastSwapTimestamp > lastKnownSwapTime) {
+      setLastKnownSwapTime(lastSwapTimestamp);
+    }
+
+    // Set state based on real blockchain conditions
+    if (isPendingSwap) {
+      setMeterState('PENDING_SWAP');
+    } else if (isThresholdReached) {
+      setMeterState('THRESHOLD_REACHED');
+    } else if (currentAccumulation > 0) {
+      setMeterState('ACCUMULATING');
+    } else {
+      setMeterState('MONITORING');
+    }
+  }, [isThresholdReached, isPendingSwap, lastSwapTimestamp, currentAccumulation, loading, lastKnownSwapTime]);
 
   const getStateColor = () => {
     switch (meterState) {
+      case 'MONITORING': return 'blue';
       case 'ACCUMULATING': return 'green';
       case 'THRESHOLD_REACHED': return 'yellow';
-      case 'PROCESSING_SWAP': return 'cyan';
-      case 'SWAP_COMPLETED': return 'green';
+      case 'PENDING_SWAP': return 'orange';
+      case 'COMPLETED': return 'green';
       default: return 'green';
     }
   };
 
   const getStateText = () => {
     switch (meterState) {
-      case 'ACCUMULATING': return 'ACCUMULATING_TOKENS';
+      case 'MONITORING': return 'MONITORING_BLOCKCHAIN';
+      case 'ACCUMULATING': return 'ACCUMULATING_FEES';
       case 'THRESHOLD_REACHED': return 'THRESHOLD_REACHED';
-      case 'PROCESSING_SWAP': return 'PROCESSING_SWAP';
-      case 'SWAP_COMPLETED': return 'SWAP_COMPLETED';
-      default: return 'ACCUMULATING_TOKENS';
+      case 'PENDING_SWAP': return 'AWAITING_NEXT_TX';
+      case 'COMPLETED': return 'SWAP_EXECUTED';
+      default: return 'MONITORING_BLOCKCHAIN';
     }
+  };
+
+  const getEstimatedTime = () => {
+    if (!estimatedNextSwap || isThresholdReached) return null;
+    
+    const now = Date.now();
+    const timeRemaining = Math.max(0, estimatedNextSwap - now);
+    const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours > 0) return `~${hours}h ${minutes}m`;
+    if (minutes > 0) return `~${minutes}m`;
+    return 'Soon';
   };
 
   return (
@@ -72,7 +101,7 @@ const AutoLiquidityMeter = ({ currentAccumulation, threshold, loading }: AutoLiq
       {/* Status Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <Activity className={`w-5 h-5 text-${getStateColor()}-400 ${meterState === 'PROCESSING_SWAP' ? 'animate-spin' : 'animate-pulse'}`} />
+          <Activity className={`w-5 h-5 text-${getStateColor()}-400 ${meterState === 'PENDING_SWAP' ? 'animate-spin' : 'animate-pulse'}`} />
           <h4 className="text-lg font-bold text-green-400 font-mono">
             [AUTO_LIQUIDITY_METER]
           </h4>
@@ -95,11 +124,11 @@ const AutoLiquidityMeter = ({ currentAccumulation, threshold, loading }: AutoLiq
         
         <div className="relative">
           <Progress 
-            value={meterState === 'SWAP_COMPLETED' ? 0 : percentage} 
-            className={`h-4 bg-gray-800/50 ${meterState === 'THRESHOLD_REACHED' || meterState === 'PROCESSING_SWAP' ? 'animate-pulse' : ''}`}
+            value={meterState === 'COMPLETED' ? 0 : percentage} 
+            className={`h-4 bg-gray-800/50 ${meterState === 'THRESHOLD_REACHED' || meterState === 'PENDING_SWAP' ? 'animate-pulse' : ''}`}
           />
-          {meterState === 'PROCESSING_SWAP' && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent animate-[scan_1s_ease-in-out_infinite]" />
+          {meterState === 'PENDING_SWAP' && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-400/50 to-transparent animate-[scan_1s_ease-in-out_infinite]" />
           )}
         </div>
         
@@ -113,46 +142,67 @@ const AutoLiquidityMeter = ({ currentAccumulation, threshold, loading }: AutoLiq
         </div>
       </div>
 
-      {/* Animation Flow */}
-      {meterState === 'PROCESSING_SWAP' && (
-        <div className="bg-black/50 border border-cyan-500/30 rounded-lg p-4">
-          <div className="text-cyan-400 font-mono text-sm mb-3 text-center">
-            [LIQUIDITY_PROCESSING_SEQUENCE]
+      {/* Live Status Info */}
+      {meterState === 'PENDING_SWAP' && (
+        <div className="bg-orange-500/20 border border-orange-500/30 rounded-lg p-4">
+          <div className="text-orange-400 font-mono text-sm mb-2 text-center animate-pulse">
+            [THRESHOLD_REACHED - WAITING_FOR_NEXT_TRANSACTION]
+          </div>
+          <div className="text-xs text-gray-400 font-mono text-center">
+            Auto-swap will trigger on next qualifying transaction
+          </div>
+        </div>
+      )}
+
+      {/* Estimated Time */}
+      {meterState === 'ACCUMULATING' && getEstimatedTime() && (
+        <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
+          <div className="text-blue-400 font-mono text-sm text-center">
+            ESTIMATED_NEXT_SWAP: {getEstimatedTime()}
+          </div>
+        </div>
+      )}
+
+      {/* Liquidity Process Flow */}
+      {(meterState === 'THRESHOLD_REACHED' || meterState === 'PENDING_SWAP') && (
+        <div className="bg-black/50 border border-yellow-500/30 rounded-lg p-4">
+          <div className="text-yellow-400 font-mono text-sm mb-3 text-center">
+            [LIQUIDITY_PROCESS_READY]
           </div>
           
           <div className="flex items-center justify-between text-xs font-mono">
-            {/* Phase 1: Token Split */}
-            <div className={`flex flex-col items-center transition-all duration-500 ${animationPhase >= 1 ? 'text-cyan-400' : 'text-gray-600'}`}>
+            {/* Step 1: Token Split */}
+            <div className="flex flex-col items-center text-yellow-400">
               <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center mb-1">
                 50%
               </div>
               <span>TOKENS</span>
             </div>
             
-            <ArrowRight className={`w-4 h-4 transition-all duration-500 ${animationPhase >= 1 ? 'text-cyan-400' : 'text-gray-600'}`} />
+            <ArrowRight className="w-4 h-4 text-yellow-400" />
             
-            {/* Phase 2: PLS Conversion */}
-            <div className={`flex flex-col items-center transition-all duration-500 ${animationPhase >= 2 ? 'text-yellow-400' : 'text-gray-600'}`}>
+            {/* Step 2: PLS Conversion */}
+            <div className="flex flex-col items-center text-yellow-400">
               <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center mb-1">
                 <Droplets className="w-4 h-4" />
               </div>
               <span>PLS</span>
             </div>
             
-            <ArrowRight className={`w-4 h-4 transition-all duration-500 ${animationPhase >= 2 ? 'text-yellow-400' : 'text-gray-600'}`} />
+            <ArrowRight className="w-4 h-4 text-yellow-400" />
             
-            {/* Phase 3: LP Creation */}
-            <div className={`flex flex-col items-center transition-all duration-500 ${animationPhase >= 3 ? 'text-purple-400' : 'text-gray-600'}`}>
+            {/* Step 3: LP Creation */}
+            <div className="flex flex-col items-center text-yellow-400">
               <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center mb-1">
                 LP
               </div>
               <span>PAIR</span>
             </div>
             
-            <ArrowRight className={`w-4 h-4 transition-all duration-500 ${animationPhase >= 3 ? 'text-purple-400' : 'text-gray-600'}`} />
+            <ArrowRight className="w-4 h-4 text-yellow-400" />
             
-            {/* Phase 4: Burn */}
-            <div className={`flex flex-col items-center transition-all duration-500 ${animationPhase >= 4 ? 'text-red-400' : 'text-gray-600'}`}>
+            {/* Step 4: Burn */}
+            <div className="flex flex-col items-center text-yellow-400">
               <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center mb-1">
                 <Flame className="w-4 h-4" />
               </div>
@@ -163,10 +213,27 @@ const AutoLiquidityMeter = ({ currentAccumulation, threshold, loading }: AutoLiq
       )}
 
       {/* Success Message */}
-      {meterState === 'SWAP_COMPLETED' && (
+      {meterState === 'COMPLETED' && (
         <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-center">
           <div className="text-green-400 font-mono text-sm animate-pulse">
-            ✓ LIQUIDITY_SWAP_COMPLETED - RESTARTING_ACCUMULATION
+            ✓ LIQUIDITY_SWAP_EXECUTED_ON_BLOCKCHAIN
+          </div>
+          {lastSwapTimestamp > 0 && (
+            <div className="text-xs text-gray-400 font-mono mt-1">
+              Last swap: {new Date(lastSwapTimestamp * 1000).toLocaleTimeString()}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Monitoring State */}
+      {meterState === 'MONITORING' && (
+        <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4 text-center">
+          <div className="text-blue-400 font-mono text-sm">
+            [BLOCKCHAIN_MONITORING_ACTIVE]
+          </div>
+          <div className="text-xs text-gray-400 font-mono mt-1">
+            Tracking liquidity fee accumulation in real-time
           </div>
         </div>
       )}

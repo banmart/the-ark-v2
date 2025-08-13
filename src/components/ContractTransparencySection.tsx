@@ -111,6 +111,10 @@ const ContractTransparencySection = ({
                   currentAccumulation={contractLoading ? 0 : parseFloat(contractData?.liquidityData?.currentAccumulation || '0')}
                   threshold={contractLoading ? 50000 : parseFloat(contractData?.swapSettings?.threshold || '50000')}
                   loading={contractLoading}
+                  isThresholdReached={contractLoading ? false : (contractData?.liquidityData?.isThresholdReached || false)}
+                  isPendingSwap={contractLoading ? false : (contractData?.liquidityData?.isPendingSwap || false)}
+                  lastSwapTimestamp={contractLoading ? 0 : (contractData?.liquidityData?.lastSwapTimestamp || 0)}
+                  estimatedNextSwap={contractLoading ? null : (contractData?.liquidityData?.estimatedNextSwap || null)}
                 />
 
                 <div className="bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 border border-green-500/30 rounded-xl p-6">
