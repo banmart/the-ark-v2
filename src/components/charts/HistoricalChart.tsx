@@ -48,12 +48,12 @@ const HistoricalChart = ({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-black/90 backdrop-blur-xl border border-video-cyan/30 rounded-lg p-4">
+        <div className="bg-black/90 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 bg-video-cyan rounded-full animate-pulse"></div>
-            <span className="font-mono text-video-cyan text-xs tracking-wider">PLS/ARK_DATA</span>
+            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            <span className="font-mono text-cyan-400 text-xs tracking-wider">PLS/ARK_DATA</span>
           </div>
-          <p className="text-video-cyan font-mono text-sm font-semibold">{label}</p>
+          <p className="text-cyan-400 font-mono text-sm font-semibold">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="font-mono text-xs" style={{ color: entry.color }}>
               PRICE: {entry.value.toFixed(8)} PLS
@@ -88,26 +88,26 @@ const HistoricalChart = ({
     <div className={cn("relative overflow-hidden", className)}>
       {/* Quantum Field Background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-radial from-video-cyan/10 via-background to-background"></div>
+        <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-background to-background"></div>
         <div className="absolute inset-0 opacity-10">
           <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
         </div>
-        <div className="floating-orb orb1 bg-gradient-radial from-video-cyan/5 to-transparent blur-3xl"></div>
-        <div className="floating-orb orb2 bg-gradient-radial from-video-gold/5 to-transparent blur-3xl"></div>
+        <div className="floating-orb orb1 bg-gradient-radial from-cyan-500/5 to-transparent blur-3xl"></div>
+        <div className="floating-orb orb2 bg-gradient-radial from-yellow-400/5 to-transparent blur-3xl"></div>
       </div>
 
       {/* Main Chart Container */}
-      <Card className="relative z-10 bg-black/40 backdrop-blur-xl border-video-cyan/30 overflow-hidden">
+      <Card className="relative z-10 bg-black/40 backdrop-blur-xl border-cyan-500/30 overflow-hidden">
         {/* Enhanced Header */}
-        <div className="bg-black/60 backdrop-blur-sm border-b border-video-cyan/20 p-6">
+        <div className="bg-black/60 backdrop-blur-sm border-b border-cyan-500/20 p-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             {/* Title Section */}
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 px-3 py-1 bg-video-cyan/10 border border-video-cyan/30 rounded-lg">
-                <Database className="w-3 h-3 text-video-cyan" />
-                <span className="text-xs font-mono text-video-cyan tracking-wider">PLS/ARK_HISTORICAL_MATRIX</span>
+              <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+                <Database className="w-3 h-3 text-cyan-400" />
+                <span className="text-xs font-mono text-cyan-400 tracking-wider">PLS/ARK_HISTORICAL_MATRIX</span>
               </div>
-              <h3 className="text-xl font-mono text-video-cyan font-semibold">
+              <h3 className="text-xl font-mono text-cyan-400 font-semibold">
                 PLS/ARK Historical Analysis
               </h3>
             </div>
@@ -191,7 +191,7 @@ const HistoricalChart = ({
 
             {/* Filter Panel */}
           {showFilters && (
-            <Card className="mt-4 p-4 bg-black/20 border-video-cyan/20">
+            <Card className="mt-4 p-4 bg-black/20 border-cyan-500/20">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="text-xs font-mono text-muted-foreground">Min Price</label>
@@ -199,7 +199,7 @@ const HistoricalChart = ({
                     type="number"
                     step="0.00000001"
                     placeholder="0.00000000"
-                    className="w-full mt-1 px-2 py-1 bg-black/40 border border-video-cyan/20 rounded text-xs font-mono"
+                    className="w-full mt-1 px-2 py-1 bg-black/40 border border-cyan-500/20 rounded text-xs font-mono"
                     onChange={(e) => setActiveFilter(prev => ({ 
                       ...prev, 
                       minPrice: e.target.value ? parseFloat(e.target.value) : undefined 
@@ -212,7 +212,7 @@ const HistoricalChart = ({
                     type="number"
                     step="0.00000001"
                     placeholder="0.00000000"
-                    className="w-full mt-1 px-2 py-1 bg-black/40 border border-video-cyan/20 rounded text-xs font-mono"
+                    className="w-full mt-1 px-2 py-1 bg-black/40 border border-cyan-500/20 rounded text-xs font-mono"
                     onChange={(e) => setActiveFilter(prev => ({ 
                       ...prev, 
                       maxPrice: e.target.value ? parseFloat(e.target.value) : undefined 
@@ -225,7 +225,7 @@ const HistoricalChart = ({
                     type="number"
                     step="0.1"
                     placeholder="5.0"
-                    className="w-full mt-1 px-2 py-1 bg-black/40 border border-video-cyan/20 rounded text-xs font-mono"
+                    className="w-full mt-1 px-2 py-1 bg-black/40 border border-cyan-500/20 rounded text-xs font-mono"
                     onChange={(e) => setActiveFilter(prev => ({ 
                       ...prev, 
                       volatilityThreshold: e.target.value ? parseFloat(e.target.value) : undefined,
@@ -240,7 +240,7 @@ const HistoricalChart = ({
 
         {/* Chart Area */}
         <div className="p-6 relative">
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-video-cyan/60 to-transparent animate-scan"></div>
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent animate-scan"></div>
           
           <ResponsiveContainer width="100%" height={400}>
             {chartType === 'area' ? (
@@ -331,37 +331,37 @@ const HistoricalChart = ({
         </div>
 
         {/* Enhanced Diagnostics Panel */}
-        <div className="bg-black/60 backdrop-blur-sm border-t border-video-cyan/20 p-4">
+        <div className="bg-black/60 backdrop-blur-sm border-t border-cyan-500/20 p-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-video-gold" />
+              <BarChart3 className="w-4 h-4 text-yellow-400" />
               <div>
                 <div className="text-xs font-mono text-muted-foreground">TIMEFRAME</div>
-                <div className="text-sm font-mono text-video-gold">{selectedTimeframe}</div>
+                <div className="text-sm font-mono text-yellow-400">{selectedTimeframe}</div>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
-              <Database className="w-4 h-4 text-video-cyan" />
+              <Database className="w-4 h-4 text-cyan-400" />
               <div>
                 <div className="text-xs font-mono text-muted-foreground">PAIR_SOURCE</div>
-                <div className="text-sm font-mono text-video-cyan">PLS/ARK</div>
+                <div className="text-sm font-mono text-cyan-400">PLS/ARK</div>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-video-cyan" />
+              <Activity className="w-4 h-4 text-cyan-400" />
               <div>
                 <div className="text-xs font-mono text-muted-foreground">DATA_POINTS</div>
-                <div className="text-sm font-mono text-video-cyan">{chartData.length}</div>
+                <div className="text-sm font-mono text-cyan-400">{chartData.length}</div>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-video-gold" />
+              <TrendingUp className="w-4 h-4 text-yellow-400" />
               <div>
                 <div className="text-xs font-mono text-muted-foreground">24H_HIGH</div>
-                <div className="text-sm font-mono text-video-gold">{stats.high.toFixed(8)}</div>
+                <div className="text-sm font-mono text-yellow-400">{stats.high.toFixed(8)}</div>
               </div>
             </div>
             
