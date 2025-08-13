@@ -247,43 +247,43 @@ const HistoricalChart = ({
               <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <defs>
                   <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--video-cyan))" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="hsl(var(--video-cyan))" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="#00ffff" stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor="#00ffff" stopOpacity={0.1}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid 
                   strokeDasharray="2 2" 
-                  stroke="hsl(var(--video-cyan) / 0.15)" 
+                  stroke="rgba(0, 255, 255, 0.15)" 
                   strokeWidth={1}
                 />
                 <XAxis 
                   dataKey="time" 
-                  stroke="hsl(var(--video-cyan))"
+                  stroke="#00ffff"
                   fontSize={10}
                   fontFamily="monospace"
-                  tickLine={{ stroke: 'hsl(var(--video-cyan))', strokeWidth: 1 }}
-                  axisLine={{ stroke: 'hsl(var(--video-cyan))', strokeWidth: 1 }}
+                  tickLine={{ stroke: '#00ffff', strokeWidth: 1 }}
+                  axisLine={{ stroke: '#00ffff', strokeWidth: 1 }}
                 />
                 <YAxis 
-                  stroke="hsl(var(--video-cyan))" 
+                  stroke="#00ffff" 
                   fontSize={10}
                   fontFamily="monospace"
                   tickFormatter={(value) => value.toFixed(8)}
-                  tickLine={{ stroke: 'hsl(var(--video-cyan))', strokeWidth: 1 }}
-                  axisLine={{ stroke: 'hsl(var(--video-cyan))', strokeWidth: 1 }}
+                  tickLine={{ stroke: '#00ffff', strokeWidth: 1 }}
+                  axisLine={{ stroke: '#00ffff', strokeWidth: 1 }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Area 
                   type="monotone" 
                   dataKey="price" 
-                  stroke="hsl(var(--video-cyan))" 
+                  stroke="#00ffff" 
                   fill="url(#priceGradient)"
                   strokeWidth={2}
-                  dot={{ fill: 'hsl(var(--video-cyan))', strokeWidth: 2, r: 2 }}
+                  dot={{ fill: '#00ffff', strokeWidth: 2, r: 2 }}
                   activeDot={{ 
                     r: 4, 
-                    fill: 'hsl(var(--video-gold))',
-                    stroke: 'hsl(var(--background))',
+                    fill: '#ffd700',
+                    stroke: '#000000',
                     strokeWidth: 2
                   }}
                 />
@@ -292,36 +292,36 @@ const HistoricalChart = ({
               <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid 
                   strokeDasharray="2 2" 
-                  stroke="hsl(var(--video-cyan) / 0.15)" 
+                  stroke="rgba(0, 255, 255, 0.15)" 
                   strokeWidth={1}
                 />
                 <XAxis 
                   dataKey="time" 
-                  stroke="hsl(var(--video-cyan))"
+                  stroke="#00ffff"
                   fontSize={10}
                   fontFamily="monospace"
-                  tickLine={{ stroke: 'hsl(var(--video-cyan))', strokeWidth: 1 }}
-                  axisLine={{ stroke: 'hsl(var(--video-cyan))', strokeWidth: 1 }}
+                  tickLine={{ stroke: '#00ffff', strokeWidth: 1 }}
+                  axisLine={{ stroke: '#00ffff', strokeWidth: 1 }}
                 />
                 <YAxis 
-                  stroke="hsl(var(--video-cyan))" 
+                  stroke="#00ffff" 
                   fontSize={10}
                   fontFamily="monospace"
                   tickFormatter={(value) => value.toFixed(8)}
-                  tickLine={{ stroke: 'hsl(var(--video-cyan))', strokeWidth: 1 }}
-                  axisLine={{ stroke: 'hsl(var(--video-cyan))', strokeWidth: 1 }}
+                  tickLine={{ stroke: '#00ffff', strokeWidth: 1 }}
+                  axisLine={{ stroke: '#00ffff', strokeWidth: 1 }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Line 
                   type="monotone" 
                   dataKey="price" 
-                  stroke="hsl(var(--video-cyan))" 
+                  stroke="#00ffff" 
                   strokeWidth={2}
-                  dot={{ fill: 'hsl(var(--video-cyan))', strokeWidth: 2, r: 2 }}
+                  dot={{ fill: '#00ffff', strokeWidth: 2, r: 2 }}
                   activeDot={{ 
                     r: 4, 
-                    fill: 'hsl(var(--video-gold))',
-                    stroke: 'hsl(var(--background))',
+                    fill: '#ffd700',
+                    stroke: '#000000',
                     strokeWidth: 2
                   }}
                 />
