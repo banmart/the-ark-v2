@@ -41,12 +41,16 @@ export function formatPrice(price: string | number, decimals: number = 18): stri
   const numValue = typeof price === 'string' ? parseFloat(price) : price;
   if (isNaN(numValue)) return '0.000000';
   
-  // For prices, show more decimal places for precision
+  // For very small prices like $0.0002049, use significant digits for better readability
   if (numValue >= 1) {
     return numValue.toFixed(6);
   } else if (numValue >= 0.001) {
     return numValue.toFixed(8);
+  } else if (numValue >= 0.00001) {
+    // For prices like 0.0002049, show 7 decimal places to maintain precision
+    return numValue.toFixed(7);
   } else {
+    // For extremely small prices, show up to 12 decimal places
     return numValue.toFixed(12);
   }
 }
