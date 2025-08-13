@@ -96,7 +96,7 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
                       : 'text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10'
                   }`}
                 >
-                  Onboarding
+                  Get ARK
                 </button>
                 
                 <button 
@@ -107,18 +107,7 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
                       : 'text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10'
                   }`}
                 >
-                  Vault
-                </button>
-                
-                <button 
-                  onClick={() => handleInternalLink('/leaderboard')}
-                  className={`w-full text-left p-3 rounded-lg transition-all duration-200 font-mono text-sm ${
-                    isActive('/leaderboard') 
-                      ? 'bg-cyan-500/20 text-cyan-400' 
-                      : 'text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10'
-                  }`}
-                >
-                  Leaderboard
+                  Locker
                 </button>
               </div>
             </div>
