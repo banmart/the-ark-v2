@@ -42,7 +42,7 @@ const HeroSection = ({
   }, []);
   
   const handleBoardTheArk = () => {
-    openPopup('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeicevoztyv3vaavekencbqvdo3g6ujfm7gkx2osc6yaim4nap7ckkq', 'Buy ARK');
+    openPopup('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreia3lnses7jtuwgu7xulghwhtkw2iquk7lykw4rxsipcpfzyhoie7m', 'Buy ARK');
   };
   
   const handleDecodeProtocol = () => {
@@ -76,7 +76,7 @@ const HeroSection = ({
           playsInline 
           className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
-          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeignph2ijbdsmqcilohtmssksq3waygzjsdc3j74ncy2vlahpbvjlq" type="video/mp4" />
+          <source src="" type="video/mp4" />
         </video>
         
         {/* Vintage Outer Gradient Overlay to Soften Edges */}
