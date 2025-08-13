@@ -42,7 +42,7 @@ const HeroSection = ({
   }, []);
   
   const handleBoardTheArk = () => {
-    openPopup('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreia3lnses7jtuwgu7xulghwhtkw2iquk7lykw4rxsipcpfzyhoie7m', 'Buy ARK');
+    openPopup('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeicevoztyv3vaavekencbqvdo3g6ujfm7gkx2osc6yaim4nap7ckkq', 'Buy ARK');
   };
   
   const handleDecodeProtocol = () => {
@@ -100,7 +100,7 @@ const HeroSection = ({
         <div 
           className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
           style={{
-            backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreifc7dz6zfjtgbc5dn7ocr7rtfjwwzrurrtbmgwbi5e2e447ixa5ei')`
+            backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreia3lnses7jtuwgu7xulghwhtkw2iquk7lykw4rxsipcpfzyhoie7m')`
           }} 
         />
       </div>
