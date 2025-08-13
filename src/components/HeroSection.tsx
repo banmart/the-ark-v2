@@ -127,9 +127,12 @@ const HeroSection = ({
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
       </button>
 
-      {/* Logo Section - The ARK */}
+      {/* Content */}
+      <div className="flex-grow" />
+      
+      {/* Hero Title */}
       <div 
-        className={`relative z-20 pt-8 md:pt-12 transition-all duration-600 ease-out ${
+        className={`relative z-20 mb-8 transition-all duration-600 ease-out ${
           showIntro ? 'opacity-0 translate-y-12' : 'opacity-100 translate-y-0'
         }`}
       >
@@ -143,10 +146,7 @@ const HeroSection = ({
           </h1>
         </div>
       </div>
-            
-      {/* Content */}
-      <div className="flex-grow" />
-      
+
       {/* Bottom Section - Contract Address */}
       <div className="max-w-7xl mx-auto w-full relative z-20">
         <div className="flex justify-center pb-8">
