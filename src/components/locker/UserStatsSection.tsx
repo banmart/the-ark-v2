@@ -70,7 +70,7 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
       )}
 
       {/* Enhanced Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="bg-black/20 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-all duration-300">
           <div className="flex items-center justify-between mb-3">
             <Lock className="w-8 h-8 text-blue-400" />

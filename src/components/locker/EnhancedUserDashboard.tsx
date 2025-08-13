@@ -174,33 +174,33 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
 
       {/* Enhanced Lock Positions */}
       <div className="bg-black/20 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
-            <Lock className="w-8 h-8 text-cyan-400 mr-3" />
-            <div>
-              <h2 className="text-2xl font-bold text-cyan-400">Lock Positions</h2>
-              <p className="text-sm text-gray-400">
-                Enhanced with real-time penalty calculations
-              </p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex items-center">
+              <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 mr-3" />
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-cyan-400">Lock Positions</h2>
+                <p className="text-sm text-gray-400">
+                  Enhanced with real-time penalty calculations
+                </p>
+              </div>
+            </div>
+            
+            {/* Early Unlock Status */}
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border self-start sm:self-auto ${
+              earlyUnlockSettings.enabled
+                ? 'bg-yellow-500/20 border-yellow-500/50 text-yellow-400'
+                : 'bg-red-500/20 border-red-500/50 text-red-400'
+            }`}>
+              {earlyUnlockSettings.enabled ? (
+                <AlertTriangle className="w-4 h-4" />
+              ) : (
+                <CheckCircle className="w-4 h-4" />
+              )}
+              <span className="text-sm font-semibold">
+                Early Unlock {earlyUnlockSettings.enabled ? 'Enabled' : 'Disabled'}
+              </span>
             </div>
           </div>
-          
-          {/* Early Unlock Status */}
-          <div className={`flex items-center gap-2 px-3 py-1 rounded-lg border ${
-            earlyUnlockSettings.enabled
-              ? 'bg-yellow-500/20 border-yellow-500/50 text-yellow-400'
-              : 'bg-red-500/20 border-red-500/50 text-red-400'
-          }`}>
-            {earlyUnlockSettings.enabled ? (
-              <AlertTriangle className="w-4 h-4" />
-            ) : (
-              <CheckCircle className="w-4 h-4" />
-            )}
-            <span className="text-sm font-semibold">
-              Early Unlock {earlyUnlockSettings.enabled ? 'Enabled' : 'Disabled'}
-            </span>
-          </div>
-        </div>
         
         {/* Lock Position Filters */}
         {displayLocks.length > 0 && (
@@ -264,7 +264,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
           <Award className="w-5 h-5 mr-2" />
           Enhanced Features & Tips
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
           <div className="flex items-start">
             <div className="text-cyan-400 mr-2">🧮</div>
             <div>
