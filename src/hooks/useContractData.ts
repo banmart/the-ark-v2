@@ -60,6 +60,7 @@ interface ContractData {
     tokensForLiquidity: string;
     totalFeesCollected: string;
     lpTokensBurned: string;
+    currentAccumulation: string;
   };
   
   // Additional contract data
@@ -122,7 +123,8 @@ export const useContractData = () => {
     liquidityData: {
       tokensForLiquidity: '0',
       totalFeesCollected: '0',
-      lpTokensBurned: '0'
+      lpTokensBurned: '0',
+      currentAccumulation: '0'
     },
     contractAddresses: {
       arkLocker: '0x0000000000000000000000000000000000000000',
@@ -151,14 +153,16 @@ export const useContractData = () => {
         arkLockerAddress,
         pulseXPair,
         burnAddress,
-        burnedBalance
+        burnedBalance,
+        contractTokenBalance
       ] = await Promise.all([
         arkToken.owner().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.swapThreshold().catch(() => ethers.parseEther(CONTRACT_CONSTANTS.DEFAULT_SWAP_THRESHOLD.toString())),
         arkToken.ARKLocker().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.pulseXPair().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.burnAddress().catch(() => CONTRACT_ADDRESSES.DEAD_ADDRESS),
-        arkToken.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS).catch(() => ethers.parseEther('0'))
+        arkToken.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS).catch(() => ethers.parseEther('0')),
+        arkToken.balanceOf(CONTRACT_ADDRESSES.ARK_TOKEN).catch(() => ethers.parseEther('0'))
       ]);
 
       console.log('ARK contract data fetched:', {
@@ -188,7 +192,8 @@ export const useContractData = () => {
           ...prev.liquidityData,
           tokensForLiquidity: ethers.formatEther(swapThreshold), // Tokens ready for swap
           totalFeesCollected: '0', // Would need to calculate from events
-          lpTokensBurned: ethers.formatEther(burnedBalance)
+          lpTokensBurned: ethers.formatEther(burnedBalance),
+          currentAccumulation: ethers.formatEther(contractTokenBalance)
         },
         contractAddresses: {
           arkLocker: arkLockerAddress,

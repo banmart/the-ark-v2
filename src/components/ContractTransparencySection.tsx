@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Lock, Target, Zap, Database, Activity, Cpu, Info } from 'lucide-react';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
+import AutoLiquidityMeter from './AutoLiquidityMeter';
 interface ContractTransparencySectionProps {
   contractData: any;
   contractLoading: boolean;
@@ -101,6 +102,13 @@ const ContractTransparencySection = ({
                     <div className="text-xs text-gray-400 font-mono mt-2">[LP_TO_BURN_ADDRESS]</div>
                   </div>
                 </div>
+
+                {/* Auto Liquidity Progress Meter */}
+                <AutoLiquidityMeter
+                  currentAccumulation={contractLoading ? 0 : parseFloat(contractData?.liquidityData?.currentAccumulation || '0')}
+                  threshold={contractLoading ? 50000 : parseFloat(contractData?.swapSettings?.threshold || '50000')}
+                  loading={contractLoading}
+                />
 
                 <div className="bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 border border-green-500/30 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-4">
