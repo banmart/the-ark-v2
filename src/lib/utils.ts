@@ -39,7 +39,13 @@ export function formatTokenAmount(amount: string | number, decimals: number = 18
 
 export function formatPrice(price: string | number, decimals: number = 18): string {
   const numValue = typeof price === 'string' ? parseFloat(price) : price;
-  if (isNaN(numValue)) return '0.000000';
+  if (isNaN(numValue) || numValue === 0) return '0.000000';
+  
+  // Bounds checking for obviously wrong prices
+  if (numValue > 100) {
+    console.warn('Price seems too high:', numValue);
+    return 'Error';
+  }
   
   // For very small prices like $0.0002049, use significant digits for better readability
   if (numValue >= 1) {

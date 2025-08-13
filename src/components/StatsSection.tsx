@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
+import { useARKPriceData } from '../hooks/useARKPriceData';
 import { formatTokenAmount, formatPrice } from '../lib/utils';
 
 interface StatsSectionProps {
@@ -15,6 +16,7 @@ const StatsSection = ({
 }: StatsSectionProps) => {
   const [statsPhase, setStatsPhase] = useState(0);
   const { protocolStats } = useLockerData();
+  const { priceData, loading: priceLoading } = useARKPriceData();
 
   useEffect(() => {
     // Cinematic reveal sequence
@@ -113,7 +115,7 @@ const StatsSection = ({
           statsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           {/* Market Cap */}
-          <div className="relative bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-4 md:p-6 hover:scale-105 hover:border-cyan-500/60 transition-all duration-500 group overflow-hidden">
+          <div className="relative bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-3 md:p-6 hover:scale-105 hover:border-cyan-500/60 transition-all duration-500 group overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             
             <div className="absolute top-2 right-2 flex items-center gap-1">
@@ -122,15 +124,15 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4 text-cyan-400 font-mono">💰 MARKET CAP</h3>
-              <p className="text-xl md:text-2xl lg:text-3xl font-black text-white mb-2 font-mono">
+              <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-cyan-400 font-mono">💰 MARKET CAP</h3>
+              <p className="text-sm md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
                 {contractLoading ? (
                   <span className="animate-pulse">[SCANNING...]</span>
                 ) : (
                   `$${formatNumber(contractData.marketCap)}`
                 )}
               </p>
-              <p className="text-sm text-gray-400 font-mono">[REAL TIME VALUATION]</p>
+              <p className="text-xs md:text-sm text-gray-400 font-mono">[REAL TIME VALUATION]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -139,7 +141,7 @@ const StatsSection = ({
           </div>
 
           {/* Current Price */}
-          <div className="relative bg-black/40 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4 md:p-6 hover:scale-105 hover:border-blue-500/60 transition-all duration-500 group overflow-hidden">
+          <div className="relative bg-black/40 backdrop-blur-xl border border-blue-500/30 rounded-xl p-3 md:p-6 hover:scale-105 hover:border-blue-500/60 transition-all duration-500 group overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             
             <div className="absolute top-2 right-2 flex items-center gap-1">
@@ -148,24 +150,24 @@ const StatsSection = ({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4 text-blue-400 font-mono">📈 PRICE FEED</h3>
+              <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-blue-400 font-mono">📈 PRICE FEED</h3>
               <div className="flex items-baseline gap-2 mb-2">
-                <p className="text-xl md:text-2xl lg:text-3xl font-black text-white font-mono">
-                  {contractLoading ? (
+                <p className="text-sm md:text-xl lg:text-2xl font-black text-white font-mono">
+                  {priceLoading ? (
                     <span className="animate-pulse">[SCANNING...]</span>
                   ) : (
-                    `$${formatPrice(contractData.price)}`
+                    `$${formatPrice(priceData?.price || 0)}`
                   )}
                 </p>
-                {!contractLoading && contractData.priceChange24h && (
-                  <span className={`text-sm font-bold font-mono ${
-                    contractData.priceChange24h.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                {!priceLoading && priceData?.priceChange24h && (
+                  <span className={`text-xs md:text-sm font-bold font-mono ${
+                    priceData.priceChange24h > 0 ? 'text-green-400' : 'text-red-400'
                   }`}>
-                    {contractData.priceChange24h}%
+                    {priceData.priceChange24h > 0 ? '+' : ''}{priceData.priceChange24h.toFixed(2)}%
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-400 font-mono">[24H DELTA]</p>
+              <p className="text-xs md:text-sm text-gray-400 font-mono">[{priceData?.baseCurrency || 'USD'} PAIR]</p>
             </div>
 
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
