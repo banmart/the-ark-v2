@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
+import { TextGenerateEffect } from './ui/text-generate-effect';
 
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
@@ -111,6 +112,25 @@ const HeroSection = ({
       >
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
       </button>
+
+      {/* Logo Section - The ARK */}
+      <div 
+        className={`relative z-20 pt-8 md:pt-12 transition-all duration-1000 ease-out ${
+          showIntro ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'
+        }`}
+      >
+        <div className="text-center">
+          <TextGenerateEffect
+            words="The ARK"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
+            duration={0.8}
+          />
+          <div className="absolute inset-0 text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-cyan-400/20 via-teal-300/20 to-yellow-400/20 bg-clip-text text-transparent blur-sm -z-10" 
+               style={{ filter: 'blur(8px)' }}>
+            The ARK
+          </div>
+        </div>
+      </div>
             
       {/* Content */}
       <div className="flex-grow" />
