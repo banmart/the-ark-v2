@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { 
   Wallet, 
-  Gift, 
   Lock, 
   TrendingUp, 
   BarChart3,
-  Coins
+  Coins,
+  Gift
 } from 'lucide-react';
 import { useLockerData } from '../../hooks/useLockerData';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
@@ -70,20 +70,7 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
       )}
 
       {/* Enhanced Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-        <div className="bg-black/20 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/40 transition-all duration-300">
-          <div className="flex items-center justify-between mb-3">
-            <Gift className="w-8 h-8 text-cyan-400" />
-            <div className="text-right">
-              <div className="text-sm text-gray-400">Pending Rewards</div>
-              <div className="text-xl font-bold text-cyan-300">
-                {displayRewards.toLocaleString()}
-              </div>
-              <div className="text-xs text-gray-500">ARK</div>
-            </div>
-          </div>
-        </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-black/20 backdrop-blur-sm border border-green-500/20 rounded-xl p-6 hover:border-green-500/40 transition-all duration-300">
           <div className="flex items-center justify-between mb-3">
             <Lock className="w-8 h-8 text-green-400" />
