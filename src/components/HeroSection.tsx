@@ -27,14 +27,16 @@ const HeroSection = ({
   } = useBrowserPopup();
   
   useEffect(() => {
+    // Start the intro fade sequence immediately, regardless of video
+    setTimeout(() => {
+      setShowIntro(false);
+    }, 800); // 0.8 seconds after component mounts
+
+    // Keep video logic for future use
     const video = videoRef.current;
     if (video) {
       const handleCanPlay = () => {
         setVideoLoaded(true);
-        // Start the intro fade sequence
-        setTimeout(() => {
-          setShowIntro(false);
-        }, 800); // Wait 0.8 seconds after video loads before starting fade
       };
       video.addEventListener('canplay', handleCanPlay);
       return () => video.removeEventListener('canplay', handleCanPlay);
