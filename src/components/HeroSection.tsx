@@ -18,7 +18,6 @@ const HeroSection = ({
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showIntro, setShowIntro] = useState(true);
-  const [scrollY, setScrollY] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
     setIsOpen
@@ -28,30 +27,18 @@ const HeroSection = ({
   } = useBrowserPopup();
   
   useEffect(() => {
-    // Start the intro fade sequence immediately, regardless of video
-    setTimeout(() => {
-      setShowIntro(false);
-    }, 800); // 0.8 seconds after component mounts
-
-    // Keep video logic for future use
     const video = videoRef.current;
     if (video) {
       const handleCanPlay = () => {
         setVideoLoaded(true);
+        // Start the intro fade sequence
+        setTimeout(() => {
+          setShowIntro(false);
+        }, 800); // Wait 0.8 seconds after video loads before starting fade
       };
       video.addEventListener('canplay', handleCanPlay);
       return () => video.removeEventListener('canplay', handleCanPlay);
     }
-  }, []);
-
-  // Parallax effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
   const handleBoardTheArk = () => {
@@ -89,7 +76,7 @@ const HeroSection = ({
           playsInline 
           className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
-          <source src="" type="video/mp4" />
+          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeignph2ijbdsmqcilohtmssksq3waygzjsdc3j74ncy2vlahpbvjlq" type="video/mp4" />
         </video>
         
         {/* Vintage Outer Gradient Overlay to Soften Edges */}
@@ -113,8 +100,7 @@ const HeroSection = ({
         <div 
           className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
           style={{
-            backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreia3lnses7jtuwgu7xulghwhtkw2iquk7lykw4rxsipcpfzyhoie7m')`,
-            transform: `translateY(${scrollY * 0.5}px)`
+            backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreifc7dz6zfjtgbc5dn7ocr7rtfjwwzrurrtbmgwbi5e2e447ixa5ei')`
           }} 
         />
       </div>
@@ -127,12 +113,9 @@ const HeroSection = ({
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
       </button>
 
-      {/* Content */}
-      <div className="flex-grow" />
-      
-      {/* Hero Title */}
+      {/* Logo Section - The ARK */}
       <div 
-        className={`relative z-20 mb-8 transition-all duration-600 ease-out ${
+        className={`relative z-20 pt-8 md:pt-12 transition-all duration-600 ease-out ${
           showIntro ? 'opacity-0 translate-y-12' : 'opacity-100 translate-y-0'
         }`}
       >
@@ -140,13 +123,16 @@ const HeroSection = ({
           <h1>
             <TextGenerateEffect
               words="The ARK"
-              className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
+              className="text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
               duration={0.5}
             />
           </h1>
         </div>
       </div>
-
+            
+      {/* Content */}
+      <div className="flex-grow" />
+      
       {/* Bottom Section - Contract Address */}
       <div className="max-w-7xl mx-auto w-full relative z-20">
         <div className="flex justify-center pb-8">
