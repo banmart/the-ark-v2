@@ -239,7 +239,7 @@ const HistoricalChart = ({
         </div>
 
         {/* Chart Area */}
-        <div className="p-6 relative bg-black/40">
+        <div className="p-6 relative bg-black/90">
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent animate-scan"></div>
           
           <ResponsiveContainer width="100%" height={400}>
