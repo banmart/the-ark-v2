@@ -17,7 +17,7 @@ const ChartSection = () => {
     // Simulate refresh delay
     setTimeout(() => setRefreshing(false), 1000);
   };
-  return <section id="chart" className="relative z-10 py-20 px-6 overflow-hidden">
+  return <section id="chart" className="relative z-10 py-12 px-6 overflow-hidden">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 z-0">
         {/* Base quantum gradient */}

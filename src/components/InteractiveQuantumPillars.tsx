@@ -144,7 +144,7 @@ const InteractiveQuantumPillars = memo(() => {
   const loading = contractLoading || tokenLoading || lockerLoading;
 
   return (
-    <section id="quantum-pillars" className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
+    <section id="quantum-pillars" className="relative z-30 py-16 px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -213,10 +213,10 @@ const InteractiveQuantumPillars = memo(() => {
                     <div className={`text-3xl mb-2 ${isMobile ? 'active:animate-pulse' : 'group-hover:animate-bounce'} transition-all`}>
                       {pillar.emoji}
                     </div>
-                    <h3 className={`text-lg font-bold text-${pillar.color}-400 font-mono mb-1`}>
+                    <h3 className={`text-xl font-bold text-${pillar.color}-400 font-mono mb-1`}>
                       {pillar.title}
                     </h3>
-                    <div className={`text-xs text-${pillar.color}-300/60 font-mono mb-2`}>
+                    <div className={`text-sm text-${pillar.color}-300/60 font-mono mb-2`}>
                       [{pillar.subtitle}]
                     </div>
                   </div>
@@ -224,10 +224,10 @@ const InteractiveQuantumPillars = memo(() => {
                   {/* Live Data Display */}
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs text-gray-400 font-mono">
+                      <span className="text-sm text-gray-400 font-mono">
                         LIVE_DATA
                       </span>
-                      <span className={`text-xs text-${pillar.color}-400 font-mono`}>
+                      <span className={`text-sm text-${pillar.color}-400 font-mono`}>
                         {loading ? '[LOADING...]' : pillar.liveData}
                       </span>
                     </div>
@@ -243,7 +243,7 @@ const InteractiveQuantumPillars = memo(() => {
                       )}
                     </div>
                     
-                    <div className="flex justify-between text-xs font-mono">
+                    <div className="flex justify-between text-sm font-mono">
                       <span className="text-gray-500">
                         {loading ? '[LOADING...]' : `${pillar.value.toLocaleString()} ${pillar.unit}`}
                       </span>
@@ -254,7 +254,7 @@ const InteractiveQuantumPillars = memo(() => {
                   </div>
 
                   {/* Description */}
-                  <p className="text-gray-300 text-xs leading-relaxed mb-4">
+                  <p className="text-gray-300 text-sm leading-relaxed mb-4">
                     {pillar.description}
                   </p>
 
