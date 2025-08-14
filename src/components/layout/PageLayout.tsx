@@ -76,11 +76,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Onboarding Modal */}
-      <OnboardingModal 
-        isOpen={showOnboarding} 
-        onClose={() => setShowOnboarding(false)} 
-      />
 
       {/* Animated Background System */}
       <AnimatedBackground />
@@ -108,21 +103,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
       {/* Interactive Quantum Pillars - Enhanced with Live Data */}
       <InteractiveQuantumPillars />
-
-      {/* NEW: Contract Transparency Section */}
-      <ContractTransparencySection 
-        contractData={contractData}
-        contractLoading={contractLoading}
-      />
-
-      {/* Locker Tiers Section */}
-      <LockerTiersSection 
-        contractData={contractData}
-        contractLoading={contractLoading}
-      />
-
-      {/* Prophecy Section */}
-      <ProphecySection />
 
       {/* Chart Section */}
       <ChartSection />
