@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Shield, Lock, Target, Zap, Database, Activity, Cpu, Info } from 'lucide-react';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
 import AutoLiquidityMeter from './AutoLiquidityMeter';
+import TokenomicsSection from './tokenomics/TokenomicsSection';
 interface ContractTransparencySectionProps {
   contractData: any;
   contractLoading: boolean;
@@ -180,6 +181,9 @@ const ContractTransparencySection = ({
             </div>
           </div>
         </div>
+
+        {/* Interactive Tokenomics Visualizations */}
+        <TokenomicsSection contractData={contractData} contractLoading={contractLoading} />
       </div>
 
       <style>{`
