@@ -76,7 +76,7 @@ const HeroSection = ({
           playsInline 
           className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
-          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeignph2ijbdsmqcilohtmssksq3waygzjsdc3j74ncy2vlahpbvjlq" type="video/mp4" />
+          <source src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/public/media/videos/hero-background.mp4" type="video/mp4" />
         </video>
         
         {/* Vintage Outer Gradient Overlay to Soften Edges */}
@@ -100,7 +100,7 @@ const HeroSection = ({
         <div 
           className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
           style={{
-            backgroundImage: `url('/assets/images/hero-background.jpg')`
+            backgroundImage: `url('https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/public/media/images/hero-background.jpg')`
           }} 
         />
       </div>
