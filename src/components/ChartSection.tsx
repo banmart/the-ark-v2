@@ -19,25 +19,6 @@ const ChartSection = () => {
   };
   return <section id="chart" className="relative z-10 py-12 px-6 overflow-hidden">
       {/* Quantum Field Background */}
-      <div className="absolute inset-0 z-0">
-        {/* Base quantum gradient */}
-        <div className="absolute inset-0 bg-gradient-radial from-cyan-900/10 via-black to-black"></div>
-        
-        {/* Animated quantum grid */}
-        <div className="absolute inset-0 opacity-15">
-          <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
-        </div>
-        
-        {/* Floating quantum orbs */}
-        <div className="floating-orb orb1 bg-gradient-radial from-cyan-500/10 to-transparent blur-3xl"></div>
-        <div className="floating-orb orb2 bg-gradient-radial from-teal-500/10 to-transparent blur-3xl"></div>
-        
-        {/* Scanning lines */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent animate-scan"></div>
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/40 to-transparent animate-scan" style={{
-        animationDelay: '2s'
-      }}></div>
-      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* System Header */}
