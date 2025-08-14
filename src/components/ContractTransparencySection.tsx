@@ -35,7 +35,7 @@ const ContractTransparencySection = ({
       setTimeout(() => setLiquidityPhase(phase), delay);
     });
   }, []);
-  return <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
+  return <section className="relative z-30 py-8 px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
