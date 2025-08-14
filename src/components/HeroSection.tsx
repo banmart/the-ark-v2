@@ -122,7 +122,7 @@ const HeroSection = ({
       {/* Audio Control Button */}
       <button
         onClick={toggleAudio}
-        className="absolute top-6 right-6 z-40 p-3 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 text-white hover:bg-black/50 transition-all duration-200"
+        className="absolute top-6 right-6 z-[60] p-3 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 text-white hover:bg-black/50 transition-all duration-200"
       >
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
       </button>
