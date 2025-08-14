@@ -3,6 +3,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
 import { TextGenerateEffect } from './ui/text-generate-effect';
+import { mediaUrls } from '@/lib/supabase-storage';
 
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
@@ -76,7 +77,7 @@ const HeroSection = ({
           playsInline 
           className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
-          <source src="https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/public/media/videos/hero-background.mp4" type="video/mp4" />
+          <source src={mediaUrls.heroVideo} type="video/mp4" />
         </video>
         
         {/* Vintage Outer Gradient Overlay to Soften Edges */}
@@ -100,7 +101,7 @@ const HeroSection = ({
         <div 
           className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
           style={{
-            backgroundImage: `url('https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/public/media/images/hero-background.jpg')`
+            backgroundImage: `url('${mediaUrls.heroBackground}')`
           }} 
         />
       </div>
