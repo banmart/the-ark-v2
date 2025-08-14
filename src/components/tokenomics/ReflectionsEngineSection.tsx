@@ -92,14 +92,14 @@ const ReflectionsEngineSection = ({
             
             <div className="absolute top-4 right-4 flex items-center gap-2">
               <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
-              <span className="text-cyan-400 font-mono text-xs">REFLECTIONS_ACTIVE</span>
+              <span className="text-cyan-400 font-mono text-xs">REFLECTIONS ACTIVE</span>
             </div>
 
             <div className="relative z-10">
               <div className="text-center mb-8">
                 <div className="text-6xl mb-4">💰</div>
                 <h3 className="text-3xl font-bold text-cyan-400 mb-4 font-mono">
-                  [REFLECTIONS_ENGINE]
+                  [REFLECTIONS ENGINE]
                 </h3>
                 <p className="text-gray-300 mb-6 font-mono leading-relaxed">
                   <span className="text-cyan-400">[MECHANISM]:</span> Every transaction automatically collects

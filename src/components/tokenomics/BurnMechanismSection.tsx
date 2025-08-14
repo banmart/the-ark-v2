@@ -92,14 +92,14 @@ const BurnMechanismSection = ({
             
             <div className="absolute top-4 right-4 flex items-center gap-2">
               <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
-              <span className="text-orange-400 font-mono text-xs">BURN_ACTIVE</span>
+              <span className="text-orange-400 font-mono text-xs">BURN ACTIVE</span>
             </div>
 
             <div className="relative z-10">
               <div className="text-center mb-8">
                 <div className="text-6xl mb-4">🔥</div>
                 <h3 className="text-3xl font-bold text-orange-400 mb-4 font-mono">
-                  [BURN_MECHANISM]
+                  [BURN MECHANISM]
                 </h3>
                 <p className="text-gray-300 mb-6 font-mono leading-relaxed">
                   <span className="text-orange-400">[MECHANISM]:</span> Every transaction burns
