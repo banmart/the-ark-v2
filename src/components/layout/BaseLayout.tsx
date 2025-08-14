@@ -32,7 +32,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
     img.onload = () => {
       setBackgroundLoaded(true);
     };
-    img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
+    img.src = '/assets/images/main-background.jpg';
   }, []);
 
   const copyToClipboard = (text: string) => {

@@ -100,7 +100,7 @@ const HeroSection = ({
         <div 
           className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
           style={{
-            backgroundImage: `url('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafkreifc7dz6zfjtgbc5dn7ocr7rtfjwwzrurrtbmgwbi5e2e447ixa5ei')`
+            backgroundImage: `url('/assets/images/hero-background.jpg')`
           }} 
         />
       </div>
