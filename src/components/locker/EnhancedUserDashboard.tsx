@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Lock, 
   AlertTriangle, 
@@ -13,6 +13,15 @@ import CompactLockPosition from './CompactLockPosition';
 import PenaltyCalculatorCard from './PenaltyCalculatorCard';
 import LockPositionFilters, { FilterOptions } from './LockPositionFilters';
 import { toast } from "@/components/ui/use-toast";
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious 
+} from "@/components/ui/pagination";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface EnhancedUserDashboardProps {
   isConnected: boolean;
@@ -33,6 +42,10 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
     sortOrder: 'asc',
     searchTerm: ''
   });
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   // Mock data for demonstration when not connected
   const mockLocks = [
@@ -147,6 +160,29 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
 
   const filteredLocks = getFilteredAndSortedLocks();
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredLocks.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedLocks = filteredLocks.slice(startIndex, endIndex);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, itemsPerPage]);
+
+  // Page navigation handlers
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(parseInt(value));
+    setCurrentPage(1);
+  };
+
   const handleUnlock = async (lockId: number) => {
     if (!isConnected) return;
     
@@ -233,28 +269,101 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredLocks.map((lock) => (
-              <div key={lock.id} className="space-y-4">
-                <CompactLockPosition
-                  lock={lock}
-                  onUnlock={handleUnlock}
-                  processingUnlock={processingUnlock}
-                />
-                
-                {/* Penalty Calculator for locks with time remaining */}
-                {lock.daysRemaining > 0 && (
-                  <div className="ml-6">
-                    <PenaltyCalculatorCard
-                      lockAmount={lock.amount}
-                      lockTimeRemaining={lock.daysRemaining * 24 * 60 * 60}
-                      totalLockDuration={lock.lockPeriod}
-                    />
-                  </div>
-                )}
+          <>
+            {/* Pagination Info and Per-Page Selector */}
+            {filteredLocks.length > 0 && (
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div className="text-sm text-gray-400">
+                  Showing {startIndex + 1}-{Math.min(endIndex, filteredLocks.length)} of {filteredLocks.length} positions
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-400">Per page:</span>
+                  <Select value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
+                    <SelectTrigger className="w-20 h-8 bg-black/40 border-cyan-500/30">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                      <SelectItem value="20">20</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            ))}
-          </div>
+            )}
+
+            {/* Lock Positions */}
+            <div className="space-y-4">
+              {paginatedLocks.map((lock) => (
+                <div key={lock.id} className="space-y-4">
+                  <CompactLockPosition
+                    lock={lock}
+                    onUnlock={handleUnlock}
+                    processingUnlock={processingUnlock}
+                  />
+                  
+                  {/* Penalty Calculator for locks with time remaining */}
+                  {lock.daysRemaining > 0 && (
+                    <div className="ml-6">
+                      <PenaltyCalculatorCard
+                        lockAmount={lock.amount}
+                        lockTimeRemaining={lock.daysRemaining * 24 * 60 * 60}
+                        totalLockDuration={lock.lockPeriod}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {filteredLocks.length > itemsPerPage && (
+              <div className="flex justify-center mt-8">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          goToPage(currentPage - 1);
+                        }}
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                    
+                    {/* Page Numbers */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            goToPage(page);
+                          }}
+                          isActive={currentPage === page}
+                          className="bg-black/40 border-cyan-500/30 text-white hover:bg-cyan-500/20"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    
+                    <PaginationItem>
+                      <PaginationNext 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          goToPage(currentPage + 1);
+                        }}
+                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
         )}
       </div>
 
