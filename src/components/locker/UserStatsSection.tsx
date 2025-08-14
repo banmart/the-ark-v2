@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useLockerData } from '../../hooks/useLockerData';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
-import { formatPoolSharePercentage } from '../../lib/utils';
+import { formatPoolSharePercentage, formatTokenPoolShare } from '../../lib/utils';
 import { toast } from "@/components/ui/use-toast";
 
 interface UserStatsSectionProps {
@@ -116,7 +116,10 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
             <div className="text-right">
               <div className="text-sm text-gray-400">Pool Share</div>
               <div className="text-xl font-bold text-purple-300">
-                {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00% of pool'}
+                {protocolStats?.totalLockedTokens ? formatTokenPoolShare(displayStats.totalLocked, protocolStats.totalLockedTokens) : '0.00% of tokens'}
+              </div>
+              <div className="text-xs text-gray-500">
+                Weight: {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00% of pool'}
               </div>
             </div>
           </div>

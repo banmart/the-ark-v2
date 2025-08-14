@@ -86,3 +86,16 @@ export function formatPoolSharePercentage(value: number, total: number): string 
     return percentage.toFixed(1) + '% of pool';
   }
 }
+
+export function formatTokenPoolShare(userLocked: number, totalLocked: number): string {
+  if (totalLocked === 0) return '0.00% of tokens';
+  const percentage = (userLocked / totalLocked) * 100;
+  
+  if (percentage < 0.01) {
+    return '<0.01% of tokens';
+  } else if (percentage < 1) {
+    return percentage.toFixed(2) + '% of tokens';
+  } else {
+    return percentage.toFixed(1) + '% of tokens';
+  }
+}
