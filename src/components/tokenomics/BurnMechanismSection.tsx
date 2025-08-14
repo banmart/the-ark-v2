@@ -70,70 +70,72 @@ const BurnMechanismSection = ({
   }, [contractLoading]);
 
   return (
-    <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/30 to-black/50">
-      {/* Quantum Field Background */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            radial-gradient(circle at 25% 25%, rgba(251, 146, 60, 0.3) 2px, transparent 2px),
-            radial-gradient(circle at 75% 25%, rgba(239, 68, 68, 0.3) 2px, transparent 2px),
-            radial-gradient(circle at 25% 75%, rgba(220, 38, 38, 0.3) 2px, transparent 2px),
-            radial-gradient(circle at 75% 75%, rgba(185, 28, 28, 0.3) 2px, transparent 2px)
-          `,
-          backgroundSize: '100px 100px'
-        }} />
-      </div>
+    <div className={`transition-all duration-1000 delay-500 ${burnPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      {/* Burn Mechanism Display */}
+      <div className="relative bg-black/40 backdrop-blur-xl border-2 border-orange-500/30 rounded-xl p-8 overflow-hidden group hover:scale-105 hover:border-orange-500/60 transition-all duration-500 mb-12">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-orange-500/20 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
+          <span className="text-orange-400 font-mono text-xs">BURN ACTIVE</span>
+        </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className={`transition-all duration-1000 delay-500 ${burnPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Burn Mechanism Display */}
-          <div className="relative bg-black/40 backdrop-blur-xl border-2 border-orange-500/30 rounded-xl p-8 overflow-hidden group hover:scale-105 hover:border-orange-500/60 transition-all duration-500 mb-12">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-orange-500/20 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="relative z-10">
+          <div className="text-center">
+            <div className="text-6xl mb-4">🔥</div>
+            <h3 className="text-3xl font-bold text-orange-400 mb-4 font-mono">
+              [BURN MECHANISM]
+            </h3>
+            <p className="text-gray-300 mb-6 font-mono leading-relaxed">
+              <span className="text-orange-400">[MECHANISM]:</span> Every transaction burns
+              2% of tokens permanently, reducing total supply and creating deflationary pressure.
+            </p>
             
-            <div className="absolute top-4 right-4 flex items-center gap-2">
-              <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
-              <span className="text-orange-400 font-mono text-xs">BURN ACTIVE</span>
-            </div>
-
-            <div className="relative z-10">
-              <div className="text-center mb-8">
-                <div className="text-6xl mb-4">🔥</div>
-                <h3 className="text-3xl font-bold text-orange-400 mb-4 font-mono">
-                  [BURN MECHANISM]
-                </h3>
-                <p className="text-gray-300 mb-6 font-mono leading-relaxed">
-                  <span className="text-orange-400">[MECHANISM]:</span> Every transaction burns
-                  2% of tokens permanently, reducing total supply and creating deflationary pressure.
-                </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="bg-black/30 backdrop-blur-sm border border-orange-500/30 rounded-xl p-6 text-center hover:border-orange-500/50 transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <Flame className="w-5 h-5 text-orange-400 mr-2" />
+                    <span className="text-orange-300 font-semibold font-mono">TOTAL_BURNED</span>
+                  </div>
+                </div>
+                <div className="text-3xl font-black text-orange-400 font-mono">
+                  {loading ? '[SCANNING...]' : `${burnData.totalBurned.toLocaleString()}`}
+                </div>
+                <div className="text-xs text-gray-400 font-mono mt-2">[TOKENS_DESTROYED]</div>
               </div>
-
-              {/* Burn Visualization Integration */}
-              <div className="max-w-2xl mx-auto">
-                <BurnVisualization 
-                  totalBurned={burnData.totalBurned}
-                  dailyBurnRate={burnData.dailyBurnRate}
-                  circulatingSupply={burnData.circulatingSupply}
-                  recentBurns={burnData.recentBurns}
-                  burnVelocity={burnData.burnVelocity}
-                  loading={loading}
-                />
+              
+              <div className="bg-black/30 backdrop-blur-sm border border-orange-500/30 rounded-xl p-6 text-center hover:border-orange-500/50 transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <TrendingDown className="w-5 h-5 text-orange-400 mr-2" />
+                    <span className="text-orange-300 font-semibold font-mono">DAILY_BURN</span>
+                  </div>
+                </div>
+                <div className="text-3xl font-black text-orange-400 font-mono">
+                  {loading ? '[SCANNING...]' : `${burnData.dailyBurnRate.toLocaleString()}`}
+                </div>
+                <div className="text-xs text-gray-400 font-mono mt-2">[TOKENS_PER_DAY]</div>
               </div>
             </div>
 
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
-            </div>
+            {/* Burn Visualization Integration */}
+            <BurnVisualization 
+              totalBurned={burnData.totalBurned}
+              dailyBurnRate={burnData.dailyBurnRate}
+              circulatingSupply={burnData.circulatingSupply}
+              recentBurns={burnData.recentBurns}
+              burnVelocity={burnData.burnVelocity}
+              loading={loading}
+            />
           </div>
         </div>
-      </div>
 
-      <style>{`
-        @keyframes scan {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100vw); }
-        }
-      `}</style>
-    </section>
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+        </div>
+      </div>
+    </div>
   );
 };
 
