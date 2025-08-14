@@ -17,6 +17,7 @@ const HeroSection = ({
   setShowOnboarding
 }: HeroSectionProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showIntro, setShowIntro] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -37,8 +38,20 @@ const HeroSection = ({
           setShowIntro(false);
         }, 800); // Wait 0.8 seconds after video loads before starting fade
       };
+      
+      const handlePlaying = () => {
+        // Video has started playing
+        setTimeout(() => {
+          setVideoPlaying(true);
+        }, 1000); // Wait 1 second after video starts playing
+      };
+      
       video.addEventListener('canplay', handleCanPlay);
-      return () => video.removeEventListener('canplay', handleCanPlay);
+      video.addEventListener('playing', handlePlaying);
+      return () => {
+        video.removeEventListener('canplay', handleCanPlay);
+        video.removeEventListener('playing', handlePlaying);
+      };
     }
   }, []);
   
@@ -114,28 +127,28 @@ const HeroSection = ({
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
       </button>
 
-      {/* Logo Section - The ARK */}
-      <div 
-        className={`relative z-20 pt-8 md:pt-12 transition-all duration-600 ease-out ${
-          showIntro ? 'opacity-0 translate-y-12' : 'opacity-100 translate-y-0'
-        }`}
-      >
-        <div className="text-center">
-          <h1>
-            <TextGenerateEffect
-              words="The ARK"
-              className="text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
-              duration={0.5}
-            />
-          </h1>
-        </div>
-      </div>
-            
       {/* Content */}
       <div className="flex-grow" />
       
-      {/* Bottom Section - Contract Address */}
+      {/* Bottom Section - Logo and Contract Address */}
       <div className="max-w-7xl mx-auto w-full relative z-20">
+        {/* Logo Section - The ARK */}
+        <div 
+          className={`relative z-20 pb-8 transition-all duration-600 ease-out ${
+            videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+          }`}
+        >
+          <div className="text-center">
+            <h1>
+              <TextGenerateEffect
+                words="The ARK"
+                className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-yellow-400 bg-clip-text text-transparent"
+                duration={0.5}
+              />
+            </h1>
+          </div>
+        </div>
+        
         <div className="flex justify-center pb-8">
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-2">Contract Address</p>
