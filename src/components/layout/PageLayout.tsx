@@ -100,6 +100,12 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         setShowOnboarding={setShowOnboarding}
       />
 
+      {/* Stats Section */}
+      <StatsSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
       {/* Features Section - Updated Four Pillars */}
       <FeaturesSection />
 
@@ -117,6 +123,9 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
       {/* Prophecy Section */}
       <ProphecySection />
+
+      {/* Chart Section */}
+      <ChartSection />
 
       {/* Render children if provided */}
       {children}
