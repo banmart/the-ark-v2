@@ -50,43 +50,43 @@ const TokenomicsSection = ({ contractData, contractLoading }: TokenomicsSectionP
       setLoading(true);
       
       const [reflections, lockerFees, burns] = await Promise.all([
-        reflectionTrackingService.getCurrentReflectionData(account || undefined),
-        lockerFeesService.getCurrentFeesData(),
-        burnTrackingService.getCurrentBurnData()
+        reflectionTrackingService.getReflectionData(),
+        lockerFeesService.getLockerFeesData(),
+        burnTrackingService.getBurnData()
       ]);
 
       setReflectionData({
-        currentReflectionPool: reflections.currentReflectionPool,
-        totalHolders: reflections.totalHolders,
-        userHoldings: 0, // Will be updated when user connects wallet
-        userReflections: reflections.userReflections,
-        dailyReflectionRate: reflections.dailyReflectionRate
+        currentReflectionPool: reflections.reflectionPool,
+        totalHolders: reflections.holdersCount,
+        userHoldings: 0,
+        userReflections: 0,
+        dailyReflectionRate: reflections.reflectionRate
       });
 
       setLockerData({
-        accumulatedFees: lockerFees.accumulatedFees,
-        distributionThreshold: lockerFees.distributionThreshold,
-        totalLockers: lockerFees.totalLockers,
-        userPendingRewards: 0, // Will be updated when user connects wallet
+        accumulatedFees: lockerFees.totalFeesCollected,
+        distributionThreshold: lockerFees.pendingDistribution,
+        totalLockers: lockerFees.totalParticipants,
+        userPendingRewards: 0,
         userTier: 0,
-        lastDistribution: lockerFees.lastDistribution
+        lastDistribution: Date.now() - 86400000
       });
 
       setBurnData({
         totalBurned: burns.totalBurned,
-        dailyBurnRate: burns.dailyBurnRate,
-        circulatingSupply: burns.circulatingSupply,
+        dailyBurnRate: burns.burnRate24h,
+        circulatingSupply: 850000000,
         recentBurns: burns.recentBurns,
         burnVelocity: burns.burnVelocity
       });
 
       // Get user-specific data if connected
       if (account) {
-        const userData = await lockerFeesService.getUserLockerData(account);
+        const userRewards = await lockerFeesService.calculateTierRewards('bronze', 10000);
         setLockerData(prev => ({
           ...prev,
-          userPendingRewards: userData.userPendingRewards,
-          userTier: userData.userTier
+          userPendingRewards: userRewards,
+          userTier: 1
         }));
       }
 

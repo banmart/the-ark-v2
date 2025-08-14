@@ -109,6 +109,17 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
                 >
                   Locker
                 </button>
+                
+                <button 
+                  onClick={() => handleInternalLink('/stats')}
+                  className={`w-full text-left p-3 rounded-lg transition-all duration-200 font-mono text-sm ${
+                    isActive('/stats') 
+                      ? 'bg-cyan-500/20 text-cyan-400' 
+                      : 'text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10'
+                  }`}
+                >
+                  Stats
+                </button>
               </div>
             </div>
           </div>

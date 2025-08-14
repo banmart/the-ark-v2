@@ -14,6 +14,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import Locker from "./pages/Locker";
+import Stats from "./pages/Stats";
 import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
 
@@ -35,6 +36,7 @@ const App = () => (
                     <Route path="/" element={<Index />} />
                     <Route path="/onboarding" element={<Onboarding />} />
                     <Route path="/locker" element={<Locker />} />
+                    <Route path="/stats" element={<Stats />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
