@@ -108,45 +108,9 @@ const ContractTransparencySection = ({
                 </div>
 
                 {/* Auto Liquidity Progress Meter */}
-                <AutoLiquidityMeter
-                  currentAccumulation={contractLoading ? 0 : parseFloat(contractData?.liquidityData?.currentAccumulation || '0')}
-                  threshold={contractLoading ? 50000 : parseFloat(contractData?.swapSettings?.threshold || '50000')}
-                  loading={contractLoading}
-                  isThresholdReached={contractLoading ? false : (contractData?.liquidityData?.isThresholdReached || false)}
-                  isPendingSwap={contractLoading ? false : (contractData?.liquidityData?.isPendingSwap || false)}
-                  lastSwapTimestamp={contractLoading ? 0 : (contractData?.liquidityData?.lastSwapTimestamp || 0)}
-                  estimatedNextSwap={contractLoading ? null : (contractData?.liquidityData?.estimatedNextSwap || null)}
-                />
+                <AutoLiquidityMeter currentAccumulation={contractLoading ? 0 : parseFloat(contractData?.liquidityData?.currentAccumulation || '0')} threshold={contractLoading ? 50000 : parseFloat(contractData?.swapSettings?.threshold || '50000')} loading={contractLoading} isThresholdReached={contractLoading ? false : contractData?.liquidityData?.isThresholdReached || false} isPendingSwap={contractLoading ? false : contractData?.liquidityData?.isPendingSwap || false} lastSwapTimestamp={contractLoading ? 0 : contractData?.liquidityData?.lastSwapTimestamp || 0} estimatedNextSwap={contractLoading ? null : contractData?.liquidityData?.estimatedNextSwap || null} />
 
-                <div className="bg-gradient-to-r from-green-500/10 via-teal-500/10 to-green-500/10 border border-green-500/30 rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <Cpu className="w-5 h-5 text-green-400" />
-                      <h4 className="text-lg font-bold text-green-400 font-mono">
-                        [AUTO_LP_DIAGNOSTICS]
-                      </h4>
-                    </div>
-                    <div className="flex items-center gap-2 text-green-400 font-mono text-sm">
-                      <Activity className="w-4 h-4 animate-pulse" />
-                      <span>ENGINE_OPERATIONAL</span>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-                    <div className="text-center p-3 bg-green-500/10 border border-green-500/30 rounded">
-                      <div className="text-green-400 mb-1">TRIGGER</div>
-                      <div className="text-white font-bold">THRESHOLD</div>
-                    </div>
-                    <div className="text-center p-3 bg-teal-500/10 border border-teal-500/30 rounded">
-                      <div className="text-teal-400 mb-1">SPLIT_RATIO</div>
-                      <div className="text-white font-bold">50/50</div>
-                    </div>
-                    <div className="text-center p-3 bg-red-500/10 border border-red-500/30 rounded">
-                      <div className="text-red-400 mb-1">LP_DESTINATION</div>
-                      <div className="text-white font-bold">BURN</div>
-                    </div>
-                  </div>
-                </div>
+                
               </div>
             </div>
 
@@ -156,30 +120,7 @@ const ContractTransparencySection = ({
           </div>
 
           {/* Contract Security Info */}
-          <div className="bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-blue-500/10 border border-blue-500/30 rounded-xl p-6">
-            <div className="flex items-start">
-              <Info className="w-6 h-6 text-blue-400 mr-3 mt-1 flex-shrink-0" />
-              <div>
-                <h4 className="text-lg font-semibold text-blue-300 mb-2">
-                  Contract Immutability & Security
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                  <div>
-                    <span className="text-cyan-400 font-semibold">Fixed Fee Structure:</span> All fees are immutable constants set at deployment - cannot be changed by anyone, including the owner.
-                  </div>
-                  <div>
-                    <span className="text-green-400 font-semibold">Automatic Functions:</span> Liquidity generation and fee distribution happen automatically during transactions.
-                  </div>
-                  <div>
-                    <span className="text-purple-400 font-semibold">Burn Mechanism:</span> LP tokens are automatically sent to the burn address, making liquidity permanently locked.
-                  </div>
-                  <div>
-                    <span className="text-yellow-400 font-semibold">Reflection System:</span> Holders earn rewards proportional to their holdings through the reflection mechanism.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          
         </div>
 
         {/* Interactive Tokenomics Visualizations */}
