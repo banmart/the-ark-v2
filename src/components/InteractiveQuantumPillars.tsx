@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Flame, Users, Droplets, Lock, ArrowRight, Database } from 'lucide-react';
 import { useContractData } from '../hooks/useContractData';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { useLockerData } from '../hooks/useLockerData';
+import { useIsMobile } from '../hooks/use-mobile';
 
 type PillarState = 'MONITORING' | 'ACTIVE' | 'THRESHOLD_REACHED' | 'PROCESSING' | 'ACCUMULATING';
 
@@ -25,9 +26,10 @@ interface PillarData {
   actionText: string;
 }
 
-const InteractiveQuantumPillars = () => {
+const InteractiveQuantumPillars = memo(() => {
   const [activePillar, setActivePillar] = useState(0);
   const [pillarsLoaded, setPillarsLoaded] = useState(false);
+  const isMobile = useIsMobile();
   
   const { data: contractData, loading: contractLoading } = useContractData();
   const { data: tokenData, loading: tokenLoading } = useARKTokenData();
@@ -37,18 +39,18 @@ const InteractiveQuantumPillars = () => {
     // Animate pillars on load
     const timer = setTimeout(() => setPillarsLoaded(true), 500);
     
-    // Rotate active pillar every 4 seconds
+    // Rotate active pillar - slower on mobile to reduce performance impact
     const interval = setInterval(() => {
       setActivePillar(prev => (prev + 1) % 4);
-    }, 4000);
+    }, isMobile ? 8000 : 4000);
 
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
     };
-  }, []);
+  }, [isMobile]);
 
-  const getStateColor = (state: PillarState) => {
+  const getStateColor = useCallback((state: PillarState) => {
     switch (state) {
       case 'MONITORING': return 'blue';
       case 'ACTIVE': return 'green';
@@ -57,9 +59,9 @@ const InteractiveQuantumPillars = () => {
       case 'ACCUMULATING': return 'purple';
       default: return 'blue';
     }
-  };
+  }, []);
 
-  const getPillarsData = (): PillarData[] => {
+  const getPillarsData = useMemo((): PillarData[] => {
     const burnRate = typeof tokenData?.dailyBurnRate === 'number' ? tokenData.dailyBurnRate : 0;
     const currentVolume = typeof tokenData?.volume24h === 'number' ? tokenData.volume24h : 0;
     const reflectionRate = currentVolume * 0.02; // 2% of volume for reflections
@@ -136,9 +138,9 @@ const InteractiveQuantumPillars = () => {
         actionText: 'ENTER_VAULT'
       }
     ];
-  };
+  }, [tokenData, contractData, protocolStats]);
 
-  const pillarsData = getPillarsData();
+  const pillarsData = getPillarsData;
   const loading = contractLoading || tokenLoading || lockerLoading;
 
   return (
@@ -185,13 +187,14 @@ const InteractiveQuantumPillars = () => {
             const stateColor = getStateColor(pillar.state);
 
             return (
-              <Card 
+                <Card 
                 key={pillar.id} 
-                className={`relative bg-black/60 backdrop-blur-xl border-2 rounded-xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 cursor-pointer ${
+                className={`relative bg-black/60 backdrop-blur-xl border-2 rounded-xl overflow-hidden group ${isMobile ? 'active:scale-[0.98]' : 'hover:scale-[1.02]'} transition-all duration-500 cursor-pointer will-change-transform ${
                   isActive 
                     ? `border-${pillar.color}-500/80 shadow-lg shadow-${pillar.color}-500/30` 
-                    : `border-${pillar.color}-500/30 hover:border-${pillar.color}-500/60`
+                    : `border-${pillar.color}-500/30 ${isMobile ? 'active:border-' : 'hover:border-'}${pillar.color}-500/60`
                 }`}
+                style={{ contain: 'layout style paint' }}
               >
                 <CardContent className="p-6">
                   {/* Status Header */}
@@ -207,7 +210,7 @@ const InteractiveQuantumPillars = () => {
 
                   {/* Pillar Icon & Title */}
                   <div className="text-center mb-4">
-                    <div className="text-3xl mb-2 group-hover:animate-bounce transition-all">
+                    <div className={`text-3xl mb-2 ${isMobile ? 'active:animate-pulse' : 'group-hover:animate-bounce'} transition-all`}>
                       {pillar.emoji}
                     </div>
                     <h3 className={`text-lg font-bold text-${pillar.color}-400 font-mono mb-1`}>
@@ -233,9 +236,9 @@ const InteractiveQuantumPillars = () => {
                     <div className="relative mb-2">
                       <Progress 
                         value={loading ? 0 : percentage}
-                        className={`h-3 bg-gray-800/50 ${pillar.state === 'THRESHOLD_REACHED' ? 'animate-pulse' : ''}`}
+                        className={`h-3 bg-gray-800/50 ${pillar.state === 'THRESHOLD_REACHED' && !isMobile ? 'animate-pulse' : ''}`}
                       />
-                      {pillar.state === 'PROCESSING' && (
+                      {pillar.state === 'PROCESSING' && !isMobile && (
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-400/50 to-transparent animate-[scan_1s_ease-in-out_infinite]" />
                       )}
                     </div>
@@ -265,17 +268,19 @@ const InteractiveQuantumPillars = () => {
                   </div>
 
                   {/* Animated Border Effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-r ${pillar.gradient} opacity-0 group-hover:opacity-10 transition-opacity rounded-xl`}></div>
+                  <div className={`absolute inset-0 bg-gradient-to-r ${pillar.gradient} opacity-0 ${isMobile ? 'group-active:opacity-10' : 'group-hover:opacity-10'} transition-opacity rounded-xl`}></div>
                   
                   {/* Active Pillar Pulse */}
-                  {isActive && (
+                  {isActive && !isMobile && (
                     <div className={`absolute inset-0 bg-gradient-to-r ${pillar.gradient} opacity-5 animate-pulse rounded-xl`}></div>
                   )}
 
-                  {/* Scan Effect */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${pillar.gradient} animate-[scan_2s_ease-in-out_infinite]`}></div>
-                  </div>
+                  {/* Scan Effect - Disabled on mobile */}
+                  {!isMobile && (
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${pillar.gradient} animate-[scan_2s_ease-in-out_infinite]`}></div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             );
@@ -297,9 +302,17 @@ const InteractiveQuantumPillars = () => {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(100vw); }
         }
+        
+        @media (prefers-reduced-motion: reduce) {
+          .animate-pulse, .animate-bounce, [class*="animate-"] {
+            animation: none !important;
+          }
+        }
       `}</style>
     </section>
   );
-};
+});
+
+InteractiveQuantumPillars.displayName = 'InteractiveQuantumPillars';
 
 export default InteractiveQuantumPillars;
