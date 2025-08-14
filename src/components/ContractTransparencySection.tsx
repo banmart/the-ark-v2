@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Shield, Lock, Target, Zap, Database, Activity, Cpu, Info } from 'lucide-react';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
 import AutoLiquidityMeter from './AutoLiquidityMeter';
-import TokenomicsSection from './tokenomics/TokenomicsSection';
+import ReflectionsEngineSection from './tokenomics/ReflectionsEngineSection';
+import LockerRewardsSection from './tokenomics/LockerRewardsSection';
+import BurnMechanismSection from './tokenomics/BurnMechanismSection';
 interface ContractTransparencySectionProps {
   contractData: any;
   contractLoading: boolean;
@@ -123,8 +125,10 @@ const ContractTransparencySection = ({
           
         </div>
 
-        {/* Interactive Tokenomics Visualizations */}
-        <TokenomicsSection contractData={contractData} contractLoading={contractLoading} />
+        {/* Interactive Tokenomics Visualizations - Individual Sections */}
+        <ReflectionsEngineSection contractData={contractData} contractLoading={contractLoading} />
+        <LockerRewardsSection contractData={contractData} contractLoading={contractLoading} />
+        <BurnMechanismSection contractData={contractData} contractLoading={contractLoading} />
       </div>
 
       <style>{`
