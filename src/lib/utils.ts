@@ -73,3 +73,16 @@ export function formatPercentage(value: number, total: number): string {
     return percentage.toFixed(1) + '%';
   }
 }
+
+export function formatPoolSharePercentage(value: number, total: number): string {
+  if (total === 0) return '0.00% of pool';
+  const percentage = (value / total) * 100;
+  
+  if (percentage < 0.01) {
+    return '<0.01% of pool';
+  } else if (percentage < 1) {
+    return percentage.toFixed(2) + '% of pool';
+  } else {
+    return percentage.toFixed(1) + '% of pool';
+  }
+}
