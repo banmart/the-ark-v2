@@ -32,7 +32,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
     img.onload = () => {
       setBackgroundLoaded(true);
     };
-    img.src = 'https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/public/media/images/main-background.jpg';
+    img.src = '/assets/images/main-background.jpg';
   }, []);
 
   const copyToClipboard = (text: string) => {
