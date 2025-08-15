@@ -27,7 +27,6 @@ interface PillarData {
 }
 
 const InteractiveQuantumPillars = memo(() => {
-  const [activePillar, setActivePillar] = useState(0);
   const [pillarsLoaded, setPillarsLoaded] = useState(false);
   const isMobile = useIsMobile();
   
@@ -38,17 +37,11 @@ const InteractiveQuantumPillars = memo(() => {
   useEffect(() => {
     // Animate pillars on load
     const timer = setTimeout(() => setPillarsLoaded(true), 500);
-    
-    // Rotate active pillar - slower on mobile to reduce performance impact
-    const interval = setInterval(() => {
-      setActivePillar(prev => (prev + 1) % 4);
-    }, isMobile ? 8000 : 4000);
 
     return () => {
       clearTimeout(timer);
-      clearInterval(interval);
     };
-  }, [isMobile]);
+  }, []);
 
   const getStateColor = useCallback((state: PillarState) => {
     switch (state) {
@@ -64,11 +57,12 @@ const InteractiveQuantumPillars = memo(() => {
   const getPillarsData = useMemo((): PillarData[] => {
     const burnRate = typeof tokenData?.dailyBurnRate === 'number' ? tokenData.dailyBurnRate : 0;
     const currentVolume = typeof tokenData?.volume24h === 'number' ? tokenData.volume24h : 0;
-    const reflectionRate = currentVolume * 0.02; // 2% of volume for reflections
+    const dailyReflections = currentVolume * 0.02; // 2% of volume distributed daily as reflections
     const liquidityThreshold = contractData?.swapSettings?.threshold ? parseFloat(contractData.swapSettings.threshold) : 1000;
     const currentLiquidity = contractData?.liquidityData?.currentAccumulation ? parseFloat(contractData.liquidityData.currentAccumulation) : 0;
     const totalLocked = typeof protocolStats?.totalLockedTokens === 'number' ? protocolStats.totalLockedTokens : 0;
     const rewardPool = typeof protocolStats?.rewardPool === 'number' ? protocolStats.rewardPool : 0;
+    const dailyVaultRewards = rewardPool * 0.1; // Estimated 10% of reward pool distributed daily
     const burnedTokens = tokenData?.burnedTokens ? (typeof tokenData.burnedTokens === 'number' ? tokenData.burnedTokens : parseFloat(tokenData.burnedTokens.toString())) : 0;
 
     return [
@@ -85,7 +79,7 @@ const InteractiveQuantumPillars = memo(() => {
         maxValue: 100000,
         unit: 'ARK/day',
         state: burnRate > 0 ? 'ACTIVE' : 'MONITORING',
-        liveData: burnedTokens > 0 ? `${(burnedTokens / 1000000).toFixed(2)}M BURNED` : 'LOADING...',
+        liveData: burnRate > 0 ? `${burnRate > 1000 ? (burnRate / 1000).toFixed(1) + 'K' : burnRate.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'VIEW_BURN_HISTORY'
       },
       {
@@ -97,11 +91,11 @@ const InteractiveQuantumPillars = memo(() => {
         description: 'Autonomous redistribution to holders based on molecular weight with extended holding amplification.',
         color: 'blue',
         gradient: 'from-blue-500 to-cyan-500',
-        value: reflectionRate,
+        value: dailyReflections,
         maxValue: 50000,
         unit: 'ARK/day',
-        state: reflectionRate > 0 ? 'ACTIVE' : 'MONITORING',
-        liveData: currentVolume > 0 ? `${(currentVolume / 1000).toFixed(1)}K VOLUME` : 'LOADING...',
+        state: dailyReflections > 0 ? 'ACTIVE' : 'MONITORING',
+        liveData: dailyReflections > 0 ? `${dailyReflections > 1000 ? (dailyReflections / 1000).toFixed(1) + 'K' : dailyReflections.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'VIEW_REFLECTIONS'
       },
       {
@@ -130,11 +124,11 @@ const InteractiveQuantumPillars = memo(() => {
         description: 'Dedicated quantum vault rewards for temporal commitment with up to 8x multipliers.',
         color: 'green',
         gradient: 'from-green-500 to-teal-500',
-        value: rewardPool,
-        maxValue: 1000000,
-        unit: 'ARK',
+        value: dailyVaultRewards,
+        maxValue: 100000,
+        unit: 'ARK/day',
         state: totalLocked > 0 ? 'ACCUMULATING' : 'MONITORING',
-        liveData: totalLocked > 0 ? `${(totalLocked / 1000000).toFixed(2)}M LOCKED` : 'LOADING...',
+        liveData: dailyVaultRewards > 0 ? `${dailyVaultRewards > 1000 ? (dailyVaultRewards / 1000).toFixed(1) + 'K' : dailyVaultRewards.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'ENTER_VAULT'
       }
     ];
@@ -182,18 +176,13 @@ const InteractiveQuantumPillars = memo(() => {
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-1000 delay-300 ${pillarsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {pillarsData.map((pillar, index) => {
             const IconComponent = pillar.icon;
-            const isActive = activePillar === pillar.id;
             const percentage = pillar.maxValue > 0 ? Math.min((pillar.value / pillar.maxValue) * 100, 100) : 0;
             const stateColor = getStateColor(pillar.state);
 
             return (
                 <Card 
                 key={pillar.id} 
-                className={`relative bg-black/60 backdrop-blur-xl border-2 rounded-xl overflow-hidden group ${isMobile ? 'active:scale-[0.98]' : 'hover:scale-[1.02]'} transition-all duration-500 cursor-pointer will-change-transform ${
-                  isActive 
-                    ? `border-${pillar.color}-500/80 shadow-lg shadow-${pillar.color}-500/30` 
-                    : `border-${pillar.color}-500/30 ${isMobile ? 'active:border-' : 'hover:border-'}${pillar.color}-500/60`
-                }`}
+                className={`relative bg-black/60 backdrop-blur-xl border-2 rounded-xl overflow-hidden group ${isMobile ? 'active:scale-[0.98]' : 'hover:scale-[1.02]'} transition-all duration-500 cursor-pointer will-change-transform border-${pillar.color}-500/30 ${isMobile ? 'active:border-' : 'hover:border-'}${pillar.color}-500/60`}
                 style={{ contain: 'layout style paint' }}
               >
                 <CardContent className="p-6">
@@ -201,7 +190,7 @@ const InteractiveQuantumPillars = memo(() => {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <IconComponent className={`w-5 h-5 text-${pillar.color}-400`} />
-                      <div className={`w-2 h-2 bg-${stateColor}-400 rounded-full ${pillar.state === 'ACTIVE' ? 'animate-pulse' : ''}`}></div>
+                      <div className={`w-2 h-2 bg-${stateColor}-400 rounded-full ${pillar.state === 'ACTIVE' && !isMobile ? 'animate-pulse' : ''}`}></div>
                     </div>
                     <div className={`text-${stateColor}-400 font-mono text-xs px-2 py-1 bg-${stateColor}-500/20 border border-${stateColor}-500/30 rounded`}>
                       {pillar.state}
@@ -269,11 +258,6 @@ const InteractiveQuantumPillars = memo(() => {
 
                   {/* Animated Border Effect */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${pillar.gradient} opacity-0 ${isMobile ? 'group-active:opacity-10' : 'group-hover:opacity-10'} transition-opacity rounded-xl`}></div>
-                  
-                  {/* Active Pillar Pulse */}
-                  {isActive && !isMobile && (
-                    <div className={`absolute inset-0 bg-gradient-to-r ${pillar.gradient} opacity-5 animate-pulse rounded-xl`}></div>
-                  )}
 
                   {/* Scan Effect - Disabled on mobile */}
                   {!isMobile && (
