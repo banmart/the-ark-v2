@@ -18,7 +18,7 @@ export const getStorageUrl = (bucketName: string, filePath: string): string => {
  * Generate URLs for common media files
  */
 export const mediaUrls = {
-  heroVideo: getStorageUrl('media', 'ark-warrior.mp4'),
+  heroVideo: getStorageUrl('media', 'ark-warrior-amit.mp4'),
   heroBackground: getStorageUrl('media', 'ark-warrior.jpeg'),
   mainBackground: getStorageUrl('media', 'images/main-background.jpg'),
   favicon: getStorageUrl('media', 'icons/favicon.png'),
