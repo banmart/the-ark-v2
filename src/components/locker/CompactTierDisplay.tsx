@@ -67,7 +67,7 @@ const CompactTierDisplay = () => {
           {/* Multiplier */}
           <div className={`text-lg font-black font-mono mb-1 ${
             tier.special 
-              ? `bg-gradient-to-r from-${tier.color} to-red-400 bg-clip-text text-transparent` 
+              ? 'text-orange-400 drop-shadow-[0_0_8px_rgba(251,146,60,0.6)]' 
               : `text-${tier.color}`
           }`}>
             {tier.multiplier}
