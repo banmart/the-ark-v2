@@ -104,9 +104,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       {/* Interactive Quantum Pillars - Enhanced with Live Data */}
       <InteractiveQuantumPillars />
 
-      {/* Chart Section */}
-      <ChartSection />
-
       {/* Render children if provided */}
       {children}
 
