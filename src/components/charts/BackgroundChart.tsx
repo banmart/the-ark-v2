@@ -11,7 +11,7 @@ interface BackgroundChartProps {
 const BackgroundChart: React.FC<BackgroundChartProps> = ({ 
   className = '', 
   type = 'area',
-  opacity = 0.3 
+  opacity = 0.8 
 }) => {
   const { timeSeriesData, loading } = useChartData();
 

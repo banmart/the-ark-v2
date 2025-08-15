@@ -20,65 +20,71 @@ const ChartSection = () => {
   };
   return <section id="chart" className="relative z-10 py-12 px-6 overflow-hidden min-h-screen">
       {/* Background Chart */}
-      <BackgroundChart className="z-0" type="area" opacity={0.4} />
-      
-      {/* Backdrop overlay for content readability */}
-      <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] z-5"></div>
+      <BackgroundChart className="z-0" type="area" opacity={0.8} />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* System Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-6">
-          <div className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
-            <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
-            <span className="font-mono text-cyan-400 text-xs sm:text-sm tracking-wider break-words">PLS/ARK_HISTORICAL_ORACLE</span>
-            <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
-          </div>
-          </div>
-          
-          <div className="flex items-center justify-center mb-4">
-            <BarChart3 className="w-10 h-10 text-cyan-400 mr-3" />
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-cyan-400 font-mono break-words">
-              [PLS/ARK_HISTORICAL_MATRIX]
-            </h2>
-            <BarChart3 className="w-10 h-10 text-cyan-400 ml-3" />
-          </div>
-          
-          <p className="text-cyan-400 text-sm sm:text-base lg:text-lg mb-6 max-w-4xl mx-auto leading-relaxed font-mono">
-            Historical PLS/ARK price analysis with advanced filtering and timeframe selection
-            <br />
-            Real-time data with persistent storage for long-term trend analysis
-          </p>
-          
-          {/* Enhanced System Controls */}
-          
-        </div>
-
-        {/* System Status Display */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Activity className="w-4 h-4 text-cyan-400" />
-              <span className="font-mono text-cyan-400 text-sm">DATA_SOURCE</span>
-            </div>
-            <p className="text-cyan-300 font-mono text-xs">{dataSource || 'Loading...'}</p>
-          </div>
-          
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Zap className="w-4 h-4 text-cyan-400" />
-              <span className="font-mono text-cyan-400 text-sm">PAIR</span>
-            </div>
-            <p className="text-cyan-300 font-mono text-xs">{baseCurrency}/ARK</p>
-          </div>
-          
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Shield className="w-4 h-4 text-cyan-400" />
-              <span className="font-mono text-cyan-400 text-sm">DATA_POINTS</span>
-            </div>
-            <p className="text-cyan-300 font-mono text-xs">{priceDataPoints} samples</p>
-          </div>
+        {/* Pricing Data Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                <div className="animate-pulse">
+                  <div className="h-4 bg-cyan-500/20 rounded mb-2"></div>
+                  <div className="h-6 bg-cyan-500/20 rounded mb-1"></div>
+                  <div className="h-3 bg-cyan-500/20 rounded w-2/3"></div>
+                </div>
+              </div>
+            ))
+          ) : (
+            timeSeriesData.length > 0 && (
+              <>
+                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Activity className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono text-cyan-400 text-sm">CURRENT PRICE</span>
+                  </div>
+                  <p className="text-cyan-300 font-mono text-lg font-bold">
+                    ${timeSeriesData[timeSeriesData.length - 1]?.price?.toFixed(6) || '0.000000'}
+                  </p>
+                  <p className="text-cyan-400 font-mono text-xs">PLS/ARK</p>
+                </div>
+                
+                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono text-cyan-400 text-sm">24H CHANGE</span>
+                  </div>
+                  <p className="text-cyan-300 font-mono text-lg font-bold">
+                    {timeSeriesData.length > 1 ? 
+                      `${(((timeSeriesData[timeSeriesData.length - 1]?.price || 0) - (timeSeriesData[0]?.price || 0)) / (timeSeriesData[0]?.price || 1) * 100).toFixed(2)}%`
+                      : '0.00%'
+                    }
+                  </p>
+                  <p className="text-cyan-400 font-mono text-xs">Price Movement</p>
+                </div>
+                
+                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono text-cyan-400 text-sm">DATA POINTS</span>
+                  </div>
+                  <p className="text-cyan-300 font-mono text-lg font-bold">{priceDataPoints}</p>
+                  <p className="text-cyan-400 font-mono text-xs">Live Samples</p>
+                </div>
+                
+                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Database className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono text-cyan-400 text-sm">LAST UPDATE</span>
+                  </div>
+                  <p className="text-cyan-300 font-mono text-lg font-bold">
+                    {lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : 'Loading...'}
+                  </p>
+                  <p className="text-cyan-400 font-mono text-xs">{dataSource || 'DEX Oracle'}</p>
+                </div>
+              </>
+            )
+          )}
         </div>
         
       </div>
