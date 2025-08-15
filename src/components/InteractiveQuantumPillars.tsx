@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
-import { Activity, Flame, Users, Droplets, Lock, ArrowRight, Database } from 'lucide-react';
+import { Activity, Flame, RefreshCcw, Droplets, Lock, ArrowRight, Database } from 'lucide-react';
 import { useContractData } from '../hooks/useContractData';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { useLockerData } from '../hooks/useLockerData';
@@ -137,7 +137,7 @@ const InteractiveQuantumPillars = memo(() => {
       },
       {
         id: 1,
-        icon: Users,
+        icon: RefreshCcw,
         emoji: '🫂',
         title: 'REFLECTION MATRIX',
         subtitle: 'Quantum Redistribution',
