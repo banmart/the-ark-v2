@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
+import { DollarSign, TrendingUp, Layers, Coins, Activity, Flame } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
 import { useARKPriceData } from '../hooks/useARKPriceData';
 import { formatTokenAmount, formatPrice } from '../lib/utils';
@@ -91,130 +91,142 @@ const StatsSection = ({
         {/* System Header */}
         
 
-        {/* Primary Stats Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-12 transition-all duration-1000 delay-500 ${statsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Market Cap */}
-          <div className="relative bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-3 md:p-6 hover:scale-105 hover:border-cyan-500/60 transition-all duration-500 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-            
-            <div className="absolute top-2 right-2 flex items-center gap-1">
-              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-              <span className="text-cyan-400 font-mono text-xs">ACTIVE</span>
-            </div>
-
-            <div className="relative z-10">
-              <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-cyan-400 font-mono">💰 MARKET CAP</h3>
-              <p className="text-sm md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `$${formatNumber(contractData.marketCap)}`}
-              </p>
-              <p className="text-xs md:text-sm text-gray-400 font-mono">[REAL TIME VALUATION]</p>
-            </div>
-
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
-            </div>
-          </div>
-
-          {/* Current Price */}
-          <div className="relative bg-black/40 backdrop-blur-xl border border-blue-500/30 rounded-xl p-3 md:p-6 hover:scale-105 hover:border-blue-500/60 transition-all duration-500 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-            
-            <div className="absolute top-2 right-2 flex items-center gap-1">
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-              <span className="text-blue-400 font-mono text-xs">LIVE</span>
-            </div>
-
-            <div className="relative z-10">
-              <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-blue-400 font-mono">📈 PRICE FEED</h3>
-              <div className="flex items-baseline gap-2 mb-2">
-                <p className="text-sm md:text-xl lg:text-2xl font-black text-white font-mono">
-                  {priceLoading ? <span className="animate-pulse">[SCANNING...]</span> : `$${formatPrice(priceData?.price || 0)}`}
-                </p>
-                {!priceLoading && priceData?.priceChange24h && <span className={`text-xs md:text-sm font-bold font-mono ${priceData.priceChange24h > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {priceData.priceChange24h > 0 ? '+' : ''}{priceData.priceChange24h.toFixed(2)}%
-                  </span>}
+          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <DollarSign className="h-6 w-6 text-cyan-400" />
+              <div className="text-right">
+                <p className="text-sm text-gray-400 font-mono">MARKET CAP</p>
               </div>
-              <p className="text-xs md:text-sm text-gray-400 font-mono">[{priceData?.baseCurrency || 'USD'} PAIR]</p>
             </div>
-
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
-            </div>
-          </div>
-
-          {/* TVL (Total Value Locked) */}
-          <div className="relative bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4 md:p-6 hover:scale-105 hover:border-purple-500/60 transition-all duration-500 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             
-            <div className="absolute top-2 right-2 flex items-center gap-1">
-              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-              <span className="text-purple-400 font-mono text-xs">TRACKING</span>
-            </div>
-
-            <div className="relative z-10">
-              <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4 text-purple-400 font-mono">🏦 TVL (LOCKER)</h3>
-              <p className="text-xl md:text-2xl lg:text-3xl font-black text-white mb-2 font-mono">
-                {protocolStats.totalLockedTokens ? `${formatTVL(protocolStats.totalLockedTokens)} ARK` : <span className="animate-pulse">[SCANNING...]</span>}
+            <div className="space-y-2">
+              <p className="text-lg font-bold font-mono text-white">
+                {contractLoading ? (
+                  <span className="animate-pulse">$---.--M</span>
+                ) : (
+                  `$${formatNumber(contractData.marketCap)}`
+                )}
               </p>
-              <p className="text-sm text-gray-400 font-mono">[LOCKED VALUE]</p>
-            </div>
-
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+              <p className="text-xs text-gray-500 font-mono">
+                Based on current price & supply
+              </p>
             </div>
           </div>
-        </div>
 
-        {/* Secondary Stats Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-12 md:mb-16 transition-all duration-1000 delay-1000 ${statsPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {/* Price Feed */}
+          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <TrendingUp className="h-6 w-6 text-cyan-400" />
+              <div className="text-right">
+                <p className="text-sm text-gray-400 font-mono">PRICE FEED</p>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <p className="text-lg font-bold font-mono text-white">
+                {priceLoading ? (
+                  <span className="animate-pulse">$--.----</span>
+                ) : (
+                  `$${formatPrice(priceData?.price || 0)}`
+                )}
+              </p>
+              <p className="text-xs text-gray-500 font-mono">
+                Real-time market price
+              </p>
+            </div>
+          </div>
+
+          {/* TVL */}
+          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <Layers className="h-6 w-6 text-cyan-400" />
+              <div className="text-right">
+                <p className="text-sm text-gray-400 font-mono">TVL</p>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <p className="text-lg font-bold font-mono text-white">
+                {protocolStats.totalLockedTokens ? (
+                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
+                ) : (
+                  <span className="animate-pulse">$---.--M</span>
+                )}
+              </p>
+              <p className="text-xs text-gray-500 font-mono">
+                Total Value Locked
+              </p>
+            </div>
+          </div>
+
           {/* Total Supply */}
-          <div className="relative bg-black/40 backdrop-blur-xl border border-green-500/30 rounded-xl p-4 md:p-6 hover:scale-105 hover:border-green-500/60 transition-all duration-500 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-            
-            <div className="relative z-10">
-              <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-green-400 font-mono">💎 TOTAL SUPPLY</h3>
-              <p className="text-lg md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${formatNumber(contractData.totalSupply)} ARK`}
-              </p>
-              <p className="text-sm text-gray-400 font-mono">[CONTRACT SOURCE]</p>
+          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <Coins className="h-6 w-6 text-cyan-400" />
+              <div className="text-right">
+                <p className="text-sm text-gray-400 font-mono">TOTAL SUPPLY</p>
+              </div>
             </div>
-
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            
+            <div className="space-y-2">
+              <p className="text-lg font-bold font-mono text-white">
+                {contractLoading ? (
+                  <span className="animate-pulse">---.--B</span>
+                ) : (
+                  formatNumber(contractData.totalSupply)
+                )}
+              </p>
+              <p className="text-xs text-gray-500 font-mono">
+                Maximum token supply
+              </p>
             </div>
           </div>
 
           {/* Circulating Supply */}
-          <div className="relative bg-black/40 backdrop-blur-xl border border-yellow-500/30 rounded-xl p-4 md:p-6 hover:scale-105 hover:border-yellow-500/60 transition-all duration-500 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-            
-            <div className="relative z-10">
-              <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-yellow-400 font-mono">🔄 CIRCULATING</h3>
-              <p className="text-lg md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${formatNumber(contractData.circulatingSupply)} ARK`}
-              </p>
-              <p className="text-sm text-gray-400 font-mono">[MARKET AVAILABLE]</p>
+          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <Activity className="h-6 w-6 text-cyan-400" />
+              <div className="text-right">
+                <p className="text-sm text-gray-400 font-mono">CIRCULATING</p>
+              </div>
             </div>
-
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            
+            <div className="space-y-2">
+              <p className="text-lg font-bold font-mono text-white">
+                {contractLoading ? (
+                  <span className="animate-pulse">---.--B</span>
+                ) : (
+                  formatNumber(contractData.circulatingSupply)
+                )}
+              </p>
+              <p className="text-xs text-gray-500 font-mono">
+                Tokens in active circulation
+              </p>
             </div>
           </div>
 
           {/* Burned Tokens */}
-          <div className="relative bg-black/40 backdrop-blur-xl border border-red-500/30 rounded-xl p-4 md:p-6 hover:scale-105 hover:border-red-500/60 transition-all duration-500 group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-            
-            <div className="relative z-10">
-              <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-red-400 font-mono">🔥 BURNED</h3>
-              <p className="text-lg md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${formatNumber(contractData.burnedTokens)} ARK`}
-              </p>
-              <p className="text-sm text-gray-400 font-mono">[VOID ADDRESS]</p>
+          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <Flame className="h-6 w-6 text-cyan-400" />
+              <div className="text-right">
+                <p className="text-sm text-gray-400 font-mono">BURNED</p>
+              </div>
             </div>
-
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+            
+            <div className="space-y-2">
+              <p className="text-lg font-bold font-mono text-white">
+                {contractLoading ? (
+                  <span className="animate-pulse">---.--M</span>
+                ) : (
+                  formatNumber(contractData.burnedTokens)
+                )}
+              </p>
+              <p className="text-xs text-gray-500 font-mono">
+                Tokens permanently removed
+              </p>
             </div>
           </div>
         </div>
