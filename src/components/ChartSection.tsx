@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RefreshCw, BarChart3, Database, Activity, Zap, Shield } from 'lucide-react';
 import { useChartData } from '../hooks/useChartData';
 import HistoricalChart from './charts/HistoricalChart';
+import BackgroundChart from './charts/BackgroundChart';
 const ChartSection = () => {
   const {
     timeSeriesData,
@@ -17,8 +18,12 @@ const ChartSection = () => {
     // Simulate refresh delay
     setTimeout(() => setRefreshing(false), 1000);
   };
-  return <section id="chart" className="relative z-10 py-12 px-6 overflow-hidden">
-      {/* Quantum Field Background */}
+  return <section id="chart" className="relative z-10 py-12 px-6 overflow-hidden min-h-screen">
+      {/* Background Chart */}
+      <BackgroundChart className="z-0" type="area" opacity={0.4} />
+      
+      {/* Backdrop overlay for content readability */}
+      <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] z-5"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* System Header */}
@@ -49,12 +54,32 @@ const ChartSection = () => {
           
         </div>
 
-        {/* Enhanced Historical Chart */}
-        <div className="mb-8">
-          <HistoricalChart dataSource={dataSource} baseCurrency={baseCurrency} />
+        {/* System Status Display */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <Activity className="w-4 h-4 text-cyan-400" />
+              <span className="font-mono text-cyan-400 text-sm">DATA_SOURCE</span>
+            </div>
+            <p className="text-cyan-300 font-mono text-xs">{dataSource || 'Loading...'}</p>
+          </div>
+          
+          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <Zap className="w-4 h-4 text-cyan-400" />
+              <span className="font-mono text-cyan-400 text-sm">PAIR</span>
+            </div>
+            <p className="text-cyan-300 font-mono text-xs">{baseCurrency}/ARK</p>
+          </div>
+          
+          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <Shield className="w-4 h-4 text-cyan-400" />
+              <span className="font-mono text-cyan-400 text-sm">DATA_POINTS</span>
+            </div>
+            <p className="text-cyan-300 font-mono text-xs">{priceDataPoints} samples</p>
+          </div>
         </div>
-
-        {/* Enhanced Data Source Info */}
         
       </div>
     </section>;
