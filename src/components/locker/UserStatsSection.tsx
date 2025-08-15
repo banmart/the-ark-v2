@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { 
   Wallet, 
-  Lock, 
-  TrendingUp, 
-  BarChart3,
   Coins,
   Gift
 } from 'lucide-react';
 import { useLockerData } from '../../hooks/useLockerData';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
+import { useWalletContext } from '../providers/WalletProvider';
 import { formatPoolSharePercentage, formatTokenPoolShare } from '../../lib/utils';
 import { toast } from "@/components/ui/use-toast";
 
@@ -17,8 +15,9 @@ interface UserStatsSectionProps {
 }
 
 const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
-  const { userStats, claimRewards } = useLockerData();
+  const { userStats, claimRewards, userLocks } = useLockerData();
   const { protocolStats, totalProtocolWeight } = useLockerContractData();
+  const { arkBalance } = useWalletContext();
   const [claimingRewards, setClaimingRewards] = useState(false);
 
   // Mock data for demonstration when not connected
@@ -31,6 +30,32 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
   };
 
   const displayRewards = isConnected ? userStats.pendingRewards : 12847;
+  const displayArkBalance = isConnected ? parseFloat(arkBalance) : 250000;
+
+  // Calculate average lock period from user's active locks
+  const calculateAverageLockPeriod = () => {
+    if (!isConnected || !userLocks || userLocks.length === 0) {
+      return "90 days"; // Mock data for demo
+    }
+    
+    const activeLocks = userLocks.filter(lock => lock.active);
+    if (activeLocks.length === 0) return "0 days";
+    
+    const totalWeightedDuration = activeLocks.reduce((sum, lock) => {
+      return sum + (lock.lockPeriod * lock.amount);
+    }, 0);
+    
+    const totalAmount = activeLocks.reduce((sum, lock) => sum + lock.amount, 0);
+    const averageDays = totalAmount > 0 ? Math.round(totalWeightedDuration / totalAmount) : 0;
+    
+    if (averageDays >= 365) {
+      return `${Math.round(averageDays / 365)} years`;
+    } else if (averageDays >= 30) {
+      return `${Math.round(averageDays / 30)} months`;
+    } else {
+      return `${averageDays} days`;
+    }
+  };
 
   const handleClaimRewards = async () => {
     if (!isConnected) return;
@@ -69,59 +94,73 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
         </div>
       )}
 
-      {/* Enhanced Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* Enhanced Stats Overview - 6 Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
+        {/* System Total */}
         <div className="bg-black/20 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-all duration-300">
-          <div className="flex items-center justify-between mb-3">
-            <Lock className="w-8 h-8 text-blue-400" />
-            <div className="text-right">
-              <div className="text-sm text-gray-400">System Total</div>
-              <div className="text-xl font-bold text-blue-300">
-                {protocolStats.totalLockedTokens.toLocaleString()}
-              </div>
-              <div className="text-xs text-gray-500">ARK</div>
+          <div className="text-center">
+            <div className="text-sm text-gray-400 mb-2">System Total</div>
+            <div className="text-xl font-bold text-blue-300">
+              {protocolStats.totalLockedTokens.toLocaleString()}
             </div>
+            <div className="text-xs text-gray-500">ARK</div>
           </div>
         </div>
 
+        {/* Total ARK Tokens */}
+        <div className="bg-black/20 backdrop-blur-sm border border-orange-500/20 rounded-xl p-6 hover:border-orange-500/40 transition-all duration-300">
+          <div className="text-center">
+            <div className="text-sm text-gray-400 mb-2">Total ARK Tokens</div>
+            <div className="text-xl font-bold text-orange-300">
+              {displayArkBalance.toLocaleString()}
+            </div>
+            <div className="text-xs text-gray-500">In Wallet</div>
+          </div>
+        </div>
+
+        {/* Your Locked */}
         <div className="bg-black/20 backdrop-blur-sm border border-green-500/20 rounded-xl p-6 hover:border-green-500/40 transition-all duration-300">
-          <div className="flex items-center justify-between mb-3">
-            <Lock className="w-8 h-8 text-green-400" />
-            <div className="text-right">
-              <div className="text-sm text-gray-400">Your Locked</div>
-              <div className="text-xl font-bold text-green-300">
-                {displayStats.totalLocked.toLocaleString()}
-              </div>
-              <div className="text-xs text-gray-500">ARK</div>
+          <div className="text-center">
+            <div className="text-sm text-gray-400 mb-2">Your Locked</div>
+            <div className="text-xl font-bold text-green-300">
+              {displayStats.totalLocked.toLocaleString()}
             </div>
+            <div className="text-xs text-gray-500">ARK</div>
           </div>
         </div>
 
+        {/* Total Earned */}
         <div className="bg-black/20 backdrop-blur-sm border border-yellow-500/20 rounded-xl p-6 hover:border-yellow-500/40 transition-all duration-300">
-          <div className="flex items-center justify-between mb-3">
-            <TrendingUp className="w-8 h-8 text-yellow-400" />
-            <div className="text-right">
-              <div className="text-sm text-gray-400">Total Earned</div>
-              <div className="text-xl font-bold text-yellow-300">
-                {displayStats.totalRewardsEarned.toLocaleString()}
-              </div>
-              <div className="text-xs text-gray-500">ARK</div>
+          <div className="text-center">
+            <div className="text-sm text-gray-400 mb-2">Total Earned</div>
+            <div className="text-xl font-bold text-yellow-300">
+              {displayStats.totalRewardsEarned.toLocaleString()}
+            </div>
+            <div className="text-xs text-gray-500">ARK</div>
+          </div>
+        </div>
+
+        {/* Pool Share */}
+        <div className="bg-black/20 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/40 transition-all duration-300">
+          <div className="text-center">
+            <div className="text-sm text-gray-400 mb-2">Pool Share</div>
+            <div className="text-lg font-bold text-purple-300">
+              {protocolStats?.totalLockedTokens ? formatTokenPoolShare(displayStats.totalLocked, protocolStats.totalLockedTokens) : '0.00%'}
+            </div>
+            <div className="text-xs text-gray-500">
+              Weight: {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00%'}
             </div>
           </div>
         </div>
 
-        <div className="bg-black/20 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/40 transition-all duration-300">
-          <div className="flex items-center justify-between mb-3">
-            <BarChart3 className="w-8 h-8 text-purple-400" />
-            <div className="text-right">
-              <div className="text-sm text-gray-400">Pool Share</div>
-              <div className="text-xl font-bold text-purple-300">
-                {protocolStats?.totalLockedTokens ? formatTokenPoolShare(displayStats.totalLocked, protocolStats.totalLockedTokens) : '0.00% of tokens'}
-              </div>
-              <div className="text-xs text-gray-500">
-                Weight: {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00% of pool'}
-              </div>
+        {/* Average Lock Period */}
+        <div className="bg-black/20 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/40 transition-all duration-300">
+          <div className="text-center">
+            <div className="text-sm text-gray-400 mb-2">Average Lock</div>
+            <div className="text-xl font-bold text-cyan-300">
+              {calculateAverageLockPeriod()}
             </div>
+            <div className="text-xs text-gray-500">Period</div>
           </div>
         </div>
       </div>
