@@ -55,15 +55,47 @@ const InteractiveQuantumPillars = memo(() => {
   }, []);
 
   const getPillarsData = useMemo((): PillarData[] => {
+    // Get data with proper fallbacks
     const burnRate = typeof tokenData?.dailyBurnRate === 'number' ? tokenData.dailyBurnRate : 0;
     const currentVolume = typeof tokenData?.volume24h === 'number' ? tokenData.volume24h : 0;
-    const dailyReflections = currentVolume * 0.02; // 2% of volume distributed daily as reflections
-    const liquidityThreshold = contractData?.swapSettings?.threshold ? parseFloat(contractData.swapSettings.threshold) : 1000;
+    const liquidityThreshold = contractData?.swapSettings?.threshold ? parseFloat(contractData.swapSettings.threshold) : 1000000; // 1M ARK default
     const currentLiquidity = contractData?.liquidityData?.currentAccumulation ? parseFloat(contractData.liquidityData.currentAccumulation) : 0;
     const totalLocked = typeof protocolStats?.totalLockedTokens === 'number' ? protocolStats.totalLockedTokens : 0;
     const rewardPool = typeof protocolStats?.rewardPool === 'number' ? protocolStats.rewardPool : 0;
-    const dailyVaultRewards = rewardPool * 0.1; // Estimated 10% of reward pool distributed daily
-    const burnedTokens = tokenData?.burnedTokens ? (typeof tokenData.burnedTokens === 'number' ? tokenData.burnedTokens : parseFloat(tokenData.burnedTokens.toString())) : 0;
+    
+    // Calculate dynamic max values based on actual data patterns
+    const burnMaxCapacity = Math.max(currentVolume * 0.05, 50000); // 5% of daily volume or 50K minimum
+    const dailyReflections = currentVolume * 0.02; // 2% reflection fee from volume
+    const reflectionMaxCapacity = Math.max(currentVolume * 0.1, 100000); // 10% of volume or 100K minimum
+    const dailyVaultRewards = rewardPool * 0.001; // 0.1% daily distribution from reward pool
+    const rewardMaxCapacity = Math.max(rewardPool * 0.01, 10000); // 1% of pool or 10K minimum
+
+    // Enhanced state calculation functions
+    const getBurnState = (rate: number, capacity: number): PillarState => {
+      if (rate > capacity * 0.8) return 'PROCESSING';
+      if (rate > capacity * 0.5) return 'ACTIVE';
+      if (rate > capacity * 0.1) return 'MONITORING';
+      return 'MONITORING';
+    };
+
+    const getReflectionState = (reflections: number, capacity: number): PillarState => {
+      if (reflections > capacity * 0.7) return 'ACTIVE';
+      if (reflections > capacity * 0.3) return 'MONITORING';
+      return 'MONITORING';
+    };
+
+    const getLiquidityState = (current: number, threshold: number): PillarState => {
+      if (current >= threshold) return 'THRESHOLD_REACHED';
+      if (current > threshold * 0.7) return 'PROCESSING';
+      if (current > threshold * 0.3) return 'ACCUMULATING';
+      return 'MONITORING';
+    };
+
+    const getRewardState = (rewards: number, capacity: number): PillarState => {
+      if (rewards > capacity * 0.6) return 'ACTIVE';
+      if (rewards > capacity * 0.2) return 'ACCUMULATING';
+      return 'MONITORING';
+    };
 
     return [
       {
@@ -76,9 +108,9 @@ const InteractiveQuantumPillars = memo(() => {
         color: 'red',
         gradient: 'from-red-500 to-orange-500',
         value: burnRate,
-        maxValue: 100000,
+        maxValue: burnMaxCapacity,
         unit: 'ARK/day',
-        state: burnRate > 0 ? 'ACTIVE' : 'MONITORING',
+        state: getBurnState(burnRate, burnMaxCapacity),
         liveData: burnRate > 0 ? `${burnRate > 1000 ? (burnRate / 1000).toFixed(1) + 'K' : burnRate.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'VIEW_BURN_HISTORY'
       },
@@ -92,9 +124,9 @@ const InteractiveQuantumPillars = memo(() => {
         color: 'blue',
         gradient: 'from-blue-500 to-cyan-500',
         value: dailyReflections,
-        maxValue: 50000,
+        maxValue: reflectionMaxCapacity,
         unit: 'ARK/day',
-        state: dailyReflections > 0 ? 'ACTIVE' : 'MONITORING',
+        state: getReflectionState(dailyReflections, reflectionMaxCapacity),
         liveData: dailyReflections > 0 ? `${dailyReflections > 1000 ? (dailyReflections / 1000).toFixed(1) + 'K' : dailyReflections.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'VIEW_REFLECTIONS'
       },
@@ -110,9 +142,8 @@ const InteractiveQuantumPillars = memo(() => {
         value: currentLiquidity,
         maxValue: liquidityThreshold,
         unit: 'ARK',
-        state: currentLiquidity >= liquidityThreshold ? 'THRESHOLD_REACHED' : 
-               currentLiquidity > 0 ? 'ACCUMULATING' : 'MONITORING',
-        liveData: tokenData?.liquidity ? `$${(typeof tokenData.liquidity === 'number' ? tokenData.liquidity / 1000 : parseFloat(tokenData.liquidity.toString()) / 1000).toFixed(1)}K TVL` : 'LOADING...',
+        state: getLiquidityState(currentLiquidity, liquidityThreshold),
+        liveData: `${((currentLiquidity / liquidityThreshold) * 100).toFixed(1)}% TO SWAP`,
         actionText: 'VIEW_LIQUIDITY'
       },
       {
@@ -125,9 +156,9 @@ const InteractiveQuantumPillars = memo(() => {
         color: 'green',
         gradient: 'from-green-500 to-teal-500',
         value: dailyVaultRewards,
-        maxValue: 100000,
+        maxValue: rewardMaxCapacity,
         unit: 'ARK/day',
-        state: totalLocked > 0 ? 'ACCUMULATING' : 'MONITORING',
+        state: getRewardState(dailyVaultRewards, rewardMaxCapacity),
         liveData: dailyVaultRewards > 0 ? `${dailyVaultRewards > 1000 ? (dailyVaultRewards / 1000).toFixed(1) + 'K' : dailyVaultRewards.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'ENTER_VAULT'
       }
