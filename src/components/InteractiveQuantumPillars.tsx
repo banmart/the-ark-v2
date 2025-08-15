@@ -6,6 +6,7 @@ import { useContractData } from '../hooks/useContractData';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { useLockerData } from '../hooks/useLockerData';
 import { useIsMobile } from '../hooks/use-mobile';
+import { useFeeMetrics } from '../hooks/useFeeMetrics';
 
 type PillarState = 'MONITORING' | 'ACTIVE' | 'THRESHOLD_REACHED' | 'PROCESSING' | 'ACCUMULATING';
 
@@ -28,11 +29,13 @@ interface PillarData {
 
 const InteractiveQuantumPillars = memo(() => {
   const [pillarsLoaded, setPillarsLoaded] = useState(false);
+  const [realTimeUpdate, setRealTimeUpdate] = useState(0);
   const isMobile = useIsMobile();
   
   const { data: contractData, loading: contractLoading } = useContractData();
   const { data: tokenData, loading: tokenLoading } = useARKTokenData();
   const { protocolStats, userStats, loading: lockerLoading } = useLockerData();
+  const { feeMetrics, loading: feeLoading } = useFeeMetrics(tokenData?.volume24h ? Number(tokenData.volume24h) : undefined);
 
   useEffect(() => {
     // Animate pillars on load
@@ -41,6 +44,16 @@ const InteractiveQuantumPillars = memo(() => {
     return () => {
       clearTimeout(timer);
     };
+  }, []);
+
+
+  // Real-time animation effect
+  useEffect(() => {
+    const glitchTimer = setInterval(() => {
+      setRealTimeUpdate(prev => prev + 1);
+    }, 3000);
+
+    return () => clearInterval(glitchTimer);
   }, []);
 
   const getStateColor = useCallback((state: PillarState) => {
@@ -55,45 +68,53 @@ const InteractiveQuantumPillars = memo(() => {
   }, []);
 
   const getPillarsData = useMemo((): PillarData[] => {
-    // Get data with proper fallbacks
-    const burnRate = typeof tokenData?.dailyBurnRate === 'number' ? tokenData.dailyBurnRate : 0;
+    // Get real fee data from service
     const currentVolume = typeof tokenData?.volume24h === 'number' ? tokenData.volume24h : 0;
-    const liquidityThreshold = contractData?.swapSettings?.threshold ? parseFloat(contractData.swapSettings.threshold) : 1000000; // 1M ARK default
+    const fees = feeMetrics?.feesCollected;
+    const efficiency = feeMetrics?.efficiency;
+    
+    // Use real fee data when available, fallback to calculations
+    const burnDaily = fees?.burn.dailyFees || 0;
+    const reflectionDaily = fees?.reflection.dailyFees || 0;
+    const liquidityDaily = fees?.liquidity.dailyFees || 0;
+    const lockerDaily = fees?.locker.dailyFees || 0;
+    
+    // Get real-time data
+    const liquidityThreshold = contractData?.swapSettings?.threshold ? parseFloat(contractData.swapSettings.threshold) : 1000000;
     const currentLiquidity = contractData?.liquidityData?.currentAccumulation ? parseFloat(contractData.liquidityData.currentAccumulation) : 0;
     const totalLocked = typeof protocolStats?.totalLockedTokens === 'number' ? protocolStats.totalLockedTokens : 0;
     const rewardPool = typeof protocolStats?.rewardPool === 'number' ? protocolStats.rewardPool : 0;
     
-    // Calculate dynamic max values based on actual data patterns
-    const burnMaxCapacity = Math.max(currentVolume * 0.05, 50000); // 5% of daily volume or 50K minimum
-    const dailyReflections = currentVolume * 0.02; // 2% reflection fee from volume
-    const reflectionMaxCapacity = Math.max(currentVolume * 0.1, 100000); // 10% of volume or 100K minimum
-    const dailyVaultRewards = rewardPool * 0.001; // 0.1% daily distribution from reward pool
-    const rewardMaxCapacity = Math.max(rewardPool * 0.01, 10000); // 1% of pool or 10K minimum
+    // Calculate dynamic max values based on real fee collection
+    const burnMaxCapacity = Math.max(currentVolume * 0.02, burnDaily * 2); // 2% of volume or 2x current rate
+    const reflectionMaxCapacity = Math.max(currentVolume * 0.02, reflectionDaily * 2);
+    const liquidityMaxCapacity = Math.max(currentVolume * 0.03, liquidityDaily * 2);
+    const rewardMaxCapacity = Math.max(rewardPool * 0.01, lockerDaily * 2);
 
-    // Enhanced state calculation functions
-    const getBurnState = (rate: number, capacity: number): PillarState => {
-      if (rate > capacity * 0.8) return 'PROCESSING';
-      if (rate > capacity * 0.5) return 'ACTIVE';
-      if (rate > capacity * 0.1) return 'MONITORING';
+    // Enhanced state calculation functions using real fee efficiency
+    const getBurnState = (rate: number, capacity: number, eff: number = 0): PillarState => {
+      if (eff > 80) return 'PROCESSING';
+      if (eff > 50 || rate > capacity * 0.5) return 'ACTIVE';
+      if (eff > 20 || rate > capacity * 0.1) return 'MONITORING';
       return 'MONITORING';
     };
 
-    const getReflectionState = (reflections: number, capacity: number): PillarState => {
-      if (reflections > capacity * 0.7) return 'ACTIVE';
-      if (reflections > capacity * 0.3) return 'MONITORING';
+    const getReflectionState = (reflections: number, capacity: number, eff: number = 0): PillarState => {
+      if (eff > 70) return 'ACTIVE';
+      if (eff > 30 || reflections > capacity * 0.3) return 'MONITORING';
       return 'MONITORING';
     };
 
-    const getLiquidityState = (current: number, threshold: number): PillarState => {
+    const getLiquidityState = (current: number, threshold: number, eff: number = 0): PillarState => {
       if (current >= threshold) return 'THRESHOLD_REACHED';
-      if (current > threshold * 0.7) return 'PROCESSING';
-      if (current > threshold * 0.3) return 'ACCUMULATING';
+      if (eff > 60 || current > threshold * 0.7) return 'PROCESSING';
+      if (eff > 20 || current > threshold * 0.3) return 'ACCUMULATING';
       return 'MONITORING';
     };
 
-    const getRewardState = (rewards: number, capacity: number): PillarState => {
-      if (rewards > capacity * 0.6) return 'ACTIVE';
-      if (rewards > capacity * 0.2) return 'ACCUMULATING';
+    const getRewardState = (rewards: number, capacity: number, eff: number = 0): PillarState => {
+      if (eff > 60) return 'ACTIVE';
+      if (eff > 20 || rewards > capacity * 0.2) return 'ACCUMULATING';
       return 'MONITORING';
     };
 
@@ -107,11 +128,11 @@ const InteractiveQuantumPillars = memo(() => {
         description: 'Real-time token burning with quantum incineration to void address plus automated LP destruction.',
         color: 'red',
         gradient: 'from-red-500 to-orange-500',
-        value: burnRate,
+        value: burnDaily,
         maxValue: burnMaxCapacity,
         unit: 'ARK/day',
-        state: getBurnState(burnRate, burnMaxCapacity),
-        liveData: burnRate > 0 ? `${burnRate > 1000 ? (burnRate / 1000).toFixed(1) + 'K' : burnRate.toFixed(0)} ARK/DAY` : 'LOADING...',
+        state: getBurnState(burnDaily, burnMaxCapacity, efficiency?.burn || 0),
+        liveData: burnDaily > 0 ? `${burnDaily > 1000 ? (burnDaily / 1000).toFixed(1) + 'K' : burnDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'VIEW_BURN_HISTORY'
       },
       {
@@ -123,11 +144,11 @@ const InteractiveQuantumPillars = memo(() => {
         description: 'Autonomous redistribution to holders based on molecular weight with extended holding amplification.',
         color: 'blue',
         gradient: 'from-blue-500 to-cyan-500',
-        value: dailyReflections,
+        value: reflectionDaily,
         maxValue: reflectionMaxCapacity,
         unit: 'ARK/day',
-        state: getReflectionState(dailyReflections, reflectionMaxCapacity),
-        liveData: dailyReflections > 0 ? `${dailyReflections > 1000 ? (dailyReflections / 1000).toFixed(1) + 'K' : dailyReflections.toFixed(0)} ARK/DAY` : 'LOADING...',
+        state: getReflectionState(reflectionDaily, reflectionMaxCapacity, efficiency?.reflection || 0),
+        liveData: reflectionDaily > 0 ? `${reflectionDaily > 1000 ? (reflectionDaily / 1000).toFixed(1) + 'K' : reflectionDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'VIEW_REFLECTIONS'
       },
       {
@@ -142,7 +163,7 @@ const InteractiveQuantumPillars = memo(() => {
         value: currentLiquidity,
         maxValue: liquidityThreshold,
         unit: 'ARK',
-        state: getLiquidityState(currentLiquidity, liquidityThreshold),
+        state: getLiquidityState(currentLiquidity, liquidityThreshold, efficiency?.liquidity || 0),
         liveData: `${((currentLiquidity / liquidityThreshold) * 100).toFixed(1)}% TO SWAP`,
         actionText: 'VIEW_LIQUIDITY'
       },
@@ -155,18 +176,20 @@ const InteractiveQuantumPillars = memo(() => {
         description: 'Dedicated quantum vault rewards for temporal commitment with up to 8x multipliers.',
         color: 'green',
         gradient: 'from-green-500 to-teal-500',
-        value: dailyVaultRewards,
+        value: lockerDaily,
         maxValue: rewardMaxCapacity,
         unit: 'ARK/day',
-        state: getRewardState(dailyVaultRewards, rewardMaxCapacity),
-        liveData: dailyVaultRewards > 0 ? `${dailyVaultRewards > 1000 ? (dailyVaultRewards / 1000).toFixed(1) + 'K' : dailyVaultRewards.toFixed(0)} ARK/DAY` : 'LOADING...',
+        state: getRewardState(lockerDaily, rewardMaxCapacity, efficiency?.locker || 0),
+        liveData: lockerDaily > 0 ? `${lockerDaily > 1000 ? (lockerDaily / 1000).toFixed(1) + 'K' : lockerDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
         actionText: 'ENTER_VAULT'
       }
     ];
-  }, [tokenData, contractData, protocolStats]);
+  }, [feeMetrics, contractData, tokenData, protocolStats, realTimeUpdate]);
 
   const pillarsData = getPillarsData;
-  const loading = contractLoading || tokenLoading || lockerLoading;
+  
+  // Show loading state while fee data is being fetched
+  const loading = contractLoading || tokenLoading || lockerLoading || feeLoading;
 
   return (
     <section id="quantum-pillars" className="relative z-30 py-16 px-6 bg-gradient-to-b from-black/10 to-black/30">
