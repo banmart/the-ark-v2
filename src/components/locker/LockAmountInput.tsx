@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
+import { formatLockAmount, validateLockAmount, formatPercentageAmount } from '@/lib/utils';
 
 interface LockAmountInputProps {
   lockAmount: string;
@@ -23,6 +24,24 @@ const LockAmountInput = ({
 }: LockAmountInputProps) => {
   const amount = parseFloat(lockAmount || '0');
   const hasInsufficientBalance = amount > userArkBalance;
+  const validation = validateLockAmount(lockAmount);
+
+  const handleAmountChange = (value: string) => {
+    // Allow empty input
+    if (value === '') {
+      setLockAmount('');
+      return;
+    }
+    
+    // Format and validate the input
+    const formatted = formatLockAmount(value, 6);
+    setLockAmount(formatted);
+  };
+
+  const handlePercentageClick = (percentage: number) => {
+    const formattedAmount = formatPercentageAmount(userArkBalance, percentage);
+    setLockAmount(formattedAmount);
+  };
 
   return (
     <div>
@@ -36,8 +55,9 @@ const LockAmountInput = ({
         <input
           type="number"
           value={lockAmount}
-          onChange={(e) => setLockAmount(e.target.value)}
+          onChange={(e) => handleAmountChange(e.target.value)}
           placeholder="0.0"
+          step="0.000001"
           disabled={emergencyMode || contractPaused || isProcessing}
           className="w-full bg-black/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none disabled:opacity-50"
         />
@@ -46,28 +66,28 @@ const LockAmountInput = ({
       {/* Percentage selector buttons */}
       <div className="flex flex-wrap gap-2 mt-3">
         <button
-          onClick={() => setLockAmount((userArkBalance * 0.25).toString())}
+          onClick={() => handlePercentageClick(0.25)}
           disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
           className="flex-1 min-w-[64px] bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50 min-h-[44px]"
         >
           25%
         </button>
         <button
-          onClick={() => setLockAmount((userArkBalance * 0.5).toString())}
+          onClick={() => handlePercentageClick(0.5)}
           disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
           className="flex-1 min-w-[64px] bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50 min-h-[44px]"
         >
           50%
         </button>
         <button
-          onClick={() => setLockAmount((userArkBalance * 0.75).toString())}
+          onClick={() => handlePercentageClick(0.75)}
           disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
           className="flex-1 min-w-[64px] bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50 min-h-[44px]"
         >
           75%
         </button>
         <button
-          onClick={() => setLockAmount(userArkBalance.toString())}
+          onClick={() => handlePercentageClick(1.0)}
           disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
           className="flex-1 min-w-[64px] bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50 min-h-[44px]"
         >
@@ -75,7 +95,14 @@ const LockAmountInput = ({
         </button>
       </div>
       
-      {hasInsufficientBalance && lockAmount && (
+      {!validation.isValid && lockAmount && (
+        <div className="flex items-center text-red-400 text-sm mt-2">
+          <AlertTriangle className="w-4 h-4 mr-2" />
+          {validation.error}
+        </div>
+      )}
+      
+      {validation.isValid && hasInsufficientBalance && lockAmount && (
         <div className="flex items-center text-red-400 text-sm mt-2">
           <AlertTriangle className="w-4 h-4 mr-2" />
           Insufficient ARK balance
