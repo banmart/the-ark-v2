@@ -17,7 +17,7 @@ interface UserStatsSectionProps {
 }
 
 const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
-  const { userStats, claimRewards } = useLockerData();
+  const { userStats, claimRewards, userArkBalance } = useLockerData();
   const { protocolStats, totalProtocolWeight } = useLockerContractData();
   const [claimingRewards, setClaimingRewards] = useState(false);
 
@@ -31,6 +31,7 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
   };
 
   const displayRewards = isConnected ? userStats.pendingRewards : 12847;
+  const displayArkBalance = isConnected ? userArkBalance : 45000;
 
   const handleClaimRewards = async () => {
     if (!isConnected) return;
@@ -70,7 +71,7 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
       )}
 
       {/* Enhanced Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
         <div className="bg-black/20 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-all duration-300">
           <div className="flex items-center justify-between mb-3">
             <Lock className="w-8 h-8 text-blue-400" />
@@ -78,6 +79,19 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
               <div className="text-sm text-gray-400">System Total</div>
               <div className="text-xl font-bold text-blue-300">
                 {protocolStats.totalLockedTokens.toLocaleString()}
+              </div>
+              <div className="text-xs text-gray-500">ARK</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-black/20 backdrop-blur-sm border border-orange-500/20 rounded-xl p-6 hover:border-orange-500/40 transition-all duration-300">
+          <div className="flex items-center justify-between mb-3">
+            <Wallet className="w-8 h-8 text-orange-400" />
+            <div className="text-right">
+              <div className="text-sm text-gray-400">Available Balance</div>
+              <div className="text-xl font-bold text-orange-300">
+                {displayArkBalance.toLocaleString()}
               </div>
               <div className="text-xs text-gray-500">ARK</div>
             </div>
