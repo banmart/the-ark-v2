@@ -1,45 +1,55 @@
-
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Database, Activity, Shield, Zap } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
 import { useARKPriceData } from '../hooks/useARKPriceData';
 import { formatTokenAmount, formatPrice } from '../lib/utils';
-
 interface StatsSectionProps {
   contractData: any;
   contractLoading: boolean;
 }
-
 const StatsSection = ({
   contractData,
   contractLoading
 }: StatsSectionProps) => {
   const [statsPhase, setStatsPhase] = useState(0);
-  const { protocolStats } = useLockerData();
-  const { priceData, loading: priceLoading } = useARKPriceData();
-
+  const {
+    protocolStats
+  } = useLockerData();
+  const {
+    priceData,
+    loading: priceLoading
+  } = useARKPriceData();
   useEffect(() => {
     // Cinematic reveal sequence
-    const phases = [
-      { delay: 300, phase: 1 }, // System scan
-      { delay: 1000, phase: 2 }, // Matrix detected
-      { delay: 1800, phase: 3 } // Full activation
+    const phases = [{
+      delay: 300,
+      phase: 1
+    },
+    // System scan
+    {
+      delay: 1000,
+      phase: 2
+    },
+    // Matrix detected
+    {
+      delay: 1800,
+      phase: 3
+    } // Full activation
     ];
-
-    phases.forEach(({ delay, phase }) => {
+    phases.forEach(({
+      delay,
+      phase
+    }) => {
       setTimeout(() => setStatsPhase(phase), delay);
     });
   }, []);
-
   const formatLastUpdated = (date: Date) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
     if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
     return `${Math.floor(diffInSeconds / 3600)}h ago`;
   };
-
   const formatTVL = (tvl: number) => {
     if (tvl >= 1000000) {
       return `${(tvl / 1000000).toFixed(2)}M`;
@@ -48,11 +58,9 @@ const StatsSection = ({
     }
     return tvl.toFixed(2);
   };
-
   const formatNumber = (num: string | number) => {
     const numValue = typeof num === 'string' ? parseFloat(num.replace(/,/g, '')) : num;
     if (isNaN(numValue)) return '0';
-    
     if (numValue >= 1000000000) {
       return `${(numValue / 1000000000).toFixed(2)}B`;
     } else if (numValue >= 1000000) {
@@ -60,60 +68,31 @@ const StatsSection = ({
     } else if (numValue >= 1000) {
       return `${(numValue / 1000).toFixed(2)}K`;
     }
-    return numValue.toLocaleString('en-US', { 
-      minimumFractionDigits: 0, 
-      maximumFractionDigits: 2 
+    return numValue.toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
     });
   };
-
-  return (
-    <section id="stats" className="relative z-30 py-10 md:py-16 lg:py-20 px-4 md:px-6 bg-gradient-to-b from-black/10 to-black/30">
+  return <section id="stats" className="relative z-30 py-10 md:py-16 lg:py-20 px-4 md:px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
+        <div className="absolute inset-0" style={{
+        backgroundImage: `
               radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
               radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
               radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
               radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px)
             `,
-            backgroundSize: '100px 100px'
-          }}
-        />
+        backgroundSize: '100px 100px'
+      }} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* System Header */}
-        <div className={`text-center mb-16 transition-all duration-1000 ${
-          statsPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
-          <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
-            <Database className="w-3 h-3 animate-pulse" />
-            <h3>[ARK STATISTICS MATRIX]</h3>
-            <Database className="w-3 h-3 animate-pulse" />
-          </div>
-          
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6 text-cyan-400 font-mono">
-            <span className="animate-[glitch_4s_ease-in-out_infinite]">$ARK</span>{' '}
-            <span className="animate-[glitch_4s_ease-in-out_0.5s_infinite]">BY</span>{' '}
-            <span className="animate-[glitch_4s_ease-in-out_1s_infinite]">THE</span>{' '}
-            <span className="animate-[glitch_4s_ease-in-out_1.5s_infinite]">NUMBERS</span>
-          </h2>
-
-          {contractData.lastUpdated && (
-            <div className="flex items-center justify-center gap-2 text-sm text-cyan-400/60 font-mono">
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              <span>[LAST_SYNC: {formatLastUpdated(contractData.lastUpdated)}]</span>
-            </div>
-          )}
-        </div>
+        
 
         {/* Primary Stats Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-12 transition-all duration-1000 delay-500 ${
-          statsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-12 transition-all duration-1000 delay-500 ${statsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {/* Market Cap */}
           <div className="relative bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-3 md:p-6 hover:scale-105 hover:border-cyan-500/60 transition-all duration-500 group overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
@@ -126,11 +105,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-cyan-400 font-mono">💰 MARKET CAP</h3>
               <p className="text-sm md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                ) : (
-                  `$${formatNumber(contractData.marketCap)}`
-                )}
+                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `$${formatNumber(contractData.marketCap)}`}
               </p>
               <p className="text-xs md:text-sm text-gray-400 font-mono">[REAL TIME VALUATION]</p>
             </div>
@@ -153,19 +128,11 @@ const StatsSection = ({
               <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-blue-400 font-mono">📈 PRICE FEED</h3>
               <div className="flex items-baseline gap-2 mb-2">
                 <p className="text-sm md:text-xl lg:text-2xl font-black text-white font-mono">
-                  {priceLoading ? (
-                    <span className="animate-pulse">[SCANNING...]</span>
-                  ) : (
-                    `$${formatPrice(priceData?.price || 0)}`
-                  )}
+                  {priceLoading ? <span className="animate-pulse">[SCANNING...]</span> : `$${formatPrice(priceData?.price || 0)}`}
                 </p>
-                {!priceLoading && priceData?.priceChange24h && (
-                  <span className={`text-xs md:text-sm font-bold font-mono ${
-                    priceData.priceChange24h > 0 ? 'text-green-400' : 'text-red-400'
-                  }`}>
+                {!priceLoading && priceData?.priceChange24h && <span className={`text-xs md:text-sm font-bold font-mono ${priceData.priceChange24h > 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {priceData.priceChange24h > 0 ? '+' : ''}{priceData.priceChange24h.toFixed(2)}%
-                  </span>
-                )}
+                  </span>}
               </div>
               <p className="text-xs md:text-sm text-gray-400 font-mono">[{priceData?.baseCurrency || 'USD'} PAIR]</p>
             </div>
@@ -187,11 +154,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 md:mb-4 text-purple-400 font-mono">🏦 TVL (LOCKER)</h3>
               <p className="text-xl md:text-2xl lg:text-3xl font-black text-white mb-2 font-mono">
-                {protocolStats.totalLockedTokens ? (
-                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
-                ) : (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                )}
+                {protocolStats.totalLockedTokens ? `${formatTVL(protocolStats.totalLockedTokens)} ARK` : <span className="animate-pulse">[SCANNING...]</span>}
               </p>
               <p className="text-sm text-gray-400 font-mono">[LOCKED VALUE]</p>
             </div>
@@ -203,9 +166,7 @@ const StatsSection = ({
         </div>
 
         {/* Secondary Stats Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-12 md:mb-16 transition-all duration-1000 delay-1000 ${
-          statsPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-12 md:mb-16 transition-all duration-1000 delay-1000 ${statsPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {/* Total Supply */}
           <div className="relative bg-black/40 backdrop-blur-xl border border-green-500/30 rounded-xl p-4 md:p-6 hover:scale-105 hover:border-green-500/60 transition-all duration-500 group overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
@@ -213,11 +174,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-green-400 font-mono">💎 TOTAL SUPPLY</h3>
               <p className="text-lg md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                ) : (
-                  `${formatNumber(contractData.totalSupply)} ARK`
-                )}
+                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${formatNumber(contractData.totalSupply)} ARK`}
               </p>
               <p className="text-sm text-gray-400 font-mono">[CONTRACT SOURCE]</p>
             </div>
@@ -234,11 +191,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-yellow-400 font-mono">🔄 CIRCULATING</h3>
               <p className="text-lg md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                ) : (
-                  `${formatNumber(contractData.circulatingSupply)} ARK`
-                )}
+                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${formatNumber(contractData.circulatingSupply)} ARK`}
               </p>
               <p className="text-sm text-gray-400 font-mono">[MARKET AVAILABLE]</p>
             </div>
@@ -255,11 +208,7 @@ const StatsSection = ({
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-red-400 font-mono">🔥 BURNED</h3>
               <p className="text-lg md:text-xl lg:text-2xl font-black text-white mb-2 font-mono">
-                {contractLoading ? (
-                  <span className="animate-pulse">[SCANNING...]</span>
-                ) : (
-                  `${formatNumber(contractData.burnedTokens)} ARK`
-                )}
+                {contractLoading ? <span className="animate-pulse">[SCANNING...]</span> : `${formatNumber(contractData.burnedTokens)} ARK`}
               </p>
               <p className="text-sm text-gray-400 font-mono">[VOID ADDRESS]</p>
             </div>
@@ -285,8 +234,6 @@ const StatsSection = ({
           50% { transform: translateX(0); }
         }
       `}</style>
-    </section>
-  );
+    </section>;
 };
-
 export default StatsSection;
