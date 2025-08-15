@@ -12,6 +12,7 @@ import ContractAddressSection from '../ContractAddressSection';
 import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
 import InteractiveQuantumPillars from '../InteractiveQuantumPillars';
+import SimplifiedFeesSection from '../fees/SimplifiedFeesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
 import ProphecySection from '../ProphecySection';
@@ -103,6 +104,9 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
       {/* Interactive Quantum Pillars - Enhanced with Live Data */}
       <InteractiveQuantumPillars />
+
+      {/* Simplified Fees Section - Live Fee Analytics */}
+      <SimplifiedFeesSection />
 
       {/* Render children if provided */}
       {children}
