@@ -31,9 +31,7 @@ const EnhancedFeeVisualizationsSection = () => {
     );
   }
 
-  if (!contractData || !reflectionData || !protocolStats) {
-    return null;
-  }
+  // Show the section even if some data is missing - use fallbacks
 
   const formatAmount = (amount: number) => {
     if (amount >= 1e9) return `${(amount / 1e9).toFixed(2)}B`;
@@ -111,9 +109,8 @@ const EnhancedFeeVisualizationsSection = () => {
   ];
 
   return (
-    <section className="relative py-20 px-6 overflow-hidden bg-black/95">
-      {/* Section Background with dark gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-gray-900/90 to-black/80 pointer-events-none" />
+    <section className="relative py-20 px-6 overflow-hidden">
+      {/* Transparent background - shows website background */}
       
       <div className="max-w-7xl mx-auto relative">
         {/* Section Header */}
@@ -154,18 +151,18 @@ const EnhancedFeeVisualizationsSection = () => {
             >
               <Card className={`
                 relative overflow-hidden h-96 backdrop-blur-sm
-                bg-gradient-to-br from-gray-900/80 via-gray-800/50 to-gray-900/80
-                border-2 border-gray-700/50
+                bg-black/20 
+                border-2 border-cyan-500/30
                 transition-all duration-500
-                hover:shadow-2xl hover:shadow-blue-500/20
-                group-hover:border-blue-400/60
+                hover:shadow-2xl hover:shadow-cyan-500/20
+                group-hover:border-cyan-400/60
               `}>
                 <CardContent className="p-0 h-full flex flex-col relative">
                   {/* Card Header with Real Data */}
                   <div className="p-6 pb-4 relative z-10">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-black/20 backdrop-blur-sm border border-gray-600/30">
+                        <div className="p-2 rounded-lg bg-black/30 backdrop-blur-sm border border-cyan-500/30">
                           {card.icon}
                         </div>
                         <h3 className="text-xl font-bold text-white">{card.title}</h3>
@@ -179,14 +176,14 @@ const EnhancedFeeVisualizationsSection = () => {
                     </div>
 
                     {/* Prominent Real Data Display */}
-                    <div className="text-center p-4 rounded-lg bg-black/30 backdrop-blur-sm border border-gray-600/20">
+                    <div className="text-center p-4 rounded-lg bg-black/40 backdrop-blur-sm border border-cyan-500/30">
                       <div className="text-3xl font-bold text-white mb-1">
                         {formatAmount(card.realData.amount)}
                       </div>
                       <div className="text-sm font-medium text-gray-200 mb-1">
                         {card.realData.label}
                       </div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-muted-foreground">
                         {card.realData.description}
                       </div>
                     </div>
