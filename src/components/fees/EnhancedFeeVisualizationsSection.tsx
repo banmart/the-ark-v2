@@ -80,7 +80,7 @@ const EnhancedFeeVisualizationsSection = () => {
       type: 'liquidity'
     },
     {
-      title: 'Locker Rewards',
+      title: '2% Locker Rewards',
       icon: <Vault className="h-8 w-8 text-secondary" />,
       realData: {
         amount: totalLocked,
