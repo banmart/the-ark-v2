@@ -108,7 +108,7 @@ const EnhancedFeeVisualizationsSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-            Live Fee Protocol Visualizations
+            Quantum Fee Distribution - 9% Maximum
           </h2>
           <p className="text-gray-300 text-xl max-w-3xl mx-auto leading-relaxed">
             Real-time blockchain fee mechanics with immersive visualizations
