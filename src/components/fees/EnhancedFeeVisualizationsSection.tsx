@@ -67,7 +67,7 @@ const EnhancedFeeVisualizationsSection = () => {
       type: 'reflection'
     },
     {
-      title: 'Liquidity Engine',
+      title: '3% Liquidity Engine',
       icon: <Waves className="h-8 w-8 text-accent" />,
       realData: {
         amount: liquidityAccumulation,
