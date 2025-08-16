@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useFeeMetrics } from '../../hooks/useFeeMetrics';
 import { useARKTokenData } from '../../hooks/useARKTokenData';
 import { useContractData } from '../../hooks/useContractData';
 import { useReflectionData } from '../../hooks/useReflectionData';
@@ -14,13 +13,11 @@ import LockerVisualization from './LockerVisualization';
 
 const EnhancedFeeVisualizationsSection = () => {
   const { data: arkData } = useARKTokenData();
-  const volume24h = typeof arkData?.volume24h === 'number' ? arkData.volume24h : 0;
-  const { feeMetrics, loading, error } = useFeeMetrics(volume24h);
   const { data: contractData, loading: contractLoading } = useContractData();
   const { data: reflectionData, loading: reflectionLoading } = useReflectionData();
   const { protocolStats, loading: lockerLoading } = useLockerData();
 
-  if (loading || contractLoading || reflectionLoading || lockerLoading) {
+  if (contractLoading || reflectionLoading || lockerLoading) {
     return (
       <section className="relative py-16 px-6">
         <div className="max-w-7xl mx-auto">
@@ -34,7 +31,7 @@ const EnhancedFeeVisualizationsSection = () => {
     );
   }
 
-  if (error || !feeMetrics) {
+  if (!contractData || !reflectionData || !protocolStats) {
     return null;
   }
 
@@ -46,10 +43,17 @@ const EnhancedFeeVisualizationsSection = () => {
   };
 
   // Get real blockchain data for each fee type
-  const burnedTokens = parseFloat(contractData?.burnedTokens || '0');
-  const reflectionPool = parseFloat(reflectionData?.totalReflectionPool || '0');
-  const liquidityAccumulation = parseFloat(contractData?.liquidityData.currentAccumulation || '0');
+  const burnedTokens = parseFloat(contractData?.burnedTokens?.toString() || '0');
+  const reflectionPool = parseFloat(reflectionData?.totalReflectionPool?.toString() || '0');
+  const liquidityAccumulation = parseFloat(contractData?.liquidityData?.currentAccumulation?.toString() || '0');
   const totalLocked = parseFloat(protocolStats?.totalLockedTokens?.toString() || '0');
+  
+  // Calculate simple efficiency metrics based on relative performance
+  const totalSupply = parseFloat(contractData?.totalSupply?.toString() || '1000000000');
+  const burnEfficiency = Math.min(100, (burnedTokens / (totalSupply * 0.05)) * 100); // 5% burn target
+  const reflectionEfficiency = Math.min(100, (reflectionPool / (totalSupply * 0.02)) * 100); // 2% reflection target
+  const liquidityEfficiency = Math.min(100, (liquidityAccumulation / (totalSupply * 0.01)) * 100); // 1% liquidity target
+  const lockerEfficiency = Math.min(100, (totalLocked / (totalSupply * 0.10)) * 100); // 10% locked target
 
   const feeCards = [
     {
@@ -60,7 +64,7 @@ const EnhancedFeeVisualizationsSection = () => {
         label: 'Total Burned',
         description: 'Tokens permanently removed from circulation'
       },
-      efficiency: feeMetrics?.efficiency.burn || 0,
+      efficiency: burnEfficiency / 100,
       gradient: 'from-destructive/20 via-destructive/10 to-transparent',
       border: 'border-destructive/30',
       type: 'burn'
@@ -73,7 +77,7 @@ const EnhancedFeeVisualizationsSection = () => {
         label: 'Active Pool',
         description: 'Reflections ready for distribution'
       },
-      efficiency: feeMetrics?.efficiency.reflection || 0,
+      efficiency: reflectionEfficiency / 100,
       gradient: 'from-primary/20 via-primary/10 to-transparent',
       border: 'border-primary/30',
       type: 'reflection'
@@ -86,7 +90,7 @@ const EnhancedFeeVisualizationsSection = () => {
         label: 'Accumulation',
         description: 'Tokens collected for next liquidity swap'
       },
-      efficiency: feeMetrics?.efficiency.liquidity || 0,
+      efficiency: liquidityEfficiency / 100,
       gradient: 'from-accent/20 via-accent/10 to-transparent',
       border: 'border-accent/30',
       type: 'liquidity'
@@ -99,7 +103,7 @@ const EnhancedFeeVisualizationsSection = () => {
         label: 'Total Locked',
         description: 'Tokens secured in locker protocol'
       },
-      efficiency: feeMetrics?.efficiency.locker || 0,
+      efficiency: lockerEfficiency / 100,
       gradient: 'from-secondary/20 via-secondary/10 to-transparent',
       border: 'border-secondary/30',
       type: 'locker'
