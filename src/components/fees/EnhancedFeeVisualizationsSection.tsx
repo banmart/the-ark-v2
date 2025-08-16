@@ -17,7 +17,21 @@ const EnhancedFeeVisualizationsSection = () => {
   const { data: reflectionData, loading: reflectionLoading } = useReflectionData();
   const { protocolStats, loading: lockerLoading } = useLockerData();
 
-  // Always show the section with fallback data
+  if (contractLoading || reflectionLoading || lockerLoading) {
+    return (
+      <section className="relative py-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-96 bg-muted/20 rounded-2xl" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show the section even if some data is missing - use fallbacks
 
   const formatAmount = (amount: number) => {
     if (amount >= 1e9) return `${(amount / 1e9).toFixed(2)}B`;
@@ -41,7 +55,7 @@ const EnhancedFeeVisualizationsSection = () => {
 
   const feeCards = [
     {
-      title: '2% Burn Protocol',
+      title: 'Burn Protocol',
       icon: <Flame className="h-8 w-8 text-destructive" />,
       realData: {
         amount: burnedTokens,
@@ -54,7 +68,7 @@ const EnhancedFeeVisualizationsSection = () => {
       type: 'burn'
     },
     {
-      title: '2% Reflection Matrix',
+      title: 'Reflection Matrix',
       icon: <Grid3X3 className="h-8 w-8 text-primary" />,
       realData: {
         amount: reflectionPool,
@@ -67,7 +81,7 @@ const EnhancedFeeVisualizationsSection = () => {
       type: 'reflection'
     },
     {
-      title: '3% Liquidity Engine',
+      title: 'Liquidity Engine',
       icon: <Waves className="h-8 w-8 text-accent" />,
       realData: {
         amount: liquidityAccumulation,
@@ -80,7 +94,7 @@ const EnhancedFeeVisualizationsSection = () => {
       type: 'liquidity'
     },
     {
-      title: '2% Locker Rewards',
+      title: 'Locker Rewards',
       icon: <Vault className="h-8 w-8 text-secondary" />,
       realData: {
         amount: totalLocked,
@@ -108,7 +122,7 @@ const EnhancedFeeVisualizationsSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-            Live Fee Protocol Visualizations
+            Quantum Fee Distribution - 9%
           </h2>
           <p className="text-gray-300 text-xl max-w-3xl mx-auto leading-relaxed">
             Real-time blockchain fee mechanics with immersive visualizations
