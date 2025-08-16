@@ -6,6 +6,8 @@ import FeeCard from './FeeCard';
 import FeeCalculator from './FeeCalculator';
 import AutoLiquidityMeter from '../AutoLiquidityMeter';
 import ReflectionMatrixMeter from './ReflectionMatrixMeter';
+import BurnProtocolVisualization from './BurnProtocolVisualization';
+import LockerRewardsVisualization from './LockerRewardsVisualization';
 import { motion } from 'framer-motion';
 
 const SimplifiedFeesSection = () => {
@@ -111,88 +113,88 @@ const SimplifiedFeesSection = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
         >
           {feeTypes.map((fee, index) => {
-            // Enhanced liquidity card with AutoLiquidityMeter
-            if (fee.type === 'liquidity') {
+            const efficiency = feeMetrics.efficiency[fee.type as keyof typeof feeMetrics.efficiency] || 0;
+            
+            // Burn Protocol Card with flame visualization
+            if (fee.type === 'burn') {
               return (
-                <motion.div
+                <FeeCard 
                   key={fee.type}
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: index * 0.1,
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  className="group"
+                  {...fee}
+                  efficiency={efficiency}
+                  animationDelay={index * 0.1}
                 >
-                  <div className="relative h-full">
-                    <FeeCard 
-                      {...fee}
-                      efficiency={feeMetrics.efficiency[fee.type as keyof typeof feeMetrics.efficiency] || 0}
-                      animationDelay={index * 0.1}
-                    />
-                    
-                    {/* Liquidity Engine Meter */}
-                    {contractData && (
-                      <div className="mt-4">
-                        <AutoLiquidityMeter
-                          currentAccumulation={parseFloat(contractData.liquidityData.currentAccumulation) || 0}
-                          threshold={parseFloat(contractData.swapSettings.threshold) || 1000000}
-                          loading={contractLoading}
-                          isThresholdReached={contractData.liquidityData.isThresholdReached || false}
-                          isPendingSwap={contractData.liquidityData.isPendingSwap || false}
-                          lastSwapTimestamp={contractData.liquidityData.lastSwapTimestamp || 0}
-                          estimatedNextSwap={contractData.liquidityData.estimatedNextSwap || null}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
+                  <BurnProtocolVisualization
+                    dailyBurn={fee.data.daily}
+                    totalBurned={fee.data.total}
+                    efficiency={efficiency}
+                  />
+                </FeeCard>
               );
             }
 
             // Enhanced reflection card with ReflectionMatrixMeter
             if (fee.type === 'reflection') {
               return (
-                <motion.div
+                <FeeCard 
                   key={fee.type}
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: index * 0.1,
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  className="group"
+                  {...fee}
+                  efficiency={efficiency}
+                  animationDelay={index * 0.1}
                 >
-                  <div className="relative h-full">
-                    <FeeCard 
-                      {...fee}
-                      efficiency={feeMetrics.efficiency[fee.type as keyof typeof feeMetrics.efficiency] || 0}
-                      animationDelay={index * 0.1}
+                  <ReflectionMatrixMeter />
+                </FeeCard>
+              );
+            }
+
+            // Enhanced liquidity card with AutoLiquidityMeter
+            if (fee.type === 'liquidity') {
+              return (
+                <FeeCard 
+                  key={fee.type}
+                  {...fee}
+                  efficiency={efficiency}
+                  animationDelay={index * 0.1}
+                >
+                  {contractData && (
+                    <AutoLiquidityMeter
+                      currentAccumulation={parseFloat(contractData.liquidityData.currentAccumulation) || 0}
+                      threshold={parseFloat(contractData.swapSettings.threshold) || 1000000}
+                      loading={contractLoading}
+                      isThresholdReached={contractData.liquidityData.isThresholdReached || false}
+                      isPendingSwap={contractData.liquidityData.isPendingSwap || false}
+                      lastSwapTimestamp={contractData.liquidityData.lastSwapTimestamp || 0}
+                      estimatedNextSwap={contractData.liquidityData.estimatedNextSwap || null}
                     />
-                    
-                    {/* Reflection Matrix Meter */}
-                    <div className="mt-4">
-                      <ReflectionMatrixMeter />
-                    </div>
-                  </div>
-                </motion.div>
+                  )}
+                </FeeCard>
+              );
+            }
+
+            // Locker Rewards Card with vault visualization
+            if (fee.type === 'locker') {
+              return (
+                <FeeCard 
+                  key={fee.type}
+                  {...fee}
+                  efficiency={efficiency}
+                  animationDelay={index * 0.1}
+                >
+                  <LockerRewardsVisualization
+                    dailyRewards={fee.data.daily}
+                    totalLocked={fee.data.total}
+                    efficiency={efficiency}
+                  />
+                </FeeCard>
               );
             }
             
-            // Regular fee cards for other types
+            // Fallback for any other fee types
             return (
               <FeeCard 
                 key={fee.type}
                 {...fee}
-                efficiency={feeMetrics.efficiency[fee.type as keyof typeof feeMetrics.efficiency] || 0}
+                efficiency={efficiency}
                 animationDelay={index * 0.1}
               />
             );

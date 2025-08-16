@@ -18,6 +18,7 @@ interface FeeCardProps {
   borderColor: string;
   icon: string;
   animationDelay?: number;
+  children?: React.ReactNode;
 }
 
 const FeeCard = ({ 
@@ -27,7 +28,8 @@ const FeeCard = ({
   color, 
   borderColor, 
   icon, 
-  animationDelay = 0 
+  animationDelay = 0,
+  children 
 }: FeeCardProps) => {
   const formatAmount = (amount: number) => {
     if (amount >= 1000000) {
@@ -103,6 +105,13 @@ const FeeCard = ({
         <div className="text-xs text-muted-foreground">
           <span>Rate: {(data.rate * 100).toFixed(2)}% per transaction</span>
         </div>
+
+        {/* Visualization Content */}
+        {children && (
+          <div className="mt-4">
+            {children}
+          </div>
+        )}
 
         {/* Hover Effect Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg pointer-events-none" />
