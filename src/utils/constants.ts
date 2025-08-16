@@ -165,8 +165,6 @@ export const ARK_TOKEN_ABI = [
   'function owner() view returns (address)',
   
   // Events
-  'event Transfer(address indexed from, address indexed to, uint256 value)',
-  'event Approval(address indexed owner, address indexed spender, uint256 value)',
   'event SwapThresholdUpdated(uint256 amount)',
   'event WalletExcludeFromFee(address indexed wallet, bool status)',
   'event LiquidityPairUpdated(address indexed pair, bool status)',

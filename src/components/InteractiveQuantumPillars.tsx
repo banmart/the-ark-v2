@@ -7,8 +7,6 @@ import { useARKTokenData } from '../hooks/useARKTokenData';
 import { useLockerData } from '../hooks/useLockerData';
 import { useIsMobile } from '../hooks/use-mobile';
 import { useFeeMetrics } from '../hooks/useFeeMetrics';
-import { useBurnAnalytics } from '../hooks/useBurnAnalytics';
-import { useNavigate } from 'react-router-dom';
 
 type PillarState = 'MONITORING' | 'ACTIVE' | 'THRESHOLD_REACHED' | 'PROCESSING' | 'ACCUMULATING';
 
@@ -27,20 +25,17 @@ interface PillarData {
   state: PillarState;
   liveData: string;
   actionText: string;
-  onClick?: () => void;
 }
 
 const InteractiveQuantumPillars = memo(() => {
   const [pillarsLoaded, setPillarsLoaded] = useState(false);
   const [realTimeUpdate, setRealTimeUpdate] = useState(0);
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
   
   const { data: contractData, loading: contractLoading } = useContractData();
   const { data: tokenData, loading: tokenLoading } = useARKTokenData();
   const { protocolStats, userStats, loading: lockerLoading } = useLockerData();
   const { feeMetrics, loading: feeLoading } = useFeeMetrics(tokenData?.volume24h ? Number(tokenData.volume24h) : undefined);
-  const { burnMetrics } = useBurnAnalytics(typeof tokenData?.volume24h === 'number' ? tokenData.volume24h : 0);
 
   useEffect(() => {
     // Animate pillars on load
@@ -138,8 +133,7 @@ const InteractiveQuantumPillars = memo(() => {
         unit: 'ARK/day',
         state: getBurnState(burnDaily, burnMaxCapacity, efficiency?.burn || 0),
         liveData: burnDaily > 0 ? `${burnDaily > 1000 ? (burnDaily / 1000).toFixed(1) + 'K' : burnDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
-        actionText: 'VIEW_BURN_ANALYTICS',
-        onClick: () => navigate('/burn-analytics')
+        actionText: 'VIEW_BURN_HISTORY'
       },
       {
         id: 1,
@@ -242,9 +236,8 @@ const InteractiveQuantumPillars = memo(() => {
             return (
                 <Card 
                 key={pillar.id} 
-                className={`relative bg-black/60 backdrop-blur-xl border-2 rounded-xl overflow-hidden group ${isMobile ? 'active:scale-[0.98]' : 'hover:scale-[1.02]'} transition-all duration-500 ${pillar.onClick ? 'cursor-pointer' : ''} will-change-transform border-${pillar.color}-500/30 ${isMobile ? 'active:border-' : 'hover:border-'}${pillar.color}-500/60`}
+                className={`relative bg-black/60 backdrop-blur-xl border-2 rounded-xl overflow-hidden group ${isMobile ? 'active:scale-[0.98]' : 'hover:scale-[1.02]'} transition-all duration-500 cursor-pointer will-change-transform border-${pillar.color}-500/30 ${isMobile ? 'active:border-' : 'hover:border-'}${pillar.color}-500/60`}
                 style={{ contain: 'layout style paint' }}
-                onClick={pillar.onClick}
               >
                 <CardContent className="p-6">
                   {/* Status Header */}

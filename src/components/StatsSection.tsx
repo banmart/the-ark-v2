@@ -73,7 +73,19 @@ const StatsSection = ({
       maximumFractionDigits: 2
     });
   };
-  return <section id="stats" className="relative z-30 py-10 md:py-16 lg:py-20 px-4 md:px-6">{/* Transparent background - shows website background */}
+  return <section id="stats" className="relative z-30 py-10 md:py-16 lg:py-20 px-4 md:px-6 bg-gradient-to-b from-black/10 to-black/30">
+      {/* Quantum Field Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+        backgroundImage: `
+              radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
+              radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
+              radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
+              radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px)
+            `,
+        backgroundSize: '100px 100px'
+      }} />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* System Header */}
@@ -91,7 +103,11 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                ${formatNumber(contractData?.marketCap || '0')}
+                {contractLoading ? (
+                  <span className="animate-pulse">$---.--M</span>
+                ) : (
+                  `$${formatNumber(contractData.marketCap)}`
+                )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Based on current price & supply
@@ -110,7 +126,11 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                ${formatPrice(priceData?.price || 0)}
+                {priceLoading ? (
+                  <span className="animate-pulse">$--.----</span>
+                ) : (
+                  `$${formatPrice(priceData?.price || 0)}`
+                )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Real-time market price
@@ -129,7 +149,11 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {formatTVL(protocolStats.totalLockedTokens || 0)} ARK
+                {protocolStats.totalLockedTokens ? (
+                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
+                ) : (
+                  <span className="animate-pulse">$---.--M</span>
+                )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Total Value Locked
@@ -148,7 +172,11 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {formatNumber(contractData?.totalSupply || '0')}
+                {contractLoading ? (
+                  <span className="animate-pulse">---.--B</span>
+                ) : (
+                  formatNumber(contractData.totalSupply)
+                )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Maximum token supply
@@ -167,7 +195,11 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {formatNumber(contractData?.circulatingSupply || '0')}
+                {contractLoading ? (
+                  <span className="animate-pulse">---.--B</span>
+                ) : (
+                  formatNumber(contractData.circulatingSupply)
+                )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Tokens in active circulation
@@ -186,7 +218,11 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {formatNumber(contractData?.burnedTokens || '0')}
+                {contractLoading ? (
+                  <span className="animate-pulse">---.--M</span>
+                ) : (
+                  formatNumber(contractData.burnedTokens)
+                )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Tokens permanently removed
