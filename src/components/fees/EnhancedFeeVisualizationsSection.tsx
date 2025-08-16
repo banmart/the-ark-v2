@@ -41,7 +41,7 @@ const EnhancedFeeVisualizationsSection = () => {
 
   const feeCards = [
     {
-      title: 'Burn Protocol',
+      title: '2% Burn Protocol',
       icon: <Flame className="h-8 w-8 text-destructive" />,
       realData: {
         amount: burnedTokens,
