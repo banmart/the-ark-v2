@@ -54,7 +54,7 @@ const EnhancedFeeVisualizationsSection = () => {
       type: 'burn'
     },
     {
-      title: 'Reflection Matrix',
+      title: '2% Reflection Matrix',
       icon: <Grid3X3 className="h-8 w-8 text-primary" />,
       realData: {
         amount: reflectionPool,
