@@ -5,6 +5,7 @@ import { useContractData } from '../../hooks/useContractData';
 import FeeCard from './FeeCard';
 import FeeCalculator from './FeeCalculator';
 import AutoLiquidityMeter from '../AutoLiquidityMeter';
+import ReflectionMatrixMeter from './ReflectionMatrixMeter';
 import { motion } from 'framer-motion';
 
 const SimplifiedFeesSection = () => {
@@ -148,6 +149,39 @@ const SimplifiedFeesSection = () => {
                         />
                       </div>
                     )}
+                  </div>
+                </motion.div>
+              );
+            }
+
+            // Enhanced reflection card with ReflectionMatrixMeter
+            if (fee.type === 'reflection') {
+              return (
+                <motion.div
+                  key={fee.type}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: index * 0.1,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  className="group"
+                >
+                  <div className="relative h-full">
+                    <FeeCard 
+                      {...fee}
+                      efficiency={feeMetrics.efficiency[fee.type as keyof typeof feeMetrics.efficiency] || 0}
+                      animationDelay={index * 0.1}
+                    />
+                    
+                    {/* Reflection Matrix Meter */}
+                    <div className="mt-4">
+                      <ReflectionMatrixMeter />
+                    </div>
                   </div>
                 </motion.div>
               );
