@@ -17,21 +17,7 @@ const EnhancedFeeVisualizationsSection = () => {
   const { data: reflectionData, loading: reflectionLoading } = useReflectionData();
   const { protocolStats, loading: lockerLoading } = useLockerData();
 
-  if (contractLoading || reflectionLoading || lockerLoading) {
-    return (
-      <section className="relative py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-pulse">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-96 bg-muted/20 rounded-2xl" />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Show the section even if some data is missing - use fallbacks
+  // Always show the section with fallback data
 
   const formatAmount = (amount: number) => {
     if (amount >= 1e9) return `${(amount / 1e9).toFixed(2)}B`;

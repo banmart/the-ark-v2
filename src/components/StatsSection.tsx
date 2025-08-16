@@ -91,11 +91,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">$---.--M</span>
-                ) : (
-                  `$${formatNumber(contractData?.marketCap || '0')}`
-                )}
+                ${formatNumber(contractData?.marketCap || '0')}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Based on current price & supply
@@ -114,11 +110,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {priceLoading ? (
-                  <span className="animate-pulse">$--.----</span>
-                ) : (
-                  `$${formatPrice(priceData?.price || 0)}`
-                )}
+                ${formatPrice(priceData?.price || 0)}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Real-time market price
@@ -137,11 +129,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {protocolStats.totalLockedTokens ? (
-                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
-                ) : (
-                  <span className="animate-pulse">$---.--M</span>
-                )}
+                {formatTVL(protocolStats.totalLockedTokens || 0)} ARK
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Total Value Locked
@@ -160,11 +148,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">---.--B</span>
-                ) : (
-                  formatNumber(contractData?.totalSupply || '0')
-                )}
+                {formatNumber(contractData?.totalSupply || '0')}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Maximum token supply
@@ -183,11 +167,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">---.--B</span>
-                ) : (
-                  formatNumber(contractData?.circulatingSupply || '0')
-                )}
+                {formatNumber(contractData?.circulatingSupply || '0')}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Tokens in active circulation
@@ -206,11 +186,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">---.--M</span>
-                ) : (
-                  formatNumber(contractData?.burnedTokens || '0')
-                )}
+                {formatNumber(contractData?.burnedTokens || '0')}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Tokens permanently removed
