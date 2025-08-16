@@ -3,26 +3,30 @@ import { motion } from 'framer-motion';
 import { useFeeMetrics } from '../../hooks/useFeeMetrics';
 import { useARKTokenData } from '../../hooks/useARKTokenData';
 import { useContractData } from '../../hooks/useContractData';
+import { useReflectionData } from '../../hooks/useReflectionData';
+import { useLockerData } from '../../hooks/useLockerData';
 import { Card, CardContent } from '../ui/card';
-import { Flame, Sparkles, Waves, Vault } from 'lucide-react';
-import BurnProtocolVisualization from './BurnProtocolVisualization';
-import LockerRewardsVisualization from './LockerRewardsVisualization';
-import ReflectionMatrixMeter from './ReflectionMatrixMeter';
-import AutoLiquidityMeter from '../AutoLiquidityMeter';
+import { Flame, Grid3X3, Waves, Vault } from 'lucide-react';
+import BurnVisualization from './BurnVisualization';
+import ReflectionVisualization from './ReflectionVisualization';
+import LiquidityVisualization from './LiquidityVisualization';
+import LockerVisualization from './LockerVisualization';
 
 const EnhancedFeeVisualizationsSection = () => {
   const { data: arkData } = useARKTokenData();
   const volume24h = typeof arkData?.volume24h === 'number' ? arkData.volume24h : 0;
   const { feeMetrics, loading, error } = useFeeMetrics(volume24h);
   const { data: contractData, loading: contractLoading } = useContractData();
+  const { data: reflectionData, loading: reflectionLoading } = useReflectionData();
+  const { protocolStats, loading: lockerLoading } = useLockerData();
 
-  if (loading || contractLoading) {
+  if (loading || contractLoading || reflectionLoading || lockerLoading) {
     return (
       <section className="relative py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-pulse">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-80 bg-muted/20 rounded-2xl" />
+              <div key={i} className="h-96 bg-muted/20 rounded-2xl" />
             ))}
           </div>
         </div>
@@ -41,68 +45,64 @@ const EnhancedFeeVisualizationsSection = () => {
     return amount.toFixed(2);
   };
 
+  // Get real blockchain data for each fee type
+  const burnedTokens = parseFloat(contractData?.burnedTokens || '0');
+  const reflectionPool = parseFloat(reflectionData?.totalReflectionPool || '0');
+  const liquidityAccumulation = parseFloat(contractData?.liquidityData.currentAccumulation || '0');
+  const totalLocked = parseFloat(protocolStats?.totalLockedTokens?.toString() || '0');
+
   const feeCards = [
     {
       title: 'Burn Protocol',
       icon: <Flame className="h-8 w-8 text-destructive" />,
-      daily: feeMetrics.feesCollected.burn.dailyFees,
-      total: feeMetrics.feesCollected.burn.totalCollected,
-      efficiency: feeMetrics.efficiency.burn || 0,
+      realData: {
+        amount: burnedTokens,
+        label: 'Total Burned',
+        description: 'Tokens permanently removed from circulation'
+      },
+      efficiency: feeMetrics?.efficiency.burn || 0,
       gradient: 'from-destructive/20 via-destructive/10 to-transparent',
       border: 'border-destructive/30',
-      visualization: (
-        <BurnProtocolVisualization
-          dailyBurn={feeMetrics.feesCollected.burn.dailyFees}
-          totalBurned={feeMetrics.feesCollected.burn.totalCollected}
-          efficiency={feeMetrics.efficiency.burn || 0}
-        />
-      )
+      type: 'burn'
     },
     {
       title: 'Reflection Matrix',
-      icon: <Sparkles className="h-8 w-8 text-primary" />,
-      daily: feeMetrics.feesCollected.reflection.dailyFees,
-      total: feeMetrics.feesCollected.reflection.totalCollected,
-      efficiency: feeMetrics.efficiency.reflection || 0,
+      icon: <Grid3X3 className="h-8 w-8 text-primary" />,
+      realData: {
+        amount: reflectionPool,
+        label: 'Active Pool',
+        description: 'Reflections ready for distribution'
+      },
+      efficiency: feeMetrics?.efficiency.reflection || 0,
       gradient: 'from-primary/20 via-primary/10 to-transparent',
       border: 'border-primary/30',
-      visualization: <ReflectionMatrixMeter />
+      type: 'reflection'
     },
     {
       title: 'Liquidity Engine',
       icon: <Waves className="h-8 w-8 text-accent" />,
-      daily: feeMetrics.feesCollected.liquidity.dailyFees,
-      total: feeMetrics.feesCollected.liquidity.totalCollected,
-      efficiency: feeMetrics.efficiency.liquidity || 0,
+      realData: {
+        amount: liquidityAccumulation,
+        label: 'Accumulation',
+        description: 'Tokens collected for next liquidity swap'
+      },
+      efficiency: feeMetrics?.efficiency.liquidity || 0,
       gradient: 'from-accent/20 via-accent/10 to-transparent',
       border: 'border-accent/30',
-      visualization: contractData && (
-        <AutoLiquidityMeter
-          currentAccumulation={parseFloat(contractData.liquidityData.currentAccumulation) || 0}
-          threshold={parseFloat(contractData.swapSettings.threshold) || 1000000}
-          loading={contractLoading}
-          isThresholdReached={contractData.liquidityData.isThresholdReached || false}
-          isPendingSwap={contractData.liquidityData.isPendingSwap || false}
-          lastSwapTimestamp={contractData.liquidityData.lastSwapTimestamp || 0}
-          estimatedNextSwap={contractData.liquidityData.estimatedNextSwap || null}
-        />
-      )
+      type: 'liquidity'
     },
     {
       title: 'Locker Rewards',
       icon: <Vault className="h-8 w-8 text-secondary" />,
-      daily: feeMetrics.feesCollected.locker.dailyFees,
-      total: feeMetrics.feesCollected.locker.totalCollected,
-      efficiency: feeMetrics.efficiency.locker || 0,
+      realData: {
+        amount: totalLocked,
+        label: 'Total Locked',
+        description: 'Tokens secured in locker protocol'
+      },
+      efficiency: feeMetrics?.efficiency.locker || 0,
       gradient: 'from-secondary/20 via-secondary/10 to-transparent',
       border: 'border-secondary/30',
-      visualization: (
-        <LockerRewardsVisualization
-          dailyRewards={feeMetrics.feesCollected.locker.dailyFees}
-          totalLocked={feeMetrics.feesCollected.locker.totalCollected}
-          efficiency={feeMetrics.efficiency.locker || 0}
-        />
-      )
+      type: 'locker'
     }
   ];
 
@@ -149,49 +149,54 @@ const EnhancedFeeVisualizationsSection = () => {
               className="group"
             >
               <Card className={`
-                relative overflow-hidden h-80 backdrop-blur-sm
+                relative overflow-hidden h-96 backdrop-blur-sm
                 bg-gradient-to-br ${card.gradient}
                 border-2 ${card.border}
                 transition-all duration-500
                 hover:shadow-2xl hover:shadow-primary/20
                 group-hover:border-opacity-60
               `}>
-                <CardContent className="p-6 h-full flex flex-col relative">
-                  {/* Card Header */}
-                  <div className="flex items-center justify-between mb-4 relative z-10">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-background/20 backdrop-blur-sm">
-                        {card.icon}
+                <CardContent className="p-0 h-full flex flex-col relative">
+                  {/* Card Header with Real Data */}
+                  <div className="p-6 pb-4 relative z-10">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-background/20 backdrop-blur-sm">
+                          {card.icon}
+                        </div>
+                        <h3 className="text-xl font-bold text-foreground">{card.title}</h3>
                       </div>
-                      <h3 className="text-xl font-bold text-foreground">{card.title}</h3>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-foreground">
+                          {(card.efficiency * 100).toFixed(1)}%
+                        </div>
+                        <div className="text-xs text-muted-foreground">Efficiency</div>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-foreground">
-                        {(card.efficiency * 100).toFixed(1)}%
+
+                    {/* Prominent Real Data Display */}
+                    <div className="text-center p-4 rounded-lg bg-background/10 backdrop-blur-sm border border-foreground/10">
+                      <div className="text-3xl font-bold text-foreground mb-1">
+                        {formatAmount(card.realData.amount)}
                       </div>
-                      <div className="text-xs text-muted-foreground">Efficiency</div>
+                      <div className="text-sm font-medium text-foreground/80 mb-1">
+                        {card.realData.label}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {card.realData.description}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Metrics */}
-                  <div className="flex justify-between mb-4 relative z-10">
-                    <div>
-                      <div className="text-sm text-muted-foreground">Daily</div>
-                      <div className="text-lg font-semibold text-foreground">
-                        {formatAmount(card.daily)} ARK
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-muted-foreground">Total</div>
-                      <div className="text-lg font-semibold text-foreground">
-                        {formatAmount(card.total)} ARK
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Visualization Area */}
-                  <div className="flex-1 relative min-h-0">
-                    {card.visualization}
+                  {/* Unique Visualization Area */}
+                  <div className="flex-1 relative min-h-0 p-6 pt-0">
+                    {card.type === 'burn' && <BurnVisualization amount={card.realData.amount} />}
+                    {card.type === 'reflection' && <ReflectionVisualization amount={card.realData.amount} />}
+                    {card.type === 'liquidity' && <LiquidityVisualization 
+                      amount={card.realData.amount} 
+                      threshold={parseFloat(contractData?.swapSettings.threshold || '1000000')}
+                    />}
+                    {card.type === 'locker' && <LockerVisualization amount={card.realData.amount} />}
                   </div>
 
                   {/* Animated Border Effect */}
