@@ -102,9 +102,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         contractLoading={contractLoading}
       />
 
-      {/* Interactive Quantum Pillars - Enhanced with Live Data */}
-      <InteractiveQuantumPillars />
-
       {/* Enhanced Fee Visualizations Section */}
       <EnhancedFeeVisualizationsSection />
 
