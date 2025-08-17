@@ -1,3 +1,12 @@
+import React, { memo, useMemo, Suspense, lazy } from 'react';
+import { motion } from 'framer-motion';
+import { useARKTokenData } from '../../hooks/useARKTokenData';
+import { useContractData } from '../../hooks/useContractData';
+import { useReflectionData } from '../../hooks/useReflectionData';
+import { useLockerData } from '../../hooks/useLockerData';
+import { Card, CardContent } from '../ui/card';
+import { Flame, Grid3X3, Waves, Vault, TrendingUp, Shield, Zap, Lock } from 'lucide-react';
+
 // Lazy load visualization components for better initial load
 const BurnVisualization = lazy(() => import('./BurnVisualization'));
 const ReflectionVisualization = lazy(() => import('./ReflectionVisualization'));
