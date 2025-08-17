@@ -1,22 +1,17 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useARKTokenData } from '../../hooks/useARKTokenData';
-import { useContractData } from '../../hooks/useContractData';
-import { useReflectionData } from '../../hooks/useReflectionData';
-import { useLockerData } from '../../hooks/useLockerData';
-import { Card, CardContent } from '../ui/card';
-import { Flame, Grid3X3, Waves, Vault } from 'lucide-react';
-import BurnVisualization from './BurnVisualization';
-import ReflectionVisualization from './ReflectionVisualization';
-import LiquidityVisualization from './LiquidityVisualization';
-import LockerVisualization from './LockerVisualization';
+import React, { useState, useEffect, useMemo } from 'react';
 
-function App() {
-  const React = window.React;
-  const { useState, useEffect, useMemo } = React;
+interface ContractData {
+  totalSupply: number;
+  burnedTokens: number;
+  reflectionPool: number;
+  liquidityAccumulation: number;
+  lockerRewards: number;
+  swapThreshold: number;
+}
 
+const EnhancedFeeVisualizationsSection: React.FC = () => {
   // Mock data based on smart contract analysis
-  const [contractData, setContractData] = useState({
+  const [contractData, setContractData] = useState<ContractData>({
     totalSupply: 1000000000,
     burnedTokens: 15420000,
     reflectionPool: 8750000,
@@ -40,7 +35,7 @@ function App() {
     locker: 2 // 200/10000 = 2%
   };
 
-  const formatAmount = (amount) => {
+  const formatAmount = (amount: number): string => {
     if (amount >= 1e9) return `${(amount / 1e9).toFixed(1)}B`;
     if (amount >= 1e6) return `${(amount / 1e6).toFixed(1)}M`;
     if (amount >= 1e3) return `${(amount / 1e3).toFixed(1)}K`;
@@ -98,7 +93,12 @@ function App() {
     }
   ], [contractData]);
 
-  const PillarCard = ({ pillar, index }) => {
+  interface PillarCardProps {
+    pillar: typeof pillars[0];
+    index: number;
+  }
+
+  const PillarCard: React.FC<PillarCardProps> = ({ pillar, index }) => {
     const [isHovered, setIsHovered] = useState(false);
     
     return (
@@ -266,4 +266,6 @@ function App() {
       </div>
     </section>
   );
-}
+};
+
+export default EnhancedFeeVisualizationsSection;
