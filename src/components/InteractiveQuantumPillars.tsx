@@ -217,7 +217,7 @@ const InteractiveQuantumPillars = memo(() => {
         <div className={`text-center mb-12 transition-all duration-1000 ${pillarsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
             <Database className="w-3 h-3 animate-pulse" />
-            <span>[QUANTUM_ARCHITECTURE_SCAN]</span>
+            <span>[QUANTUM ARCHITECTURE SCAN]</span>
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
@@ -228,7 +228,7 @@ const InteractiveQuantumPillars = memo(() => {
           </h2>
           
           <div className="text-sm text-gray-400 font-mono">
-            [LIVE_BLOCKCHAIN_DATA_INTERFACE]
+            [LIVE BLOCKCHAIN DATA INTERFACE]
           </div>
         </div>
 
@@ -336,7 +336,7 @@ const InteractiveQuantumPillars = memo(() => {
         <div className={`text-center mt-8 transition-all duration-1000 delay-700 ${pillarsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/40 font-mono text-xs">
             <Activity className="w-3 h-3 animate-pulse" />
-            <span>[QUANTUM_FIELD_SYNCHRONIZATION_COMPLETE]</span>
+            <span>[QUANTUM FIELD SYNCHRONIZATION COMPLETE]</span>
             <Activity className="w-3 h-3 animate-pulse" />
           </div>
         </div>
