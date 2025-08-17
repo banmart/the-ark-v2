@@ -108,8 +108,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       {/* Render children if provided */}
       {children}
 
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };
