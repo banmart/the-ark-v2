@@ -17,9 +17,7 @@ const HeroSection = ({
   setShowOnboarding
 }: HeroSectionProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoPlaying, setVideoPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const [showIntro, setShowIntro] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
     setIsOpen
@@ -33,24 +31,11 @@ const HeroSection = ({
     if (video) {
       const handleCanPlay = () => {
         setVideoLoaded(true);
-        // Start the intro fade sequence
-        setTimeout(() => {
-          setShowIntro(false);
-        }, 800); // Wait 0.8 seconds after video loads before starting fade
-      };
-      
-      const handlePlaying = () => {
-        // Video has started playing
-        setTimeout(() => {
-          setVideoPlaying(true);
-        }, 1000); // Wait 1 second after video starts playing
       };
       
       video.addEventListener('canplay', handleCanPlay);
-      video.addEventListener('playing', handlePlaying);
       return () => {
         video.removeEventListener('canplay', handleCanPlay);
-        video.removeEventListener('playing', handlePlaying);
       };
     }
   }, []);
@@ -73,12 +58,6 @@ const HeroSection = ({
   
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col items-center overflow-hidden">
-      {/* Black Intro Overlay */}
-      <div 
-        className={`absolute inset-0 bg-black z-30 transition-opacity duration-[4000ms] ease-in-out ${
-          showIntro ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-      />
       
       {/* Video Background with Vintage Gradient Overlay */}
       <div className="absolute inset-0 z-0">
@@ -133,11 +112,7 @@ const HeroSection = ({
       {/* Bottom Section - Logo and Contract Address */}
       <div className="max-w-7xl mx-auto w-full relative z-20">
         {/* Logo Section - The ARK */}
-        <div 
-          className={`relative z-20 pb-8 transition-all duration-600 ease-out ${
-            videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
-        >
+        <div className="relative z-20 pb-8 opacity-100 translate-y-0 animate-fade-in">
           <div className="text-center">
             <h1>
               <TextGenerateEffect
