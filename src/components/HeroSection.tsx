@@ -29,13 +29,14 @@ const HeroSection = ({
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      const handleCanPlay = () => {
+      const handleLoadStart = () => {
+        // Video has started loading, prepare to show it
         setVideoLoaded(true);
       };
       
-      video.addEventListener('canplay', handleCanPlay);
+      video.addEventListener('loadstart', handleLoadStart);
       return () => {
-        video.removeEventListener('canplay', handleCanPlay);
+        video.removeEventListener('loadstart', handleLoadStart);
       };
     }
   }, []);
@@ -67,7 +68,8 @@ const HeroSection = ({
           muted 
           loop 
           playsInline 
-          className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          preload="metadata"
+          className={`w-full h-full object-cover transition-opacity duration-1000 ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
           <source src={mediaUrls.heroVideo} type="video/mp4" />
         </video>
