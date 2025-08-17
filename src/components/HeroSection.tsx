@@ -1,22 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
-import { useChatContext } from './providers/ChatProvider';
-import { useBrowserPopup } from './providers/BrowserPopupProvider';
-import { TextGenerateEffect } from './ui/text-generate-effect';
-import { mediaUrls } from '@/lib/media-urls';
-
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
   contractAddress: string;
   setShowOnboarding: (show: boolean) => void;
 }
 
-const HeroSection = ({
+const App = ({
   copyToClipboard,
   contractAddress,
   setShowOnboarding
 }: HeroSectionProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [backgroundReady, setBackgroundReady] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
@@ -29,15 +23,14 @@ const HeroSection = ({
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      const handleLoadStart = () => {
-        // Video has started loading, prepare to show it
-        setVideoLoaded(true);
-      };
+      // Preload background image immediately
+      const img = new Image();
+      img.onload = () => setBackgroundReady(true);
+      img.src = mediaUrls.heroBackground;
       
-      video.addEventListener('loadstart', handleLoadStart);
-      return () => {
-        video.removeEventListener('loadstart', handleLoadStart);
-      };
+      const handleCanPlay = () => setVideoLoaded(true);
+      video.addEventListener('canplay', handleCanPlay);
+      return () => video.removeEventListener('canplay', handleCanPlay);
     }
   }, []);
   
@@ -68,8 +61,8 @@ const HeroSection = ({
           muted 
           loop 
           playsInline 
-          preload="metadata"
-          className={`w-full h-full object-cover transition-opacity duration-1000 ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          preload="auto"
+          className={`w-full h-full object-cover transform-gpu will-change-opacity transition-opacity duration-700 ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
           <source src={mediaUrls.heroVideo} type="video/mp4" />
         </video>
@@ -93,7 +86,7 @@ const HeroSection = ({
         </div>
         
         <div 
-          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transform-gpu will-change-opacity transition-opacity duration-500 ease-out ${backgroundReady && videoLoaded ? 'opacity-0' : 'opacity-100'}`}
           style={{
             backgroundImage: `url('${mediaUrls.heroBackground}')`
           }} 
@@ -142,4 +135,4 @@ const HeroSection = ({
   );
 };
 
-export default HeroSection;
+App;
