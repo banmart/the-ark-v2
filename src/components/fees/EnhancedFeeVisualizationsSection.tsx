@@ -4,6 +4,7 @@ import { useARKTokenData } from '../../hooks/useARKTokenData';
 import { useContractData } from '../../hooks/useContractData';
 import { useReflectionData } from '../../hooks/useReflectionData';
 import { useLockerData } from '../../hooks/useLockerData';
+import { useFeeMetrics } from '../../hooks/useFeeMetrics';
 import { Card, CardContent } from '../ui/card';
 import { Flame, Grid3X3, Waves, Vault } from 'lucide-react';
 import BurnVisualization from './BurnVisualization';
@@ -16,6 +17,7 @@ const EnhancedFeeVisualizationsSection = () => {
   const { data: contractData, loading: contractLoading } = useContractData();
   const { data: reflectionData, loading: reflectionLoading } = useReflectionData();
   const { protocolStats, loading: lockerLoading } = useLockerData();
+  const { feeMetrics } = useFeeMetrics(parseFloat(arkData?.volume24h || '0'));
 
   // Always show the section with fallback data
 
@@ -30,14 +32,14 @@ const EnhancedFeeVisualizationsSection = () => {
   const burnedTokens = parseFloat(contractData?.burnedTokens?.toString() || '0');
   const reflectionPool = parseFloat(reflectionData?.totalReflectionPool?.toString() || '0');
   const liquidityAccumulation = parseFloat(contractData?.liquidityData?.currentAccumulation?.toString() || '0');
-  const totalLocked = parseFloat(protocolStats?.totalLockedTokens?.toString() || '0');
+  const dailyLockerRewards = parseFloat(feeMetrics?.feesCollected?.locker?.dailyFees?.toString() || '0');
   
   // Calculate simple efficiency metrics based on relative performance
   const totalSupply = parseFloat(contractData?.totalSupply?.toString() || '1000000000');
   const burnEfficiency = Math.min(100, (burnedTokens / (totalSupply * 0.05)) * 100); // 5% burn target
   const reflectionEfficiency = Math.min(100, (reflectionPool / (totalSupply * 0.02)) * 100); // 2% reflection target
   const liquidityEfficiency = Math.min(100, (liquidityAccumulation / (totalSupply * 0.01)) * 100); // 1% liquidity target
-  const lockerEfficiency = Math.min(100, (totalLocked / (totalSupply * 0.10)) * 100); // 10% locked target
+  const lockerEfficiency = Math.min(100, (dailyLockerRewards / 100000) * 100); // 100K daily rewards target
 
   const feeCards = [
     {
@@ -83,9 +85,9 @@ const EnhancedFeeVisualizationsSection = () => {
       title: '2% Locker Rewards',
       icon: <Vault className="h-8 w-8 text-secondary" />,
       realData: {
-        amount: totalLocked,
-        label: 'Total Locked',
-        description: 'Tokens secured in locker protocol'
+        amount: dailyLockerRewards,
+        label: 'Daily Rewards',
+        description: 'Rewards distributed in last 24h'
       },
       efficiency: lockerEfficiency / 100,
       gradient: 'from-secondary/20 via-secondary/10 to-transparent',
@@ -108,7 +110,7 @@ const EnhancedFeeVisualizationsSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-            Quantum Fee Distribution - 9%
+            Quantum Fee Distribution - 9% Maximum
           </h2>
           <p className="text-gray-300 text-xl max-w-3xl mx-auto leading-relaxed">
             Real-time blockchain fee mechanics with immersive visualizations
@@ -173,6 +175,17 @@ const EnhancedFeeVisualizationsSection = () => {
                         {card.realData.description}
                       </div>
                     </div>
+                  </div>
+
+                  {/* Unique Visualization Area */}
+                  <div className="flex-1 relative min-h-0 p-6 pt-0">
+                    {card.type === 'burn' && <BurnVisualization amount={card.realData.amount} />}
+                    {card.type === 'reflection' && <ReflectionVisualization amount={card.realData.amount} />}
+                    {card.type === 'liquidity' && <LiquidityVisualization 
+                      amount={card.realData.amount} 
+                      threshold={parseFloat(contractData?.swapSettings.threshold || '1000000')}
+                    />}
+                    {card.type === 'locker' && <LockerVisualization amount={card.realData.amount} />}
                   </div>
 
                   {/* Animated Border Effect */}
