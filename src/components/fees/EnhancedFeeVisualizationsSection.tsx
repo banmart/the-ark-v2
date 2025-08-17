@@ -1,63 +1,38 @@
-// Creative animated background component
-const AnimatedBackground = memo(() => (
-  <div className="absolute inset-0 overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-    
-    {/* Floating orbs */}
-    <motion.div
-      className="absolute top-20 left-20 w-32 h-32 bg-cyan-500/10 rounded-full blur-xl"
-      animate={{
-        x: [0, 100, 0],
-        y: [0, -50, 0],
-        scale: [1, 1.2, 1],
-      }}
-      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-    />
-    <motion.div
-      className="absolute top-40 right-32 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"
-      animate={{
-        x: [0, -80, 0],
-        y: [0, 60, 0],
-        scale: [1, 0.8, 1],
-      }}
-      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-    />
-    <motion.div
-      className="absolute bottom-32 left-1/3 w-40 h-40 bg-blue-500/10 rounded-full blur-xl"
-      animate={{
-        x: [0, -60, 0],
-        y: [0, -40, 0],
-        scale: [1, 1.3, 1],
-      }}
-      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-    />
-    
-    {/* Grid pattern */}
-    <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+import React, { memo, useMemo, Suspense, lazy } from 'react';
+import { motion } from 'framer-motion';
+import { useARKTokenData } from '../../hooks/useARKTokenData';
+import { useContractData } from '../../hooks/useContractData';
+import { useReflectionData } from '../../hooks/useReflectionData';
+import { useLockerData } from '../../hooks/useLockerData';
+import { Card, CardContent } from '../ui/card';
+import { Flame, Grid3X3, Waves, Vault, TrendingUp, Shield, Zap, Lock } from 'lucide-react';
+
+// Lazy load visualization components for better initial load
+const BurnVisualization = lazy(() => import('./BurnVisualization'));
+const ReflectionVisualization = lazy(() => import('./ReflectionVisualization'));
+const LiquidityVisualization = lazy(() => import('./LiquidityVisualization'));
+const LockerVisualization = lazy(() => import('./LockerVisualization'));
+
+// Memoized loading skeleton component
+const VisualizationSkeleton = memo(() => (
+  <div className="flex-1 flex items-center justify-center">
+    <div className="w-full h-32 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg animate-pulse" />
   </div>
 ));
 
-// Creative fee card component with unique layouts
-const CreativeFeeCard = memo(({ card, index, contractData }) => {
-  const isEven = index % 2 === 0;
-  
+// Memoized fee card component for better performance
+const FeeCard = memo(({ card, index, contractData }) => {
   const cardVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 60,
-      rotateX: isEven ? -15 : 15,
-      scale: 0.9
-    },
+    hidden: { opacity: 0, y: 40, scale: 0.95 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      rotateX: 0,
       scale: 1,
       transition: { 
-        duration: 0.8, 
-        delay: index * 0.2,
+        duration: 0.6, 
+        delay: index * 0.1,
         type: "spring",
-        stiffness: 100,
+        stiffness: 120,
         damping: 20
       }
     }
@@ -65,10 +40,9 @@ const CreativeFeeCard = memo(({ card, index, contractData }) => {
 
   const hoverVariants = {
     hover: { 
-      scale: 1.05,
-      y: -10,
-      rotateY: isEven ? 5 : -5,
-      transition: { duration: 0.4, ease: "easeOut" }
+      scale: 1.03,
+      y: -5,
+      transition: { duration: 0.3, ease: "easeOut" }
     }
   };
 
@@ -78,147 +52,113 @@ const CreativeFeeCard = memo(({ card, index, contractData }) => {
       initial="hidden"
       whileInView="visible"
       whileHover="hover"
-      viewport={{ once: true, margin: "-100px" }}
-      className="group perspective-1000"
-      style={{ perspective: '1000px' }}
+      viewport={{ once: true, margin: "-50px" }}
+      className="group"
     >
       <Card className={`
-        relative overflow-hidden backdrop-blur-md h-80
-        bg-gradient-to-br ${card.bgGradient}
+        relative overflow-hidden h-[420px] backdrop-blur-md
+        bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80
         border-2 ${card.border}
-        transition-all duration-700 ease-out
-        hover:shadow-2xl ${card.shadowColor}
-        group-hover:border-opacity-100
-        transform-gpu
+        transition-all duration-500 ease-out
+        hover:shadow-2xl hover:shadow-cyan-500/25
+        group-hover:border-cyan-400/70
+        before:absolute before:inset-0 before:bg-gradient-to-br before:${card.gradient} before:opacity-0 before:transition-opacity before:duration-500
+        hover:before:opacity-100
       `}>
-        <CardContent className="p-0 h-full relative">
-          {/* Animated background pattern */}
-          <div className="absolute inset-0 opacity-20">
-            <div className={`absolute inset-0 bg-gradient-to-br ${card.patternGradient}`} />
-            <motion.div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `radial-gradient(circle at 20% 50%, ${card.accentColor}22 0%, transparent 50%), radial-gradient(circle at 80% 20%, ${card.accentColor}15 0%, transparent 50%)`
-              }}
-              animate={{
-                backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
-              }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            />
-          </div>
-
-          {/* Main content */}
-          <div className="relative z-10 p-8 h-full flex flex-col">
-            {/* Header with icon and title */}
-            <div className="flex items-start justify-between mb-6">
+        <CardContent className="p-0 h-full flex flex-col relative z-10">
+          {/* Enhanced Header with Better Visual Hierarchy */}
+          <div className="p-6 pb-4">
+            <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
                 <motion.div 
-                  className={`p-4 rounded-2xl bg-gradient-to-br ${card.iconBg} backdrop-blur-sm border ${card.iconBorder} shadow-lg`}
-                  whileHover={{ 
-                    scale: 1.1, 
-                    rotate: [0, -10, 10, 0],
-                    transition: { duration: 0.5 }
-                  }}
+                  className="p-3 rounded-xl bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm border border-cyan-500/40 shadow-lg"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ duration: 0.2 }}
                 >
                   {card.icon}
                 </motion.div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">{card.title}</h3>
+                  <h3 className="text-xl font-bold text-white mb-1">{card.title}</h3>
                   <div className="flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-green-400" />
-                    <span className="text-sm text-green-400 font-semibold">Live Protocol</span>
+                    <TrendingUp className="h-4 w-4 text-green-400" />
+                    <span className="text-sm text-green-400 font-medium">Active</span>
                   </div>
                 </div>
               </div>
-              
-              <motion.div
-                className="text-right"
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: index * 0.2 + 0.5, type: "spring", stiffness: 200 }}
-              >
-                <div className={`text-4xl font-bold bg-gradient-to-r ${card.efficiencyGradient} bg-clip-text text-transparent`}>
-                  {(card.efficiency * 100).toFixed(1)}%
-                </div>
-                <div className="text-xs text-gray-300 font-medium">Efficiency</div>
-              </motion.div>
-            </div>
-
-            {/* Data showcase */}
-            <div className="flex-1 flex flex-col justify-center">
-              <motion.div 
-                className={`relative p-6 rounded-2xl bg-gradient-to-br ${card.dataBg} backdrop-blur-sm border ${card.dataBorder} shadow-inner`}
-                whileHover={{ scale: 1.02, y: -2 }}
-                transition={{ duration: 0.3 }}
-              >
-                {/* Sparkle effect */}
-                <motion.div
-                  className="absolute top-2 right-2"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              <div className="text-right">
+                <motion.div 
+                  className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: index * 0.1 + 0.5, type: "spring" }}
                 >
-                  <Sparkles className="h-5 w-5 text-yellow-400 opacity-60" />
+                  {(card.efficiency * 100).toFixed(1)}%
                 </motion.div>
-
-                <div className="text-center">
-                  <motion.div 
-                    className={`text-5xl font-bold bg-gradient-to-r ${card.amountGradient} bg-clip-text text-transparent mb-3`}
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.2 + 0.8, type: "spring" }}
-                  >
-                    {card.formattedAmount}
-                  </motion.div>
-                  
-                  <div className={`text-lg font-semibold ${card.labelColor} mb-2 flex items-center justify-center gap-2`}>
-                    <Target className="h-5 w-5" />
-                    {card.realData.label}
-                  </div>
-                  
-                  <p className="text-sm text-gray-300 leading-relaxed">
-                    {card.realData.description}
-                  </p>
-                </div>
-
-                {/* Progress indicator */}
-                <div className="mt-4 relative">
-                  <div className="h-3 bg-black/30 rounded-full overflow-hidden">
-                    <motion.div
-                      className={`h-full bg-gradient-to-r ${card.progressGradient} rounded-full relative`}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${card.efficiency * 100}%` }}
-                      transition={{ delay: index * 0.2 + 1.2, duration: 1.5, ease: "easeOut" }}
-                    >
-                      <motion.div
-                        className="absolute inset-0 bg-white/20 rounded-full"
-                        animate={{ x: ['-100%', '100%'] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      />
-                    </motion.div>
-                  </div>
-                  <div className="flex justify-between mt-2 text-xs text-gray-400">
-                    <span>0%</span>
-                    <span>100%</span>
-                  </div>
-                </div>
-              </motion.div>
+                <div className="text-xs text-gray-400 font-medium">Efficiency</div>
+              </div>
             </div>
 
-            {/* Action indicator */}
+            {/* Enhanced Data Display with Better Visual Appeal */}
             <motion.div 
-              className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-300"
-              whileHover={{ scale: 1.05 }}
+              className="relative p-5 rounded-xl bg-gradient-to-br from-black/50 to-black/30 backdrop-blur-sm border border-cyan-500/40 shadow-inner"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
             >
-              <ArrowUpRight className="h-4 w-4" />
-              <span>Real-time PulseChain Data</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 rounded-xl" />
+              <div className="relative z-10 text-center">
+                <motion.div 
+                  className="text-4xl font-bold bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent mb-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 + 0.7 }}
+                >
+                  {card.formattedAmount}
+                </motion.div>
+                <div className="text-sm font-semibold text-cyan-300 mb-2 flex items-center justify-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  {card.realData.label}
+                </div>
+                <div className="text-xs text-gray-300 leading-relaxed">
+                  {card.realData.description}
+                </div>
+              </div>
+              
+              {/* Animated progress bar */}
+              <div className="mt-4 h-2 bg-black/30 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${card.efficiency * 100}%` }}
+                  transition={{ delay: index * 0.1 + 1, duration: 1, ease: "easeOut" }}
+                />
+              </div>
             </motion.div>
           </div>
 
-          {/* Hover glow effect */}
+          {/* Optimized Visualization Area */}
+          <div className="flex-1 relative min-h-0 p-6 pt-2">
+            <Suspense fallback={<VisualizationSkeleton />}>
+              {card.type === 'burn' && <BurnVisualization amount={card.realData.amount} />}
+              {card.type === 'reflection' && <ReflectionVisualization amount={card.realData.amount} />}
+              {card.type === 'liquidity' && <LiquidityVisualization 
+                amount={card.realData.amount} 
+                threshold={parseFloat(contractData?.swapSettings?.threshold || '1000000')}
+              />}
+              {card.type === 'locker' && <LockerVisualization amount={card.realData.amount} />}
+            </Suspense>
+          </div>
+
+          {/* Enhanced Hover Effects */}
           <motion.div 
-            className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-br ${card.glowGradient}`}
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
             initial={false}
-          />
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-blue-500/5 to-purple-500/5" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent animate-pulse" />
+          </motion.div>
+
+          {/* Corner accent */}
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </CardContent>
       </Card>
     </motion.div>
@@ -264,11 +204,11 @@ const App = () => {
     };
   }, [contractData, reflectionData, protocolStats]);
 
-  // Creative fee cards with unique styling
+  // Memoized fee cards data
   const feeCards = useMemo(() => [
     {
       title: '🔥 Burn Protocol',
-      icon: <Flame className="h-10 w-10 text-red-400" />,
+      icon: <Flame className="h-8 w-8 text-red-400" />,
       realData: {
         amount: calculations.burnedTokens,
         label: 'Total Burned',
@@ -276,24 +216,13 @@ const App = () => {
       },
       formattedAmount: calculations.formatAmount(calculations.burnedTokens),
       efficiency: calculations.burnEfficiency / 100,
-      bgGradient: 'from-red-900/40 via-orange-900/30 to-red-800/40',
-      border: 'border-red-500/50',
-      shadowColor: 'hover:shadow-red-500/25',
-      patternGradient: 'from-red-500/10 to-orange-500/5',
-      iconBg: 'from-red-500/20 to-orange-500/20',
-      iconBorder: 'border-red-400/40',
-      dataBg: 'from-red-950/50 to-orange-950/30',
-      dataBorder: 'border-red-400/30',
-      efficiencyGradient: 'from-red-400 to-orange-400',
-      amountGradient: 'from-red-300 to-orange-300',
-      labelColor: 'text-red-300',
-      progressGradient: 'from-red-500 to-orange-500',
-      glowGradient: 'from-red-500/5 via-orange-500/5 to-transparent',
-      accentColor: '#ef4444'
+      gradient: 'from-red-500/20 via-orange-500/10 to-transparent',
+      border: 'border-red-500/40',
+      type: 'burn'
     },
     {
       title: '💎 Reflection Matrix',
-      icon: <Grid3X3 className="h-10 w-10 text-blue-400" />,
+      icon: <Grid3X3 className="h-8 w-8 text-blue-400" />,
       realData: {
         amount: calculations.reflectionPool,
         label: 'Active Pool',
@@ -301,24 +230,13 @@ const App = () => {
       },
       formattedAmount: calculations.formatAmount(calculations.reflectionPool),
       efficiency: calculations.reflectionEfficiency / 100,
-      bgGradient: 'from-blue-900/40 via-indigo-900/30 to-blue-800/40',
-      border: 'border-blue-500/50',
-      shadowColor: 'hover:shadow-blue-500/25',
-      patternGradient: 'from-blue-500/10 to-indigo-500/5',
-      iconBg: 'from-blue-500/20 to-indigo-500/20',
-      iconBorder: 'border-blue-400/40',
-      dataBg: 'from-blue-950/50 to-indigo-950/30',
-      dataBorder: 'border-blue-400/30',
-      efficiencyGradient: 'from-blue-400 to-indigo-400',
-      amountGradient: 'from-blue-300 to-indigo-300',
-      labelColor: 'text-blue-300',
-      progressGradient: 'from-blue-500 to-indigo-500',
-      glowGradient: 'from-blue-500/5 via-indigo-500/5 to-transparent',
-      accentColor: '#3b82f6'
+      gradient: 'from-blue-500/20 via-cyan-500/10 to-transparent',
+      border: 'border-blue-500/40',
+      type: 'reflection'
     },
     {
       title: '🌊 Liquidity Engine',
-      icon: <Waves className="h-10 w-10 text-cyan-400" />,
+      icon: <Waves className="h-8 w-8 text-cyan-400" />,
       realData: {
         amount: calculations.liquidityAccumulation,
         label: 'Accumulation',
@@ -326,24 +244,13 @@ const App = () => {
       },
       formattedAmount: calculations.formatAmount(calculations.liquidityAccumulation),
       efficiency: calculations.liquidityEfficiency / 100,
-      bgGradient: 'from-cyan-900/40 via-teal-900/30 to-cyan-800/40',
-      border: 'border-cyan-500/50',
-      shadowColor: 'hover:shadow-cyan-500/25',
-      patternGradient: 'from-cyan-500/10 to-teal-500/5',
-      iconBg: 'from-cyan-500/20 to-teal-500/20',
-      iconBorder: 'border-cyan-400/40',
-      dataBg: 'from-cyan-950/50 to-teal-950/30',
-      dataBorder: 'border-cyan-400/30',
-      efficiencyGradient: 'from-cyan-400 to-teal-400',
-      amountGradient: 'from-cyan-300 to-teal-300',
-      labelColor: 'text-cyan-300',
-      progressGradient: 'from-cyan-500 to-teal-500',
-      glowGradient: 'from-cyan-500/5 via-teal-500/5 to-transparent',
-      accentColor: '#06b6d4'
+      gradient: 'from-cyan-500/20 via-teal-500/10 to-transparent',
+      border: 'border-cyan-500/40',
+      type: 'liquidity'
     },
     {
       title: '🔒 Locker Rewards',
-      icon: <Vault className="h-10 w-10 text-purple-400" />,
+      icon: <Vault className="h-8 w-8 text-purple-400" />,
       realData: {
         amount: calculations.totalLocked,
         label: 'Total Locked',
@@ -351,86 +258,65 @@ const App = () => {
       },
       formattedAmount: calculations.formatAmount(calculations.totalLocked),
       efficiency: calculations.lockerEfficiency / 100,
-      bgGradient: 'from-purple-900/40 via-violet-900/30 to-purple-800/40',
-      border: 'border-purple-500/50',
-      shadowColor: 'hover:shadow-purple-500/25',
-      patternGradient: 'from-purple-500/10 to-violet-500/5',
-      iconBg: 'from-purple-500/20 to-violet-500/20',
-      iconBorder: 'border-purple-400/40',
-      dataBg: 'from-purple-950/50 to-violet-950/30',
-      dataBorder: 'border-purple-400/30',
-      efficiencyGradient: 'from-purple-400 to-violet-400',
-      amountGradient: 'from-purple-300 to-violet-300',
-      labelColor: 'text-purple-300',
-      progressGradient: 'from-purple-500 to-violet-500',
-      glowGradient: 'from-purple-500/5 via-violet-500/5 to-transparent',
-      accentColor: '#8b5cf6'
+      gradient: 'from-purple-500/20 via-indigo-500/10 to-transparent',
+      border: 'border-purple-500/40',
+      type: 'locker'
     }
   ], [calculations]);
 
   const isLoading = contractLoading || reflectionLoading || lockerLoading;
 
   return (
-    <section className="relative py-32 px-6 overflow-hidden min-h-screen">
-      <AnimatedBackground />
+    <section className="relative py-24 px-6 overflow-hidden">
+      {/* Enhanced Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,92,246,0.1),transparent_50%)]" />
       
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Enhanced Section Header */}
         <motion.div 
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1 }}
-          className="text-center mb-24"
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
         >
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/40 backdrop-blur-sm mb-8"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-6"
           >
-            <Zap className="h-5 w-5 text-cyan-400" />
-            <span className="text-lg text-cyan-300 font-semibold">PulseChain Token Features</span>
+            <Zap className="h-4 w-4 text-cyan-400" />
+            <span className="text-sm text-cyan-300 font-medium">PulseChain Token Features</span>
           </motion.div>
           
-          <motion.h2 
-            className="text-6xl md:text-7xl font-bold mb-8 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight">
             Quantum Fee Distribution
-          </motion.h2>
-          
-          <motion.p 
-            className="text-gray-300 text-2xl max-w-5xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-          >
-            Experience real-time blockchain fee mechanics showcasing our innovative 9% maximum fee structure
-          </motion.p>
+          </h2>
+          <p className="text-gray-300 text-xl max-w-4xl mx-auto leading-relaxed">
+            Experience real-time blockchain fee mechanics with immersive visualizations showcasing our 9% maximum fee structure
+          </p>
           
           {/* Loading indicator */}
           {isLoading && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mt-6 inline-flex items-center gap-3 text-cyan-400"
+              className="mt-4 inline-flex items-center gap-2 text-cyan-400"
             >
-              <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-              <span className="text-lg">Loading live data...</span>
+              <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+              <span className="text-sm">Loading live data...</span>
             </motion.div>
           )}
         </motion.div>
 
-        {/* Creative Fee Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">
+        {/* Optimized Fee Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
           {feeCards.map((card, index) => (
-            <CreativeFeeCard 
+            <FeeCard 
               key={card.title} 
               card={card} 
               index={index} 
@@ -441,23 +327,20 @@ const App = () => {
 
         {/* Enhanced Status Indicator */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 1 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
           className="text-center"
         >
-          <div className="inline-flex items-center gap-4 px-8 py-4 rounded-full bg-gradient-to-r from-green-500/20 to-cyan-500/20 border border-green-400/50 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-green-500/20 to-cyan-500/20 border border-green-400/40 backdrop-blur-sm">
             <motion.div 
-              className="w-4 h-4 bg-green-400 rounded-full"
-              animate={{ 
-                scale: [1, 1.3, 1],
-                opacity: [1, 0.7, 1]
-              }}
+              className="w-3 h-3 bg-green-400 rounded-full"
+              animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
-            <Lock className="h-5 w-5 text-green-400" />
-            <span className="text-lg text-green-300 font-bold">Live PulseChain Data • Updates Every 3 Minutes</span>
+            <Lock className="h-4 w-4 text-green-400" />
+            <span className="text-sm text-green-300 font-semibold">Live PulseChain Data • Updates Every 3 Minutes</span>
           </div>
         </motion.div>
       </div>
@@ -465,4 +348,4 @@ const App = () => {
   );
 };
 
-App;
+export default App;
