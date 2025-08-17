@@ -78,9 +78,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
 
-      {/* Animated Background System */}
-      <AnimatedBackground />
-
       {/* Navigation */}
       <Navigation 
         handleConnectWallet={handleConnectWallet}
@@ -107,6 +104,10 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
       {/* Render children if provided */}
       {children}
+
+      {/* Footer */}
+      <Footer />
+
 
     </div>
   );
