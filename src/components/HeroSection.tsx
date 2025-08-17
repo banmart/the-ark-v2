@@ -1,3 +1,10 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
+import { useChatContext } from './providers/ChatProvider';
+import { useBrowserPopup } from './providers/BrowserPopupProvider';
+import { TextGenerateEffect } from './ui/text-generate-effect';
+import { mediaUrls } from '@/lib/media-urls';
+
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
   contractAddress: string;
