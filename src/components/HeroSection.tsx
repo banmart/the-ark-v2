@@ -11,7 +11,7 @@ interface HeroSectionProps {
   setShowOnboarding: (show: boolean) => void;
 }
 
-const App = ({
+const HeroSection = ({
   copyToClipboard,
   contractAddress,
   setShowOnboarding
@@ -142,4 +142,4 @@ const App = ({
   );
 };
 
-App;
+export default HeroSection;
