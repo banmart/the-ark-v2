@@ -97,14 +97,14 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         setShowOnboarding={setShowOnboarding}
       />
 
+      {/* Celestial Awakening Narrative Section */}
+      <CelestialAwakeningSection />
+
       {/* Stats Section */}
       <StatsSection 
         contractData={contractData}
         contractLoading={contractLoading}
       />
-
-      {/* Celestial Awakening Narrative Section */}
-      <CelestialAwakeningSection />
 
       {/* Render children if provided */}
       {children}
