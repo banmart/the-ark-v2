@@ -109,12 +109,12 @@ const LockerContent = () => {
             <div className="relative">
               <div className="text-center mb-8">
                 <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.15em]">
-                  [CONTRACT INFORMATION]
+                  [CONTRACT_INFORMATION]
                 </div>
                 <h3 className="text-2xl font-bold text-cyan-400 mb-2">Smart Contract Address</h3>
                 <div className="flex items-center justify-center gap-2">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-mono text-green-400">VERIFIED ON PULSECHAIN</span>
+                  <span className="text-sm font-mono text-green-400">VERIFIED_ON_PULSECHAIN</span>
                 </div>
               </div>
               

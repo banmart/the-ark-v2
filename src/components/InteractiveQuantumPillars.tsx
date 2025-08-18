@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
-import { Activity, Flame, RefreshCcw, Droplets, Lock, ArrowRight, Database } from 'lucide-react';
+import { Activity, Flame, Users, Droplets, Lock, ArrowRight, Database } from 'lucide-react';
 import { useContractData } from '../hooks/useContractData';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { useLockerData } from '../hooks/useLockerData';
 import { useIsMobile } from '../hooks/use-mobile';
-import { useFeeMetrics } from '../hooks/useFeeMetrics';
-import { useBurnAnalytics } from '../hooks/useBurnAnalytics';
-import { useNavigate } from 'react-router-dom';
 
 type PillarState = 'MONITORING' | 'ACTIVE' | 'THRESHOLD_REACHED' | 'PROCESSING' | 'ACCUMULATING';
 
@@ -27,39 +24,31 @@ interface PillarData {
   state: PillarState;
   liveData: string;
   actionText: string;
-  onClick?: () => void;
 }
 
 const InteractiveQuantumPillars = memo(() => {
+  const [activePillar, setActivePillar] = useState(0);
   const [pillarsLoaded, setPillarsLoaded] = useState(false);
-  const [realTimeUpdate, setRealTimeUpdate] = useState(0);
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
   
   const { data: contractData, loading: contractLoading } = useContractData();
   const { data: tokenData, loading: tokenLoading } = useARKTokenData();
   const { protocolStats, userStats, loading: lockerLoading } = useLockerData();
-  const { feeMetrics, loading: feeLoading } = useFeeMetrics(tokenData?.volume24h ? Number(tokenData.volume24h) : undefined);
-  const { burnMetrics } = useBurnAnalytics(typeof tokenData?.volume24h === 'number' ? tokenData.volume24h : 0);
 
   useEffect(() => {
     // Animate pillars on load
     const timer = setTimeout(() => setPillarsLoaded(true), 500);
+    
+    // Rotate active pillar - slower on mobile to reduce performance impact
+    const interval = setInterval(() => {
+      setActivePillar(prev => (prev + 1) % 4);
+    }, isMobile ? 8000 : 4000);
 
     return () => {
       clearTimeout(timer);
+      clearInterval(interval);
     };
-  }, []);
-
-
-  // Real-time animation effect
-  useEffect(() => {
-    const glitchTimer = setInterval(() => {
-      setRealTimeUpdate(prev => prev + 1);
-    }, 3000);
-
-    return () => clearInterval(glitchTimer);
-  }, []);
+  }, [isMobile]);
 
   const getStateColor = useCallback((state: PillarState) => {
     switch (state) {
@@ -73,55 +62,14 @@ const InteractiveQuantumPillars = memo(() => {
   }, []);
 
   const getPillarsData = useMemo((): PillarData[] => {
-    // Get real fee data from service
+    const burnRate = typeof tokenData?.dailyBurnRate === 'number' ? tokenData.dailyBurnRate : 0;
     const currentVolume = typeof tokenData?.volume24h === 'number' ? tokenData.volume24h : 0;
-    const fees = feeMetrics?.feesCollected;
-    const efficiency = feeMetrics?.efficiency;
-    
-    // Use real fee data when available, fallback to calculations
-    const burnDaily = fees?.burn.dailyFees || 0;
-    const reflectionDaily = fees?.reflection.dailyFees || 0;
-    const liquidityDaily = fees?.liquidity.dailyFees || 0;
-    const lockerDaily = fees?.locker.dailyFees || 0;
-    
-    // Get real-time data
-    const liquidityThreshold = contractData?.swapSettings?.threshold ? parseFloat(contractData.swapSettings.threshold) : 1000000;
+    const reflectionRate = currentVolume * 0.02; // 2% of volume for reflections
+    const liquidityThreshold = contractData?.swapSettings?.threshold ? parseFloat(contractData.swapSettings.threshold) : 1000;
     const currentLiquidity = contractData?.liquidityData?.currentAccumulation ? parseFloat(contractData.liquidityData.currentAccumulation) : 0;
     const totalLocked = typeof protocolStats?.totalLockedTokens === 'number' ? protocolStats.totalLockedTokens : 0;
     const rewardPool = typeof protocolStats?.rewardPool === 'number' ? protocolStats.rewardPool : 0;
-    
-    // Calculate dynamic max values based on real fee collection
-    const burnMaxCapacity = Math.max(currentVolume * 0.02, burnDaily * 2); // 2% of volume or 2x current rate
-    const reflectionMaxCapacity = Math.max(currentVolume * 0.02, reflectionDaily * 2);
-    const liquidityMaxCapacity = Math.max(currentVolume * 0.03, liquidityDaily * 2);
-    const rewardMaxCapacity = Math.max(rewardPool * 0.01, lockerDaily * 2);
-
-    // Enhanced state calculation functions using real fee efficiency
-    const getBurnState = (rate: number, capacity: number, eff: number = 0): PillarState => {
-      if (eff > 80) return 'PROCESSING';
-      if (eff > 50 || rate > capacity * 0.5) return 'ACTIVE';
-      if (eff > 20 || rate > capacity * 0.1) return 'MONITORING';
-      return 'MONITORING';
-    };
-
-    const getReflectionState = (reflections: number, capacity: number, eff: number = 0): PillarState => {
-      if (eff > 70) return 'ACTIVE';
-      if (eff > 30 || reflections > capacity * 0.3) return 'MONITORING';
-      return 'MONITORING';
-    };
-
-    const getLiquidityState = (current: number, threshold: number, eff: number = 0): PillarState => {
-      if (current >= threshold) return 'THRESHOLD_REACHED';
-      if (eff > 60 || current > threshold * 0.7) return 'PROCESSING';
-      if (eff > 20 || current > threshold * 0.3) return 'ACCUMULATING';
-      return 'MONITORING';
-    };
-
-    const getRewardState = (rewards: number, capacity: number, eff: number = 0): PillarState => {
-      if (eff > 60) return 'ACTIVE';
-      if (eff > 20 || rewards > capacity * 0.2) return 'ACCUMULATING';
-      return 'MONITORING';
-    };
+    const burnedTokens = tokenData?.burnedTokens ? (typeof tokenData.burnedTokens === 'number' ? tokenData.burnedTokens : parseFloat(tokenData.burnedTokens.toString())) : 0;
 
     return [
       {
@@ -133,28 +81,27 @@ const InteractiveQuantumPillars = memo(() => {
         description: 'Real-time token burning with quantum incineration to void address plus automated LP destruction.',
         color: 'red',
         gradient: 'from-red-500 to-orange-500',
-        value: burnDaily,
-        maxValue: burnMaxCapacity,
+        value: burnRate,
+        maxValue: 100000,
         unit: 'ARK/day',
-        state: getBurnState(burnDaily, burnMaxCapacity, efficiency?.burn || 0),
-        liveData: burnDaily > 0 ? `${burnDaily > 1000 ? (burnDaily / 1000).toFixed(1) + 'K' : burnDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
-        actionText: 'VIEW_BURN_ANALYTICS',
-        onClick: () => navigate('/burn-analytics')
+        state: burnRate > 0 ? 'ACTIVE' : 'MONITORING',
+        liveData: burnedTokens > 0 ? `${(burnedTokens / 1000000).toFixed(2)}M BURNED` : 'LOADING...',
+        actionText: 'VIEW_BURN_HISTORY'
       },
       {
         id: 1,
-        icon: RefreshCcw,
+        icon: Users,
         emoji: '🫂',
         title: 'REFLECTION MATRIX',
         subtitle: 'Quantum Redistribution',
         description: 'Autonomous redistribution to holders based on molecular weight with extended holding amplification.',
         color: 'blue',
         gradient: 'from-blue-500 to-cyan-500',
-        value: reflectionDaily,
-        maxValue: reflectionMaxCapacity,
+        value: reflectionRate,
+        maxValue: 50000,
         unit: 'ARK/day',
-        state: getReflectionState(reflectionDaily, reflectionMaxCapacity, efficiency?.reflection || 0),
-        liveData: reflectionDaily > 0 ? `${reflectionDaily > 1000 ? (reflectionDaily / 1000).toFixed(1) + 'K' : reflectionDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
+        state: reflectionRate > 0 ? 'ACTIVE' : 'MONITORING',
+        liveData: currentVolume > 0 ? `${(currentVolume / 1000).toFixed(1)}K VOLUME` : 'LOADING...',
         actionText: 'VIEW_REFLECTIONS'
       },
       {
@@ -169,8 +116,9 @@ const InteractiveQuantumPillars = memo(() => {
         value: currentLiquidity,
         maxValue: liquidityThreshold,
         unit: 'ARK',
-        state: getLiquidityState(currentLiquidity, liquidityThreshold, efficiency?.liquidity || 0),
-        liveData: `${((currentLiquidity / liquidityThreshold) * 100).toFixed(1)}% TO SWAP`,
+        state: currentLiquidity >= liquidityThreshold ? 'THRESHOLD_REACHED' : 
+               currentLiquidity > 0 ? 'ACCUMULATING' : 'MONITORING',
+        liveData: tokenData?.liquidity ? `$${(typeof tokenData.liquidity === 'number' ? tokenData.liquidity / 1000 : parseFloat(tokenData.liquidity.toString()) / 1000).toFixed(1)}K TVL` : 'LOADING...',
         actionText: 'VIEW_LIQUIDITY'
       },
       {
@@ -182,20 +130,18 @@ const InteractiveQuantumPillars = memo(() => {
         description: 'Dedicated quantum vault rewards for temporal commitment with up to 8x multipliers.',
         color: 'green',
         gradient: 'from-green-500 to-teal-500',
-        value: lockerDaily,
-        maxValue: rewardMaxCapacity,
-        unit: 'ARK/day',
-        state: getRewardState(lockerDaily, rewardMaxCapacity, efficiency?.locker || 0),
-        liveData: lockerDaily > 0 ? `${lockerDaily > 1000 ? (lockerDaily / 1000).toFixed(1) + 'K' : lockerDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
+        value: rewardPool,
+        maxValue: 1000000,
+        unit: 'ARK',
+        state: totalLocked > 0 ? 'ACCUMULATING' : 'MONITORING',
+        liveData: totalLocked > 0 ? `${(totalLocked / 1000000).toFixed(2)}M LOCKED` : 'LOADING...',
         actionText: 'ENTER_VAULT'
       }
     ];
-  }, [feeMetrics, contractData, tokenData, protocolStats, realTimeUpdate]);
+  }, [tokenData, contractData, protocolStats]);
 
   const pillarsData = getPillarsData;
-  
-  // Show loading state while fee data is being fetched
-  const loading = contractLoading || tokenLoading || lockerLoading || feeLoading;
+  const loading = contractLoading || tokenLoading || lockerLoading;
 
   return (
     <section id="quantum-pillars" className="relative z-30 py-16 px-6 bg-gradient-to-b from-black/10 to-black/30">
@@ -217,7 +163,7 @@ const InteractiveQuantumPillars = memo(() => {
         <div className={`text-center mb-12 transition-all duration-1000 ${pillarsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
             <Database className="w-3 h-3 animate-pulse" />
-            <span>[QUANTUM ARCHITECTURE SCAN]</span>
+            <span>[QUANTUM_ARCHITECTURE_SCAN]</span>
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
@@ -228,7 +174,7 @@ const InteractiveQuantumPillars = memo(() => {
           </h2>
           
           <div className="text-sm text-gray-400 font-mono">
-            [LIVE BLOCKCHAIN DATA INTERFACE]
+            [LIVE_BLOCKCHAIN_DATA_INTERFACE]
           </div>
         </div>
 
@@ -236,22 +182,26 @@ const InteractiveQuantumPillars = memo(() => {
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-1000 delay-300 ${pillarsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {pillarsData.map((pillar, index) => {
             const IconComponent = pillar.icon;
+            const isActive = activePillar === pillar.id;
             const percentage = pillar.maxValue > 0 ? Math.min((pillar.value / pillar.maxValue) * 100, 100) : 0;
             const stateColor = getStateColor(pillar.state);
 
             return (
                 <Card 
                 key={pillar.id} 
-                className={`relative bg-black/60 backdrop-blur-xl border-2 rounded-xl overflow-hidden group ${isMobile ? 'active:scale-[0.98]' : 'hover:scale-[1.02]'} transition-all duration-500 ${pillar.onClick ? 'cursor-pointer' : ''} will-change-transform border-${pillar.color}-500/30 ${isMobile ? 'active:border-' : 'hover:border-'}${pillar.color}-500/60`}
+                className={`relative bg-black/60 backdrop-blur-xl border-2 rounded-xl overflow-hidden group ${isMobile ? 'active:scale-[0.98]' : 'hover:scale-[1.02]'} transition-all duration-500 cursor-pointer will-change-transform ${
+                  isActive 
+                    ? `border-${pillar.color}-500/80 shadow-lg shadow-${pillar.color}-500/30` 
+                    : `border-${pillar.color}-500/30 ${isMobile ? 'active:border-' : 'hover:border-'}${pillar.color}-500/60`
+                }`}
                 style={{ contain: 'layout style paint' }}
-                onClick={pillar.onClick}
               >
                 <CardContent className="p-6">
                   {/* Status Header */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <IconComponent className={`w-5 h-5 text-${pillar.color}-400`} />
-                      <div className={`w-2 h-2 bg-${stateColor}-400 rounded-full ${pillar.state === 'ACTIVE' && !isMobile ? 'animate-pulse' : ''}`}></div>
+                      <div className={`w-2 h-2 bg-${stateColor}-400 rounded-full ${pillar.state === 'ACTIVE' ? 'animate-pulse' : ''}`}></div>
                     </div>
                     <div className={`text-${stateColor}-400 font-mono text-xs px-2 py-1 bg-${stateColor}-500/20 border border-${stateColor}-500/30 rounded`}>
                       {pillar.state}
@@ -319,6 +269,11 @@ const InteractiveQuantumPillars = memo(() => {
 
                   {/* Animated Border Effect */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${pillar.gradient} opacity-0 ${isMobile ? 'group-active:opacity-10' : 'group-hover:opacity-10'} transition-opacity rounded-xl`}></div>
+                  
+                  {/* Active Pillar Pulse */}
+                  {isActive && !isMobile && (
+                    <div className={`absolute inset-0 bg-gradient-to-r ${pillar.gradient} opacity-5 animate-pulse rounded-xl`}></div>
+                  )}
 
                   {/* Scan Effect - Disabled on mobile */}
                   {!isMobile && (
@@ -336,7 +291,7 @@ const InteractiveQuantumPillars = memo(() => {
         <div className={`text-center mt-8 transition-all duration-1000 delay-700 ${pillarsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/40 font-mono text-xs">
             <Activity className="w-3 h-3 animate-pulse" />
-            <span>[QUANTUM FIELD SYNCHRONIZATION COMPLETE]</span>
+            <span>[QUANTUM_FIELD_SYNCHRONIZATION_COMPLETE]</span>
             <Activity className="w-3 h-3 animate-pulse" />
           </div>
         </div>

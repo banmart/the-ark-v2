@@ -15,7 +15,6 @@ import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import Locker from "./pages/Locker";
 import Leaderboard from "./pages/Leaderboard";
-import BurnAnalytics from "./pages/BurnAnalytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,7 +36,6 @@ const App = () => (
                     <Route path="/onboarding" element={<Onboarding />} />
                     <Route path="/locker" element={<Locker />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
-                    <Route path="/burn-analytics" element={<BurnAnalytics />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>

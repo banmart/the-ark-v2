@@ -3,7 +3,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
 import { TextGenerateEffect } from './ui/text-generate-effect';
-import { mediaUrls } from '@/lib/media-urls';
+import { mediaUrls } from '@/lib/supabase-storage';
 
 interface HeroSectionProps {
   copyToClipboard: (text: string) => void;
@@ -17,8 +17,9 @@ const HeroSection = ({
   setShowOnboarding
 }: HeroSectionProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [backgroundReady, setBackgroundReady] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
     setIsOpen
@@ -30,14 +31,27 @@ const HeroSection = ({
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      // Preload background image immediately
-      const img = new Image();
-      img.onload = () => setBackgroundReady(true);
-      img.src = mediaUrls.heroBackground;
+      const handleCanPlay = () => {
+        setVideoLoaded(true);
+        // Start the intro fade sequence
+        setTimeout(() => {
+          setShowIntro(false);
+        }, 800); // Wait 0.8 seconds after video loads before starting fade
+      };
       
-      const handleCanPlay = () => setVideoLoaded(true);
+      const handlePlaying = () => {
+        // Video has started playing
+        setTimeout(() => {
+          setVideoPlaying(true);
+        }, 1000); // Wait 1 second after video starts playing
+      };
+      
       video.addEventListener('canplay', handleCanPlay);
-      return () => video.removeEventListener('canplay', handleCanPlay);
+      video.addEventListener('playing', handlePlaying);
+      return () => {
+        video.removeEventListener('canplay', handleCanPlay);
+        video.removeEventListener('playing', handlePlaying);
+      };
     }
   }, []);
   
@@ -59,6 +73,12 @@ const HeroSection = ({
   
   return (
     <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col items-center overflow-hidden">
+      {/* Black Intro Overlay */}
+      <div 
+        className={`absolute inset-0 bg-black z-30 transition-opacity duration-[4000ms] ease-in-out ${
+          showIntro ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+      />
       
       {/* Video Background with Vintage Gradient Overlay */}
       <div className="absolute inset-0 z-0">
@@ -68,8 +88,7 @@ const HeroSection = ({
           muted 
           loop 
           playsInline 
-          preload="auto"
-          className={`w-full h-full object-cover transform-gpu will-change-opacity transition-opacity duration-700 ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
           <source src={mediaUrls.heroVideo} type="video/mp4" />
         </video>
@@ -93,7 +112,7 @@ const HeroSection = ({
         </div>
         
         <div 
-          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transform-gpu will-change-opacity transition-opacity duration-500 ease-out ${backgroundReady && videoLoaded ? 'opacity-0' : 'opacity-100'}`}
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
           style={{
             backgroundImage: `url('${mediaUrls.heroBackground}')`
           }} 
@@ -114,7 +133,11 @@ const HeroSection = ({
       {/* Bottom Section - Logo and Contract Address */}
       <div className="max-w-7xl mx-auto w-full relative z-20">
         {/* Logo Section - The ARK */}
-        <div className="relative z-20 pb-8 opacity-100 translate-y-0 animate-fade-in">
+        <div 
+          className={`relative z-20 pb-8 transition-all duration-600 ease-out ${
+            videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+          }`}
+        >
           <div className="text-center">
             <h1>
               <TextGenerateEffect

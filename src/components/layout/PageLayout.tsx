@@ -11,9 +11,7 @@ import HeroSection from '../HeroSection';
 import ContractAddressSection from '../ContractAddressSection';
 import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
-import CelestialAwakeningSection from '../CelestialAwakeningSection';
 import InteractiveQuantumPillars from '../InteractiveQuantumPillars';
-import EnhancedFeeVisualizationsSection from '../fees/EnhancedFeeVisualizationsSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
 import ProphecySection from '../ProphecySection';
@@ -97,22 +95,23 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         setShowOnboarding={setShowOnboarding}
       />
 
-      {/* Celestial Awakening Narrative Section */}
-      <CelestialAwakeningSection />
-
       {/* Stats Section */}
       <StatsSection 
         contractData={contractData}
         contractLoading={contractLoading}
       />
 
+      {/* Interactive Quantum Pillars - Enhanced with Live Data */}
+      <InteractiveQuantumPillars />
+
+      {/* Chart Section */}
+      <ChartSection />
+
       {/* Render children if provided */}
       {children}
 
       {/* Footer */}
       <Footer />
-
-
     </div>
   );
 };

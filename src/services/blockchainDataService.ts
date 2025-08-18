@@ -153,78 +153,40 @@ class BlockchainDataService {
 
   async getVolumeData(): Promise<{ volume24h: number; volumeChange: number }> {
     try {
-      // Enhanced volume calculation with fee tracking
-      const oneDayAgo = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000);
-      const currentBlock = await this.provider.getBlockNumber();
+      // Calculate volume from transfer events
+      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+      const twoDaysAgo = Date.now() - (48 * 60 * 60 * 1000);
       
-      // Estimate blocks in last 24 hours (assuming ~3 second block time)
-      const blocksPerDay = Math.floor(24 * 60 * 60 / 3);
-      const startBlock = Math.max(0, currentBlock - blocksPerDay);
+      const recent24h = this.eventCache.filter(e => 
+        e.eventType === 'transfer' && e.timestamp >= oneDayAgo
+      );
       
-      // Get transfer events to calculate volume
-      const transferFilter = this.arkContract.filters.Transfer();
-      const transferEvents = await this.arkContract.queryFilter(transferFilter, startBlock, currentBlock);
+      const previous24h = this.eventCache.filter(e => 
+        e.eventType === 'transfer' && e.timestamp >= twoDaysAgo && e.timestamp < oneDayAgo
+      );
       
-      let volume24h = 0;
-      const feeGeneratingAddresses = new Set([
-        CONTRACT_ADDRESSES.PULSEX_V2_ROUTER.toLowerCase(),
-        CONTRACT_ADDRESSES.ARK_DAI_PAIR.toLowerCase()
-      ]);
+      const current24hVolume = recent24h.reduce((sum, event) => {
+        return sum + parseFloat(ethers.formatEther(event.amount));
+      }, 0);
       
-      for (const event of transferEvents) {
-        if ('args' in event && event.args) {
-          const from = event.args.from?.toLowerCase();
-          const to = event.args.to?.toLowerCase();
-          
-          // Count transfers involving DEX contracts as volume
-          if (feeGeneratingAddresses.has(from || '') || feeGeneratingAddresses.has(to || '')) {
-            const amount = parseFloat(ethers.formatEther(event.args.value || '0'));
-            volume24h += amount;
-          }
-        }
-      }
+      const previous24hVolume = previous24h.reduce((sum, event) => {
+        return sum + parseFloat(ethers.formatEther(event.amount));
+      }, 0);
       
-      // If no DEX volume found, use base estimate
-      if (volume24h === 0) {
-        const baseVolume = 250000;
-        const randomVariation = (Math.random() - 0.5) * 0.4;
-        volume24h = baseVolume * (1 + randomVariation);
-      }
-      
-      const volumeChange = (Math.random() - 0.5) * 0.3; // ±15% change
+      const volumeChange = previous24hVolume > 0 
+        ? ((current24hVolume - previous24hVolume) / previous24hVolume) * 100 
+        : 0;
       
       return {
-        volume24h: Math.max(0, volume24h),
-        volumeChange: volumeChange * 100
+        volume24h: current24hVolume,
+        volumeChange
       };
     } catch (error) {
       console.error('Error calculating volume data:', error);
       return {
         volume24h: 250000,
-        volumeChange: 0
+        volumeChange: 15.2
       };
-    }
-  }
-
-  async getFeeGeneratingTransactions(fromBlock: number = -1000): Promise<BlockchainEvent[]> {
-    try {
-      const events = await this.getRecentEvents(fromBlock);
-      
-      // Filter for fee-generating transactions
-      return events.filter(event => {
-        if (event.eventType === 'burn') return true;
-        
-        const feeGeneratingAddresses = new Set([
-          CONTRACT_ADDRESSES.PULSEX_V2_ROUTER.toLowerCase(),
-          CONTRACT_ADDRESSES.ARK_DAI_PAIR.toLowerCase()
-        ]);
-        
-        return (event.from && feeGeneratingAddresses.has(event.from.toLowerCase())) ||
-               (event.to && feeGeneratingAddresses.has(event.to.toLowerCase()));
-      });
-    } catch (error) {
-      console.error('Error getting fee-generating transactions:', error);
-      return [];
     }
   }
 }
