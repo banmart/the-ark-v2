@@ -11,7 +11,7 @@ import HeroSection from '../HeroSection';
 import ContractAddressSection from '../ContractAddressSection';
 import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
-import InteractiveQuantumPillars from '../InteractiveQuantumPillars';
+import FeaturesSection from '../FeaturesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
 import ProphecySection from '../ProphecySection';
@@ -76,6 +76,11 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Onboarding Modal */}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
 
       {/* Animated Background System */}
       <AnimatedBackground />
@@ -101,8 +106,23 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         contractLoading={contractLoading}
       />
 
-      {/* Interactive Quantum Pillars - Enhanced with Live Data */}
-      <InteractiveQuantumPillars />
+      {/* Features Section - Updated Four Pillars */}
+      <FeaturesSection />
+
+      {/* NEW: Contract Transparency Section */}
+      <ContractTransparencySection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Locker Tiers Section */}
+      <LockerTiersSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Prophecy Section */}
+      <ProphecySection />
 
       {/* Chart Section */}
       <ChartSection />

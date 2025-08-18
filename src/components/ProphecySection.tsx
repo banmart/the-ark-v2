@@ -122,7 +122,33 @@ const ProphecySection = () => {
       }}></div>
       </div>
 
-      
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* System Header */}
+        <div className={`text-center mb-16 transition-all duration-1000 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
+            <Database className="w-3 h-3 animate-pulse" />
+            <span>[PROPHECY MATRIX ANALYSIS]</span>
+            <Database className="w-3 h-3 animate-pulse" />
+          </div>
+          
+          <h2 className="text-4xl md:text-6xl font-black mb-6 text-cyan-400 font-mono">
+            [NOAH ARK PROTOCOL]
+          </h2>
+          
+        </div>
+
+        {/* Prophecy Modules */}
+        <div className={`transition-all duration-1000 delay-500 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {prophecies.map(prophecy => <ProphecyModule key={prophecy.id} prophecy={prophecy} />)}
+          </div>
+        </div>
+
+        {/* System Integration Protocol */}
+        <div className={`transition-all duration-1000 delay-1000 ${phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          
+        </div>
+      </div>
 
       <style>{`
         @keyframes float {

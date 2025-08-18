@@ -32,7 +32,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
     img.onload = () => {
       setBackgroundLoaded(true);
     };
-    img.src = 'https://xtailgacbmhdtdxnqjdv.supabase.co/storage/v1/object/public/media/images/main-background.jpg';
+    img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
   }, []);
 
   const copyToClipboard = (text: string) => {
