@@ -111,7 +111,7 @@ const Onboarding = () => {
       actions: [{
         name: 'Buy ARK',
         description: 'Purchase ARK tokens on PulseX',
-        url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67',
+        url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0x4d547181427Ee90342b4781E0eF2cd46F189cb2C',
         icon: '💰',
         external: true
       }]
@@ -131,7 +131,7 @@ const Onboarding = () => {
       }, {
         name: 'Add Liquidity',
         description: 'Provide liquidity to earn fees',
-        url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
+        url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0x4d547181427Ee90342b4781E0eF2cd46F189cb2C/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
         icon: '💧',
         external: true
       }]
@@ -195,8 +195,8 @@ const Onboarding = () => {
               </div>
 
               {/* Services Grid */}
-              {section.services && section.services.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+              {section.services && (
+                <div className="grid grid-cols-1 gap-6 mb-6 justify-items-center">
                   {section.services.map(service => (
                     <ServiceCard 
                       key={service.name} 
@@ -218,36 +218,28 @@ const Onboarding = () => {
               )}
 
               {/* Actions Grid */}
-              {section.actions && section.actions.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              {section.actions && (
+                <div className="grid grid-cols-1 gap-6 justify-items-center">
                   {section.actions.map((action) => (
-                    <Card key={action.name} className="w-full bg-black/50 backdrop-blur-xl border-cyan-500/30 hover:bg-black/70 transition-all duration-300 hover:scale-105 group relative overflow-hidden">
+                    <Card key={action.name} className="bg-black/50 border-cyan-500/30 hover:bg-black/70 transition-all duration-300 hover:scale-105 group relative overflow-hidden">
                       {/* Scanning effect */}
                       <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>
                       
-                      {/* Corner glow effect */}
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-radial from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      
                       <CardHeader className="pb-4">
                         <CardTitle className="flex items-center gap-3 text-cyan-400">
-                          <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-cyan-500/20 to-teal-500/20 rounded-lg backdrop-blur-sm border border-cyan-500/30 group-hover:scale-110 transition-transform duration-300">
-                            <span className="text-xl">{action.icon}</span>
-                          </div>
-                          <span className="font-mono text-sm tracking-wide">{action.name}</span>
+                          <span className="text-2xl">{action.icon}</span>
+                          <span className="font-mono text-sm">{action.name}</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-400 text-sm mb-4 leading-relaxed">{action.description}</p>
-                        <Button 
-                          onClick={() => {
-                            if (action.external) {
-                              handleNewTabLink(action.url);
-                            } else {
-                              navigate(action.url);
-                            }
-                          }} 
-                          className="w-full bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/25"
-                        >
+                        <p className="text-gray-400 text-sm mb-4">{action.description}</p>
+                        <Button onClick={() => {
+                          if (action.external) {
+                            handleNewTabLink(action.url);
+                          } else {
+                            navigate(action.url);
+                          }
+                        }} className="w-full bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform">
                           {action.external ? 'OPEN' : 'NAVIGATE'}
                           {action.external && <ExternalLink className="w-4 h-4 ml-2" />}
                         </Button>

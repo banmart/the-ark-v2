@@ -11,7 +11,7 @@ import HeroSection from '../HeroSection';
 import ContractAddressSection from '../ContractAddressSection';
 import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
-import InteractiveQuantumPillars from '../InteractiveQuantumPillars';
+import FeaturesSection from '../FeaturesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
 import ProphecySection from '../ProphecySection';
@@ -72,10 +72,15 @@ const PageLayout = ({ children }: PageLayoutProps) => {
   };
 
   // Updated to use the live ARK contract address
-  const contractAddress = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67';
+  const contractAddress = '0x4d547181427Ee90342b4781E0eF2cd46F189cb2C';
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Onboarding Modal */}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
 
       {/* Animated Background System */}
       <AnimatedBackground />
@@ -101,8 +106,26 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         contractLoading={contractLoading}
       />
 
-      {/* Interactive Quantum Pillars - Enhanced with Live Data */}
-      <InteractiveQuantumPillars />
+      {/* Features Section - Updated Four Pillars */}
+      <FeaturesSection />
+
+      {/* NEW: Contract Transparency Section */}
+      <ContractTransparencySection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Locker Tiers Section */}
+      <LockerTiersSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Prophecy Section */}
+      <ProphecySection />
+
+      {/* Chart Section */}
+      <ChartSection />
 
       {/* Render children if provided */}
       {children}

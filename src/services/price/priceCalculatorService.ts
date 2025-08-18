@@ -9,41 +9,30 @@ export class PriceCalculatorService {
     try {
       const { token0, token1, reserve0, reserve1 } = pairData;
       
-      console.log('Raw pair data:', {
-        token0,
-        token1,
-        reserve0,
-        reserve1
-      });
-      
-      // Determine which token is ARK 
+      // Determine which token is ARK and which is DAI
       const isToken0ARK = token0.toLowerCase() === CONTRACT_ADDRESSES.ARK_TOKEN.toLowerCase();
       
       const arkReserve = isToken0ARK ? reserve0 : reserve1;
-      const otherReserve = isToken0ARK ? reserve1 : reserve0;
-      const otherToken = isToken0ARK ? token1 : token0;
+      const daiReserve = isToken0ARK ? reserve1 : reserve0;
       
       // Convert to numbers (both tokens have 18 decimals)
       const arkAmount = parseFloat(ethers.formatEther(arkReserve));
-      const otherAmount = parseFloat(ethers.formatEther(otherReserve));
+      const daiAmount = parseFloat(ethers.formatEther(daiReserve));
       
       if (arkAmount === 0) {
-        console.warn('ARK amount is zero');
         return 0;
       }
       
-      // Price of ARK in terms of the other token (PLS, DAI, etc.)
-      const arkPrice = otherAmount / arkAmount;
+      // Price of ARK in USD (since DAI ≈ USD)
+      const arkPriceUSD = daiAmount / arkAmount;
       
-      console.log('Price calculation:', {
+      console.log('ARK/DAI price calculation:', {
         arkAmount: arkAmount.toFixed(2),
-        otherAmount: otherAmount.toFixed(2),
-        otherToken,
-        arkPrice: arkPrice.toFixed(8),
-        isToken0ARK
+        daiAmount: daiAmount.toFixed(2),
+        arkPriceUSD: arkPriceUSD.toFixed(8)
       });
       
-      return arkPrice;
+      return arkPriceUSD;
     } catch (error) {
       console.error('Error calculating price:', error);
       return 0;

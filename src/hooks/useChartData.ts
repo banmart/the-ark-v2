@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useARKTokenData } from './useARKTokenData';
-import { useContractData } from './useContractData';
 import { dexPriceService } from '../services/dexPriceService';
 
 export interface ChartDataPoint {
@@ -25,7 +24,6 @@ export interface TimeSeriesData {
 
 export const useChartData = () => {
   const { data: arkTokenData, loading } = useARKTokenData();
-  const { data: contractData } = useContractData();
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [priceHistory, setPriceHistory] = useState<{ timestamp: number; price: number }[]>([]);
   const [currentPriceInfo, setCurrentPriceInfo] = useState<{
@@ -38,26 +36,14 @@ export const useChartData = () => {
     lastUpdated: new Date()
   });
 
-  // Fetch live price data and build history - prioritize PLS/ARK pair
+  // Fetch live price data and build history
   useEffect(() => {
     const fetchLivePriceData = async () => {
       try {
-        console.log('Fetching live PLS/ARK price data for chart...');
+        console.log('Fetching live ARK/DAI price data for chart...');
         
-        // Always prioritize PLS/ARK pair from contract, fallback to DAI
-        const pairAddress = contractData?.contractAddresses?.pulseXPair && 
-                           contractData.contractAddresses.pulseXPair !== '0x0000000000000000000000000000000000000000'
-                           ? contractData.contractAddresses.pulseXPair
-                           : undefined;
-        
-        console.log('Using pair address:', pairAddress || 'ARK/DAI fallback');
-        
-        const priceData = await dexPriceService.getLivePrice(pairAddress);
-        
-        // Store data in historical service for long-term persistence
-        const { historicalDataService } = await import('../services/price/historicalDataService');
-        historicalDataService.addPriceData(priceData);
-        
+        // Get current live price from ARK/DAI pair
+        const priceData = await dexPriceService.getLivePrice();
         const currentTime = Date.now();
         
         // Update price info
@@ -72,7 +58,7 @@ export const useChartData = () => {
           setPriceHistory(prev => {
             const updated = [...prev, { timestamp: currentTime, price: priceData.price }];
             
-            // Keep only last 50 data points for immediate chart (about 25 minutes of data)
+            // Keep only last 50 data points for chart (about 25 minutes of data)
             const maxPoints = 50;
             if (updated.length > maxPoints) {
               return updated.slice(-maxPoints);
@@ -82,14 +68,13 @@ export const useChartData = () => {
           });
         }
         
-        console.log('PLS/ARK price data updated:', {
+        console.log('ARK/DAI price data updated:', {
           price: priceData.price.toFixed(8),
           source: priceData.dataSource,
-          baseCurrency: priceData.baseCurrency,
-          pairUsed: pairAddress ? 'PLS/ARK' : 'ARK/DAI'
+          baseCurrency: priceData.baseCurrency
         });
       } catch (error) {
-        console.error('Error fetching price data:', error);
+        console.error('Error fetching ARK/DAI price data:', error);
         setCurrentPriceInfo(prev => ({
           ...prev,
           dataSource: 'Error'
@@ -104,7 +89,7 @@ export const useChartData = () => {
       const interval = setInterval(fetchLivePriceData, 30000);
       return () => clearInterval(interval);
     }
-  }, [arkTokenData, loading, contractData?.contractAddresses?.pulseXPair]);
+  }, [arkTokenData, loading]);
 
   // Convert price history to chart format
   useEffect(() => {

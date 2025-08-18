@@ -61,7 +61,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               to="/" 
               className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform relative group"
             >
-              The ARK
+              ARK
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </Link>
             
@@ -95,7 +95,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               to="/onboarding" 
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
-              Get ARK
+              Onboarding
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </Link>
 
@@ -103,7 +103,15 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
               to="/locker" 
               className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
             >
-              Locker
+              Vault
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
+            </Link>
+
+            <Link 
+              to="/leaderboard" 
+              className="text-gray-300 hover:text-cyan-400 transition-colors font-mono text-sm relative group"
+            >
+              Leaderboard
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </Link>
             

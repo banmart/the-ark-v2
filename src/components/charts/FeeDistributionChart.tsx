@@ -11,9 +11,9 @@ const FeeDistributionChart = ({ data }: FeeDistributionChartProps) => {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="glass-card p-4 rounded-lg border border-video-cyan/20">
-          <p className="text-video-cyan font-semibold">{label}</p>
-          <p className="text-foreground">
+        <div className="glass-card p-4 rounded-lg border border-cyan-400/20">
+          <p className="text-cyan-400 font-semibold">{label}</p>
+          <p className="text-white">
             Fee: {payload[0].value}%
           </p>
         </div>
@@ -24,21 +24,21 @@ const FeeDistributionChart = ({ data }: FeeDistributionChartProps) => {
 
   return (
     <div className="glass-card rounded-xl p-6">
-      <h3 className="text-xl font-bold text-video-cyan mb-4 text-center">
+      <h3 className="text-xl font-bold text-cyan-400 mb-4 text-center">
         Fee Structure
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--video-cyan) / 0.1)" />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 255, 0.1)" />
           <XAxis 
             dataKey="name" 
-            stroke="hsl(var(--foreground))"
+            stroke="#ffffff"
             fontSize={12}
             angle={-45}
             textAnchor="end"
             height={80}
           />
-          <YAxis stroke="hsl(var(--foreground))" fontSize={12} />
+          <YAxis stroke="#ffffff" fontSize={12} />
           <Tooltip content={<CustomTooltip />} />
           <Bar 
             dataKey="value" 
@@ -47,8 +47,8 @@ const FeeDistributionChart = ({ data }: FeeDistributionChartProps) => {
           />
           <defs>
             <linearGradient id="feeGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(var(--video-cyan))" />
-              <stop offset="100%" stopColor="hsl(var(--video-blue))" />
+              <stop offset="0%" stopColor="#00ffff" />
+              <stop offset="100%" stopColor="#3b82f6" />
             </linearGradient>
           </defs>
         </BarChart>

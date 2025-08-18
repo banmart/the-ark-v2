@@ -26,7 +26,7 @@ export const TextGenerateEffect = ({
       },
       {
         duration: duration ? duration : 1,
-        delay: stagger(0.1),
+        delay: stagger(0.2),
       }
     );
   }, [scope.current]);
@@ -54,7 +54,7 @@ export const TextGenerateEffect = ({
   return (
     <div className={cn("font-bold", className)}>
       <div className="mt-4">
-        <div className="leading-snug tracking-wide">
+        <div className="text-white text-xl md:text-2xl leading-snug tracking-wide">
           {renderWords()}
         </div>
       </div>

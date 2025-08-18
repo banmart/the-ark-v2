@@ -1,3 +1,4 @@
+
 import { CONTRACT_ADDRESSES } from '../../utils/constants';
 import { PairDataService } from './pairDataService';
 import { PriceCalculatorService } from './priceCalculatorService';
@@ -15,43 +16,20 @@ class DexPriceService {
     this.volumeEstimatorService = new VolumeEstimatorService();
   }
 
-  async getLivePrice(pairAddress?: string): Promise<DexPriceData> {
+  async getLivePrice(): Promise<DexPriceData> {
     try {
-      console.log('Fetching live ARK price data...');
+      console.log('Fetching live ARK/DAI price data...');
       
-      // Use provided pair address or fallback to DAI pair
-      const targetPairAddress = pairAddress || CONTRACT_ADDRESSES.ARK_DAI_PAIR;
-      const pairData = await this.pairDataService.getPairData(targetPairAddress);
+      const pairAddress = CONTRACT_ADDRESSES.ARK_DAI_PAIR;
+      const pairData = await this.pairDataService.getPairData(pairAddress);
       
       if (!pairData) {
-        throw new Error('Failed to get ARK pair data');
+        throw new Error('Failed to get ARK/DAI pair data');
       }
 
-      const arkPriceInPair = await this.priceCalculatorService.calculatePrice(pairData);
+      const arkPriceUSD = await this.priceCalculatorService.calculatePrice(pairData);
       
-      // Convert to USD based on pair type
-      let arkPriceUSD = arkPriceInPair;
-      let baseCurrency = 'USD';
-      
-      if (pairAddress && pairAddress !== CONTRACT_ADDRESSES.ARK_DAI_PAIR) {
-        // This is likely ARK/PLS pair - convert PLS to USD
-        const plsToUsd = 0.0001; // Rough PLS price estimate
-        arkPriceUSD = arkPriceInPair * plsToUsd;
-        baseCurrency = 'PLS';
-        
-        console.log('ARK/PLS price conversion:', {
-          arkPricePLS: arkPriceInPair.toFixed(8),
-          plsToUsd,
-          arkPriceUSD: arkPriceUSD.toFixed(8)
-        });
-      }
-      
-      // Bounds checking - flag obviously wrong prices
-      if (arkPriceUSD > 1 || arkPriceUSD < 0.00000001) {
-        console.warn('Price out of expected bounds:', arkPriceUSD);
-      }
-      
-      if (arkPriceUSD > 0 && arkPriceUSD < 1) {
+      if (arkPriceUSD > 0) {
         this.priceCalculatorService.addPriceToHistory(arkPriceUSD);
       }
       
@@ -59,12 +37,11 @@ class DexPriceService {
       const totalLiquidityUSD = this.volumeEstimatorService.calculateLiquidity(pairData, arkPriceUSD);
       const volume24h = await this.volumeEstimatorService.estimateVolume24h(pairData);
       
-      console.log('Live ARK price data retrieved:', {
+      console.log('Live ARK/DAI price data retrieved:', {
         arkPriceUSD: arkPriceUSD.toFixed(8),
         priceChange24h: priceChange24h.toFixed(2),
         volume24h: volume24h.toFixed(2),
-        totalLiquidityUSD: totalLiquidityUSD.toFixed(2),
-        baseCurrency
+        totalLiquidityUSD: totalLiquidityUSD.toFixed(2)
       });
       
       return {
@@ -74,10 +51,10 @@ class DexPriceService {
         liquidity: totalLiquidityUSD,
         lastUpdated: new Date(),
         dataSource: 'PulseX',
-        baseCurrency
+        baseCurrency: 'DAI'
       };
     } catch (error) {
-      console.error('Error getting live price:', error);
+      console.error('Error getting live price from ARK/DAI pair:', error);
       
       // Return error state with cached data if available
       const cachedPrice = this.priceCalculatorService.getCachedPrice();
@@ -89,7 +66,7 @@ class DexPriceService {
         liquidity: 0,
         lastUpdated: new Date(),
         dataSource: 'Error',
-        baseCurrency: 'USD'
+        baseCurrency: 'DAI'
       };
     }
   }

@@ -417,33 +417,3 @@
     box-shadow: 0 0 30px rgba(34, 211, 238, 0.3), 0 0 40px rgba(34, 211, 238, 0.1);
   }
 }
-
-/* Chart-specific animations */
-@keyframes chart-scan {
-  0% { 
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  10%, 90% {
-    opacity: 1;
-  }
-  100% { 
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-/* Grid pattern utilities */
-.bg-grid {
-  background-image: 
-    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
-}
-
-.bg-grid-size {
-  background-size: 50px 50px;
-}
-
-.animate-scan {
-  animation: chart-scan 4s linear infinite;
-}

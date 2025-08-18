@@ -12,12 +12,12 @@ const TokenDistributionChart = ({ data }: TokenDistributionChartProps) => {
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
-        <div className="glass-card p-4 rounded-lg border border-video-cyan/20">
-          <p className="text-video-cyan font-semibold">{data.name}</p>
-          <p className="text-foreground">
+        <div className="glass-card p-4 rounded-lg border border-cyan-400/20">
+          <p className="text-cyan-400 font-semibold">{data.name}</p>
+          <p className="text-white">
             Value: {data.value.toLocaleString()}
           </p>
-          <p className="text-muted-foreground">
+          <p className="text-gray-300">
             Percentage: {data.payload.percentage?.toFixed(2)}%
           </p>
         </div>
@@ -28,7 +28,7 @@ const TokenDistributionChart = ({ data }: TokenDistributionChartProps) => {
 
   return (
     <div className="glass-card rounded-xl p-6">
-      <h3 className="text-xl font-bold text-video-cyan mb-4 text-center">
+      <h3 className="text-xl font-bold text-cyan-400 mb-4 text-center">
         Token Distribution
       </h3>
       <ResponsiveContainer width="100%" height={300}>
@@ -48,8 +48,8 @@ const TokenDistributionChart = ({ data }: TokenDistributionChartProps) => {
           </Pie>
           <Tooltip content={<CustomTooltip />} />
           <Legend 
-            wrapperStyle={{ color: 'hsl(var(--foreground))' }}
-            formatter={(value) => <span style={{ color: 'hsl(var(--foreground))' }}>{value}</span>}
+            wrapperStyle={{ color: '#ffffff' }}
+            formatter={(value) => <span style={{ color: '#ffffff' }}>{value}</span>}
           />
         </PieChart>
       </ResponsiveContainer>

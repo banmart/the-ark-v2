@@ -15,7 +15,7 @@ export const NETWORKS = {
 };
 
 export const CONTRACT_ADDRESSES = {
-  ARK_TOKEN: '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67',
+  ARK_TOKEN: '0x4d547181427Ee90342b4781E0eF2cd46F189cb2C',
   PULSEX_V2_ROUTER: '0x636f6407B90661b73b1C0F7e24F4C79f624d0738', // Updated from contract
   WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27', // Wrapped PLS
   DAI: '0xefD766cCb38EaF1dfd701853BFCe31359239F305', // DAI token on PulseChain
@@ -87,7 +87,7 @@ export const LOCKER_VAULT_ABI = [
 ];
 
 // Locker vault contract address - UPDATED TO LIVE ADDRESS
-export const LOCKER_VAULT_ADDRESS = '0x3ba44a1de77025b78d7430449569dd1112ac4473';
+export const LOCKER_VAULT_ADDRESS = '0x632124916ec6D778E1C3796aA13b458D2C7FecE5';
 
 // Lock tier enumeration matching the contract
 export const LOCK_TIERS = {

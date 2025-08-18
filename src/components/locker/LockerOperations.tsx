@@ -3,7 +3,6 @@ import React from 'react';
 import EnhancedLockInterface from './EnhancedLockInterface';
 import EnhancedUserDashboard from './EnhancedUserDashboard';
 import EnhancedProtocolStats from './EnhancedProtocolStats';
-import UserStatsSection from './UserStatsSection';
 
 interface LockerOperationsProps {
   isConnected: boolean;
@@ -17,18 +16,13 @@ const LockerOperations = ({ isConnected }: LockerOperationsProps) => {
         <EnhancedProtocolStats />
       </div>
 
-      {/* User Stats & Pending Rewards */}
-      <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
-        <UserStatsSection isConnected={isConnected} />
-      </div>
-
       {/* Lock Interface */}
-      <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+      <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
         <EnhancedLockInterface isConnected={isConnected} />
       </div>
 
       {/* User Dashboard */}
-      <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+      <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
         <EnhancedUserDashboard isConnected={isConnected} />
       </div>
     </div>

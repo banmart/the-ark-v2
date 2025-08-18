@@ -91,7 +91,7 @@ export const tiers: Tier[] = [
   {
     name: 'LEGENDARY',
     icon: '⚡',
-    color: 'yellow-300',
+    color: 'orange-400',
     multiplier: '8x',
     duration: '4-5y',
     description: 'True Noah privileges',

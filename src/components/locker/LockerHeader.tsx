@@ -29,7 +29,18 @@ const LockerHeader = () => {
 
         {/* System Description */}
         <div className="max-w-2xl mx-auto">
-          
+          <div className="bg-black/30 backdrop-blur-xl border border-teal-500/30 rounded-xl p-6">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-1 h-1 bg-teal-400 rounded-full animate-pulse"></div>
+              <span className="text-sm font-mono text-teal-400 tracking-wider">MISSION_BRIEFING</span>
+              <div className="w-1 h-1 bg-teal-400 rounded-full animate-pulse"></div>
+            </div>
+            <p className="text-gray-300 text-lg leading-relaxed">
+              Lock your tokens in the quantum vault to earn multiplied rewards based on commitment duration.
+              <br />
+              <span className="text-teal-400 font-mono text-sm">Ascend through divine tiers and unlock exponential gains.</span>
+            </p>
+          </div>
         </div>
 
         {/* Scanning Effect */}

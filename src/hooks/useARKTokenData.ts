@@ -91,16 +91,8 @@ export const useARKTokenData = () => {
       const burnedTokensNum = parseFloat(burnedTokensFormatted);
       const circulatingSupplyNum = totalSupplyNum - burnedTokensNum;
 
-      // Calculate market cap using circulating supply (standard market cap calculation)
+      // Calculate market cap with full precision maintaining 18 decimals
       const marketCapNum = circulatingSupplyNum * priceData.price;
-      
-      console.log('Market cap calculation:', {
-        totalSupply: totalSupplyNum,
-        burnedTokens: burnedTokensNum,
-        circulatingSupply: circulatingSupplyNum,
-        price: priceData.price,
-        marketCap: marketCapNum
-      });
 
       setData({
         totalSupply: totalSupplyNum.toFixed(2),
