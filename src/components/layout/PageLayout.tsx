@@ -11,6 +11,7 @@ import HeroSection from '../HeroSection';
 import ContractAddressSection from '../ContractAddressSection';
 import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
+import CelestialAwakeningSection from '../CelestialAwakeningSection';
 import InteractiveQuantumPillars from '../InteractiveQuantumPillars';
 import EnhancedFeeVisualizationsSection from '../fees/EnhancedFeeVisualizationsSection';
 import ContractTransparencySection from '../ContractTransparencySection';
@@ -102,8 +103,14 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         contractLoading={contractLoading}
       />
 
+      {/* Celestial Awakening Narrative Section */}
+      <CelestialAwakeningSection />
+
       {/* Enhanced Fee Visualizations Section */}
       <EnhancedFeeVisualizationsSection />
+
+      {/* Interactive Quantum Pillars */}
+      <InteractiveQuantumPillars />
 
       {/* Render children if provided */}
       {children}
