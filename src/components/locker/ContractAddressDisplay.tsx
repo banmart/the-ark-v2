@@ -28,27 +28,27 @@ const ContractAddressDisplay = () => {
   };
 
   return (
-    <div className="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-4 mb-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-sm font-medium text-cyan-400 mb-1">Locker Contract Address</div>
+    <div className="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-3 sm:p-4 mb-6 mx-2 sm:mx-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="text-xs sm:text-sm font-medium text-cyan-400 mb-1">Locker Contract Address</div>
           <div className="text-xs text-gray-300 font-mono break-all">
             {LOCKER_VAULT_ADDRESS}
           </div>
         </div>
         <button
           onClick={copyContractAddress}
-          className="ml-4 bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded-lg hover:bg-cyan-500/30 transition-colors flex items-center gap-2 text-sm font-medium"
+          className="bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded-lg hover:bg-cyan-500/30 transition-colors flex items-center justify-center gap-2 text-xs sm:text-sm font-medium flex-shrink-0"
         >
           {isCopied ? (
             <>
               <Check className="w-4 h-4" />
-              Copied!
+              <span className="hidden sm:inline">Copied!</span>
             </>
           ) : (
             <>
               <Copy className="w-4 h-4" />
-              Copy
+              <span className="hidden sm:inline">Copy</span>
             </>
           )}
         </button>

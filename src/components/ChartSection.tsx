@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { RefreshCw, BarChart3, Database, Activity, Zap, Shield } from 'lucide-react';
 import { useChartData } from '../hooks/useChartData';
-import TrendChart from './charts/TrendChart';
+import HistoricalChart from './charts/HistoricalChart';
+import BackgroundChart from './charts/BackgroundChart';
 const ChartSection = () => {
   const {
     timeSeriesData,
@@ -17,100 +18,74 @@ const ChartSection = () => {
     // Simulate refresh delay
     setTimeout(() => setRefreshing(false), 1000);
   };
-  return <section id="chart" className="relative z-10 py-20 px-6 overflow-hidden">
-      {/* Quantum Field Background */}
-      <div className="absolute inset-0 z-0">
-        {/* Base quantum gradient */}
-        <div className="absolute inset-0 bg-gradient-radial from-cyan-900/10 via-black to-black"></div>
-        
-        {/* Animated quantum grid */}
-        <div className="absolute inset-0 opacity-15">
-          <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
-        </div>
-        
-        {/* Floating quantum orbs */}
-        <div className="floating-orb orb1 bg-gradient-radial from-cyan-500/10 to-transparent blur-3xl"></div>
-        <div className="floating-orb orb2 bg-gradient-radial from-teal-500/10 to-transparent blur-3xl"></div>
-        
-        {/* Scanning lines */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent animate-scan"></div>
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/40 to-transparent animate-scan" style={{
-        animationDelay: '2s'
-      }}></div>
-      </div>
+  return <section id="chart" className="relative z-10 py-12 px-6 overflow-hidden min-h-screen">
+      {/* Background Chart */}
+      <BackgroundChart className="z-0" type="area" opacity={0.8} />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* System Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
-              <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
-              <span className="font-mono text-cyan-400 text-sm tracking-wider">ARK/DAI_LIVE_PRICE_ORACLE</span>
-              <Database className="w-4 h-4 text-cyan-400 animate-pulse" />
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-center mb-4">
-            <BarChart3 className="w-10 h-10 text-cyan-400 mr-3" />
-            <h2 className="text-4xl md:text-5xl font-black text-cyan-400 font-mono">
-              [LIVE_PRICE_MATRIX]
-            </h2>
-            <BarChart3 className="w-10 h-10 text-cyan-400 ml-3" />
-          </div>
-          
-          <p className="text-gray-300 text-lg mb-6 max-w-4xl mx-auto leading-relaxed font-mono">
-            Direct ARK/DAI pair pricing for accurate USD valuation
-            <br />
-            <code className="text-cyan-400 text-sm bg-black/40 backdrop-blur-sm px-4 py-2 rounded-lg mt-2 inline-block border border-cyan-500/20">
-              PulseX DEX • ARK/DAI Pair • Real-time Updates
-            </code>
-          </p>
-          
-          {/* Enhanced System Controls */}
-          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Data Source Status */}
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${dataSource === 'PulseX' ? 'bg-green-400 animate-pulse' : dataSource === 'Error' ? 'bg-red-400 animate-pulse' : 'bg-yellow-400 animate-pulse'}`}></div>
-                  <span className="font-mono text-cyan-400 text-sm">ARK: {dataSource}</span>
+        {/* Pricing Data Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                <div className="animate-pulse">
+                  <div className="h-4 bg-cyan-500/20 rounded mb-2"></div>
+                  <div className="h-6 bg-cyan-500/20 rounded mb-1"></div>
+                  <div className="h-3 bg-cyan-500/20 rounded w-2/3"></div>
                 </div>
               </div>
-              
-              {/* Base Currency */}
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse"></div>
-                  <span className="font-mono text-cyan-400 text-sm">BASE: {baseCurrency}</span>
+            ))
+          ) : (
+            timeSeriesData.length > 0 && (
+              <>
+                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Activity className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono text-cyan-400 text-sm">CURRENT PRICE</span>
+                  </div>
+                  <p className="text-cyan-300 font-mono text-lg font-bold">
+                    ${timeSeriesData[timeSeriesData.length - 1]?.price?.toFixed(6) || '0.000000'}
+                  </p>
+                  <p className="text-cyan-400 font-mono text-xs">PLS/ARK</p>
                 </div>
-              </div>
-              
-              {/* Data Stream Status */}
-              <div className="flex items-center justify-center gap-3">
-                <Activity className="w-4 h-4 text-cyan-400" />
-                <div className="text-center">
-                  <div className="font-mono text-cyan-400 text-xs">LAST_SYNC</div>
-                  <div className="font-mono text-cyan-300 text-sm">{lastUpdated?.toLocaleTimeString()}</div>
+                
+                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono text-cyan-400 text-sm">24H CHANGE</span>
+                  </div>
+                  <p className="text-cyan-300 font-mono text-lg font-bold">
+                    {timeSeriesData.length > 1 ? 
+                      `${(((timeSeriesData[timeSeriesData.length - 1]?.price || 0) - (timeSeriesData[0]?.price || 0)) / (timeSeriesData[0]?.price || 1) * 100).toFixed(2)}%`
+                      : '0.00%'
+                    }
+                  </p>
+                  <p className="text-cyan-400 font-mono text-xs">Price Movement</p>
                 </div>
-              </div>
-              
-              {/* Refresh Control */}
-              <div className="flex items-center justify-center">
-                <button onClick={handleRefresh} disabled={refreshing} className="flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-sm border border-cyan-500/30 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-400/10 transition-all duration-300 disabled:opacity-50 font-mono text-sm">
-                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                  {refreshing ? 'SYNCING...' : 'SYNC_DATA'}
-                </button>
-              </div>
-            </div>
-          </div>
+                
+                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono text-cyan-400 text-sm">DATA POINTS</span>
+                  </div>
+                  <p className="text-cyan-300 font-mono text-lg font-bold">{priceDataPoints}</p>
+                  <p className="text-cyan-400 font-mono text-xs">Live Samples</p>
+                </div>
+                
+                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Database className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono text-cyan-400 text-sm">LAST UPDATE</span>
+                  </div>
+                  <p className="text-cyan-300 font-mono text-lg font-bold">
+                    {lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : 'Loading...'}
+                  </p>
+                  <p className="text-cyan-400 font-mono text-xs">{dataSource || 'DEX Oracle'}</p>
+                </div>
+              </>
+            )
+          )}
         </div>
-
-        {/* Enhanced Price Chart */}
-        <div className="mb-8">
-          <TrendChart data={timeSeriesData} dataSource={dataSource} baseCurrency={baseCurrency} priceDataPoints={priceDataPoints} />
-        </div>
-
-        {/* Enhanced Data Source Info */}
         
       </div>
     </section>;

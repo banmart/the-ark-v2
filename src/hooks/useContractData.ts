@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useARKTokenData } from './useARKTokenData';
 import { CONTRACT_ADDRESSES, ARK_TOKEN_ABI, NETWORKS, CONTRACT_CONSTANTS } from '../utils/constants';
+import { liquidityTrackingService, LiquidityAccumulation } from '../services/liquidityTrackingService';
 
 interface ContractData {
   // Token basics (from live data and contract)
@@ -60,6 +61,12 @@ interface ContractData {
     tokensForLiquidity: string;
     totalFeesCollected: string;
     lpTokensBurned: string;
+    currentAccumulation: string;
+    accumulationSinceLastSwap: string;
+    isThresholdReached: boolean;
+    isPendingSwap: boolean;
+    lastSwapTimestamp: number;
+    estimatedNextSwap: number | null;
   };
   
   // Additional contract data
@@ -122,7 +129,13 @@ export const useContractData = () => {
     liquidityData: {
       tokensForLiquidity: '0',
       totalFeesCollected: '0',
-      lpTokensBurned: '0'
+      lpTokensBurned: '0',
+      currentAccumulation: '0',
+      accumulationSinceLastSwap: '0',
+      isThresholdReached: false,
+      isPendingSwap: false,
+      lastSwapTimestamp: 0,
+      estimatedNextSwap: null
     },
     contractAddresses: {
       arkLocker: '0x0000000000000000000000000000000000000000',
@@ -144,21 +157,31 @@ export const useContractData = () => {
 
       console.log('Fetching ARK contract data...');
 
-      // Fetch contract data using actual available functions
+      // Fetch contract data and liquidity accumulation in parallel
       const [
         owner,
         swapThreshold,
         arkLockerAddress,
         pulseXPair,
         burnAddress,
-        burnedBalance
+        burnedBalance,
+        liquidityAccumulation
       ] = await Promise.all([
         arkToken.owner().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.swapThreshold().catch(() => ethers.parseEther(CONTRACT_CONSTANTS.DEFAULT_SWAP_THRESHOLD.toString())),
         arkToken.ARKLocker().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.pulseXPair().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.burnAddress().catch(() => CONTRACT_ADDRESSES.DEAD_ADDRESS),
-        arkToken.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS).catch(() => ethers.parseEther('0'))
+        arkToken.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS).catch(() => ethers.parseEther('0')),
+        liquidityTrackingService.getCurrentAccumulation().catch(() => ({
+          currentAccumulation: '0',
+          accumulationSinceLastSwap: '0',
+          lastSwapTimestamp: 0,
+          lastSwapBlock: 0,
+          isThresholdReached: false,
+          isPendingSwap: false,
+          estimatedNextSwap: null
+        }))
       ]);
 
       console.log('ARK contract data fetched:', {
@@ -167,28 +190,35 @@ export const useContractData = () => {
         arkLockerAddress,
         pulseXPair,
         burnAddress,
-        burnedBalance: ethers.formatEther(burnedBalance)
+        burnedBalance: ethers.formatEther(burnedBalance),
+        liquidityAccumulation
       });
 
-      // Update with real contract data
+      // Update with real contract data and liquidity tracking
       setData(prev => ({
         ...prev,
         swapSettings: {
           ...prev.swapSettings,
           threshold: ethers.formatEther(swapThreshold),
-          maxAmount: ethers.formatEther(swapThreshold), // Use threshold as max for now
+          maxAmount: ethers.formatEther(swapThreshold),
           enabled: true
         },
         security: {
           ...prev.security,
           ownerAddress: owner,
-          isPaused: false // No pause function in new contract
+          isPaused: false
         },
         liquidityData: {
           ...prev.liquidityData,
-          tokensForLiquidity: ethers.formatEther(swapThreshold), // Tokens ready for swap
-          totalFeesCollected: '0', // Would need to calculate from events
-          lpTokensBurned: ethers.formatEther(burnedBalance)
+          tokensForLiquidity: ethers.formatEther(swapThreshold),
+          totalFeesCollected: '0',
+          lpTokensBurned: ethers.formatEther(burnedBalance),
+          currentAccumulation: liquidityAccumulation.currentAccumulation,
+          accumulationSinceLastSwap: liquidityAccumulation.accumulationSinceLastSwap,
+          isThresholdReached: liquidityAccumulation.isThresholdReached,
+          isPendingSwap: liquidityAccumulation.isPendingSwap,
+          lastSwapTimestamp: liquidityAccumulation.lastSwapTimestamp,
+          estimatedNextSwap: liquidityAccumulation.estimatedNextSwap
         },
         contractAddresses: {
           arkLocker: arkLockerAddress,
@@ -198,8 +228,8 @@ export const useContractData = () => {
         },
         lockerRewards: {
           vaultAddress: arkLockerAddress,
-          pending: '0', // Would need locker contract integration
-          distributed: '0' // Would need locker contract integration
+          pending: '0',
+          distributed: '0'
         },
         lastUpdated: new Date()
       }));
@@ -262,11 +292,11 @@ export const useContractData = () => {
     fetchContractData();
     fetchBurnedTokens();
     
-    // Auto-refresh every 60 seconds
+    // Auto-refresh every 15 seconds for liquidity tracking
     const interval = setInterval(() => {
       fetchContractData();
       fetchBurnedTokens();
-    }, 60000);
+    }, 15000);
     
     return () => clearInterval(interval);
   }, []);
