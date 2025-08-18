@@ -102,7 +102,7 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       />
 
       {/* Features Section - Updated Four Pillars */}
-      <FeaturesSection />
+      <InteractiveQuantumPillars />
 
       {/* NEW: Contract Transparency Section */}
       <ContractTransparencySection 
