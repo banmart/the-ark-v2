@@ -115,12 +115,12 @@ const EnhancedLockInterface = ({
         {/* Main Title */}
         <div className="mb-8">
           <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.15em]">
-            [LOCK_PROTOCOL_INTERFACE]
+            [LOCK PROTOCOL INTERFACE]
           </div>
           <h2 className="text-2xl font-bold text-cyan-400 mb-2">Quantum Token Lock</h2>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm font-mono text-green-400">READY_FOR_OPERATIONS</span>
+            <span className="text-sm font-mono text-green-400">READY FOR OPERATIONS</span>
           </div>
         </div>
 

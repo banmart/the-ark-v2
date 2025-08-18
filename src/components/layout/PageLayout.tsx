@@ -11,7 +11,9 @@ import HeroSection from '../HeroSection';
 import ContractAddressSection from '../ContractAddressSection';
 import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
-import FeaturesSection from '../FeaturesSection';
+import CelestialAwakeningSection from '../CelestialAwakeningSection';
+import InteractiveQuantumPillars from '../InteractiveQuantumPillars';
+import EnhancedFeeVisualizationsSection from '../fees/EnhancedFeeVisualizationsSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
 import ProphecySection from '../ProphecySection';
@@ -76,11 +78,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Onboarding Modal */}
-      <OnboardingModal 
-        isOpen={showOnboarding} 
-        onClose={() => setShowOnboarding(false)} 
-      />
 
       {/* Animated Background System */}
       <AnimatedBackground />
@@ -100,38 +97,22 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         setShowOnboarding={setShowOnboarding}
       />
 
+      {/* Celestial Awakening Narrative Section */}
+      <CelestialAwakeningSection />
+
       {/* Stats Section */}
       <StatsSection 
         contractData={contractData}
         contractLoading={contractLoading}
       />
 
-      {/* Features Section - Updated Four Pillars */}
-      <FeaturesSection />
-
-      {/* NEW: Contract Transparency Section */}
-      <ContractTransparencySection 
-        contractData={contractData}
-        contractLoading={contractLoading}
-      />
-
-      {/* Locker Tiers Section */}
-      <LockerTiersSection 
-        contractData={contractData}
-        contractLoading={contractLoading}
-      />
-
-      {/* Prophecy Section */}
-      <ProphecySection />
-
-      {/* Chart Section */}
-      <ChartSection />
-
       {/* Render children if provided */}
       {children}
 
       {/* Footer */}
       <Footer />
+
+
     </div>
   );
 };
