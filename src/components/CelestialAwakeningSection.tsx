@@ -51,7 +51,7 @@ const CelestialAwakeningSection = () => {
       id: 'vessel-awakens',
       title: "The Vessel Awakens",
       icon: Ship,
-      content: "The ARK is no mere token—it is a living covenant between holder and cosmos. As the Guardian's vessel cuts through digital waters, four sacred pillars emerge from the quantum depths:",
+      content: "The ARK is no mere token—it is a living covenant between holder and cosmos. As the Guardian's vessel cuts through digital waters, four sacred pillars emerge from the quantum depths.",
       gradient: "from-video-teal/20 via-video-cyan/10 to-transparent"
     },
     {
