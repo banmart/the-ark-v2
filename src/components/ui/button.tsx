@@ -18,9 +18,6 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        quantum: "bg-black/40 backdrop-blur-xl border border-cyan-500/30 text-cyan-400 font-mono hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all duration-300",
-        "quantum-ghost": "bg-transparent border border-cyan-500/20 text-cyan-400 font-mono hover:bg-cyan-500/10 hover:border-cyan-400/40 hover:text-cyan-300 transition-all duration-300",
-        "quantum-active": "bg-cyan-500/20 backdrop-blur-xl border border-cyan-400/60 text-cyan-300 font-mono shadow-lg shadow-cyan-500/20",
       },
       size: {
         default: "h-10 px-4 py-2",

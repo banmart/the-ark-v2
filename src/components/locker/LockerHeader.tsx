@@ -11,25 +11,36 @@ const LockerHeader = () => {
         {/* System Status Indicator */}
         <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-xs font-mono text-green-400 tracking-wider">SYSTEM ONLINE</span>
+          <span className="text-xs font-mono text-green-400 tracking-wider">SYSTEM_ONLINE</span>
         </div>
 
         {/* Main Title with Diagnostic Styling */}
         <div className="mb-6">
           <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
-            [TOKEN LOCKER SYSTEM]
+            [TOKEN_LOCKER_SYSTEM]
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">
-            QUANTUM LOCKER
+            QUANTUM VAULT
           </h1>
           <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
-            [PROTOCOL INITIALIZED]
+            [PROTOCOL_INITIALIZED]
           </div>
         </div>
 
         {/* System Description */}
         <div className="max-w-2xl mx-auto">
-          
+          <div className="bg-black/30 backdrop-blur-xl border border-teal-500/30 rounded-xl p-6">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-1 h-1 bg-teal-400 rounded-full animate-pulse"></div>
+              <span className="text-sm font-mono text-teal-400 tracking-wider">MISSION_BRIEFING</span>
+              <div className="w-1 h-1 bg-teal-400 rounded-full animate-pulse"></div>
+            </div>
+            <p className="text-gray-300 text-lg leading-relaxed">
+              Lock your tokens in the quantum vault to earn multiplied rewards based on commitment duration.
+              <br />
+              <span className="text-teal-400 font-mono text-sm">Ascend through divine tiers and unlock exponential gains.</span>
+            </p>
+          </div>
         </div>
 
         {/* Scanning Effect */}

@@ -71,27 +71,27 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
         className="border-2 rounded-xl overflow-hidden bg-gradient-to-br from-black/40 via-gray-900/40 to-black/40"
         style={{ borderColor: tierInfo.color }}
       >
-        <AccordionTrigger className="px-4 sm:px-6 py-4 hover:no-underline">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3 sm:gap-4 pr-4">
+        <AccordionTrigger className="px-6 py-4 hover:no-underline">
+          <div className="flex items-center justify-between w-full pr-4">
             {/* Left side - Tier and Amount */}
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="text-xl sm:text-2xl">{tierInfo.icon}</div>
-                <TierIconComponent className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: tierInfo.color }} />
+                <div className="text-2xl">{tierInfo.icon}</div>
+                <TierIconComponent className="w-5 h-5" style={{ color: tierInfo.color }} />
               </div>
               <div className="text-left">
-                <div className="text-base sm:text-lg font-bold text-white">
+                <div className="text-lg font-bold text-white">
                   {lock.amount.toLocaleString()} ARK
                 </div>
-                <div className="text-xs sm:text-sm" style={{ color: tierInfo.color }}>
+                <div className="text-sm" style={{ color: tierInfo.color }}>
                   {tierInfo.name} Tier • {lock.multiplier} multiplier
                 </div>
               </div>
             </div>
 
             {/* Right side - Status and Time */}
-            <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 w-full sm:w-auto">
-              <Badge className={`${statusInfo.color} border text-xs`}>
+            <div className="flex items-center gap-4">
+              <Badge className={`${statusInfo.color} border`}>
                 {statusInfo.label}
               </Badge>
               <div className="text-right">
@@ -106,7 +106,7 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
           </div>
         </AccordionTrigger>
 
-        <AccordionContent className="px-4 sm:px-6 pb-6">
+        <AccordionContent className="px-6 pb-6">
           {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex justify-between text-sm text-gray-400 mb-2">
@@ -125,7 +125,7 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
           </div>
 
           {/* Details Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-black/30 rounded-lg p-3 border border-gray-600/50">
               <div className="flex items-center mb-1">
                 <Calendar className="w-4 h-4 text-gray-400 mr-2" />

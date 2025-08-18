@@ -128,14 +128,14 @@ const HistoricalChart = ({
 
           {/* Timeframe Selection */}
           <div className="flex flex-wrap items-center gap-4 mt-4">
-            <div className="flex items-center gap-1 bg-black/60 backdrop-blur-xl rounded-lg p-1 border border-cyan-500/20">
+            <div className="flex items-center gap-1 bg-black/40 rounded-lg p-1">
               {TIMEFRAMES.map(tf => (
                 <Button
                   key={tf.key}
-                  variant={selectedTimeframe === tf.key ? "quantum-active" : "quantum-ghost"}
+                  variant={selectedTimeframe === tf.key ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setSelectedTimeframe(tf.key)}
-                  className="text-xs font-mono tracking-wider"
+                  className="text-xs font-mono"
                 >
                   {tf.label}
                 </Button>
@@ -145,44 +145,44 @@ const HistoricalChart = ({
             {/* Chart Controls */}
             <div className="flex items-center gap-2">
               <Button
-                variant={chartType === 'line' ? "quantum-active" : "quantum"}
+                variant={chartType === 'line' ? "default" : "outline"}
                 size="sm"
                 onClick={() => setChartType('line')}
-                className="text-xs tracking-wider"
+                className="text-xs"
               >
-                LINE
+                Line
               </Button>
               <Button
-                variant={chartType === 'area' ? "quantum-active" : "quantum"}
+                variant={chartType === 'area' ? "default" : "outline"}
                 size="sm"
                 onClick={() => setChartType('area')}
-                className="text-xs tracking-wider"
+                className="text-xs"
               >
-                AREA
+                Area
               </Button>
               <Button
-                variant={showVolume ? "quantum-active" : "quantum"}
+                variant={showVolume ? "default" : "outline"}
                 size="sm"
                 onClick={() => setShowVolume(!showVolume)}
-                className="text-xs tracking-wider"
+                className="text-xs"
               >
                 <Activity className="w-3 h-3 mr-1" />
-                VOL
+                Volume
               </Button>
               <Button
-                variant={showFilters ? "quantum-active" : "quantum"}
+                variant="outline"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className="text-xs tracking-wider"
+                className="text-xs"
               >
                 <Filter className="w-3 h-3 mr-1" />
-                FILTER
+                Filters
               </Button>
               <Button
-                variant="quantum"
+                variant="outline"
                 size="sm"
                 onClick={exportData}
-                className="text-xs tracking-wider"
+                className="text-xs"
               >
                 <Download className="w-3 h-3" />
               </Button>
@@ -239,7 +239,7 @@ const HistoricalChart = ({
         </div>
 
         {/* Chart Area */}
-        <div className="p-6 relative bg-black/90">
+        <div className="p-6 relative bg-black/40">
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent animate-scan"></div>
           
           <ResponsiveContainer width="100%" height={400}>
