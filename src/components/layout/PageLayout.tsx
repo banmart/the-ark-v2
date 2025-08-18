@@ -106,12 +106,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       {/* Celestial Awakening Narrative Section */}
       <CelestialAwakeningSection />
 
-      {/* Enhanced Fee Visualizations Section */}
-      <EnhancedFeeVisualizationsSection />
-
-      {/* Interactive Quantum Pillars */}
-      <InteractiveQuantumPillars />
-
       {/* Render children if provided */}
       {children}
 
