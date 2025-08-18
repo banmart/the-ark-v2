@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import LockerHeader from '../components/locker/LockerHeader';
 import EmergencyStatus from '../components/locker/EmergencyStatus';
 import TierLegend from '../components/locker/TierLegend';
+import CompactTierDisplay from '../components/locker/CompactTierDisplay';
 import LockerOperations from '../components/locker/LockerOperations';
 import ContractAddressDisplay from '../components/locker/ContractAddressDisplay';
 import MobileBrowserPopup from '../components/MobileBrowserPopup';
@@ -85,6 +86,9 @@ const LockerContent = () => {
 
           {/* Tier Legend */}
           <TierLegend />
+
+          {/* Compact Tier Display */}
+          <CompactTierDisplay />
 
           {/* Operations */}
           <LockerOperations isConnected={isConnected} />

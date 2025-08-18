@@ -195,52 +195,10 @@ const LockerTiersSection = ({
   return <section className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 via-cyan-500/5 to-black/20">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-        backgroundImage: `
-            radial-gradient(circle at 20% 30%, rgba(34, 211, 238, 0.3) 2px, transparent 2px),
-            radial-gradient(circle at 80% 70%, rgba(34, 211, 238, 0.2) 2px, transparent 2px),
-            radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.2) 2px, transparent 2px)
-          `,
-        backgroundSize: '150px 150px'
-      }}></div>
+        
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* System Header */}
-        <div className={`text-center mb-16 transition-all duration-1000 ${systemPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
-            <Database className="w-3 h-3 animate-pulse" />
-            <span>[LOCKER TIER SYSTEM SCAN]</span>
-            <Database className="w-3 h-3 animate-pulse" />
-          </div>
-          
-          <h2 className="text-4xl md:text-5xl font-black mb-6 text-cyan-400 font-mono">
-            <Lock className="inline w-10 h-10 mr-3 text-cyan-400" />
-            [SACRED LOCKER TIERS]
-            <Lock className="inline w-10 h-10 ml-3 text-cyan-400" />
-          </h2>
-          
-        </div>
-
-        {/* Tier Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 transition-all duration-1000 delay-500 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {tiers.map((tier, index) => <TierCard key={tier.name} tier={tier} index={index} />)}
-        </div>
-
-        {/* System Diagnostics */}
-        <div className={`transition-all duration-1000 delay-1000 ${systemPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          
-
-          {/* Call to Action */}
-          <div className="text-center">
-            <Link to="/locker" className="inline-flex items-center bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-bold px-12 py-4 rounded-full text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/30 font-mono">
-              <Sparkles className="w-5 h-5 mr-2" />
-              [ENTER SACRED LOCKER]
-              <Lock className="w-5 h-5 ml-2" />
-            </Link>
-          </div>
-        </div>
-      </div>
+      
 
       <style>{`
         @keyframes scan {
