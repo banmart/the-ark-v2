@@ -101,9 +101,27 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         contractLoading={contractLoading}
       />
 
-      {/* Interactive Quantum Pillars - Enhanced with Live Data */}
-      <InteractiveQuantumPillars />
+      {/* Features Section - Updated Four Pillars */}
+      <FeaturesSection />
 
+      {/* NEW: Contract Transparency Section */}
+      <ContractTransparencySection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Locker Tiers Section */}
+      <LockerTiersSection 
+        contractData={contractData}
+        contractLoading={contractLoading}
+      />
+
+      {/* Prophecy Section */}
+      <ProphecySection />
+
+      {/* Chart Section */}
+      <ChartSection />
+      
       {/* Render children if provided */}
       {children}
 
