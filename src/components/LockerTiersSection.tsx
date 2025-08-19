@@ -198,7 +198,45 @@ const LockerTiersSection = ({
         
       </div>
 
-      
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* System Header */}
+        <div className={`text-center mb-16 transition-all duration-1000 ${systemPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="flex items-center justify-center mb-4">
+            <Database className="w-8 h-8 text-cyan-400 mr-3" />
+            <h2 className="text-4xl md:text-5xl font-bold text-white font-mono">
+              [LOCKER_TIERS]
+            </h2>
+          </div>
+          <p className="text-gray-300 text-lg max-w-3xl mx-auto font-mono">
+            Advanced tier system with multiplied rewards and exclusive benefits
+          </p>
+        </div>
+
+        {/* Tiers Grid */}
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 transition-all duration-1000 delay-500 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {tiers.map((tier, index) => (
+            <div key={tier.name} className={`transition-all duration-1000 ${systemPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${index * 200}ms` }}>
+              <TierCard 
+                tier={tier}
+                index={index}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* System Status */}
+        <div className={`text-center transition-all duration-1000 delay-1000 ${systemPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 max-w-2xl mx-auto">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Activity className="w-6 h-6 text-cyan-400" />
+              <span className="text-cyan-400 font-mono text-lg font-bold">TIER SYSTEM: OPERATIONAL</span>
+            </div>
+            <p className="text-gray-300 font-mono text-sm">
+              All tier protocols active. Lock your ARK tokens to access exclusive benefits and multiplied rewards.
+            </p>
+          </div>
+        </div>
+      </div>
 
       <style>{`
         @keyframes scan {

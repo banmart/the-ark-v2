@@ -122,7 +122,43 @@ const ProphecySection = () => {
       }}></div>
       </div>
 
-      
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* System Header */}
+        <div className={`text-center mb-16 transition-all duration-1000 ${phase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="flex items-center justify-center mb-4">
+            <BookOpen className="w-8 h-8 text-purple-400 mr-3" />
+            <h2 className="text-4xl md:text-5xl font-bold text-white font-mono">
+              [PROPHECY_MODULES]
+            </h2>
+          </div>
+          <p className="text-gray-300 text-lg max-w-3xl mx-auto font-mono">
+            Ancient protocols foretell the great crypto flood. Only ARK holders survive the purge.
+          </p>
+        </div>
+
+        {/* Prophecy Grid */}
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 transition-all duration-1000 delay-500 ${phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {prophecies.map((prophecy, index) => (
+            <div key={prophecy.id} className={`transition-all duration-1000 ${phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${index * 200}ms` }}>
+              <ProphecyModule prophecy={prophecy} />
+            </div>
+          ))}
+        </div>
+
+        {/* Status Display */}
+        <div className={`text-center transition-all duration-1000 delay-1000 ${phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="bg-black/40 backdrop-blur-xl border border-purple-500/30 rounded-xl p-6 max-w-2xl mx-auto">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Sparkles className="w-6 h-6 text-purple-400" />
+              <span className="text-purple-400 font-mono text-lg font-bold">PROPHECY STATUS: ACTIVE</span>
+            </div>
+            <p className="text-gray-300 font-mono text-sm">
+              All prophecy modules operational. ARK survival protocol initialized. 
+              Flood simulation running in background matrix.
+            </p>
+          </div>
+        </div>
+      </div>
 
       <style>{`
         @keyframes float {
