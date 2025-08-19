@@ -9,6 +9,7 @@ import AnimatedBackground from '../AnimatedBackground';
 import Navigation from '../Navigation';
 import HeroSection from '../HeroSection';
 import ContractAddressSection from '../ContractAddressSection';
+import SwapSection from '../SwapSection';
 import StatsSection from '../StatsSection';
 import FeaturesSection from '../FeaturesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
@@ -75,6 +76,11 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Onboarding Modal */}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
 
       {/* Animated Background System */}
       <AnimatedBackground />
