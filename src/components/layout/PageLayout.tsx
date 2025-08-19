@@ -111,17 +111,8 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       {/* Simplified Fees Section */}
       <SimplifiedFeesSection />
 
-      {/* Interactive Quantum Pillars */}
-      <InteractiveQuantumPillars />
-
       {/* Features Section - Updated Four Pillars */}
       <FeaturesSection />
-
-      {/* NEW: Contract Transparency Section */}
-      <ContractTransparencySection 
-        contractData={contractData}
-        contractLoading={contractLoading}
-      />
 
       {/* Locker Tiers Section */}
       <LockerTiersSection 
@@ -129,11 +120,11 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         contractLoading={contractLoading}
       />
 
+      {/* Interactive Quantum Pillars */}
+      <InteractiveQuantumPillars />
+
       {/* Prophecy Section */}
       <ProphecySection />
-
-      {/* Chart Section */}
-      <ChartSection />
 
       {/* Render children if provided */}
       {children}
