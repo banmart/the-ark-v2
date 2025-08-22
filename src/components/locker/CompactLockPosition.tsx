@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Clock, 
   TrendingUp, 
@@ -22,6 +22,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { LockedPosition } from '../../hooks/locker/types';
 import { useLockerData } from '../../hooks/useLockerData';
+import EarlyUnlockWarningDialog from './EarlyUnlockWarningDialog';
 
 interface CompactLockPositionProps {
   lock: LockedPosition;
@@ -31,6 +32,7 @@ interface CompactLockPositionProps {
 
 const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPositionProps) => {
   const { lockTiers, calculateEarlyUnlockPenalty } = useLockerData();
+  const [dialogOpen, setDialogOpen] = useState(false);
   
   const now = Date.now() / 1000;
   const isUnlocked = now >= lock.unlockTime;
@@ -177,7 +179,7 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
 
           {/* Action Button */}
           <button
-            onClick={() => onUnlock(lock.id)}
+            onClick={() => setDialogOpen(true)}
             disabled={processingUnlock === lock.id}
             className={`w-full py-3 rounded-lg font-semibold text-sm transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 ${
               isUnlocked 
@@ -202,6 +204,16 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
               </>
             )}
           </button>
+
+          {/* Early Unlock Warning Dialog */}
+          <EarlyUnlockWarningDialog
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+            lock={lock}
+            penalty={penalty}
+            onConfirm={() => onUnlock(lock.id)}
+            processing={processingUnlock === lock.id}
+          />
         </AccordionContent>
       </AccordionItem>
     </Accordion>
