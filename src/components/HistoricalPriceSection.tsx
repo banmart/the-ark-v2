@@ -41,7 +41,7 @@ const HistoricalPriceSection = () => {
         </div>
 
         {/* Chart Section */}
-        <div className="bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6 lg:p-8">
+        <div className="bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-4 sm:p-6 lg:p-8">
           <div className="mb-6">
             <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent mb-2">
               ARK Token Price History

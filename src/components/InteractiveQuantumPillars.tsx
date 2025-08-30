@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Flame, RefreshCcw, Droplets, Lock, ArrowRight, Database } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useContractData } from '../hooks/useContractData';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { useLockerData } from '../hooks/useLockerData';
@@ -200,97 +199,7 @@ const InteractiveQuantumPillars = memo(() => {
 
   // Show loading state while fee data is being fetched
   const loading = contractLoading || tokenLoading || lockerLoading || feeLoading;
-
-  if (loading) {
-    return (
-      <section className="relative z-30 py-10 md:py-16 px-4 md:px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <Card key={i} className="bg-black/30 backdrop-blur-sm border border-white/10 p-6 animate-pulse">
-                <div className="h-20 bg-white/10 rounded mb-4"></div>
-                <div className="h-4 bg-white/10 rounded mb-2"></div>
-                <div className="h-3 bg-white/10 rounded"></div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  return (
-    <section className="relative z-30 py-10 md:py-16 px-4 md:px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pillarsData.map((pillar, index) => (
-            <Card 
-              key={pillar.id}
-              className={cn(
-                "bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300 cursor-pointer p-6",
-                !pillarsLoaded && "opacity-0 translate-y-4",
-                pillarsLoaded && "opacity-100 translate-y-0 transition-all duration-700 ease-out"
-              )}
-              style={{ transitionDelay: `${index * 100}ms` }}
-              onClick={pillar.onClick}
-            >
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={cn(
-                    "w-12 h-12 rounded-lg flex items-center justify-center",
-                    `bg-gradient-to-br ${pillar.gradient}`
-                  )}>
-                    <pillar.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-mono text-sm font-semibold text-white tracking-wider">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-xs text-gray-400 font-mono">
-                      {pillar.subtitle}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-mono text-gray-400">PROGRESS</span>
-                    <span className="text-xs font-mono text-cyan-400">
-                      {((pillar.value / pillar.maxValue) * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                  <Progress 
-                    value={(pillar.value / pillar.maxValue) * 100} 
-                    className="h-2 bg-black/40"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-gray-400">STATE:</span>
-                  <span className={cn(
-                    "px-2 py-1 rounded text-xs font-bold",
-                    pillar.state === 'ACTIVE' && "bg-green-500/20 text-green-400",
-                    pillar.state === 'MONITORING' && "bg-blue-500/20 text-blue-400",
-                    pillar.state === 'THRESHOLD_REACHED' && "bg-yellow-500/20 text-yellow-400",
-                    pillar.state === 'PROCESSING' && "bg-orange-500/20 text-orange-400",
-                    pillar.state === 'ACCUMULATING' && "bg-purple-500/20 text-purple-400"
-                  )}>
-                    {pillar.state}
-                  </span>
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-white/10">
-                  <div className="text-xs font-mono text-cyan-400 truncate">
-                    {pillar.liveData}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return;
 });
 InteractiveQuantumPillars.displayName = 'InteractiveQuantumPillars';
 export default InteractiveQuantumPillars;
