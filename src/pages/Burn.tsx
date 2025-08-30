@@ -319,8 +319,8 @@ const Burn = () => {
             </CardContent>
           </Card>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4 md:gap-6 mb-6 md:mb-8">
+          {/* Early Unlock and LP Burned Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* Early Unlock Card */}
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
               <CardContent className="p-4 md:p-6">
@@ -363,6 +363,10 @@ const Burn = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Main Burn Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-6 md:mb-8">
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-center justify-between">
