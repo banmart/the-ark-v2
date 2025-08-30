@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, Layers, Coins, Activity, Flame } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { useLockerData } from '../hooks/useLockerData';
 import { useARKPriceData } from '../hooks/useARKPriceData';
 import { formatTokenAmount, formatPrice } from '../lib/utils';
+
 interface StatsSectionProps {
   contractData: any;
   contractLoading: boolean;
 }
+
 const StatsSection = ({
   contractData,
   contractLoading
@@ -19,6 +22,7 @@ const StatsSection = ({
     priceData,
     loading: priceLoading
   } = useARKPriceData();
+
   useEffect(() => {
     // Cinematic reveal sequence
     const phases = [{
@@ -43,6 +47,7 @@ const StatsSection = ({
       setTimeout(() => setStatsPhase(phase), delay);
     });
   }, []);
+
   const formatLastUpdated = (date: Date) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -50,6 +55,7 @@ const StatsSection = ({
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
     return `${Math.floor(diffInSeconds / 3600)}h ago`;
   };
+
   const formatTVL = (tvl: number) => {
     if (tvl >= 1000000) {
       return `${(tvl / 1000000).toFixed(2)}M`;
@@ -58,6 +64,7 @@ const StatsSection = ({
     }
     return tvl.toFixed(2);
   };
+
   const formatNumber = (num: string | number) => {
     const numValue = typeof num === 'string' ? parseFloat(num.replace(/,/g, '')) : num;
     if (isNaN(numValue)) return '0';
@@ -73,162 +80,173 @@ const StatsSection = ({
       maximumFractionDigits: 2
     });
   };
-  return <section id="stats" className="relative z-30 py-10 md:py-16 lg:py-20 px-4 md:px-6 bg-gradient-to-b from-black/10 to-black/30">
+
+  return (
+    <section id="stats" className="relative z-30 py-10 md:py-16 lg:py-20 px-4 md:px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
-        backgroundImage: `
-              radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
-              radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
-              radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
-              radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px)
-            `,
-        backgroundSize: '100px 100px'
-      }} />
+          backgroundImage: `
+            radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.3) 2px, transparent 2px),
+            radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
+            radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.3) 2px, transparent 2px),
+            radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.3) 2px, transparent 2px)
+          `,
+          backgroundSize: '100px 100px'
+        }} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* System Header */}
-        
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Market Cap */}
-          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <DollarSign className="h-6 w-6 text-cyan-400" />
-              <div className="text-right">
-                <p className="text-sm text-gray-400 font-mono">MARKET CAP</p>
+          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <DollarSign className="h-5 w-5 md:h-6 md:w-6 text-cyan-400" />
+                <div className="text-right">
+                  <p className="text-xs md:text-sm text-gray-400 font-mono">MARKET CAP</p>
+                </div>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">$---.--M</span>
-                ) : (
-                  `$${formatNumber(contractData.marketCap)}`
-                )}
-              </p>
-              <p className="text-xs text-gray-500 font-mono">
-                Based on current price & supply
-              </p>
-            </div>
-          </div>
+              
+              <div className="space-y-2">
+                <p className="text-lg md:text-xl font-bold font-mono text-white">
+                  {contractLoading || priceLoading ? (
+                    <span className="animate-pulse">$---.--M</span>
+                  ) : (
+                    `$${formatNumber((priceData?.price || 0) * (contractData?.circulatingSupply || 0))}`
+                  )}
+                </p>
+                <p className="text-xs text-gray-500 font-mono">
+                  Based on current price & supply
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Price Feed */}
-          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <TrendingUp className="h-6 w-6 text-cyan-400" />
-              <div className="text-right">
-                <p className="text-sm text-gray-400 font-mono">PRICE FEED</p>
+          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-cyan-400" />
+                <div className="text-right">
+                  <p className="text-xs md:text-sm text-gray-400 font-mono">PRICE FEED</p>
+                </div>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-lg font-bold font-mono text-white">
-                {priceLoading ? (
-                  <span className="animate-pulse">$--.----</span>
-                ) : (
-                  `$${formatPrice(priceData?.price || 0)}`
-                )}
-              </p>
-              <p className="text-xs text-gray-500 font-mono">
-                Real-time market price
-              </p>
-            </div>
-          </div>
+              
+              <div className="space-y-2">
+                <p className="text-lg md:text-xl font-bold font-mono text-white">
+                  {priceLoading ? (
+                    <span className="animate-pulse">$--.----</span>
+                  ) : (
+                    `$${formatPrice(priceData?.price || 0)}`
+                  )}
+                </p>
+                <p className="text-xs text-gray-500 font-mono">
+                  Real-time market price
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* TVL */}
-          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <Layers className="h-6 w-6 text-cyan-400" />
-              <div className="text-right">
-                <p className="text-sm text-gray-400 font-mono">TVL</p>
+          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <Layers className="h-5 w-5 md:h-6 md:w-6 text-cyan-400" />
+                <div className="text-right">
+                  <p className="text-xs md:text-sm text-gray-400 font-mono">TVL</p>
+                </div>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-lg font-bold font-mono text-white">
-                {protocolStats.totalLockedTokens ? (
-                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
-                ) : (
-                  <span className="animate-pulse">$---.--M</span>
-                )}
-              </p>
-              <p className="text-xs text-gray-500 font-mono">
-                Total Value Locked
-              </p>
-            </div>
-          </div>
+              
+              <div className="space-y-2">
+                <p className="text-lg md:text-xl font-bold font-mono text-white">
+                  {protocolStats.totalLockedTokens && priceData?.price ? (
+                    `$${formatNumber(protocolStats.totalLockedTokens * priceData.price)}`
+                  ) : (
+                    <span className="animate-pulse">$---.--M</span>
+                  )}
+                </p>
+                <p className="text-xs text-gray-500 font-mono">
+                  Total Value Locked in USD
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Total Supply */}
-          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <Coins className="h-6 w-6 text-cyan-400" />
-              <div className="text-right">
-                <p className="text-sm text-gray-400 font-mono">TOTAL SUPPLY</p>
+          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <Coins className="h-5 w-5 md:h-6 md:w-6 text-cyan-400" />
+                <div className="text-right">
+                  <p className="text-xs md:text-sm text-gray-400 font-mono">TOTAL SUPPLY</p>
+                </div>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">---.--B</span>
-                ) : (
-                  formatNumber(contractData.totalSupply)
-                )}
-              </p>
-              <p className="text-xs text-gray-500 font-mono">
-                Maximum token supply
-              </p>
-            </div>
-          </div>
+              
+              <div className="space-y-2">
+                <p className="text-lg md:text-xl font-bold font-mono text-white">
+                  {contractLoading ? (
+                    <span className="animate-pulse">---.--B</span>
+                  ) : (
+                    formatNumber(contractData?.totalSupply || 0)
+                  )}
+                </p>
+                <p className="text-xs text-gray-500 font-mono">
+                  Maximum token supply
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Circulating Supply */}
-          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <Activity className="h-6 w-6 text-cyan-400" />
-              <div className="text-right">
-                <p className="text-sm text-gray-400 font-mono">CIRCULATING</p>
+          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <Activity className="h-5 w-5 md:h-6 md:w-6 text-cyan-400" />
+                <div className="text-right">
+                  <p className="text-xs md:text-sm text-gray-400 font-mono">CIRCULATING</p>
+                </div>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">---.--B</span>
-                ) : (
-                  formatNumber(contractData.circulatingSupply)
-                )}
-              </p>
-              <p className="text-xs text-gray-500 font-mono">
-                Tokens in active circulation
-              </p>
-            </div>
-          </div>
+              
+              <div className="space-y-2">
+                <p className="text-lg md:text-xl font-bold font-mono text-white">
+                  {contractLoading ? (
+                    <span className="animate-pulse">---.--B</span>
+                  ) : (
+                    formatNumber(contractData?.circulatingSupply || 0)
+                  )}
+                </p>
+                <p className="text-xs text-gray-500 font-mono">
+                  Tokens in active circulation
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Burned Tokens */}
-          <div className="bg-black/50 backdrop-blur-sm border border-cyan-500/30 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <Flame className="h-6 w-6 text-cyan-400" />
-              <div className="text-right">
-                <p className="text-sm text-gray-400 font-mono">BURNED</p>
+          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <Flame className="h-5 w-5 md:h-6 md:w-6 text-cyan-400" />
+                <div className="text-right">
+                  <p className="text-xs md:text-sm text-gray-400 font-mono">BURNED</p>
+                </div>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
-                  <span className="animate-pulse">---.--M</span>
-                ) : (
-                  formatNumber(contractData.burnedTokens)
-                )}
-              </p>
-              <p className="text-xs text-gray-500 font-mono">
-                Tokens permanently removed
-              </p>
-            </div>
-          </div>
+              
+              <div className="space-y-2">
+                <p className="text-lg md:text-xl font-bold font-mono text-white">
+                  {contractLoading ? (
+                    <span className="animate-pulse">---.--M</span>
+                  ) : (
+                    formatNumber(contractData?.burnedTokens || 0)
+                  )}
+                </p>
+                <p className="text-xs text-gray-500 font-mono">
+                  Tokens permanently removed
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
@@ -246,6 +264,8 @@ const StatsSection = ({
           50% { transform: translateX(0); }
         }
       `}</style>
-    </section>;
+    </section>
+  );
 };
+
 export default StatsSection;
