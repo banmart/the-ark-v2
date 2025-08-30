@@ -5,7 +5,7 @@ import { Terminal, Wifi, Shield, Activity } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="relative py-16 px-6 border-t border-cyan-500/20 overflow-hidden">
+    <footer className="relative py-8 md:py-16 px-4 sm:px-6 border-t border-cyan-500/20 overflow-hidden">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 z-0">
         {/* Base quantum gradient */}
@@ -25,17 +25,17 @@ const Footer = () => {
       </div>
 
       {/* Glass Container */}
-      <div className="relative z-10 max-w-7xl mx-auto bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-8">
+      <div className="relative z-10 max-w-7xl mx-auto bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-4 sm:p-6 lg:p-8">
         {/* System Header */}
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6 md:mb-8">
           <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
             <Terminal className="w-4 h-4 text-cyan-400" />
             <span className="text-xs font-mono text-cyan-400 tracking-wider">SYSTEM_FOOTER</span>
           </div>
-          <div className="flex-1 h-px bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
+          <div className="hidden sm:block flex-1 h-px bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
           
           {/* System Status Indicators */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
               <span className="text-xs font-mono text-green-400">ONLINE</span>
@@ -47,17 +47,17 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {/* Brand Section */}
-          <div className="space-y-4">
-            <div className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent mb-4">
+          <div className="space-y-3 sm:space-y-4 lg:col-span-1">
+            <div className="text-xl sm:text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent mb-3 sm:mb-4">
               ARK ❍
             </div>
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 text-green-400" />
               <span className="text-xs font-mono text-green-400">PROTOCOL_SECURE</span>
             </div>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400 text-sm leading-relaxed">
               Salvation from the crypto flood. Join the ARK and be saved.
             </p>
           </div>
@@ -166,9 +166,9 @@ const Footer = () => {
         </div>
 
         {/* System Status Bar */}
-        <div className="border-t border-cyan-500/20 mt-8 pt-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-6">
+        <div className="border-t border-cyan-500/20 mt-6 md:mt-8 pt-4 md:pt-6">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
               <div className="flex items-center gap-2">
                 <Activity className="w-4 h-4 text-green-400" />
                 <span className="text-xs font-mono text-green-400">STATUS: OPERATIONAL</span>
@@ -178,8 +178,9 @@ const Footer = () => {
                 <span className="text-xs font-mono text-cyan-400">UPTIME: 99.9%</span>
               </div>
             </div>
-            <div className="text-center text-gray-400 text-sm font-mono">
-              &copy; 2025 THE ARK ❍ | 0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67
+            <div className="text-left lg:text-center text-gray-400 text-xs sm:text-sm font-mono break-all">
+              <div className="mb-1 lg:mb-0">&copy; 2025 THE ARK ❍</div>
+              <div className="text-xs text-gray-500">0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67</div>
             </div>
           </div>
         </div>
