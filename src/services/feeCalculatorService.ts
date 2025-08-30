@@ -241,6 +241,45 @@ class FeeCalculatorService {
     return [...this.feeHistory];
   }
 
+  async getBurnTransactionHistory(): Promise<Array<{timestamp: number; amount: number; txHash: string; volume24h: number}>> {
+    try {
+      const currentBlock = await this.provider.getBlockNumber();
+      
+      // Get last 30 days of burn transactions (assuming ~3 second block time)
+      const blocksPerDay = Math.floor(24 * 60 * 60 / 3);
+      const blocks30Days = blocksPerDay * 30;
+      const startBlock = Math.max(0, currentBlock - blocks30Days);
+      
+      const transferFilter = this.arkContract.filters.Transfer(null, CONTRACT_ADDRESSES.DEAD_ADDRESS);
+      const burnEvents = await this.arkContract.queryFilter(transferFilter, startBlock, currentBlock);
+      
+      const transactions = [];
+      
+      for (const event of burnEvents) {
+        if ('args' in event && event.args && event.blockNumber) {
+          const block = await this.provider.getBlock(event.blockNumber);
+          const amount = parseFloat(ethers.formatEther(event.args.value || '0'));
+          
+          if (amount > 0 && block) {
+            transactions.push({
+              timestamp: block.timestamp * 1000, // Convert to milliseconds
+              amount,
+              txHash: event.transactionHash,
+              volume24h: amount * 10 // Rough estimate based on burn amount
+            });
+          }
+        }
+      }
+      
+      // Sort by timestamp (newest first)
+      return transactions.sort((a, b) => b.timestamp - a.timestamp);
+      
+    } catch (error) {
+      console.error('Error fetching burn transaction history:', error);
+      return [];
+    }
+  }
+
   getLatestMetrics(): FeeMetrics | null {
     return this.feeHistory.length > 0 ? this.feeHistory[this.feeHistory.length - 1] : null;
   }

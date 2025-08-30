@@ -292,14 +292,14 @@ const Burn = () => {
           </div>
 
           {/* Timeframe Stats Banner */}
-          <Card className="mb-6 bg-gradient-to-r from-card/20 to-card/10 border-video-cyan/30 backdrop-blur-sm">
+          <Card className="mb-6 bg-black/40 backdrop-blur-md border border-white/10">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-primary mb-1">
+                  <h3 className="text-lg font-semibold text-white mb-1">
                     {timeframes.find(t => t.value === selectedTimeframe)?.label} Overview
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-white/70">
                     Showing data for the selected timeframe
                   </p>
                 </div>
@@ -327,7 +327,7 @@ const Burn = () => {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -341,7 +341,7 @@ const Burn = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -355,7 +355,7 @@ const Burn = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -369,7 +369,7 @@ const Burn = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -383,7 +383,7 @@ const Burn = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -401,7 +401,7 @@ const Burn = () => {
           {/* Main Dashboard */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Burn Progress Circle */}
-            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-video-cyan">Supply Reduction</CardTitle>
               </CardHeader>

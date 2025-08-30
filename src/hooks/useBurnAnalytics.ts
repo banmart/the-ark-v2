@@ -97,17 +97,9 @@ export const useBurnAnalytics = (volume24h?: number) => {
 
       setBurnMetrics(metrics);
 
-      // Generate mock historical data for demonstration
-      // In production, this would come from blockchain events
-      const now = Date.now();
-      const mockHistory: BurnTransaction[] = Array.from({ length: 30 }, (_, i) => ({
-        timestamp: now - (i * 24 * 60 * 60 * 1000), // Daily intervals
-        amount: actualDailyBurn * (0.8 + Math.random() * 0.4), // Vary ±20%
-        txHash: `0x${Math.random().toString(16).slice(2)}`,
-        volume24h: volume * (0.8 + Math.random() * 0.4)
-      })).reverse();
-
-      setBurnHistory(mockHistory);
+      // Get real burn transaction history from blockchain
+      const realBurnHistory = await feeCalculatorService.getBurnTransactionHistory();
+      setBurnHistory(realBurnHistory);
 
     } catch (err) {
       console.error('Error fetching burn analytics:', err);
