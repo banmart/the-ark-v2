@@ -17,7 +17,6 @@ import FeaturesSection from '../FeaturesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
 import ProphecySection from '../ProphecySection';
-import HistoricalPriceSection from '../HistoricalPriceSection';
 import ChartSection from '../ChartSection';
 import Footer from '../Footer';
 
@@ -126,9 +125,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
 
       {/* Prophecy Section */}
       <ProphecySection />
-
-      {/* Historical Price Section */}
-      <HistoricalPriceSection />
 
       {/* Render children if provided */}
       {children}
