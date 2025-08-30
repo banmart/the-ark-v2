@@ -16,6 +16,7 @@ export const NETWORKS = {
 
 export const CONTRACT_ADDRESSES = {
   ARK_TOKEN: '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67',
+  LOCKER: '0x3ba44a1de77025b78d7430449569dd1112ac4473',
   PULSEX_V2_ROUTER: '0x636f6407B90661b73b1C0F7e24F4C79f624d0738', // Updated from contract
   WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27', // Wrapped PLS
   DAI: '0xefD766cCb38EaF1dfd701853BFCe31359239F305', // DAI token on PulseChain
@@ -186,6 +187,11 @@ export const DEX_ROUTER_ABI = [
 
 // Contract constants from the Solidity code - UPDATED TO MATCH ACTUAL CONTRACT
 export const CONTRACT_CONSTANTS = {
+  // Contract addresses
+  TOKEN_ADDRESS: CONTRACT_ADDRESSES.ARK_TOKEN,
+  LOCKER_ADDRESS: CONTRACT_ADDRESSES.LOCKER,
+  RPC_URL: NETWORKS.PULSECHAIN.rpcUrls[0],
+  
   // Fixed fee structure from contract (immutable values)
   LIQUIDITY_FEE: 300, // 3%
   REFLECTION_FEE: 200, // 2%

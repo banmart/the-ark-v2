@@ -28,7 +28,15 @@ class BlockchainDataService {
   
   constructor() {
     this.provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
-    this.arkContract = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, this.provider);
+    
+    // Define a minimal ERC20 ABI for Transfer events
+    const erc20ABI = [
+      "event Transfer(address indexed from, address indexed to, uint256 value)",
+      "function totalSupply() view returns (uint256)",
+      "function balanceOf(address account) view returns (uint256)"
+    ];
+    
+    this.arkContract = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, erc20ABI, this.provider);
   }
 
   async getRecentEvents(fromBlock: number = -1000): Promise<BlockchainEvent[]> {

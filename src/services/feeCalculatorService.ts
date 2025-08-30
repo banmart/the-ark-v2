@@ -51,11 +51,28 @@ export interface FeeMetrics {
 class FeeCalculatorService {
   private provider: ethers.JsonRpcProvider;
   private arkContract: ethers.Contract;
+  private lockerContract: ethers.Contract;
   private feeHistory: FeeMetrics[] = [];
   
   constructor() {
     this.provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
-    this.arkContract = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, this.provider);
+    
+    // Define a minimal ERC20 ABI for Transfer events
+    const erc20ABI = [
+      "event Transfer(address indexed from, address indexed to, uint256 value)",
+      "function totalSupply() view returns (uint256)",
+      "function balanceOf(address account) view returns (uint256)"
+    ];
+    
+    // Define a minimal Locker ABI for burn events
+    const lockerABI = [
+      "event EarlyUnlockPenalty(address indexed user, uint256 amount, uint256 penalty)",
+      "event TokensLocked(address indexed user, uint256 amount, uint256 duration)",
+      "event TokensUnlocked(address indexed user, uint256 amount)"
+    ];
+    
+    this.arkContract = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, erc20ABI, this.provider);
+    this.lockerContract = new ethers.Contract(CONTRACT_ADDRESSES.LOCKER, lockerABI, this.provider);
   }
 
   async calculateDailyFees(volume24h: number): Promise<FeesCollected> {

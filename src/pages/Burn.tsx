@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
 import { useBurnAnalytics, BurnTransaction as BurnAnalyticsTransaction } from '../hooks/useBurnAnalytics';
+import { useWalletContext } from '../components/providers/WalletProvider';
 
 // Format number utility function
 const formatNumber = (num: number): string => {
@@ -146,6 +147,7 @@ const Burn = () => {
   const { burnMetrics, burnHistory, burnProjections, loading: burnLoading } = useBurnAnalytics(
     arkData?.volume24h ? Number(arkData.volume24h) : 0
   );
+  const { isConnected, account, isConnecting, handleConnectWallet } = useWalletContext();
   
   // Convert burn analytics data to our local format
   const convertedBurnHistory: BurnTransaction[] = burnHistory.map(burn => ({
@@ -159,7 +161,6 @@ const Burn = () => {
   
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
   const [recentNotifications, setRecentNotifications] = useState<BurnNotification[]>([]);
-  const [isConnected, setIsConnected] = useState(true);
 
   const timeframes = [
     { value: '5m', label: '5 Minutes', minutes: 5 },
@@ -250,10 +251,10 @@ const Burn = () => {
       {/* Navigation */}
       <div className="relative z-20">
         <Navigation 
-          handleConnectWallet={() => {}}
-          isConnecting={false}
+          handleConnectWallet={handleConnectWallet}
+          isConnecting={isConnecting}
           isConnected={isConnected}
-          account=""
+          account={account}
         />
       </div>
 
