@@ -3,13 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Flame, Activity, Users, TrendingUp, Zap, AlertTriangle, Info, ExternalLink } from 'lucide-react';
+import { Flame, Activity, Users, TrendingUp, Zap, AlertTriangle, Info, ExternalLink, Droplets } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
 import { useBurnAnalytics, BurnTransaction as BurnAnalyticsTransaction } from '../hooks/useBurnAnalytics';
 import { useWalletContext } from '../components/providers/WalletProvider';
+import { useLockerData } from '../hooks/useLockerData';
+import { useContractData } from '../hooks/useContractData';
 
 // Format number utility function
 const formatNumber = (num: number): string => {
@@ -123,6 +125,8 @@ const Burn = () => {
     isConnecting,
     handleConnectWallet
   } = useWalletContext();
+  const { protocolStats: lockerStats } = useLockerData();
+  const { data: contractData } = useContractData();
 
   // Convert burn analytics data to our local format
   const convertedBurnHistory: BurnTransaction[] = burnHistory.map(burn => ({
@@ -316,7 +320,49 @@ const Burn = () => {
           </Card>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-6 md:mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4 md:gap-6 mb-6 md:mb-8">
+            {/* Early Unlock Card */}
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-red-500/10 rounded-lg">
+                    <AlertTriangle className="w-4 h-4 md:w-5 md:h-5 text-red-400" />
+                  </div>
+                  <TrendingUp className="w-4 h-4 text-red-400" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs md:text-sm text-muted-foreground">Early Unlock</p>
+                  <p className="text-lg md:text-xl font-bold text-red-400">
+                    {burnHistory?.filter(b => b.type === 'penalty').reduce((sum, b) => sum + b.amount, 0) ? 
+                      formatNumber(burnHistory.filter(b => b.type === 'penalty').reduce((sum, b) => sum + b.amount, 0)) : '0'} ARK
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Penalty Burns
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* LP Burned Card */}
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <Droplets className="w-4 h-4 md:w-5 md:h-5 text-blue-400" />
+                  </div>
+                  <TrendingUp className="w-4 h-4 text-blue-400" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs md:text-sm text-muted-foreground">LP Burned</p>
+                  <p className="text-lg md:text-xl font-bold text-blue-400">
+                    {contractData?.liquidityData?.lpTokensBurned ? formatNumber(Number(contractData.liquidityData.lpTokensBurned)) : '0'} LP
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Liquidity Removed
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
               <CardContent className="p-4 md:p-6">
                 <div className="flex items-center justify-between">
