@@ -67,7 +67,7 @@ const CircularProgress = ({ percentage, size = 120, strokeWidth = 8, color = "hs
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-lg font-bold text-primary">{percentage.toFixed(3)}%</span>
+        <span className="text-sm md:text-lg font-bold text-primary">{percentage.toFixed(3)}%</span>
       </div>
     </div>
   );
@@ -78,14 +78,14 @@ const BurnMeter = ({ value, max, label, color = "hsl(var(--video-cyan))" }) => {
   
   return (
     <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
-      <CardContent className="p-4">
+      <CardContent className="p-3 md:p-4">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm text-white/70">{label}</span>
-          <span className="text-sm font-mono text-white">{formatNumber(value)}</span>
+          <span className="text-xs md:text-sm text-white/70">{label}</span>
+          <span className="text-xs md:text-sm font-mono text-white">{formatNumber(value)}</span>
         </div>
-        <div className="w-full bg-white/10 rounded-full h-3">
+        <div className="w-full bg-white/10 rounded-full h-2 md:h-3">
           <div 
-            className="h-3 rounded-full transition-all duration-500 ease-out"
+            className="h-2 md:h-3 rounded-full transition-all duration-500 ease-out"
             style={{ 
               width: `${percentage}%`,
               background: `linear-gradient(90deg, ${color}, ${color}aa)`
@@ -259,22 +259,22 @@ const Burn = () => {
       </div>
 
       <div className="relative z-10 pt-24">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-video-cyan to-video-blue bg-clip-text text-transparent michroma-regular">
+          <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 mb-6 md:mb-8">
+            <div className="text-center lg:text-left">
+              <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-video-cyan to-video-blue bg-clip-text text-transparent michroma-regular">
                 🔥 ARK Burn Tracker
               </h1>
-              <p className="text-muted-foreground mt-2">Real-time token burn activity monitoring via PulseChain</p>
+              <p className="text-muted-foreground mt-2 text-sm md:text-base">Real-time token burn activity monitoring via PulseChain</p>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
               {/* Timeframe Selector */}
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">Timeframe:</span>
+                <span className="text-sm text-muted-foreground hidden sm:block">Timeframe:</span>
                 <Select value={selectedTimeframe} onValueChange={setSelectedTimeframe}>
-                  <SelectTrigger className="w-32 bg-card/50 border-video-cyan/20">
+                  <SelectTrigger className="w-full sm:w-32 bg-card/50 border-video-cyan/20">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -285,41 +285,42 @@ const Burn = () => {
                 </Select>
               </div>
               
-              <Badge variant="outline" className={`${isConnected ? 'border-green-500/50 text-green-400' : 'border-red-500/50 text-red-400'}`}>
+              <Badge variant="outline" className={`${isConnected ? 'border-green-500/50 text-green-400' : 'border-red-500/50 text-red-400'} text-xs sm:text-sm`}>
                 <div className={`w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
-                {isConnected ? 'Connected to PulseChain' : 'Connecting...'}
+                <span className="hidden sm:inline">{isConnected ? 'Connected to PulseChain' : 'Connecting...'}</span>
+                <span className="sm:hidden">{isConnected ? 'Connected' : 'Connecting...'}</span>
               </Badge>
             </div>
           </div>
 
           {/* Timeframe Stats Banner */}
-          <Card className="mb-6 bg-black/40 backdrop-blur-md border border-white/10">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-1">
+          <Card className="mb-4 md:mb-6 bg-black/40 backdrop-blur-md border border-white/10">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+                <div className="text-center lg:text-left">
+                  <h3 className="text-base md:text-lg font-semibold text-white mb-1">
                     {timeframes.find(t => t.value === selectedTimeframe)?.label} Overview
                   </h3>
-                  <p className="text-sm text-white/70">
+                  <p className="text-xs md:text-sm text-white/70">
                     Showing data for the selected timeframe
                   </p>
                 </div>
-                <div className="grid grid-cols-4 gap-6 text-center">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 text-center">
                   <div>
                     <p className="text-xs text-muted-foreground">Total Burns</p>
-                    <p className="text-lg font-bold text-video-cyan">{timeframeStats.totalBurns}</p>
+                    <p className="text-sm md:text-lg font-bold text-video-cyan">{timeframeStats.totalBurns}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Amount Burned</p>
-                    <p className="text-lg font-bold text-video-gold">{formatNumber(timeframeStats.totalAmount)} ARK</p>
+                    <p className="text-sm md:text-lg font-bold text-video-gold">{formatNumber(timeframeStats.totalAmount)} ARK</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Unique Wallets</p>
-                    <p className="text-lg font-bold text-video-blue">{timeframeStats.uniqueWallets}</p>
+                    <p className="text-sm md:text-lg font-bold text-video-blue">{timeframeStats.uniqueWallets}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Avg Burn Size</p>
-                    <p className="text-lg font-bold text-primary">{formatNumber(timeframeStats.avgBurnSize)} ARK</p>
+                    <p className="text-sm md:text-lg font-bold text-primary">{formatNumber(timeframeStats.avgBurnSize)} ARK</p>
                   </div>
                 </div>
               </div>
@@ -327,90 +328,90 @@ const Burn = () => {
           </Card>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-6 md:mb-8">
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-6">
+              <CardContent className="p-4 md:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm">Total Burned</p>
-                    <p className="text-2xl font-bold text-video-cyan">
+                    <p className="text-muted-foreground text-xs md:text-sm">Total Burned</p>
+                    <p className="text-lg md:text-2xl font-bold text-video-cyan">
                       {burnMetrics ? formatNumber(burnMetrics.totalBurned) : '0'} ARK
                     </p>
                   </div>
-                  <Flame className="w-8 h-8 text-video-cyan" />
+                  <Flame className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
                 </div>
               </CardContent>
             </Card>
             
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-6">
+              <CardContent className="p-4 md:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm">Burn Rate</p>
-                    <p className="text-2xl font-bold text-video-gold">
+                    <p className="text-muted-foreground text-xs md:text-sm">Burn Rate</p>
+                    <p className="text-lg md:text-2xl font-bold text-video-gold">
                       {burnMetrics ? burnMetrics.burnRate.toFixed(1) : '0'}/hr
                     </p>
                   </div>
-                  <Activity className="w-8 h-8 text-video-gold animate-pulse" />
+                  <Activity className="w-6 h-6 md:w-8 md:h-8 text-video-gold animate-pulse" />
                 </div>
               </CardContent>
             </Card>
             
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-6">
+              <CardContent className="p-4 md:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm">Burn Efficiency</p>
-                    <p className="text-2xl font-bold text-video-blue">
+                    <p className="text-muted-foreground text-xs md:text-sm">Burn Efficiency</p>
+                    <p className="text-lg md:text-2xl font-bold text-video-blue">
                       {burnMetrics ? burnMetrics.efficiency.toFixed(1) : '0'}%
                     </p>
                   </div>
-                  <TrendingUp className="w-8 h-8 text-video-blue" />
+                  <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-video-blue" />
                 </div>
               </CardContent>
             </Card>
             
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-6">
+              <CardContent className="p-4 md:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm">Active Burners</p>
-                    <p className="text-2xl font-bold text-video-cyan">
+                    <p className="text-muted-foreground text-xs md:text-sm">Active Burners</p>
+                    <p className="text-lg md:text-2xl font-bold text-video-cyan">
                       {timeframeStats.uniqueWallets}
                     </p>
                   </div>
-                  <Users className="w-8 h-8 text-video-cyan" />
+                  <Users className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
                 </div>
               </CardContent>
             </Card>
             
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-6">
+              <CardContent className="p-4 md:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm">Supply Burned</p>
-                    <p className="text-2xl font-bold text-video-cyan">
+                    <p className="text-muted-foreground text-xs md:text-sm">Supply Burned</p>
+                    <p className="text-lg md:text-2xl font-bold text-video-cyan">
                       {burnPercentage.toFixed(3)}%
                     </p>
                   </div>
-                  <Zap className="w-8 h-8 text-video-cyan" />
+                  <Zap className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Main Dashboard */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* Burn Progress Circle */}
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-video-cyan">Supply Reduction</CardTitle>
+                <CardTitle className="text-base md:text-lg font-semibold text-video-cyan">Supply Reduction</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex justify-center">
                   <CircularProgress 
                     percentage={burnPercentage} 
-                    size={140}
+                    size={window.innerWidth < 768 ? 100 : 140}
                     color="hsl(var(--video-cyan))"
                   />
                 </div>
