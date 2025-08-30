@@ -97,9 +97,9 @@ const HistoricalChart = ({
       </div>
 
       {/* Main Chart Container */}
-      <Card className="relative z-10 bg-black/40 backdrop-blur-xl border-cyan-500/30 overflow-hidden">
+      <Card className="relative z-10 bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300 overflow-hidden">
         {/* Enhanced Header */}
-        <div className="bg-black/60 backdrop-blur-sm border-b border-cyan-500/20 p-6">
+        <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 p-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             {/* Title Section */}
             <div className="flex items-center gap-4">
@@ -191,7 +191,7 @@ const HistoricalChart = ({
 
             {/* Filter Panel */}
           {showFilters && (
-            <Card className="mt-4 p-4 bg-black/20 border-cyan-500/20">
+            <Card className="mt-4 p-4 bg-black/30 backdrop-blur-sm border border-white/10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="text-xs font-mono text-muted-foreground">Min Price</label>
@@ -239,7 +239,7 @@ const HistoricalChart = ({
         </div>
 
         {/* Chart Area */}
-        <div className="p-6 relative bg-black/90">
+        <div className="p-6 relative bg-black/20">
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent animate-scan"></div>
           
           <ResponsiveContainer width="100%" height={400}>
@@ -331,7 +331,7 @@ const HistoricalChart = ({
         </div>
 
         {/* Enhanced Diagnostics Panel */}
-        <div className="bg-black/60 backdrop-blur-sm border-t border-cyan-500/20 p-4">
+        <div className="bg-black/30 backdrop-blur-sm border-t border-white/10 p-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-yellow-400" />
