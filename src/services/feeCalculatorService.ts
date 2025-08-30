@@ -264,9 +264,9 @@ class FeeCalculatorService {
       const currentBlock = await this.provider.getBlockNumber();
       console.log('Current block:', currentBlock);
       
-      // Go back 20,000 blocks (roughly 48-72 hours on PulseChain)
-      const fromBlock = Math.max(currentBlock - 20000, 0);
-      console.log('Querying from block:', fromBlock, 'to latest');
+      // Optimized: Go back 5,000 blocks initially (roughly 12-18 hours on PulseChain)
+      const fromBlock = Math.max(currentBlock - 5000, 0);
+      console.log('Querying from block:', fromBlock, 'to latest (optimized query)');
       
       // Query Transfer events to DEAD_ADDRESS from Token contract (using the address directly)
       const DEAD_ADDRESS = '0x0000000000000000000000000000000000000369';

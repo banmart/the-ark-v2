@@ -33,6 +33,7 @@ export const useBurnAnalytics = (volume24h?: number) => {
   const [burnHistory, setBurnHistory] = useState<BurnTransaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingStage, setLoadingStage] = useState<'idle' | 'fetching-metrics' | 'fetching-history' | 'complete'>('idle');
 
   // Calculate theoretical burn amount based on volume
   const calculateTheoreticalBurn = (volume: number): number => {
@@ -69,11 +70,14 @@ export const useBurnAnalytics = (volume24h?: number) => {
     return ((recentAvg - olderAvg) / olderAvg) * 100;
   }, [burnHistory]);
 
-  // Fetch burn analytics data
+  // Fetch burn analytics data with progressive loading
   const fetchBurnAnalytics = async (volume: number) => {
     try {
       setLoading(true);
       setError(null);
+      setLoadingStage('fetching-metrics');
+      
+      console.log('🔥 Fetching burn analytics for volume:', volume);
 
       // Get fee metrics which includes burn data
       const feeMetrics = await feeCalculatorService.getFeeMetrics(volume);
@@ -98,14 +102,22 @@ export const useBurnAnalytics = (volume24h?: number) => {
       };
 
       setBurnMetrics(metrics);
+      console.log('📊 Burn metrics calculated successfully');
 
+      // Progressive loading: fetch history after metrics
+      setLoadingStage('fetching-history');
+      
       // Get real burn transaction history from blockchain
       const realBurnHistory = await feeCalculatorService.getBurnTransactionHistory();
       setBurnHistory(realBurnHistory);
+      console.log('📈 Burn history fetched successfully:', realBurnHistory.length, 'transactions');
+      
+      setLoadingStage('complete');
 
     } catch (err) {
       console.error('Error fetching burn analytics:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch burn analytics');
+      setLoadingStage('idle');
     } finally {
       setLoading(false);
     }
@@ -115,10 +127,10 @@ export const useBurnAnalytics = (volume24h?: number) => {
     if (volume24h && volume24h > 0) {
       fetchBurnAnalytics(volume24h);
 
-      // Update every 30 seconds for real-time data
+      // Update every 60 seconds for real-time data (optimized from 30s)
       const interval = setInterval(() => {
         fetchBurnAnalytics(volume24h);
-      }, 30000);
+      }, 60000);
 
       return () => clearInterval(interval);
     }
@@ -136,6 +148,7 @@ export const useBurnAnalytics = (volume24h?: number) => {
     burnProjections,
     burnTrend,
     loading,
+    loadingStage,
     error,
     refetch,
     calculateTheoreticalBurn

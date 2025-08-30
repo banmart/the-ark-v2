@@ -12,6 +12,7 @@ import { useBurnAnalytics, BurnTransaction as BurnAnalyticsTransaction } from '.
 import { useWalletContext } from '../components/providers/WalletProvider';
 import { useLockerData } from '../hooks/useLockerData';
 import { useContractData } from '../hooks/useContractData';
+import { BurnMetricsSkeleton, BurnChartSkeleton, BurnProgressSkeleton, ProgressiveLoading } from '../components/burn/BurnLoadingStates';
 
 // Format number utility function
 const formatNumber = (num: number): string => {
@@ -117,7 +118,9 @@ const Burn = () => {
     burnMetrics,
     burnHistory,
     burnProjections,
-    loading: burnLoading
+    loading: burnLoading,
+    loadingStage,
+    error: burnError
   } = useBurnAnalytics(arkData?.volume24h ? Number(arkData.volume24h) : 0);
   const {
     isConnected,
@@ -206,6 +209,16 @@ const Burn = () => {
   const timeframeStats = getTimeframeStats();
   const burnPercentage = burnMetrics && arkData?.totalSupply ? burnMetrics.totalBurned / Number(arkData.totalSupply) * 100 : 0;
   const loading = arkLoading || burnLoading;
+  
+  // Determine progressive loading stage
+  const getLoadingStep = () => {
+    if (arkLoading) return 'token-data';
+    if (burnLoading) {
+      if (loadingStage === 'fetching-metrics') return 'burn-analytics';
+      if (loadingStage === 'fetching-history') return 'burn-analytics';
+    }
+    return 'complete';
+  };
   return <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Quantum Field Background */}
       <div className="fixed inset-0 z-0">
@@ -366,100 +379,113 @@ const Burn = () => {
           </div>
 
           {/* Main Burn Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-6 md:mb-8">
-            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-xs md:text-sm">Total Burned</p>
-                    <p className="text-lg md:text-2xl font-bold text-video-cyan">
-                      {burnMetrics ? formatNumber(burnMetrics.totalBurned) : '0'} ARK
-                    </p>
-                  </div>
-                  <Flame className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-xs md:text-sm">Burn Rate</p>
-                    <p className="text-lg md:text-2xl font-bold text-video-gold">
-                      {burnMetrics ? burnMetrics.burnRate.toFixed(1) : '0'}/hr
-                    </p>
-                  </div>
-                  <Activity className="w-6 h-6 md:w-8 md:h-8 text-video-gold animate-pulse" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-xs md:text-sm">Burn Efficiency</p>
-                    <p className="text-lg md:text-2xl font-bold text-video-blue">
-                      {burnMetrics ? burnMetrics.efficiency.toFixed(1) : '0'}%
-                    </p>
-                  </div>
-                  <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-video-blue" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-xs md:text-sm">Active Burners</p>
-                    <p className="text-lg md:text-2xl font-bold text-video-cyan">
-                      {timeframeStats.uniqueWallets}
-                    </p>
-                  </div>
-                  <Users className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-xs md:text-sm">Supply Burned</p>
-                    <p className="text-lg md:text-2xl font-bold text-video-cyan">
-                      {burnPercentage.toFixed(3)}%
-                    </p>
-                  </div>
-                  <Zap className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
+          <ProgressiveLoading step={getLoadingStep()}>
+            {(!burnMetrics && (burnLoading || arkLoading)) ? (
+              <BurnMetricsSkeleton showLoadingMessages={true} />
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-6 md:mb-8">
+                <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-muted-foreground text-xs md:text-sm">Total Burned</p>
+                        <p className="text-lg md:text-2xl font-bold text-video-cyan">
+                          {burnMetrics ? formatNumber(burnMetrics.totalBurned) : '0'} ARK
+                        </p>
+                      </div>
+                      <Flame className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-muted-foreground text-xs md:text-sm">Burn Rate</p>
+                        <p className="text-lg md:text-2xl font-bold text-video-gold">
+                          {burnMetrics ? burnMetrics.burnRate.toFixed(1) : '0'}/hr
+                        </p>
+                      </div>
+                      <Activity className="w-6 h-6 md:w-8 md:h-8 text-video-gold animate-pulse" />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-muted-foreground text-xs md:text-sm">Burn Efficiency</p>
+                        <p className="text-lg md:text-2xl font-bold text-video-blue">
+                          {burnMetrics ? burnMetrics.efficiency.toFixed(1) : '0'}%
+                        </p>
+                      </div>
+                      <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-video-blue" />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-muted-foreground text-xs md:text-sm">Active Burners</p>
+                        <p className="text-lg md:text-2xl font-bold text-video-cyan">
+                          {timeframeStats.uniqueWallets}
+                        </p>
+                      </div>
+                      <Users className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-black/30 backdrop-blur-sm border border-white/10 hover:bg-black/40 transition-all duration-300">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-muted-foreground text-xs md:text-sm">Supply Burned</p>
+                        <p className="text-lg md:text-2xl font-bold text-video-cyan">
+                          {burnPercentage.toFixed(3)}%
+                        </p>
+                      </div>
+                      <Zap className="w-6 h-6 md:w-8 md:h-8 text-video-cyan" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </ProgressiveLoading>
           {/* Main Dashboard */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* Burn Progress Circle */}
-            <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
-              <CardHeader>
-                <CardTitle className="text-base md:text-lg font-semibold text-video-cyan">Supply Reduction</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-center">
-                  <CircularProgress percentage={burnPercentage} size={window.innerWidth < 768 ? 100 : 140} color="hsl(var(--video-cyan))" />
-                </div>
-                <div className="text-center mt-4">
-                  <p className="text-sm text-muted-foreground">
-                    {arkData ? formatNumber(Number(arkData.totalSupply) - (burnMetrics?.totalBurned || 0)) : 'Loading...'} ARK remaining
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            {(!burnMetrics && (burnLoading || arkLoading)) ? (
+              <BurnProgressSkeleton showLoadingMessages={loadingStage === 'fetching-history'} />
+            ) : (
+              <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+                <CardHeader>
+                  <CardTitle className="text-base md:text-lg font-semibold text-video-cyan">Supply Reduction</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-center">
+                    <CircularProgress percentage={burnPercentage} size={window.innerWidth < 768 ? 100 : 140} color="hsl(var(--video-cyan))" />
+                  </div>
+                  <div className="text-center mt-4">
+                    <p className="text-sm text-muted-foreground">
+                      {arkData ? formatNumber(Number(arkData.totalSupply) - (burnMetrics?.totalBurned || 0)) : 'Loading...'} ARK remaining
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Recent Burns Chart */}
             <div className="lg:col-span-2">
-              <LineChart data={convertedBurnHistory} />
+              {(convertedBurnHistory.length === 0 && (burnLoading || arkLoading)) ? (
+                <BurnChartSkeleton showLoadingMessages={loadingStage === 'fetching-history'} />
+              ) : (
+                <LineChart data={convertedBurnHistory} />
+              )}
             </div>
           </div>
 
