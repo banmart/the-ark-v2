@@ -76,13 +76,13 @@ const BurnMeter = ({ value, max, label, color = "hsl(var(--video-cyan))" }) => {
   const percentage = Math.min((value / max) * 100, 100);
   
   return (
-    <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
+    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
       <CardContent className="p-4">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm text-muted-foreground">{label}</span>
-          <span className="text-sm font-mono text-foreground">{formatNumber(value)}</span>
+          <span className="text-sm text-white/70">{label}</span>
+          <span className="text-sm font-mono text-white">{formatNumber(value)}</span>
         </div>
-        <div className="w-full bg-muted rounded-full h-3">
+        <div className="w-full bg-white/10 rounded-full h-3">
           <div 
             className="h-3 rounded-full transition-all duration-500 ease-out"
             style={{ 
@@ -91,7 +91,7 @@ const BurnMeter = ({ value, max, label, color = "hsl(var(--video-cyan))" }) => {
             }}
           />
         </div>
-        <div className="text-xs text-muted-foreground mt-1">
+        <div className="text-xs text-white/50 mt-1">
           {percentage.toFixed(1)}% of {formatNumber(max)}
         </div>
       </CardContent>
@@ -108,7 +108,7 @@ const LineChart = ({ data }: { data: BurnTransaction[] }) => {
   }).join(' ');
 
   return (
-    <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
+    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
       <CardHeader>
         <CardTitle className="text-lg font-semibold text-video-cyan">Recent Burn Activity</CardTitle>
       </CardHeader>
@@ -451,7 +451,7 @@ const Burn = () => {
 
           {/* Recent Activity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-video-gold flex items-center gap-2">
                   <Activity className="w-5 h-5 animate-pulse" />
@@ -459,18 +459,18 @@ const Burn = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="bg-muted/20 rounded-lg p-4 max-h-96 overflow-y-auto">
+                <div className="bg-black/20 rounded-lg p-4 max-h-96 overflow-y-auto border border-white/5">
                   <div className="space-y-2 text-sm">
                     {recentNotifications.slice(0, 10).map((notification) => (
-                      <div key={notification.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-b-0">
-                        <span className="text-foreground truncate">{notification.message}</span>
-                        <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                      <div key={notification.id} className="flex items-center justify-between py-2 border-b border-white/10 last:border-b-0">
+                        <span className="text-white truncate">{notification.message}</span>
+                        <span className="text-xs text-white/60 ml-2 flex-shrink-0">
                           {notification.timestamp.toLocaleTimeString()}
                         </span>
                       </div>
                     ))}
                     {recentNotifications.length === 0 && (
-                      <p className="text-muted-foreground text-center py-4">No recent activity</p>
+                      <p className="text-white/50 text-center py-4">No recent activity</p>
                     )}
                   </div>
                 </div>
@@ -478,7 +478,7 @@ const Burn = () => {
             </Card>
 
             {/* Burn Mechanics Info */}
-            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
+            <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-video-cyan flex items-center gap-2">
                   <Info className="w-5 h-5" />
@@ -487,34 +487,34 @@ const Burn = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <Card className="bg-card/30 border-video-gold/30 backdrop-blur-sm">
+                  <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
                     <CardContent className="p-4">
                       <h4 className="font-semibold text-video-gold mb-2">Transaction Burns</h4>
-                      <p className="text-sm text-muted-foreground mb-2">2% of every transaction is automatically burned</p>
-                      <div className="w-full bg-muted/50 rounded-full h-2">
+                      <p className="text-sm text-white/70 mb-2">2% of every transaction is automatically burned</p>
+                      <div className="w-full bg-white/10 rounded-full h-2">
                         <div className="bg-video-gold h-2 rounded-full animate-pulse" style={{width: '20%'}} />
                       </div>
                     </CardContent>
                   </Card>
                   
-                  <Card className="bg-card/30 border-video-blue/30 backdrop-blur-sm">
+                  <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
                     <CardContent className="p-4">
                       <h4 className="font-semibold text-video-blue mb-2">Liquidity Burns</h4>
-                      <p className="text-sm text-muted-foreground mb-2">3% goes to liquidity, LP tokens burned</p>
-                      <div className="w-full bg-muted/50 rounded-full h-2">
+                      <p className="text-sm text-white/70 mb-2">3% goes to liquidity, LP tokens burned</p>
+                      <div className="w-full bg-white/10 rounded-full h-2">
                         <div className="bg-video-blue h-2 rounded-full animate-pulse" style={{width: '30%', animationDelay: '0.5s'}} />
                       </div>
                     </CardContent>
                   </Card>
                   
-                  <Card className="bg-card/30 border-video-cyan/30 backdrop-blur-sm">
+                  <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
                     <CardContent className="p-4">
                       <h4 className="font-semibold text-video-cyan mb-2 flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4" />
                         Early Unlock Penalties
                       </h4>
-                      <p className="text-sm text-muted-foreground mb-2">50% of penalties burned, 50% to lockers</p>
-                      <div className="w-full bg-muted/50 rounded-full h-2">
+                      <p className="text-sm text-white/70 mb-2">50% of penalties burned, 50% to lockers</p>
+                      <div className="w-full bg-white/10 rounded-full h-2">
                         <div className="bg-video-cyan h-2 rounded-full animate-pulse" style={{width: '50%', animationDelay: '1s'}} />
                       </div>
                     </CardContent>

@@ -114,7 +114,8 @@ class FeeCalculatorService {
       const blocksPerDay = Math.floor(24 * 60 * 60 / 3);
       const startBlock = Math.max(0, currentBlock - blocksPerDay);
       
-      const transferFilter = this.arkContract.filters.Transfer(null, CONTRACT_ADDRESSES.DEAD_ADDRESS);
+      const DEAD_ADDRESS = '0x0000000000000000000000000000000000000369';
+      const transferFilter = this.arkContract.filters.Transfer(null, DEAD_ADDRESS);
       const burnEvents = await this.arkContract.queryFilter(transferFilter, startBlock, currentBlock);
       
       let dailyBurnAmount = 0;
@@ -126,7 +127,7 @@ class FeeCalculatorService {
       }
       
       // Get total burned amount
-      const totalBurned = await this.arkContract.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS);
+      const totalBurned = await this.arkContract.balanceOf(DEAD_ADDRESS);
       const totalBurnedAmount = parseFloat(ethers.formatEther(totalBurned));
       
       return {
@@ -244,35 +245,66 @@ class FeeCalculatorService {
   async getBurnTransactionHistory(): Promise<Array<{timestamp: number; amount: number; txHash: string; volume24h: number}>> {
     try {
       const currentBlock = await this.provider.getBlockNumber();
+      console.log('Current block:', currentBlock);
       
-      // Get last 30 days of burn transactions (assuming ~3 second block time)
-      const blocksPerDay = Math.floor(24 * 60 * 60 / 3);
-      const blocks30Days = blocksPerDay * 30;
-      const startBlock = Math.max(0, currentBlock - blocks30Days);
+      // Go back 20,000 blocks (roughly 48-72 hours on PulseChain)
+      const fromBlock = Math.max(currentBlock - 20000, 0);
+      console.log('Querying from block:', fromBlock, 'to latest');
       
-      const transferFilter = this.arkContract.filters.Transfer(null, CONTRACT_ADDRESSES.DEAD_ADDRESS);
-      const burnEvents = await this.arkContract.queryFilter(transferFilter, startBlock, currentBlock);
+      // Query Transfer events to DEAD_ADDRESS from Token contract (using the address directly)
+      const DEAD_ADDRESS = '0x0000000000000000000000000000000000000369';
+      const tokenFilter = this.arkContract.filters.Transfer(null, DEAD_ADDRESS);
+      const tokenEvents = await this.arkContract.queryFilter(tokenFilter, fromBlock, 'latest');
+      console.log('Found', tokenEvents.length, 'token burn events');
       
+      // Also monitor Locker contract for penalty burns (using the address directly)
+      let lockerEvents: any[] = [];
+      try {
+        const LOCKER_ADDRESS = '0x3ba44a1de77025b78d7430449569dd1112ac4473';
+        const lockerContract = new ethers.Contract(
+          LOCKER_ADDRESS, 
+          ['event PenaltyBurn(address indexed user, uint256 amount, uint256 timestamp)'],
+          this.provider
+        );
+        const penaltyFilter = lockerContract.filters.PenaltyBurn();
+        lockerEvents = await lockerContract.queryFilter(penaltyFilter, fromBlock, 'latest');
+        console.log('Found', lockerEvents.length, 'locker penalty burn events');
+      } catch (err) {
+        console.log('Locker penalty events not available or no events found');
+      }
+      
+      // Combine all burn events
+      const allEvents = [...tokenEvents, ...lockerEvents];
+      
+      // Process events and get block details with better error handling
       const transactions = [];
       
-      for (const event of burnEvents) {
-        if ('args' in event && event.args && event.blockNumber) {
-          const block = await this.provider.getBlock(event.blockNumber);
-          const amount = parseFloat(ethers.formatEther(event.args.value || '0'));
-          
-          if (amount > 0 && block) {
-            transactions.push({
-              timestamp: block.timestamp * 1000, // Convert to milliseconds
-              amount,
-              txHash: event.transactionHash,
-              volume24h: amount * 10 // Rough estimate based on burn amount
-            });
+      for (const event of allEvents.slice(-100)) {
+        try {
+          if ('args' in event && event.args && event.blockNumber) {
+            const block = await this.provider.getBlock(event.blockNumber);
+            const amount = parseFloat(ethers.formatEther(event.args?.value || event.args?.amount || '0'));
+            
+            if (amount > 0 && block) {
+              transactions.push({
+                timestamp: block.timestamp * 1000, // Convert to milliseconds
+                amount,
+                txHash: event.transactionHash,
+                volume24h: amount * 10, // Rough estimate based on burn amount
+                type: event.args?.user ? 'penalty' : 'transaction'
+              });
+            }
           }
+        } catch (err) {
+          console.error('Error processing burn event:', err);
         }
       }
       
       // Sort by timestamp (newest first)
-      return transactions.sort((a, b) => b.timestamp - a.timestamp);
+      const sortedTransactions = transactions.sort((a, b) => b.timestamp - a.timestamp);
+      console.log('Processed', sortedTransactions.length, 'valid burn transactions');
+      
+      return sortedTransactions;
       
     } catch (error) {
       console.error('Error fetching burn transaction history:', error);
