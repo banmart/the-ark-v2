@@ -4,7 +4,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Flame, Activity, Users, TrendingUp, Zap, AlertTriangle, Info } from 'lucide-react';
-import BaseLayout from '../components/layout/BaseLayout';
+import Navigation from '../components/Navigation';
+import Footer from '../components/Footer';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
 import { useBurnAnalytics, BurnTransaction as BurnAnalyticsTransaction } from '../hooks/useBurnAnalytics';
@@ -75,7 +76,7 @@ const BurnMeter = ({ value, max, label, color = "hsl(var(--video-cyan))" }) => {
   const percentage = Math.min((value / max) * 100, 100);
   
   return (
-    <Card className="bg-card/50 border-video-cyan/20">
+    <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
       <CardContent className="p-4">
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm text-muted-foreground">{label}</span>
@@ -107,9 +108,9 @@ const LineChart = ({ data }: { data: BurnTransaction[] }) => {
   }).join(' ');
 
   return (
-    <Card className="bg-card/50 border-video-cyan/20">
+    <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-primary">Recent Burn Activity</CardTitle>
+        <CardTitle className="text-lg font-semibold text-video-cyan">Recent Burn Activity</CardTitle>
       </CardHeader>
       <CardContent>
         <svg width="300" height="80" className="w-full">
@@ -217,8 +218,46 @@ const Burn = () => {
   const loading = arkLoading || burnLoading;
 
   return (
-    <BaseLayout>
-      <div className="min-h-screen py-8">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Quantum Field Background */}
+      <div className="fixed inset-0 z-0">
+        {/* Base quantum gradient */}
+        <div className="absolute inset-0 bg-gradient-radial from-video-cyan/20 via-black to-black"></div>
+        
+        {/* Animated quantum grid */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
+        </div>
+        
+        {/* Floating quantum orbs */}
+        <div className="floating-orb orb1 bg-gradient-radial from-video-cyan/20 to-transparent blur-3xl"></div>
+        <div className="floating-orb orb2 bg-gradient-radial from-video-blue/20 to-transparent blur-3xl"></div>
+        <div className="floating-orb orb3 bg-gradient-radial from-video-gold/20 to-transparent blur-3xl"></div>
+        
+        {/* Breathing Gradient Bursts */}
+        <div className="gradient-burst burst1 bg-gradient-radial from-video-cyan/10 to-transparent animate-pulse"></div>
+        <div className="gradient-burst burst2 bg-gradient-radial from-video-blue/10 to-transparent animate-pulse" style={{animationDelay: '0.5s'}}></div>
+        <div className="gradient-burst burst3 bg-gradient-radial from-video-gold/10 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="gradient-burst burst4 bg-gradient-radial from-video-cyan/10 to-transparent animate-pulse" style={{animationDelay: '1.5s'}}></div>
+        <div className="gradient-burst burst5 bg-gradient-radial from-video-blue/10 to-transparent animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="gradient-burst burst6 bg-gradient-radial from-video-gold/10 to-transparent animate-pulse" style={{animationDelay: '2.5s'}}></div>
+        
+        {/* Scanning lines */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-video-cyan/50 to-transparent animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-video-gold/50 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
+      </div>
+
+      {/* Navigation */}
+      <div className="relative z-20">
+        <Navigation 
+          handleConnectWallet={() => {}}
+          isConnecting={false}
+          isConnected={isConnected}
+          account=""
+        />
+      </div>
+
+      <div className="relative z-10 pt-24">
         <div className="max-w-7xl mx-auto px-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
@@ -253,7 +292,7 @@ const Burn = () => {
           </div>
 
           {/* Timeframe Stats Banner */}
-          <Card className="mb-6 bg-gradient-to-r from-card/50 to-card/30 border-video-cyan/20">
+          <Card className="mb-6 bg-gradient-to-r from-card/20 to-card/10 border-video-cyan/30 backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -288,7 +327,7 @@ const Burn = () => {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-            <Card className="bg-card/50 border-video-cyan/20">
+            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -302,7 +341,7 @@ const Burn = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-card/50 border-video-cyan/20">
+            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -311,12 +350,12 @@ const Burn = () => {
                       {burnMetrics ? burnMetrics.burnRate.toFixed(1) : '0'}/hr
                     </p>
                   </div>
-                  <Activity className="w-8 h-8 text-video-gold" />
+                  <Activity className="w-8 h-8 text-video-gold animate-pulse" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="bg-card/50 border-video-cyan/20">
+            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -330,21 +369,21 @@ const Burn = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-card/50 border-video-cyan/20">
+            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground text-sm">Active Burners</p>
-                    <p className="text-2xl font-bold text-primary">
+                    <p className="text-2xl font-bold text-video-cyan">
                       {timeframeStats.uniqueWallets}
                     </p>
                   </div>
-                  <Users className="w-8 h-8 text-primary" />
+                  <Users className="w-8 h-8 text-video-cyan" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="bg-card/50 border-video-cyan/20">
+            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm hover:bg-card/30 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -362,9 +401,9 @@ const Burn = () => {
           {/* Main Dashboard */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Burn Progress Circle */}
-            <Card className="bg-card/50 border-video-cyan/20">
+            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-primary">Supply Reduction</CardTitle>
+                <CardTitle className="text-lg font-semibold text-video-cyan">Supply Reduction</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex justify-center">
@@ -412,10 +451,10 @@ const Burn = () => {
 
           {/* Recent Activity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="bg-card/50 border-video-cyan/20">
+            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-video-gold flex items-center gap-2">
-                  <Activity className="w-5 h-5" />
+                  <Activity className="w-5 h-5 animate-pulse" />
                   Live Updates
                 </CardTitle>
               </CardHeader>
@@ -439,44 +478,44 @@ const Burn = () => {
             </Card>
 
             {/* Burn Mechanics Info */}
-            <Card className="bg-card/50 border-video-cyan/20">
+            <Card className="bg-card/20 border-video-cyan/30 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-primary flex items-center gap-2">
+                <CardTitle className="text-lg font-semibold text-video-cyan flex items-center gap-2">
                   <Info className="w-5 h-5" />
                   Burn Mechanics
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <Card className="bg-muted/20 border-video-gold/20">
+                  <Card className="bg-card/30 border-video-gold/30 backdrop-blur-sm">
                     <CardContent className="p-4">
                       <h4 className="font-semibold text-video-gold mb-2">Transaction Burns</h4>
                       <p className="text-sm text-muted-foreground mb-2">2% of every transaction is automatically burned</p>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-video-gold h-2 rounded-full" style={{width: '20%'}} />
+                      <div className="w-full bg-muted/50 rounded-full h-2">
+                        <div className="bg-video-gold h-2 rounded-full animate-pulse" style={{width: '20%'}} />
                       </div>
                     </CardContent>
                   </Card>
                   
-                  <Card className="bg-muted/20 border-video-blue/20">
+                  <Card className="bg-card/30 border-video-blue/30 backdrop-blur-sm">
                     <CardContent className="p-4">
                       <h4 className="font-semibold text-video-blue mb-2">Liquidity Burns</h4>
                       <p className="text-sm text-muted-foreground mb-2">3% goes to liquidity, LP tokens burned</p>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-video-blue h-2 rounded-full" style={{width: '30%'}} />
+                      <div className="w-full bg-muted/50 rounded-full h-2">
+                        <div className="bg-video-blue h-2 rounded-full animate-pulse" style={{width: '30%', animationDelay: '0.5s'}} />
                       </div>
                     </CardContent>
                   </Card>
                   
-                  <Card className="bg-muted/20 border-primary/20">
+                  <Card className="bg-card/30 border-video-cyan/30 backdrop-blur-sm">
                     <CardContent className="p-4">
-                      <h4 className="font-semibold text-primary mb-2 flex items-center gap-2">
+                      <h4 className="font-semibold text-video-cyan mb-2 flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4" />
                         Early Unlock Penalties
                       </h4>
                       <p className="text-sm text-muted-foreground mb-2">50% of penalties burned, 50% to lockers</p>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-primary h-2 rounded-full" style={{width: '50%'}} />
+                      <div className="w-full bg-muted/50 rounded-full h-2">
+                        <div className="bg-video-cyan h-2 rounded-full animate-pulse" style={{width: '50%', animationDelay: '1s'}} />
                       </div>
                     </CardContent>
                   </Card>
@@ -486,7 +525,12 @@ const Burn = () => {
           </div>
         </div>
       </div>
-    </BaseLayout>
+
+      {/* Footer */}
+      <div className="relative z-10">
+        <Footer />
+      </div>
+    </div>
   );
 };
 
