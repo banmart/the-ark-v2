@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Flame, Activity, Users, TrendingUp, Zap, AlertTriangle, Info } from 'lucide-react';
+import { Flame, Activity, Users, TrendingUp, Zap, AlertTriangle, Info, ExternalLink } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { useARKTokenData } from '../hooks/useARKTokenData';
@@ -31,6 +31,8 @@ interface BurnNotification {
   timestamp: Date;
   wallet: string;
   amount: number;
+  txHash: string;
+  type: string;
 }
 const CircularProgress = ({
   percentage,
@@ -125,8 +127,7 @@ const Burn = () => {
   // Convert burn analytics data to our local format
   const convertedBurnHistory: BurnTransaction[] = burnHistory.map(burn => ({
     id: burn.txHash,
-    wallet: `${burn.txHash.slice(0, 6)}...${burn.txHash.slice(-4)}`,
-    // Generate wallet-like display from hash
+    wallet: burn.wallet ? `${burn.wallet.slice(0, 6)}...${burn.wallet.slice(-4)}` : `${burn.txHash.slice(0, 6)}...${burn.txHash.slice(-4)}`,
     amount: burn.amount,
     timestamp: new Date(burn.timestamp),
     txHash: burn.txHash,
@@ -169,14 +170,16 @@ const Burn = () => {
     if (convertedBurnHistory.length > 0) {
       const notifications = convertedBurnHistory.slice(0, 10).map(burn => ({
         id: burn.txHash,
-        message: `🔥 ${burn.wallet} burned ${burn.amount.toLocaleString()} ARK!`,
+        message: `🔥 ${burn.wallet} burned ${formatNumber(burn.amount)} ARK`,
         timestamp: burn.timestamp,
         wallet: burn.wallet,
-        amount: burn.amount
+        amount: burn.amount,
+        txHash: burn.txHash,
+        type: (burnHistory.find(b => b.txHash === burn.txHash)?.type) || 'transaction'
       }));
       setRecentNotifications(notifications);
     }
-  }, [convertedBurnHistory]);
+  }, [convertedBurnHistory, burnHistory]);
   const getFilteredData = () => {
     if (selectedTimeframe === 'all') return convertedBurnHistory;
     const timeframe = timeframes.find(t => t.value === selectedTimeframe);
@@ -423,15 +426,64 @@ const Burn = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="bg-black/20 rounded-lg p-4 max-h-96 overflow-y-auto border border-white/5">
-                  <div className="space-y-2 text-sm">
-                    {recentNotifications.slice(0, 10).map(notification => <div key={notification.id} className="flex items-center justify-between py-2 border-b border-white/10 last:border-b-0">
-                        <span className="text-white truncate">{notification.message}</span>
-                        <span className="text-xs text-white/60 ml-2 flex-shrink-0">
-                          {notification.timestamp.toLocaleTimeString()}
-                        </span>
-                      </div>)}
-                    {recentNotifications.length === 0 && <p className="text-white/50 text-center py-4">No recent activity</p>}
+                <div className="bg-black/20 rounded-lg p-3 md:p-4 max-h-96 overflow-y-auto border border-white/5">
+                  <div className="space-y-3">
+                    {recentNotifications.slice(0, 10).map(notification => (
+                      <div key={notification.id} className="p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                              notification.type === 'penalty' 
+                                ? 'bg-red-500/20 text-red-300 border border-red-500/30' 
+                                : 'bg-video-gold/20 text-video-gold border border-video-gold/30'
+                            }`}>
+                              {notification.type === 'penalty' ? '⚠️ PENALTY' : '🔥 BURN'}
+                            </span>
+                            <span className="text-xs text-white/60 flex-shrink-0">
+                              {notification.timestamp.toLocaleTimeString()}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="text-sm text-white mb-2">
+                          <span className="font-medium text-video-cyan">
+                            {formatNumber(notification.amount)} ARK
+                          </span>
+                          <span className="text-white/70"> burned by </span>
+                          <button 
+                            onClick={() => {
+                              const originalBurn = burnHistory.find(b => b.txHash === notification.txHash);
+                              const fullAddress = originalBurn?.wallet || notification.txHash;
+                              window.open(`https://otter.pulsechain.com/address/${fullAddress}`, '_blank');
+                            }}
+                            className="text-video-gold hover:text-video-gold/80 transition-colors underline decoration-dotted"
+                            title="View wallet on PulseChain explorer"
+                          >
+                            {notification.wallet}
+                          </button>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 text-xs">
+                          <button 
+                            onClick={() => window.open(`https://otter.pulsechain.com/tx/${notification.txHash}`, '_blank')}
+                            className="text-white/60 hover:text-video-blue transition-colors flex items-center gap-1"
+                            title="View transaction on PulseChain explorer"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            View Transaction
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {recentNotifications.length === 0 && (
+                      <div className="text-center py-8">
+                        <div className="text-white/30 mb-2">
+                          <Activity className="w-8 h-8 mx-auto mb-2" />
+                        </div>
+                        <p className="text-white/50 text-sm">No recent burn activity</p>
+                        <p className="text-white/30 text-xs mt-1">Live transactions will appear here</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>

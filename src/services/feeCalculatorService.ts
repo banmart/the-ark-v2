@@ -259,7 +259,7 @@ class FeeCalculatorService {
     return [...this.feeHistory];
   }
 
-  async getBurnTransactionHistory(): Promise<Array<{timestamp: number; amount: number; txHash: string; volume24h: number}>> {
+  async getBurnTransactionHistory(): Promise<Array<{timestamp: number; amount: number; txHash: string; volume24h: number; wallet?: string; type?: string}>> {
     try {
       const currentBlock = await this.provider.getBlockNumber();
       console.log('Current block:', currentBlock);
@@ -302,13 +302,28 @@ class FeeCalculatorService {
             const block = await this.provider.getBlock(event.blockNumber);
             const amount = parseFloat(ethers.formatEther(event.args?.value || event.args?.amount || '0'));
             
-            if (amount > 0 && block) {
+            // Extract the real wallet address
+            let walletAddress = '';
+            let burnType = 'transaction';
+            
+            if (event.args?.user) {
+              // This is a penalty burn from locker
+              walletAddress = event.args.user;
+              burnType = 'penalty';
+            } else if (event.args?.from) {
+              // This is a regular transfer burn
+              walletAddress = event.args.from;
+              burnType = 'transaction';
+            }
+            
+            if (amount > 0 && block && walletAddress) {
               transactions.push({
                 timestamp: block.timestamp * 1000, // Convert to milliseconds
                 amount,
                 txHash: event.transactionHash,
                 volume24h: amount * 10, // Rough estimate based on burn amount
-                type: event.args?.user ? 'penalty' : 'transaction'
+                wallet: walletAddress,
+                type: burnType
               });
             }
           }

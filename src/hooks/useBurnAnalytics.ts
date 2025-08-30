@@ -7,6 +7,8 @@ export interface BurnTransaction {
   amount: number;
   txHash: string;
   volume24h: number;
+  wallet?: string;
+  type?: string;
 }
 
 export interface BurnMetrics {
