@@ -1,10 +1,18 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Terminal, Wifi, Shield, Activity } from 'lucide-react';
+import DisclaimerDialog from './DisclaimerDialog';
 
 const Footer = () => {
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
+
   return (
+    <>
+      <DisclaimerDialog 
+        isOpen={isDisclaimerOpen} 
+        onClose={() => setIsDisclaimerOpen(false)} 
+      />
     <footer className="relative py-8 md:py-16 px-4 sm:px-6 border-t border-cyan-500/20 overflow-hidden">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 z-0">
@@ -161,6 +169,15 @@ const Footer = () => {
                   Support
                 </a>
               </li>
+              <li>
+                <button 
+                  onClick={() => setIsDisclaimerOpen(true)}
+                  className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group"
+                >
+                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-teal-400 rounded-full transition-colors"></span>
+                  No Expectations
+                </button>
+              </li>
             </ul>
           </div>
         </div>
@@ -189,6 +206,7 @@ const Footer = () => {
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent animate-scan"></div>
       </div>
     </footer>
+    </>
   );
 };
 
