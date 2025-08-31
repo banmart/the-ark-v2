@@ -1,8 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Flame, Users, Droplets, Lock, Zap, Database, Activity, Shield } from 'lucide-react';
+import { useARKTokenData } from '../hooks/useARKTokenData';
+import { useFeeMetrics } from '../hooks/useFeeMetrics';
+import { useLockerData } from '../hooks/useLockerData';
+import { liquidityTrackingService } from '../services/liquidityTrackingService';
 const FeaturesSection = () => {
   const [pillarsPhase, setPillarsPhase] = useState(0);
   const [activePillar, setActivePillar] = useState(0);
+  const [liquidityAccumulation, setLiquidityAccumulation] = useState<any>(null);
+  
+  // Fetch live data
+  const { data: arkData, loading: arkLoading } = useARKTokenData();
+  const { feeMetrics, loading: feeLoading } = useFeeMetrics(arkData?.volume24h ? parseFloat(arkData.volume24h) : undefined);
+  const { protocolStats, loading: lockerLoading } = useLockerData();
+  // Fetch liquidity accumulation data
+  useEffect(() => {
+    const fetchLiquidityData = async () => {
+      try {
+        const accumulation = await liquidityTrackingService.getCurrentAccumulation();
+        setLiquidityAccumulation(accumulation);
+      } catch (error) {
+        console.error('Failed to fetch liquidity data:', error);
+      }
+    };
+    
+    fetchLiquidityData();
+    const interval = setInterval(fetchLiquidityData, 30000); // Update every 30 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     // Cinematic pillars revelation sequence
     const phases = [{
@@ -33,55 +59,88 @@ const FeaturesSection = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-  const pillars = [{
-    id: 0,
-    icon: Flame,
-    emoji: '🔥',
-    title: 'BURN PROTOCOL',
-    subtitle: 'Molecular Disintegration',
-    percentage: '2%',
-    detail: '+ LP Token Burns',
-    description: 'Permanent molecular disintegration through quantum incineration to void address plus automated LP token annihilation for maximum deflationary cascade.',
-    color: 'red',
-    status: 'ACTIVE BURN',
-    gradient: 'from-red-500 to-orange-500'
-  }, {
-    id: 1,
-    icon: Users,
-    emoji: '🫂',
-    title: 'REFLECTION MATRIX',
-    subtitle: 'Quantum Redistribution',
-    percentage: '2%',
-    detail: 'Auto Redistribution',
-    description: 'Autonomous quantum redistribution to all vessel holders based on molecular weight. Extended holding periods amplify reflection coefficients.',
-    color: 'blue',
-    status: 'DISTRIBUTING',
-    gradient: 'from-blue-500 to-cyan-500'
-  }, {
-    id: 2,
-    icon: Droplets,
-    emoji: '💧',
-    title: 'LIQUIDITY ENGINE',
-    subtitle: 'Fluid Dynamics Control',
-    percentage: '3%',
-    detail: 'Smart Threshold',
-    description: 'Automated liquidity synthesis with quantum slippage protection. Threshold: 0.1% supply, Max: 0.2% supply for optimal market equilibrium.',
-    color: 'purple',
-    status: 'STABILIZING',
-    gradient: 'from-purple-500 to-pink-500'
-  }, {
-    id: 3,
-    icon: Lock,
-    emoji: '🔒',
-    title: 'VAULT REWARDS',
-    subtitle: 'Temporal Amplification',
-    percentage: '2%',
-    detail: 'Vault Accumulation',
-    description: 'Dedicated quantum vault rewards for temporal commitment. Earn amplified rewards through time-lock mechanics with up to 8x multipliers.',
-    color: 'green',
-    status: 'ACCUMULATING',
-    gradient: 'from-green-500 to-teal-500'
-  }];
+  // Helper functions for formatting
+  const formatNumber = (value: number | undefined) => {
+    if (!value) return '0';
+    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+    if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+    return value.toFixed(2);
+  };
+
+  const formatPercentage = (value: number | undefined) => {
+    if (!value) return '0%';
+    return `${value.toFixed(2)}%`;
+  };
+
+  // Generate live pillar data
+  const pillars = useMemo(() => {
+    const isLoading = arkLoading || feeLoading || lockerLoading;
+    
+    // Calculate liquidity status
+    const liquidityStatus = liquidityAccumulation?.thresholdReached 
+      ? 'THRESHOLD REACHED' 
+      : liquidityAccumulation?.currentAccumulation > 0 
+      ? 'ACCUMULATING' 
+      : 'MONITORING';
+
+    const liquidityProgress = liquidityAccumulation 
+      ? (liquidityAccumulation.currentAccumulation / liquidityAccumulation.swapThreshold) * 100 
+      : 0;
+
+    return [{
+      id: 0,
+      icon: Flame,
+      emoji: '🔥',
+      title: 'BURN PROTOCOL',
+      subtitle: 'Molecular Disintegration',
+      percentage: isLoading ? '...' : formatPercentage(feeMetrics?.feesCollected?.burn?.rate || 2),
+      detail: isLoading ? 'Loading...' : `${formatNumber(arkData?.burnedTokens ? parseFloat(arkData.burnedTokens) : 0)} Burned`,
+      description: 'Permanent molecular disintegration through quantum incineration to void address plus automated LP token annihilation for maximum deflationary cascade.',
+      color: 'red',
+      status: (arkData?.dailyBurnRate ? parseFloat(arkData.dailyBurnRate) : 0) > 0 ? 'ACTIVE BURN' : 'MONITORING',
+      gradient: 'from-red-500 to-orange-500',
+      liveMetric: isLoading ? 'Loading...' : `${formatNumber(arkData?.dailyBurnRate ? parseFloat(arkData.dailyBurnRate) : 0)} daily`
+    }, {
+      id: 1,
+      icon: Users,
+      emoji: '🫂',
+      title: 'REFLECTION MATRIX',
+      subtitle: 'Quantum Redistribution',
+      percentage: isLoading ? '...' : formatPercentage(feeMetrics?.feesCollected?.reflection?.rate || 2),
+      detail: isLoading ? 'Loading...' : `${formatNumber(feeMetrics?.efficiency?.reflection || 0)}% Efficiency`,
+      description: 'Autonomous quantum redistribution to all vessel holders based on molecular weight. Extended holding periods amplify reflection coefficients.',
+      color: 'blue',
+      status: (feeMetrics?.efficiency?.reflection || 0) > 80 ? 'OPTIMAL' : 'DISTRIBUTING',
+      gradient: 'from-blue-500 to-cyan-500',
+      liveMetric: isLoading ? 'Loading...' : `${formatNumber(feeMetrics?.feesCollected?.reflection?.dailyFees || 0)} redistributed`
+    }, {
+      id: 2,
+      icon: Droplets,
+      emoji: '💧',
+      title: 'LIQUIDITY ENGINE',
+      subtitle: 'Fluid Dynamics Control',
+      percentage: isLoading ? '...' : `${liquidityProgress.toFixed(1)}%`,
+      detail: isLoading ? 'Loading...' : `${formatNumber(liquidityAccumulation?.currentAccumulation || 0)} accumulated`,
+      description: 'Automated liquidity synthesis with quantum slippage protection. Threshold: 0.1% supply, Max: 0.2% supply for optimal market equilibrium.',
+      color: 'purple',
+      status: liquidityStatus,
+      gradient: 'from-purple-500 to-pink-500',
+      liveMetric: isLoading ? 'Loading...' : `Next swap: ${liquidityAccumulation?.estimatedSwapTime || 'Calculating...'}`
+    }, {
+      id: 3,
+      icon: Lock,
+      emoji: '🔒',
+      title: 'VAULT REWARDS',
+      subtitle: 'Temporal Amplification',
+      percentage: isLoading ? '...' : formatPercentage(protocolStats?.averageAPY || 0),
+      detail: isLoading ? 'Loading...' : `${formatNumber(protocolStats?.totalLockedTokens)} TVL`,
+      description: 'Dedicated quantum vault rewards for temporal commitment. Earn amplified rewards through time-lock mechanics with up to 8x multipliers.',
+      color: 'green',
+      status: protocolStats?.rewardPool > 0 ? 'REWARDS ACTIVE' : 'ACCUMULATING',
+      gradient: 'from-green-500 to-teal-500',
+      liveMetric: isLoading ? 'Loading...' : `${formatNumber(protocolStats?.rewardPool || 0)} reward pool`
+    }];
+  }, [arkData, feeMetrics, protocolStats, liquidityAccumulation, arkLoading, feeLoading, lockerLoading]);
   return <section id="features" className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
@@ -159,6 +218,11 @@ const FeaturesSection = () => {
                   <div className="text-xs text-gray-400 font-mono">
                     {pillar.detail}
                   </div>
+                  {pillar.liveMetric && (
+                    <div className="text-xs text-gray-500 font-mono mt-1">
+                      {pillar.liveMetric}
+                    </div>
+                  )}
                 </div>
 
                 {/* Description */}
