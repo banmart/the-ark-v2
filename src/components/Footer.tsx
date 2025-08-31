@@ -59,7 +59,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="space-y-3 sm:space-y-4 lg:col-span-1">
             <div className="text-xl sm:text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent mb-3 sm:mb-4">
-              ARK ❍
+              The Ark
             </div>
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 text-green-400" />
@@ -78,12 +78,6 @@ const Footer = () => {
             </div>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#swap" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
-                  Swap
-                </a>
-              </li>
-              <li>
                 <Link to="/locker" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
                   Locker
@@ -94,30 +88,6 @@ const Footer = () => {
                   <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
                   Burn
                 </Link>
-              </li>
-              <li>
-                <Link to="/leaderboard" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
-                  Leaderboard
-                </Link>
-              </li>
-              <li>
-                <Link to="/burn-analytics" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
-                  Analytics
-                </Link>
-              </li>
-              <li>
-                <a href="#stats" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
-                  Stats
-                </a>
-              </li>
-              <li>
-                <a href="#chart" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
-                  Chart
-                </a>
               </li>
             </ul>
           </div>
@@ -192,7 +162,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="text-left lg:text-center text-gray-400 text-xs sm:text-sm font-mono break-all">
-              <div className="mb-1 lg:mb-0">&copy; 2025 THE ARK ❍</div>
+              <div className="mb-1 lg:mb-0">&copy; 2025 The Ark</div>
               <div className="text-xs text-gray-500">0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67</div>
             </div>
           </div>
