@@ -90,6 +90,24 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/burn" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
+                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
+                  Burn
+                </Link>
+              </li>
+              <li>
+                <Link to="/leaderboard" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
+                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
+                  Leaderboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/burn-analytics" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
+                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
+                  Analytics
+                </Link>
+              </li>
+              <li>
                 <a href="#stats" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
                   Stats
@@ -110,32 +128,12 @@ const Footer = () => {
               <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
               <h4 className="font-mono text-purple-400 text-sm tracking-wider">COMMUNITY</h4>
             </div>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-purple-400 rounded-full transition-colors"></span>
-                  Discord
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-purple-400 rounded-full transition-colors"></span>
-                  Telegram
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-purple-400 rounded-full transition-colors"></span>
-                  Twitter
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-purple-400 rounded-full transition-colors"></span>
-                  Medium
-                </a>
-              </li>
-            </ul>
+            <div className="text-gray-500 text-sm font-mono">
+              <span className="flex items-center gap-2">
+                <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
+                Coming Soon
+              </span>
+            </div>
           </div>
 
           {/* Resources */}
@@ -146,27 +144,25 @@ const Footer = () => {
             </div>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group">
+                <a 
+                  href="https://scan.pulsechain.com/address/0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group"
+                >
                   <span className="w-1 h-1 bg-gray-600 group-hover:bg-teal-400 rounded-full transition-colors"></span>
-                  Whitepaper
+                  Contract
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group">
+                <a 
+                  href="https://app.pulsex.com/swap?outputCurrency=0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group"
+                >
                   <span className="w-1 h-1 bg-gray-600 group-hover:bg-teal-400 rounded-full transition-colors"></span>
-                  Audit
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-teal-400 rounded-full transition-colors"></span>
-                  Documentation
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-teal-400 rounded-full transition-colors"></span>
-                  Support
+                  PulseX
                 </a>
               </li>
               <li>
