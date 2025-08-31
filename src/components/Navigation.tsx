@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Zap, Wifi, Bot } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
@@ -18,6 +18,16 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
   const location = useLocation();
   const { setIsOpen } = useChatContext();
   const { openPopup } = useBrowserPopup();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleHashNavigation = (hash: string) => {
     if (location.pathname !== '/') {
@@ -46,7 +56,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
     <nav className="fixed top-0 w-full z-50 overflow-hidden">
       {/* Quantum Field Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-xl"></div>
+        <div className={`absolute inset-0 backdrop-blur-xl transition-all duration-300 ${isScrolled ? 'bg-black/25' : 'bg-black/50'}`}></div>
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-teal-500/5"></div>
         
         {/* Scanning line */}
