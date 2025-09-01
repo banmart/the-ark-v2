@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { ChatProvider } from "./components/providers/ChatProvider";
 import { WalletProvider } from "./components/providers/WalletProvider";
 import { SwapProvider } from "./components/providers/SwapProvider";
@@ -22,36 +23,38 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <BrowserPopupProvider>
-        <WalletProvider>
-          <SwapProvider>
-            <OnboardingProvider>
-              <ChatProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <ScrollToTop />
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/onboarding" element={<Onboarding />} />
-                    <Route path="/locker" element={<Locker />} />
-                    <Route path="/leaderboard" element={<Leaderboard />} />
-                    <Route path="/burn-analytics" element={<BurnAnalytics />} />
-                    <Route path="/burn" element={<Burn />} />
-                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                  <ChatDrawer />
-                </BrowserRouter>
-              </ChatProvider>
-            </OnboardingProvider>
-          </SwapProvider>
-        </WalletProvider>
-      </BrowserPopupProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserPopupProvider>
+          <WalletProvider>
+            <SwapProvider>
+              <OnboardingProvider>
+                <ChatProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <ScrollToTop />
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/onboarding" element={<Onboarding />} />
+                      <Route path="/locker" element={<Locker />} />
+                      <Route path="/leaderboard" element={<Leaderboard />} />
+                      <Route path="/burn-analytics" element={<BurnAnalytics />} />
+                      <Route path="/burn" element={<Burn />} />
+                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                    <ChatDrawer />
+                  </BrowserRouter>
+                </ChatProvider>
+              </OnboardingProvider>
+            </SwapProvider>
+          </WalletProvider>
+        </BrowserPopupProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
