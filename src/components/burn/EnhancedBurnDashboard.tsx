@@ -115,7 +115,7 @@ const PoolRankingCard: React.FC<{
               <Badge variant="outline" className="text-xs">
                 #{index + 1}
               </Badge>
-              <span className="text-sm text-gray-300">{pool.poolName}</span>
+              <span className="text-sm text-white">{pool.poolName}</span>
             </div>
             <span className="text-white font-medium">{formatValue(getValue(pool))}</span>
           </div>
@@ -333,12 +333,12 @@ const EnhancedBurnDashboard: React.FC = () => {
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {aggregatedData?.recentBurnEvents.slice(0, 5).map((event, index) => (
                     <div key={index} className="flex justify-between items-center p-2 bg-white/5 rounded">
-                      <div>
-                        <p className="text-sm text-white">{event.poolName}</p>
-                        <p className="text-xs text-gray-400">
-                          {formatNumber(event.burnAmount)} ARK burned
-                        </p>
-                      </div>
+                       <div>
+                         <p className="text-sm text-white">{event.poolName}</p>
+                         <p className="text-xs text-white">
+                           {formatNumber(event.burnAmount)} ARK burned
+                         </p>
+                       </div>
                       <div className="text-right">
                         <Badge 
                           variant="outline" 
@@ -427,9 +427,9 @@ const EnhancedBurnDashboard: React.FC = () => {
               <CardContent>
                 <div className="space-y-4">
                   {poolMetrics.map((pool) => (
-                    <div key={pool.poolAddress} className="flex justify-between items-center">
-                      <span className="text-sm text-gray-300">{pool.poolName}</span>
-                      <Badge 
+                     <div key={pool.poolAddress} className="flex justify-between items-center">
+                       <span className="text-sm text-white">{pool.poolName}</span>
+                       <Badge
                         variant="outline"
                         className={`text-xs ${
                           pool.volumeAnalytics.confidenceLevel === 'high' ? 'border-green-400 text-green-400' :

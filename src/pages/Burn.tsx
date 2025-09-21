@@ -340,7 +340,7 @@ const Burn: React.FC = () => {
               title="Burn Overview"
               description="Key burn metrics and real-time statistics"
               icon={<Flame className="w-5 h-5 text-video-red" />}
-              defaultOpen={true}
+              defaultOpen={false}
             >
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-6 mb-6">
                 <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
