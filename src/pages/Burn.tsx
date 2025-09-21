@@ -12,6 +12,7 @@ import { useBurnAnalytics, BurnTransaction as BurnAnalyticsTransaction } from '.
 import { useWalletContext } from '../components/providers/WalletProvider';
 import { useLockerData } from '../hooks/useLockerData';
 import { useContractData } from '../hooks/useContractData';
+import PoolBurnDashboard from '../components/burn/PoolBurnDashboard';
 
 // Format number utility function
 const formatNumber = (num: number): string => {
@@ -465,6 +466,11 @@ const Burn = () => {
 
           {/* Meters Row */}
           
+
+          {/* Per-Pool Burn Analytics Dashboard */}
+          <div className="mb-6 md:mb-8">
+            <PoolBurnDashboard />
+          </div>
 
           {/* Recent Activity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
