@@ -46,7 +46,7 @@ export class PerPoolBurnAnalyticsService {
   private metricsCache: Map<string, PoolBurnMetrics> = new Map();
   private lastUpdateTime: number = 0;
   private readonly BURN_ADDRESS = '0x0000000000000000000000000000000000000369';
-  private readonly CACHE_DURATION = 30000; // 30 seconds
+  private readonly CACHE_DURATION = 60000; // 60 seconds - increased for better performance
 
   constructor() {
     this.provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
