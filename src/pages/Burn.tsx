@@ -226,7 +226,7 @@ const Burn: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <div className="relative z-10">
+      <div className="relative z-50">
         <Navigation 
           handleConnectWallet={handleConnectWallet}
           isConnecting={isConnecting}
