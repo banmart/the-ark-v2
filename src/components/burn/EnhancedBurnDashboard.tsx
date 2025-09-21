@@ -228,75 +228,75 @@ const EnhancedBurnDashboard: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Total Burned (24h)</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-base font-medium text-white/90">Total Burned (24h)</p>
+                <p className="text-3xl font-bold text-white">
                   {formatNumber(aggregatedData?.totalBurnedAllPools || 0)}
                 </p>
-                <p className="text-xs text-gray-400">ARK tokens</p>
+                <p className="text-sm text-white/70">ARK tokens</p>
               </div>
               <Flame className="h-8 w-8 text-orange-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Volume (24h USD)</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-base font-medium text-white/90">Volume (24h USD)</p>
+                <p className="text-3xl font-bold text-white">
                   {formatUSD(aggregatedData?.totalVolumeUSD || 0)}
                 </p>
-                <p className="text-xs text-gray-400">Trading volume</p>
+                <p className="text-sm text-white/70">Trading volume</p>
               </div>
               <DollarSign className="h-8 w-8 text-green-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Burn Efficiency</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-base font-medium text-white/90">Burn Efficiency</p>
+                <p className="text-3xl font-bold text-white">
                   {(aggregatedData?.overallEfficiency || 0).toFixed(2)}%
                 </p>
-                <p className="text-xs text-gray-400">Burn/swap ratio</p>
+                <p className="text-sm text-white/70">Burn/swap ratio</p>
               </div>
               <Target className="h-8 w-8 text-blue-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Burn per $1M USD</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-base font-medium text-white/90">Burn per $1M USD</p>
+                <p className="text-3xl font-bold text-white">
                   {formatNumber(aggregatedData?.overallBurnPerMillionUSD || 0)}
                 </p>
-                <p className="text-xs text-gray-400">ARK tokens</p>
+                <p className="text-sm text-white/70">ARK tokens</p>
               </div>
               <BarChart3 className="h-8 w-8 text-purple-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Active Pools</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-base font-medium text-white/90">Active Pools</p>
+                <p className="text-3xl font-bold text-white">
                   {stats.activePools}/{stats.totalPools}
                 </p>
-                <p className="text-xs text-gray-400">Pools with burns</p>
+                <p className="text-sm text-white/70">Pools with burns</p>
               </div>
               <TrendingUp className="h-8 w-8 text-cyan-400" />
             </div>
