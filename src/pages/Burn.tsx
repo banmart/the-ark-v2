@@ -12,6 +12,7 @@ import { useBurnAnalytics, BurnTransaction as BurnAnalyticsTransaction } from '.
 import { useWalletContext } from '../components/providers/WalletProvider';
 import { useLockerData } from '../hooks/useLockerData';
 import { useContractData } from '../hooks/useContractData';
+import { useEnhancedBurnAnalytics } from '../hooks/useEnhancedBurnAnalytics';
 import { BurnAccordionSection } from '../components/burn/BurnAccordionSection';
 import LazyPoolBurnDashboard from '../components/burn/LazyPoolBurnDashboard';
 import LazyBurnProtocolAnalytics from '../components/burn/LazyBurnProtocolAnalytics';
@@ -125,6 +126,10 @@ const Burn: React.FC = () => {
   const {
     data: contractData
   } = useContractData();
+  
+  const {
+    burnAddressStats
+  } = useEnhancedBurnAnalytics();
 
   // Convert burn analytics data to our local format
   const convertedBurnHistory: BurnTransaction[] = burnHistory.map(burn => ({
@@ -292,7 +297,7 @@ const Burn: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
                   <div>
                     <p className="text-sm text-white font-medium mb-1">Total Burns</p>
                     <p className="text-3xl font-bold text-white">{timeframeStats.totalBurns}</p>
@@ -308,6 +313,10 @@ const Burn: React.FC = () => {
                   <div>
                     <p className="text-sm text-white font-medium mb-1">Avg Burn Size</p>
                     <p className="text-3xl font-bold text-white">{formatNumber(timeframeStats.avgBurnSize)} ARK</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-white font-medium mb-1">Emergency Unlock Penalties</p>
+                    <p className="text-3xl font-bold text-red-400">{formatNumber(burnAddressStats.totalPenaltyBurns)} ARK</p>
                   </div>
                 </div>
               )}
