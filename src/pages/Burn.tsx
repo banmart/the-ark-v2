@@ -23,7 +23,6 @@ const formatNumber = (num: number): string => {
   if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
   return num.toLocaleString();
 };
-
 interface BurnTransaction {
   id: string;
   wallet: string;
@@ -32,7 +31,6 @@ interface BurnTransaction {
   txHash: string;
   blockNumber?: number;
 }
-
 interface BurnNotification {
   id: string;
   message: string;
@@ -42,7 +40,6 @@ interface BurnNotification {
   txHash: string;
   type: string;
 }
-
 const CircularProgress = ({
   percentage,
   size = 120,
@@ -53,51 +50,29 @@ const CircularProgress = ({
   const circumference = radius * 2 * Math.PI;
   const strokeDasharray = circumference;
   const strokeDashoffset = circumference - percentage / 100 * circumference;
-  
-  return (
-    <div className="relative inline-flex items-center justify-center">
+  return <div className="relative inline-flex items-center justify-center">
       <svg width={size} height={size} className="transform -rotate-90">
-        <circle 
-          cx={size / 2} 
-          cy={size / 2} 
-          r={radius} 
-          stroke="hsl(var(--muted-foreground))" 
-          strokeWidth={strokeWidth} 
-          fill="transparent" 
-          className="opacity-20" 
-        />
-        <circle 
-          cx={size / 2} 
-          cy={size / 2} 
-          r={radius} 
-          stroke={color} 
-          strokeWidth={strokeWidth} 
-          fill="transparent" 
-          strokeDasharray={strokeDasharray} 
-          strokeDashoffset={strokeDashoffset} 
-          className="transition-all duration-500 ease-out" 
-          strokeLinecap="round" 
-        />
+        <circle cx={size / 2} cy={size / 2} r={radius} stroke="hsl(var(--muted-foreground))" strokeWidth={strokeWidth} fill="transparent" className="opacity-20" />
+        <circle cx={size / 2} cy={size / 2} r={radius} stroke={color} strokeWidth={strokeWidth} fill="transparent" strokeDasharray={strokeDasharray} strokeDashoffset={strokeDashoffset} className="transition-all duration-500 ease-out" strokeLinecap="round" />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-sm md:text-lg font-bold text-primary">{percentage.toFixed(3)}%</span>
       </div>
-    </div>
-  );
+    </div>;
 };
-
-const LineChart = ({ data }: { data: BurnTransaction[] }) => {
+const LineChart = ({
+  data
+}: {
+  data: BurnTransaction[];
+}) => {
   const maxValue = Math.max(...data.map(d => d.amount), 1);
   const points = data.slice(0, 20).reverse().map((d, i) => {
     const x = i / 19 * 300;
     const y = 80 - d.amount / maxValue * 60;
     return `${x},${y}`;
   }).join(' ');
-  
   const chartKey = `chart-${data.length}-${maxValue}`;
-
-  return (
-    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+  return <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
       <CardHeader>
         <CardTitle className="text-lg font-semibold text-video-cyan">Recent Burn Activity</CardTitle>
       </CardHeader>
@@ -112,10 +87,10 @@ const LineChart = ({ data }: { data: BurnTransaction[] }) => {
             </defs>
             <polyline fill="none" stroke={`url(#burnGradient-${chartKey})`} strokeWidth="2" points={points} className="drop-shadow-sm" />
             {data.slice(0, 20).reverse().map((d, i) => {
-              const x = i / 19 * 300;
-              const y = 80 - d.amount / maxValue * 60;
-              return <circle key={`${chartKey}-${d.id}-${i}`} cx={x} cy={y} r="3" fill="hsl(var(--video-cyan))" className="drop-shadow-sm hover:r-4 transition-all cursor-pointer" />;
-            })}
+            const x = i / 19 * 300;
+            const y = 80 - d.amount / maxValue * 60;
+            return <circle key={`${chartKey}-${d.id}-${i}`} cx={x} cy={y} r="3" fill="hsl(var(--video-cyan))" className="drop-shadow-sm hover:r-4 transition-all cursor-pointer" />;
+          })}
           </svg>
         </div>
         <div className="flex justify-between items-center mt-2 text-xs text-white/60">
@@ -124,33 +99,32 @@ const LineChart = ({ data }: { data: BurnTransaction[] }) => {
           <span>Latest</span>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 const Burn: React.FC = () => {
-  const { 
-    burnHistory, 
-    loading: burnLoading, 
-    error: burnError, 
-    refetch: refetchBurnData 
+  const {
+    burnHistory,
+    loading: burnLoading,
+    error: burnError,
+    refetch: refetchBurnData
   } = useBurnAnalytics();
-  
-  const { 
-    data: arkTokenData, 
-    loading: tokenLoading, 
-    error: tokenError 
+  const {
+    data: arkTokenData,
+    loading: tokenLoading,
+    error: tokenError
   } = useARKTokenData();
-  
   const {
     isConnected,
     account,
     isConnecting,
     handleConnectWallet
   } = useWalletContext();
-  
-  const { protocolStats: lockerStats } = useLockerData();
-  const { data: contractData } = useContractData();
+  const {
+    protocolStats: lockerStats
+  } = useLockerData();
+  const {
+    data: contractData
+  } = useContractData();
 
   // Convert burn analytics data to our local format
   const convertedBurnHistory: BurnTransaction[] = burnHistory.map(burn => ({
@@ -161,19 +135,37 @@ const Burn: React.FC = () => {
     txHash: burn.txHash,
     blockNumber: 0
   }));
-
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
   const [recentNotifications, setRecentNotifications] = useState<BurnNotification[]>([]);
-
-  const timeframes = [
-    { value: '5m', label: '5 Minutes', minutes: 5 },
-    { value: '15m', label: '15 Minutes', minutes: 15 },
-    { value: '1h', label: '1 Hour', minutes: 60 },
-    { value: '4h', label: '4 Hours', minutes: 240 },
-    { value: '24h', label: '24 Hours', minutes: 1440 },
-    { value: '7d', label: '7 Days', minutes: 10080 },
-    { value: 'all', label: 'All Time', minutes: Infinity }
-  ];
+  const timeframes = [{
+    value: '5m',
+    label: '5 Minutes',
+    minutes: 5
+  }, {
+    value: '15m',
+    label: '15 Minutes',
+    minutes: 15
+  }, {
+    value: '1h',
+    label: '1 Hour',
+    minutes: 60
+  }, {
+    value: '4h',
+    label: '4 Hours',
+    minutes: 240
+  }, {
+    value: '24h',
+    label: '24 Hours',
+    minutes: 1440
+  }, {
+    value: '7d',
+    label: '7 Days',
+    minutes: 10080
+  }, {
+    value: 'all',
+    label: 'All Time',
+    minutes: Infinity
+  }];
 
   // Generate notifications from burn history
   useEffect(() => {
@@ -185,28 +177,24 @@ const Burn: React.FC = () => {
         wallet: burn.wallet,
         amount: burn.amount,
         txHash: burn.txHash,
-        type: (burnHistory.find(b => b.txHash === burn.txHash)?.type) || 'transaction'
+        type: burnHistory.find(b => b.txHash === burn.txHash)?.type || 'transaction'
       }));
       setRecentNotifications(notifications);
     }
   }, [convertedBurnHistory, burnHistory]);
-
   const getFilteredData = () => {
     if (selectedTimeframe === 'all') return convertedBurnHistory;
     const timeframe = timeframes.find(t => t.value === selectedTimeframe);
     const cutoffTime = new Date(Date.now() - (timeframe?.minutes || 1440) * 60 * 1000);
     return convertedBurnHistory.filter(burn => burn.timestamp >= cutoffTime);
   };
-
   const filteredData = getFilteredData();
-
   const getTimeframeStats = () => {
     const data = filteredData;
     const totalBurns = data.length;
     const totalAmount = data.reduce((sum, burn) => sum + burn.amount, 0);
     const uniqueWallets = new Set(data.map(burn => burn.wallet)).size;
     const avgBurnSize = totalBurns > 0 ? totalAmount / totalBurns : 0;
-
     return {
       totalBurns,
       totalAmount,
@@ -214,11 +202,8 @@ const Burn: React.FC = () => {
       avgBurnSize
     };
   };
-
   const timeframeStats = getTimeframeStats();
-
-  return (
-    <div className="min-h-screen relative overflow-hidden bg-black">
+  return <div className="min-h-screen relative overflow-hidden bg-black">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-video-purple/20 via-black to-video-cyan/20" />
@@ -228,12 +213,7 @@ const Burn: React.FC = () => {
 
       {/* Navigation */}
       <div className="relative z-50">
-        <Navigation 
-          handleConnectWallet={handleConnectWallet}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          account={account}
-        />
+        <Navigation handleConnectWallet={handleConnectWallet} isConnecting={isConnecting} isConnected={isConnected} account={account} />
       </div>
 
       {/* Main Content */}
@@ -280,15 +260,9 @@ const Burn: React.FC = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-black/90 border-white/20">
-                    {timeframes.map(tf => (
-                      <SelectItem 
-                        key={tf.value} 
-                        value={tf.value}
-                        className="text-white hover:bg-white/10"
-                      >
+                    {timeframes.map(tf => <SelectItem key={tf.value} value={tf.value} className="text-white hover:bg-white/10">
                         {tf.label}
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -320,28 +294,12 @@ const Burn: React.FC = () => {
           </Card>
 
           {/* Enhanced Burn Analytics - Priority Loading */}
-          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 mb-8">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold text-video-gold flex items-center gap-2">
-                <Flame className="w-6 h-6 text-orange-400" />
-                Enhanced Burn Analytics
-              </CardTitle>
-              <p className="text-white/60">Live burn tracking with USD volume analysis and detailed metrics</p>
-            </CardHeader>
-            <CardContent>
-              <LazyEnhancedBurnDashboard />
-            </CardContent>
-          </Card>
+          
 
           {/* Accordion-based sections for better performance */}
           <div className="space-y-6">
             {/* Overview Metrics - Always visible */}
-            <BurnAccordionSection
-              title="Burn Overview"
-              description="Key burn metrics and real-time statistics"
-              icon={<Flame className="w-5 h-5 text-video-red" />}
-              defaultOpen={false}
-            >
+            <BurnAccordionSection title="Burn Overview" description="Key burn metrics and real-time statistics" icon={<Flame className="w-5 h-5 text-video-red" />} defaultOpen={true}>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-6 mb-6">
                 <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
                   <CardContent className="p-3 md:p-6">
@@ -354,10 +312,7 @@ const Burn: React.FC = () => {
                         {contractData?.burnedTokens ? formatNumber(parseFloat(contractData.burnedTokens)) : '0'} ARK
                       </p>
                       <p className="text-xs text-white/60">
-                        {contractData?.burnedTokens && arkTokenData?.price 
-                          ? `$${formatNumber(parseFloat(contractData.burnedTokens) * (Number(arkTokenData.price) || 0))}`
-                          : '$0'
-                        }
+                        {contractData?.burnedTokens && arkTokenData?.price ? `$${formatNumber(parseFloat(contractData.burnedTokens) * (Number(arkTokenData.price) || 0))}` : '$0'}
                       </p>
                     </div>
                   </CardContent>
@@ -414,10 +369,7 @@ const Burn: React.FC = () => {
                     </div>
                     <div className="space-y-1">
                       <p className="text-lg md:text-2xl font-bold text-video-green">
-                        {contractData?.burnedTokens && arkTokenData?.totalSupply 
-                          ? ((parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1)) * 100).toFixed(3)
-                          : '0'
-                        }%
+                        {contractData?.burnedTokens && arkTokenData?.totalSupply ? (parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1) * 100).toFixed(3) : '0'}%
                       </p>
                       <p className="text-xs text-white/60">of total supply</p>
                     </div>
@@ -431,14 +383,7 @@ const Burn: React.FC = () => {
                     <CardTitle className="text-lg font-semibold text-video-cyan">Supply Reduction</CardTitle>
                   </CardHeader>
                   <CardContent className="flex items-center justify-center">
-                    <CircularProgress 
-                      percentage={contractData?.burnedTokens && arkTokenData?.totalSupply 
-                        ? (parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1)) * 100 
-                        : 0
-                      } 
-                      size={120}
-                      color="hsl(var(--video-cyan))"
-                    />
+                    <CircularProgress percentage={contractData?.burnedTokens && arkTokenData?.totalSupply ? parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1) * 100 : 0} size={120} color="hsl(var(--video-cyan))" />
                   </CardContent>
                 </Card>
                 
@@ -454,10 +399,7 @@ const Burn: React.FC = () => {
                       </p>
                       <p className="text-sm leading-relaxed">
                         This represents <strong className="text-video-gold">
-                          {contractData?.burnedTokens && arkTokenData?.totalSupply 
-                            ? ((parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1)) * 100).toFixed(3)
-                            : '0'
-                          }%
+                          {contractData?.burnedTokens && arkTokenData?.totalSupply ? (parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1) * 100).toFixed(3) : '0'}%
                         </strong> of the total supply.
                       </p>
                     </div>
@@ -469,30 +411,18 @@ const Burn: React.FC = () => {
             </BurnAccordionSection>
 
             {/* Per-Pool Analytics */}
-            <BurnAccordionSection
-              title="Per-Pool Burn Analytics"
-              description="Detailed burn tracking across trading pairs"
-              icon={<BarChart3 className="w-5 h-5 text-video-cyan" />}
-            >
+            <BurnAccordionSection title="Per-Pool Burn Analytics" description="Detailed burn tracking across trading pairs" icon={<BarChart3 className="w-5 h-5 text-video-cyan" />}>
               <LazyPoolBurnDashboard />
             </BurnAccordionSection>
 
             {/* Protocol Analytics */}
-            <BurnAccordionSection
-              title="Advanced Analytics"
-              description="Burn rate charts, efficiency metrics, and projections"
-              icon={<Target className="w-5 h-5 text-video-gold" />}
-            >
+            <BurnAccordionSection title="Advanced Analytics" description="Burn rate charts, efficiency metrics, and projections" icon={<Target className="w-5 h-5 text-video-gold" />}>
               <LazyBurnProtocolAnalytics />
             </BurnAccordionSection>
 
 
             {/* Live Activity */}
-            <BurnAccordionSection
-              title="Live Activity & Mechanics"
-              description="Real-time updates and burn mechanism details"
-              icon={<Activity className="w-5 h-5 text-video-purple" />}
-            >
+            <BurnAccordionSection title="Live Activity & Mechanics" description="Real-time updates and burn mechanism details" icon={<Activity className="w-5 h-5 text-video-purple" />}>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
                   <CardHeader>
@@ -504,8 +434,7 @@ const Burn: React.FC = () => {
                   <CardContent>
                     <div className="bg-black/20 rounded-lg p-3 md:p-4 max-h-96 overflow-y-auto border border-white/5">
                       <div className="space-y-3">
-                        {recentNotifications.length > 0 ? recentNotifications.map(notification => 
-                          <div key={notification.id} className="flex items-start gap-3 p-2 md:p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
+                        {recentNotifications.length > 0 ? recentNotifications.map(notification => <div key={notification.id} className="flex items-start gap-3 p-2 md:p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
                             <div className="w-2 h-2 bg-video-cyan rounded-full mt-2 animate-pulse flex-shrink-0" />
                             <div className="flex-1 min-w-0">
                               <p className="text-sm text-white/90 break-words">{notification.message}</p>
@@ -513,23 +442,17 @@ const Burn: React.FC = () => {
                                 <span className="text-xs text-white/60">
                                   {notification.timestamp.toLocaleTimeString()}
                                 </span>
-                                <button 
-                                  onClick={() => window.open(`https://scan.pulsechain.com/tx/${notification.txHash}`, '_blank')} 
-                                  className="text-xs text-video-cyan hover:text-video-cyan/80 flex items-center gap-1"
-                                >
+                                <button onClick={() => window.open(`https://scan.pulsechain.com/tx/${notification.txHash}`, '_blank')} className="text-xs text-video-cyan hover:text-video-cyan/80 flex items-center gap-1">
                                   <ExternalLink className="w-3 h-3" />
                                   View
                                 </button>
                               </div>
                             </div>
-                          </div>
-                        ) : (
-                          <div className="text-center py-6">
+                          </div>) : <div className="text-center py-6">
                             <Activity className="w-8 h-8 text-white/40 mx-auto mb-2" />
                             <p className="text-white/60">No recent burn activity</p>
                             <p className="text-xs text-white/40 mt-1">Waiting for new transactions...</p>
-                          </div>
-                        )}
+                          </div>}
                       </div>
                     </div>
                   </CardContent>
@@ -552,7 +475,9 @@ const Burn: React.FC = () => {
                           </h4>
                           <p className="text-sm text-white/70 mb-2">Automatic conversion and burn from liquidity accumulation</p>
                           <div className="w-full bg-white/10 rounded-full h-2">
-                            <div className="bg-video-cyan h-2 rounded-full animate-pulse" style={{width: '60%'}} />
+                            <div className="bg-video-cyan h-2 rounded-full animate-pulse" style={{
+                            width: '60%'
+                          }} />
                           </div>
                         </CardContent>
                       </Card>
@@ -565,7 +490,9 @@ const Burn: React.FC = () => {
                           </h4>
                           <p className="text-sm text-white/70 mb-2">20% of swap taxes directly burned</p>
                           <div className="w-full bg-white/10 rounded-full h-2">
-                            <div className="bg-video-cyan h-2 rounded-full animate-pulse" style={{width: '30%'}} />
+                            <div className="bg-video-cyan h-2 rounded-full animate-pulse" style={{
+                            width: '30%'
+                          }} />
                           </div>
                         </CardContent>
                       </Card>
@@ -578,7 +505,9 @@ const Burn: React.FC = () => {
                           </h4>
                           <p className="text-sm text-white/70 mb-2">50% of penalties burned, 50% to lockers</p>
                           <div className="w-full bg-white/10 rounded-full h-2">
-                            <div className="bg-video-cyan h-2 rounded-full animate-pulse" style={{width: '50%'}} />
+                            <div className="bg-video-cyan h-2 rounded-full animate-pulse" style={{
+                            width: '50%'
+                          }} />
                           </div>
                         </CardContent>
                       </Card>
@@ -595,8 +524,6 @@ const Burn: React.FC = () => {
       <div className="relative z-10">
         <Footer />
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Burn;
