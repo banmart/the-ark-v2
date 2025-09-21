@@ -315,7 +315,7 @@ const Burn: React.FC = () => {
                       </p>
                       <p className="text-xs text-white/60">
                         {contractData?.burnedTokens && arkTokenData?.price 
-                          ? `$${formatNumber(parseFloat(contractData.burnedTokens) * (arkTokenData.price || 0))}`
+                          ? `$${formatNumber(parseFloat(contractData.burnedTokens) * (Number(arkTokenData.price) || 0))}`
                           : '$0'
                         }
                       </p>
@@ -375,7 +375,7 @@ const Burn: React.FC = () => {
                     <div className="space-y-1">
                       <p className="text-lg md:text-2xl font-bold text-video-green">
                         {contractData?.burnedTokens && arkTokenData?.totalSupply 
-                          ? ((parseFloat(contractData.burnedTokens) / arkTokenData.totalSupply) * 100).toFixed(3)
+                          ? ((parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1)) * 100).toFixed(3)
                           : '0'
                         }%
                       </p>
@@ -392,8 +392,8 @@ const Burn: React.FC = () => {
                   </CardHeader>
                   <CardContent className="flex items-center justify-center">
                     <CircularProgress 
-                      percentage={contractData?.burnedBalance && arkTokenData?.totalSupply 
-                        ? (parseFloat(contractData.burnedBalance) / arkTokenData.totalSupply) * 100 
+                      percentage={contractData?.burnedTokens && arkTokenData?.totalSupply 
+                        ? (parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1)) * 100 
                         : 0
                       } 
                       size={120}
@@ -409,13 +409,13 @@ const Burn: React.FC = () => {
                   <CardContent>
                     <div className="space-y-4 text-white/80">
                       <p className="text-sm leading-relaxed">
-                        <strong className="text-video-cyan">{formatNumber(parseFloat(contractData?.burnedBalance || '0'))}</strong> ARK 
+                        <strong className="text-video-cyan">{formatNumber(parseFloat(contractData?.burnedTokens || '0'))}</strong> ARK 
                         tokens have been permanently removed from circulation.
                       </p>
                       <p className="text-sm leading-relaxed">
                         This represents <strong className="text-video-gold">
-                          {contractData?.burnedBalance && arkTokenData?.totalSupply 
-                            ? ((parseFloat(contractData.burnedBalance) / arkTokenData.totalSupply) * 100).toFixed(3)
+                          {contractData?.burnedTokens && arkTokenData?.totalSupply 
+                            ? ((parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1)) * 100).toFixed(3)
                             : '0'
                           }%
                         </strong> of the total supply.
