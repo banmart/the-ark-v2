@@ -238,35 +238,61 @@ const Burn: React.FC = () => {
       {/* Main Content */}
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-            <div>
-              <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">
-                🔥 Burn Tracker
-              </h1>
-              <p className="text-white/70 text-lg">
-                Real-time ARK token burn analytics and statistics
-              </p>
+          {/* Header with Quantum Field Background */}
+          <div className="relative mb-8">
+            {/* Quantum field background */}
+            <div className="absolute inset-0 -top-20 -bottom-20">
+              <div className="absolute inset-0 bg-gradient-radial from-red-500/10 via-transparent to-transparent blur-3xl"></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-conic from-red-500/20 via-orange-500/20 to-yellow-500/20 rounded-full blur-3xl animate-[spin_20s_linear_infinite]"></div>
             </div>
-            
-            <div className="flex items-center gap-4">
-              <Select value={selectedTimeframe} onValueChange={setSelectedTimeframe}>
-                <SelectTrigger className="w-40 bg-black/30 border-white/20 text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-black/90 border-white/20">
-                  {timeframes.map(tf => (
-                    <SelectItem 
-                      key={tf.value} 
-                      value={tf.value}
-                      className="text-white hover:bg-white/10"
-                    >
-                      {tf.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="text-center md:text-left">
+                {/* System Status Indicator */}
+                <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-black/40 backdrop-blur-xl border border-red-500/30 rounded-lg">
+                  <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                  <span className="text-xs font-mono text-red-400 tracking-wider">BURN_PROTOCOL_ACTIVE</span>
+                </div>
+
+                {/* Main Title with Diagnostic Styling */}
+                <div className="mb-4">
+                  <div className="text-sm font-mono text-red-400/60 mb-2 tracking-[0.2em]">
+                    [BURN_TRACKING_SYSTEM]
+                  </div>
+                  <h1 className="text-3xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent animate-fade-in">
+                    BURN TRACKER
+                  </h1>
+                  <div className="text-sm font-mono text-red-400/60 tracking-[0.2em]">
+                    [REAL_TIME_ANALYTICS]
+                  </div>
+                </div>
+
+                {/* System Description */}
+                <p className="text-white/70 text-lg max-w-2xl">
+                  Real-time ARK token burn analytics and statistics
+                </p>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <Select value={selectedTimeframe} onValueChange={setSelectedTimeframe}>
+                  <SelectTrigger className="w-40 bg-black/30 border-white/20 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-black/90 border-white/20">
+                    {timeframes.map(tf => (
+                      <SelectItem 
+                        key={tf.value} 
+                        value={tf.value}
+                        className="text-white hover:bg-white/10"
+                      >
+                        {tf.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+          </div>
           </div>
 
           {/* Timeframe Stats Banner */}
