@@ -103,16 +103,16 @@ const LineChart = ({
 };
 const Burn: React.FC = () => {
   const {
-    burnHistory,
-    loading: burnLoading,
-    error: burnError,
-    refetch: refetchBurnData
-  } = useBurnAnalytics();
-  const {
     data: arkTokenData,
     loading: tokenLoading,
     error: tokenError
   } = useARKTokenData();
+  const {
+    burnHistory,
+    loading: burnLoading,
+    error: burnError,
+    refetch: refetchBurnData
+  } = useBurnAnalytics(Number(arkTokenData?.volume24h || '0'));
   const {
     isConnected,
     account,
