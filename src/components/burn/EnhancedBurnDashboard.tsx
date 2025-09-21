@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Download, RefreshCcw, TrendingUp, TrendingDown, Flame, DollarSign, BarChart3, Target } from 'lucide-react';
+import { Download, RefreshCcw, Flame, DollarSign, BarChart3, Target, Activity, Filter } from 'lucide-react';
 import { useEnhancedBurnAnalytics } from '@/hooks/useEnhancedBurnAnalytics';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
+import { AccordionLoadingSection } from './AccordionLoadingSection';
+import { LiveDataCard } from './LiveDataCard';
+import { useAccordionStates } from '@/hooks/useAccordionStates';
 
 const formatNumber = (num: number): string => {
   if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
@@ -57,33 +59,33 @@ const BurnAddressBreakdown: React.FC<{ data: any }> = ({ data }) => {
         <div className="space-y-3">
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-300">Null Address (0x000...000)</span>
-              <span className="text-white">{formatNumber(data.totalNullBurns)} ARK</span>
+              <span className="text-white/90">Null Address (0x000...000)</span>
+              <span className="text-white font-bold">{formatNumber(data.totalNullBurns)} ARK</span>
             </div>
             <Progress value={(data.totalNullBurns / total) * 100} className="h-2 bg-gray-700" />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-white/70 mt-1">
               {((data.totalNullBurns / total) * 100).toFixed(1)}% of total burns
             </p>
           </div>
           
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-300">Dead Address (0x000...dEaD)</span>
-              <span className="text-white">{formatNumber(data.totalDeadBurns)} ARK</span>
+              <span className="text-white/90">Dead Address (0x000...dEaD)</span>
+              <span className="text-white font-bold">{formatNumber(data.totalDeadBurns)} ARK</span>
             </div>
             <Progress value={(data.totalDeadBurns / total) * 100} className="h-2 bg-gray-700" />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-white/70 mt-1">
               {((data.totalDeadBurns / total) * 100).toFixed(1)}% of total burns
             </p>
           </div>
           
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-300">Burn Address (0x000...369)</span>
-              <span className="text-white">{formatNumber(data.totalBurnAddressBurns)} ARK</span>
+              <span className="text-white/90">Burn Address (0x000...369)</span>
+              <span className="text-white font-bold">{formatNumber(data.totalBurnAddressBurns)} ARK</span>
             </div>
             <Progress value={(data.totalBurnAddressBurns / total) * 100} className="h-2 bg-gray-700" />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-white/70 mt-1">
               {((data.totalBurnAddressBurns / total) * 100).toFixed(1)}% of total burns
             </p>
           </div>
@@ -115,9 +117,9 @@ const PoolRankingCard: React.FC<{
               <Badge variant="outline" className="text-xs">
                 #{index + 1}
               </Badge>
-              <span className="text-sm text-white">{pool.poolName}</span>
+              <span className="text-sm text-white font-medium">{pool.poolName}</span>
             </div>
-            <span className="text-white font-medium">{formatValue(getValue(pool))}</span>
+            <span className="text-white font-bold">{formatValue(getValue(pool))}</span>
           </div>
         ))}
       </div>
@@ -140,7 +142,14 @@ const EnhancedBurnDashboard: React.FC = () => {
     stats
   } = useEnhancedBurnAnalytics();
 
-  const [activeTab, setActiveTab] = useState('overview');
+  // Enhanced accordion states for better UX
+  const accordionStates = useAccordionStates({
+    overview: false,
+    rankings: false,
+    distribution: false,
+    pools: false,
+    realtime: false
+  });
 
   const handleExportCSV = async () => {
     try {
@@ -193,11 +202,11 @@ const EnhancedBurnDashboard: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Enhanced Burn Analytics</h1>
-          <p className="text-gray-400">
-            Comprehensive ARK token burn tracking across all trading pairs
+          <p className="text-white/70">
+            Real-time ARK token burn tracking across all trading pairs
           </p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-white/50 mt-1">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -226,102 +235,74 @@ const EnhancedBurnDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Summary Cards */}
+      {/* Live Data Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-base font-medium text-white/90">Total Burned (24h)</p>
-                <p className="text-3xl font-bold text-white">
-                  {formatNumber(aggregatedData?.totalBurnedAllPools || 0)}
-                </p>
-                <p className="text-sm text-white/70">ARK tokens</p>
-              </div>
-              <Flame className="h-8 w-8 text-orange-400" />
-            </div>
-          </CardContent>
-        </Card>
+        <LiveDataCard
+          title="Total Burned (24h)"
+          value={aggregatedData?.totalBurnedAllPools || 0}
+          subtitle="ARK tokens"
+          icon={<Flame className="h-8 w-8 text-orange-400" />}
+          isLoading={loading}
+          error={error}
+          badge={{ text: 'Live', variant: 'outline' }}
+        />
 
-        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-base font-medium text-white/90">Volume (24h USD)</p>
-                <p className="text-3xl font-bold text-white">
-                  {formatUSD(aggregatedData?.totalVolumeUSD || 0)}
-                </p>
-                <p className="text-sm text-white/70">Trading volume</p>
-              </div>
-              <DollarSign className="h-8 w-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
+        <LiveDataCard
+          title="Volume (24h USD)"
+          value={formatUSD(aggregatedData?.totalVolumeUSD || 0)}
+          subtitle="Trading volume"
+          icon={<DollarSign className="h-8 w-8 text-green-400" />}
+          isLoading={loading}
+          error={error}
+          badge={{ text: 'Live', variant: 'outline' }}
+        />
 
-        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-base font-medium text-white/90">Burn Efficiency</p>
-                <p className="text-3xl font-bold text-white">
-                  {(aggregatedData?.overallEfficiency || 0).toFixed(2)}%
-                </p>
-                <p className="text-sm text-white/70">Burn/swap ratio</p>
-              </div>
-              <Target className="h-8 w-8 text-blue-400" />
-            </div>
-          </CardContent>
-        </Card>
+        <LiveDataCard
+          title="Burn Efficiency"
+          value={`${(aggregatedData?.overallEfficiency || 0).toFixed(2)}%`}
+          subtitle="Burn/swap ratio"
+          icon={<Target className="h-8 w-8 text-blue-400" />}
+          isLoading={loading}
+          error={error}
+          badge={{ text: 'Live', variant: 'outline' }}
+        />
 
-        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-base font-medium text-white/90">Burn per $1M USD</p>
-                <p className="text-3xl font-bold text-white">
-                  {formatNumber(aggregatedData?.overallBurnPerMillionUSD || 0)}
-                </p>
-                <p className="text-sm text-white/70">ARK tokens</p>
-              </div>
-              <BarChart3 className="h-8 w-8 text-purple-400" />
-            </div>
-          </CardContent>
-        </Card>
+        <LiveDataCard
+          title="Burn per $1M USD"
+          value={aggregatedData?.overallBurnPerMillionUSD || 0}
+          subtitle="ARK tokens"
+          icon={<BarChart3 className="h-8 w-8 text-purple-400" />}
+          isLoading={loading}
+          error={error}
+          badge={{ text: 'Live', variant: 'outline' }}
+        />
 
-        <Card className="bg-black/40 backdrop-blur-sm border border-white/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-base font-medium text-white/90">Active Pools</p>
-                <p className="text-3xl font-bold text-white">
-                  {stats.activePools}/{stats.totalPools}
-                </p>
-                <p className="text-sm text-white/70">Pools with burns</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-cyan-400" />
-            </div>
-          </CardContent>
-        </Card>
+        <LiveDataCard
+          title="Active Pools"
+          value={`${stats.activePools}/${stats.totalPools}`}
+          subtitle="Pools with burns"
+          icon={<Activity className="h-8 w-8 text-cyan-400" />}
+          isLoading={loading}
+          error={error}
+          badge={{ text: 'Live', variant: 'outline' }}
+        />
       </div>
 
-      {/* Tabs for different views */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-black/50 border border-white/10">
-          <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white/20">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="rankings" className="text-white data-[state=active]:bg-white/20">
-            Rankings
-          </TabsTrigger>
-          <TabsTrigger value="distribution" className="text-white data-[state=active]:bg-white/20">
-            Distribution
-          </TabsTrigger>
-          <TabsTrigger value="pools" className="text-white data-[state=active]:bg-white/20">
-            Pool Details
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-6">
+      {/* Enhanced Accordion Sections */}
+      <div className="space-y-4">
+        {/* Real-time Analytics Section */}
+        <AccordionLoadingSection
+          title="Real-time Analytics"
+          description="Live burn tracking and efficiency metrics across all pools"
+          icon={<Activity className="h-6 w-6 text-cyan-400" />}
+          isOpen={accordionStates.isOpen('realtime')}
+          onToggle={() => accordionStates.toggleAccordion('realtime')}
+          isLoading={loading}
+          error={error}
+          onRetry={refreshData}
+          loadingPhase={loading ? 'fetching-pairs' : 'complete'}
+          progress={loading ? 45 : 100}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <BurnAddressBreakdown data={burnAddressStats} />
             
@@ -334,8 +315,8 @@ const EnhancedBurnDashboard: React.FC = () => {
                   {aggregatedData?.recentBurnEvents.slice(0, 5).map((event, index) => (
                     <div key={index} className="flex justify-between items-center p-2 bg-white/5 rounded">
                        <div>
-                         <p className="text-sm text-white">{event.poolName}</p>
-                         <p className="text-xs text-white">
+                         <p className="text-sm text-white font-medium">{event.poolName}</p>
+                         <p className="text-xs text-white/80">
                            {formatNumber(event.burnAmount)} ARK burned
                          </p>
                        </div>
@@ -360,9 +341,21 @@ const EnhancedBurnDashboard: React.FC = () => {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        </AccordionLoadingSection>
 
-        <TabsContent value="rankings" className="space-y-6">
+        {/* Pool Rankings Section */}
+        <AccordionLoadingSection
+          title="Pool Rankings"
+          description="Top performing pools by burn amount, efficiency, and volume"
+          icon={<Target className="h-6 w-6 text-blue-400" />}
+          isOpen={accordionStates.isOpen('rankings')}
+          onToggle={() => accordionStates.toggleAccordion('rankings')}
+          isLoading={loading}
+          error={error}
+          onRetry={refreshData}
+          loadingPhase={loading ? 'calculating-metrics' : 'complete'}
+          progress={loading ? 75 : 100}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <PoolRankingCard
               title="Top by Burn Amount"
@@ -388,9 +381,21 @@ const EnhancedBurnDashboard: React.FC = () => {
               icon={<DollarSign className="h-5 w-5 text-green-400" />}
             />
           </div>
-        </TabsContent>
+        </AccordionLoadingSection>
 
-        <TabsContent value="distribution" className="space-y-6">
+        {/* Burn Distribution Section */}
+        <AccordionLoadingSection
+          title="Burn Distribution"
+          description="Detailed breakdown of burn addresses and confidence levels"
+          icon={<Filter className="h-6 w-6 text-purple-400" />}
+          isOpen={accordionStates.isOpen('distribution')}
+          onToggle={() => accordionStates.toggleAccordion('distribution')}
+          isLoading={loading}
+          error={error}
+          onRetry={refreshData}
+          loadingPhase={loading ? 'calculating-metrics' : 'complete'}
+          progress={loading ? 85 : 100}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
               <CardHeader>
@@ -399,22 +404,22 @@ const EnhancedBurnDashboard: React.FC = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div className="text-center p-4 bg-white/5 rounded">
-                    <p className="text-2xl font-bold text-orange-400">
+                    <p className="text-3xl font-bold text-white">
                       {formatNumber(burnAddressStats.totalBurnAddressBurns)}
                     </p>
-                    <p className="text-sm text-gray-400">Burn Address (0x000...369)</p>
+                    <p className="text-sm text-white/70">Burn Address (0x000...369)</p>
                   </div>
                   <div className="text-center p-4 bg-white/5 rounded">
-                    <p className="text-2xl font-bold text-red-400">
+                    <p className="text-3xl font-bold text-white">
                       {formatNumber(burnAddressStats.totalDeadBurns)}
                     </p>
-                    <p className="text-sm text-gray-400">Dead Address (0x000...dEaD)</p>
+                    <p className="text-sm text-white/70">Dead Address (0x000...dEaD)</p>
                   </div>
                   <div className="text-center p-4 bg-white/5 rounded">
-                    <p className="text-2xl font-bold text-gray-400">
+                    <p className="text-3xl font-bold text-white">
                       {formatNumber(burnAddressStats.totalNullBurns)}
                     </p>
-                    <p className="text-sm text-gray-400">Null Address (0x000...000)</p>
+                    <p className="text-sm text-white/70">Null Address (0x000...000)</p>
                   </div>
                 </div>
               </CardContent>
@@ -428,7 +433,7 @@ const EnhancedBurnDashboard: React.FC = () => {
                 <div className="space-y-4">
                   {poolMetrics.map((pool) => (
                      <div key={pool.poolAddress} className="flex justify-between items-center">
-                       <span className="text-sm text-white">{pool.poolName}</span>
+                       <span className="text-sm text-white font-medium">{pool.poolName}</span>
                        <Badge
                         variant="outline"
                         className={`text-xs ${
@@ -445,48 +450,69 @@ const EnhancedBurnDashboard: React.FC = () => {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        </AccordionLoadingSection>
 
-        <TabsContent value="pools" className="space-y-6">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left text-gray-400 p-2">Pool</th>
-                  <th className="text-right text-gray-400 p-2">Burned (24h)</th>
-                  <th className="text-right text-gray-400 p-2">Volume USD</th>
-                  <th className="text-right text-gray-400 p-2">Efficiency</th>
-                  <th className="text-right text-gray-400 p-2">Burn/$1M</th>
-                  <th className="text-right text-gray-400 p-2">Confidence</th>
-                </tr>
-              </thead>
-              <tbody>
-                {poolMetrics.map((pool) => (
-                  <tr key={pool.poolAddress} className="border-b border-white/5 hover:bg-white/5">
-                    <td className="p-2 text-white">{pool.poolName}</td>
-                    <td className="p-2 text-right text-white">{formatNumber(pool.totalBurned24h)}</td>
-                    <td className="p-2 text-right text-white">{formatUSD(pool.totalVolumeUSD24h)}</td>
-                    <td className="p-2 text-right text-white">{pool.burnEfficiency.toFixed(2)}%</td>
-                    <td className="p-2 text-right text-white">{formatNumber(pool.burnPerMillionUSD)}</td>
-                    <td className="p-2 text-right">
-                      <Badge 
-                        variant="outline"
-                        className={`text-xs ${
-                          pool.volumeAnalytics.confidenceLevel === 'high' ? 'border-green-400 text-green-400' :
-                          pool.volumeAnalytics.confidenceLevel === 'medium' ? 'border-yellow-400 text-yellow-400' :
-                          'border-red-400 text-red-400'
-                        }`}
-                      >
-                        {pool.volumeAnalytics.confidenceLevel}
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* Pool Details Section */}
+        <AccordionLoadingSection
+          title="Pool Details"
+          description="Comprehensive analytics for each trading pool"
+          icon={<BarChart3 className="h-6 w-6 text-green-400" />}
+          isOpen={accordionStates.isOpen('pools')}
+          onToggle={() => accordionStates.toggleAccordion('pools')}
+          isLoading={loading}
+          error={error}
+          onRetry={refreshData}
+          loadingPhase={loading ? 'querying-events' : 'complete'}
+          progress={loading ? 90 : 100}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {poolMetrics.map((pool) => (
+              <Card key={pool.poolAddress} className="bg-black/30 backdrop-blur-sm border border-white/10">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white text-lg">{pool.poolName}</CardTitle>
+                    <Badge 
+                      variant="outline"
+                      className={`${
+                        pool.volumeAnalytics.confidenceLevel === 'high' ? 'border-green-400 text-green-400' :
+                        pool.volumeAnalytics.confidenceLevel === 'medium' ? 'border-yellow-400 text-yellow-400' :
+                        'border-red-400 text-red-400'
+                      }`}
+                    >
+                      {pool.volumeAnalytics.confidenceLevel}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-white/70">Burned (24h)</p>
+                      <p className="text-white font-bold">{formatNumber(pool.totalBurned24h)} ARK</p>
+                    </div>
+                    <div>
+                      <p className="text-white/70">Volume (24h)</p>
+                      <p className="text-white font-bold">{formatUSD(pool.totalVolumeUSD24h)}</p>
+                    </div>
+                    <div>
+                      <p className="text-white/70">Efficiency</p>
+                      <p className="text-white font-bold">{pool.burnEfficiency.toFixed(2)}%</p>
+                    </div>
+                    <div>
+                      <p className="text-white/70">Burn Count</p>
+                      <p className="text-white font-bold">{pool.burnCount24h}</p>
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-white/10">
+                    <p className="text-xs text-white/50">
+                      Burn per $1M: {formatNumber(pool.burnPerMillionUSD)} ARK
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </TabsContent>
-      </Tabs>
+        </AccordionLoadingSection>
+      </div>
     </div>
   );
 };
