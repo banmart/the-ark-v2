@@ -293,7 +293,6 @@ const Burn: React.FC = () => {
               </div>
             </div>
           </div>
-          </div>
 
           {/* Timeframe Stats Banner */}
           <Card className="bg-black/30 backdrop-blur-sm border border-white/10 mb-8">
