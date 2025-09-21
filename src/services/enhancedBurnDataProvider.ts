@@ -18,11 +18,13 @@ class EnhancedBurnDataProvider {
     
     this.isInitializing = true;
     try {
+      console.log('Enhanced burn data provider: initializing...');
       await enhancedPerPoolBurnAnalyticsService.initialize();
       this.initialized = true;
-      console.log('Enhanced burn analytics service initialized');
+      console.log('Enhanced burn analytics service initialized successfully');
     } catch (error) {
       console.error('Failed to initialize enhanced burn analytics:', error);
+      throw error; // Re-throw to surface the error
     } finally {
       this.isInitializing = false;
     }
@@ -32,11 +34,22 @@ class EnhancedBurnDataProvider {
     await this.initializeIfNeeded();
     
     try {
+      console.log('Enhanced burn data provider: fetching data...');
+      
       // Get data in parallel for faster loading
       const [metrics, aggregated] = await Promise.all([
         enhancedPerPoolBurnAnalyticsService.getEnhancedPerPoolBurnMetrics(),
         enhancedPerPoolBurnAnalyticsService.getEnhancedAggregatedBurnData()
       ]);
+
+      console.log('Enhanced burn data provider: data fetched', {
+        metricsCount: metrics.length,
+        aggregatedExists: !!aggregated,
+        firstMetric: metrics[0] ? {
+          pool: metrics[0].poolAddress,
+          burned: metrics[0].totalBurned24h
+        } : null
+      });
 
       return { metrics, aggregated };
     } catch (error) {

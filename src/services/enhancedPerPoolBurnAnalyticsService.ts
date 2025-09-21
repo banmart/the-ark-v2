@@ -132,20 +132,41 @@ export class EnhancedPerPoolBurnAnalyticsService {
   }
 
   async initialize(): Promise<void> {
-    await enhancedPairDataService.initializePairs();
+    try {
+      console.log('Enhanced burn analytics: initializing pair data service...');
+      await enhancedPairDataService.initializePairs();
+      console.log('Enhanced burn analytics: pair data service initialized successfully');
+    } catch (error) {
+      console.error('Enhanced burn analytics: failed to initialize pair data service:', error);
+      throw error;
+    }
   }
 
   async getEnhancedPerPoolBurnMetrics(): Promise<EnhancedPoolBurnMetrics[]> {
     try {
+      console.log('Enhanced burn metrics: checking cache...', { 
+        cacheSize: this.metricsCache.size, 
+        timeSinceUpdate: Date.now() - this.lastUpdateTime 
+      });
+      
       if (Date.now() - this.lastUpdateTime < this.CACHE_DURATION && this.metricsCache.size > 0) {
-        return Array.from(this.metricsCache.values());
+        const cached = Array.from(this.metricsCache.values());
+        console.log('Enhanced burn metrics: returning cached data', { count: cached.length });
+        return cached;
       }
 
       const pairs = enhancedPairDataService.getPairs();
+      console.log('Enhanced burn metrics: processing pairs', { pairCount: pairs.length });
+      
       const metrics: EnhancedPoolBurnMetrics[] = [];
       
       for (const pair of pairs) {
+        console.log(`Enhanced burn metrics: calculating for pool ${pair.address}`);
         const poolMetrics = await this.calculateEnhancedPoolMetrics(pair);
+        console.log(`Enhanced burn metrics: pool ${pair.address} result:`, {
+          totalBurned24h: poolMetrics.totalBurned24h,
+          burnCount: poolMetrics.burnCount24h
+        });
         metrics.push(poolMetrics);
         this.metricsCache.set(pair.address, poolMetrics);
       }
@@ -154,7 +175,12 @@ export class EnhancedPerPoolBurnAnalyticsService {
       this.addRankings(metrics);
       
       this.lastUpdateTime = Date.now();
-      return metrics.sort((a, b) => b.totalBurned24h - a.totalBurned24h);
+      const sorted = metrics.sort((a, b) => b.totalBurned24h - a.totalBurned24h);
+      console.log('Enhanced burn metrics: final result', { 
+        totalPools: sorted.length, 
+        activePools: sorted.filter(m => m.totalBurned24h > 0).length 
+      });
+      return sorted;
       
     } catch (error) {
       console.error('Error getting enhanced per-pool burn metrics:', error);

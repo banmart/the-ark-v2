@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Download, RefreshCcw, Flame, DollarSign, BarChart3, Target, Activity, Filter } from 'lucide-react';
+import { Download, RefreshCcw, Flame, DollarSign, BarChart3, Target, Activity, Filter, Database, AlertCircle } from 'lucide-react';
 import { useEnhancedBurnAnalytics } from '@/hooks/useEnhancedBurnAnalytics';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -218,6 +218,30 @@ const EnhancedBurnDashboard: React.FC = () => {
           </Button>
         </AlertDescription>
       </Alert>
+    );
+  }
+
+  // Show no data state if everything loaded but no data available
+  if (!loading && poolMetrics.length === 0 && !aggregatedData) {
+    return (
+      <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+        <div className="flex items-center gap-2 text-white/70 mb-2">
+          <Database className="h-5 w-5" />
+          <span className="font-semibold">No Burn Data Available</span>
+        </div>
+        <p className="text-sm text-white/50 mb-4">
+          No burn analytics data could be loaded. This might be due to network issues or insufficient blockchain data.
+        </p>
+        <Button 
+          onClick={refreshData} 
+          variant="outline" 
+          size="sm"
+          className="gap-2"
+        >
+          <RefreshCcw className="h-4 w-4" />
+          Refresh Data
+        </Button>
+      </div>
     );
   }
 

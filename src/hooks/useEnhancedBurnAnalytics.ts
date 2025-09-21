@@ -29,7 +29,12 @@ export const useEnhancedBurnAnalytics = () => {
 
       console.log('Enhanced burn data loaded:', { 
         metricsCount: metrics.length, 
-        hasAggregated: !!aggregated 
+        hasAggregated: !!aggregated,
+        metricsData: metrics.slice(0, 2), // Show first 2 for debugging
+        aggregatedSample: aggregated ? {
+          totalBurnedAllPools: aggregated.totalBurnedAllPools,
+          recentEvents: aggregated.recentBurnEvents.length
+        } : null
       });
 
       setPoolMetrics(metrics);
