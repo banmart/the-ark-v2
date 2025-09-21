@@ -22,10 +22,10 @@ const BurnRateChart = ({ data }: BurnRateChartProps) => {
       return (
         <div className="glass-card p-4 rounded-lg border border-destructive/20">
           <p className="text-destructive font-semibold">{label}</p>
-          <p className="text-foreground">
+          <p className="text-white">
             Burned: {data.amount.toLocaleString()} ARK
           </p>
-          <p className="text-muted-foreground">
+          <p className="text-white/70">
             Rate: {data.burnRate.toFixed(4)}% of volume
           </p>
         </div>
@@ -47,11 +47,11 @@ const BurnRateChart = ({ data }: BurnRateChartProps) => {
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
             <XAxis 
               dataKey="date" 
-              stroke="hsl(var(--muted-foreground))"
+              stroke="rgba(255,255,255,0.7)"
               fontSize={12}
             />
             <YAxis 
-              stroke="hsl(var(--muted-foreground))"
+              stroke="rgba(255,255,255,0.7)"
               fontSize={12}
               tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
             />

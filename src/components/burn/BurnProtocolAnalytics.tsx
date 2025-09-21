@@ -34,7 +34,7 @@ const BurnProtocolAnalytics = () => {
         <div className="glass-card rounded-xl p-8">
           <div className="flex items-center justify-center space-x-2">
             <RefreshCw className="animate-spin h-5 w-5 text-video-cyan" />
-            <span className="text-foreground">Loading burn analytics...</span>
+            <span className="text-white">Loading burn analytics...</span>
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@ const BurnProtocolAnalytics = () => {
     return (
       <div className="glass-card rounded-xl p-8">
         <div className="text-center">
-          <p className="text-muted-foreground">No burn data available</p>
+          <p className="text-white/70">No burn data available</p>
         </div>
       </div>
     );
@@ -74,8 +74,8 @@ const BurnProtocolAnalytics = () => {
               <Flame className="h-6 w-6 text-destructive" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Burn Protocol Analytics</h2>
-              <p className="text-muted-foreground">Real-time burn mechanism analysis and projections</p>
+              <h2 className="text-2xl font-bold text-white">Burn Protocol Analytics</h2>
+              <p className="text-white/70">Real-time burn mechanism analysis and projections</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -99,49 +99,49 @@ const BurnProtocolAnalytics = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="glass-card border-destructive/20">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Daily Burn</CardTitle>
+            <CardTitle className="text-sm text-white/70">Daily Burn</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">
               {burnMetrics.dailyBurnAmount.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">ARK tokens</p>
+            <p className="text-xs text-white/70 mt-1">ARK tokens</p>
           </CardContent>
         </Card>
 
         <Card className="glass-card border-video-cyan/20">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Burn Rate</CardTitle>
+            <CardTitle className="text-sm text-white/70">Burn Rate</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-video-cyan">
               {burnMetrics.burnRate.toFixed(2)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">tokens/hour</p>
+            <p className="text-xs text-white/70 mt-1">tokens/hour</p>
           </CardContent>
         </Card>
 
         <Card className="glass-card border-green-500/20">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Efficiency</CardTitle>
+            <CardTitle className="text-sm text-white/70">Efficiency</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-500">
               {burnMetrics.efficiency.toFixed(1)}%
             </div>
-            <p className="text-xs text-muted-foreground mt-1">vs theoretical</p>
+            <p className="text-xs text-white/70 mt-1">vs theoretical</p>
           </CardContent>
         </Card>
 
         <Card className="glass-card border-orange-500/20">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Total Burned</CardTitle>
+            <CardTitle className="text-sm text-white/70">Total Burned</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-500">
               {(burnMetrics.totalBurned / 1000000).toFixed(2)}M
             </div>
-            <p className="text-xs text-muted-foreground mt-1">ARK tokens</p>
+            <p className="text-xs text-white/70 mt-1">ARK tokens</p>
           </CardContent>
         </Card>
       </div>

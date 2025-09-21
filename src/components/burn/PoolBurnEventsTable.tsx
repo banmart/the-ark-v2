@@ -87,7 +87,7 @@ const PoolBurnEventsTable: React.FC<PoolBurnEventsTableProps> = ({
           <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/50" />
               <Input
                 placeholder="Search wallet or tx..."
                 value={searchTerm}
@@ -131,23 +131,23 @@ const PoolBurnEventsTable: React.FC<PoolBurnEventsTableProps> = ({
       <CardContent>
         {filteredEvents.length === 0 ? (
           <div className="text-center py-8">
-            <Flame className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No burn events found</p>
+            <Flame className="w-12 h-12 text-white/50 mx-auto mb-4" />
+            <p className="text-white/70">No burn events found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/10">
-                  <th className="text-left text-xs text-muted-foreground font-semibold pb-3">Time</th>
+                  <th className="text-left text-xs text-white/70 font-semibold pb-3">Time</th>
                   {showPoolColumn && (
-                    <th className="text-left text-xs text-muted-foreground font-semibold pb-3">Pool</th>
+                    <th className="text-left text-xs text-white/70 font-semibold pb-3">Pool</th>
                   )}
-                  <th className="text-left text-xs text-muted-foreground font-semibold pb-3">Wallet</th>
-                  <th className="text-right text-xs text-muted-foreground font-semibold pb-3">Burned</th>
-                  <th className="text-right text-xs text-muted-foreground font-semibold pb-3">Swap Amount</th>
-                  <th className="text-right text-xs text-muted-foreground font-semibold pb-3">Efficiency</th>
-                  <th className="text-center text-xs text-muted-foreground font-semibold pb-3">Tx</th>
+                  <th className="text-left text-xs text-white/70 font-semibold pb-3">Wallet</th>
+                  <th className="text-right text-xs text-white/70 font-semibold pb-3">Burned</th>
+                  <th className="text-right text-xs text-white/70 font-semibold pb-3">Swap Amount</th>
+                  <th className="text-right text-xs text-white/70 font-semibold pb-3">Efficiency</th>
+                  <th className="text-center text-xs text-white/70 font-semibold pb-3">Tx</th>
                 </tr>
               </thead>
               <tbody>
@@ -203,7 +203,7 @@ const PoolBurnEventsTable: React.FC<PoolBurnEventsTableProps> = ({
             
             {filteredEvents.length > 50 && (
               <div className="text-center pt-4">
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-white/70">
                   Showing first 50 of {filteredEvents.length} events
                 </p>
               </div>

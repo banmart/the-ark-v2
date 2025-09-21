@@ -78,14 +78,14 @@ const PoolBurnDashboard: React.FC = () => {
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div>
           <h2 className="text-2xl font-bold text-white mb-2">Per-Pool Burn Analytics</h2>
-          <p className="text-muted-foreground">
+          <p className="text-white/70">
             Real-time burn tracking across ARK trading pairs
           </p>
         </div>
         
         <div className="flex items-center space-x-3">
           {lastUpdated && (
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-white/70">
               Updated: {lastUpdated.toLocaleTimeString()}
             </span>
           )}
@@ -108,7 +108,7 @@ const PoolBurnDashboard: React.FC = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-xs">Total Burned (24h)</p>
+                <p className="text-white/70 text-xs">Total Burned (24h)</p>
                 <p className="text-xl font-bold text-video-cyan">
                   {formatNumber(totalBurnAmount)} ARK
                 </p>
@@ -122,7 +122,7 @@ const PoolBurnDashboard: React.FC = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-xs">Total Volume (24h)</p>
+                <p className="text-white/70 text-xs">Total Volume (24h)</p>
                 <p className="text-xl font-bold text-video-gold">
                   {formatNumber(totalVolume)} ARK
                 </p>
@@ -136,7 +136,7 @@ const PoolBurnDashboard: React.FC = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-xs">Avg Efficiency</p>
+                <p className="text-white/70 text-xs">Avg Efficiency</p>
                 <p className="text-xl font-bold text-video-blue">
                   {averageEfficiency.toFixed(2)}%
                 </p>
@@ -150,7 +150,7 @@ const PoolBurnDashboard: React.FC = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-xs">Active Pools</p>
+                <p className="text-white/70 text-xs">Active Pools</p>
                 <p className="text-xl font-bold text-white">
                   {poolMetrics.filter(p => p.totalBurned24h > 0).length}/{poolMetrics.length}
                 </p>
@@ -287,7 +287,7 @@ const PoolBurnDashboard: React.FC = () => {
                   <h3 className="text-lg font-semibold text-white">
                     {poolMetrics.find(p => p.poolAddress === selectedPool)?.poolName || 'Pool Details'}
                   </h3>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-white/70 text-sm">
                     Detailed burn activity for this trading pair
                   </p>
                 </div>
@@ -305,8 +305,8 @@ const PoolBurnDashboard: React.FC = () => {
           ) : (
             <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
               <CardContent className="p-8 text-center">
-                <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">
+                <Users className="w-12 h-12 text-white/50 mx-auto mb-4" />
+                <p className="text-white/70">
                   Select a pool from the "Pool Comparison" tab to view detailed burn events
                 </p>
               </CardContent>

@@ -62,7 +62,7 @@ const PoolBurnCard: React.FC<PoolBurnCardProps> = ({ pool, onClick, isSelected =
           <div className="space-y-1">
             <div className="flex items-center space-x-1">
               <Flame className="w-3 h-3 text-video-cyan" />
-              <span className="text-xs text-muted-foreground">24h Burned</span>
+              <span className="text-xs text-white/70">24h Burned</span>
             </div>
             <p className="text-lg font-bold text-video-cyan">
               {formatNumber(pool.totalBurned24h)} ARK
@@ -72,7 +72,7 @@ const PoolBurnCard: React.FC<PoolBurnCardProps> = ({ pool, onClick, isSelected =
           <div className="space-y-1">
             <div className="flex items-center space-x-1">
               <Activity className="w-3 h-3 text-video-gold" />
-              <span className="text-xs text-muted-foreground">Volume</span>
+              <span className="text-xs text-white/70">Volume</span>
             </div>
             <p className="text-lg font-bold text-video-gold">
               {formatNumber(pool.totalSwapVolume24h)} ARK
@@ -85,7 +85,7 @@ const PoolBurnCard: React.FC<PoolBurnCardProps> = ({ pool, onClick, isSelected =
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-1">
               <Zap className="w-3 h-3 text-video-blue" />
-              <span className="text-xs text-muted-foreground">Burn Efficiency</span>
+              <span className="text-xs text-white/70">Burn Efficiency</span>
             </div>
             <span className={`text-xs font-bold ${efficiencyColor}`}>
               {pool.burnEfficiency.toFixed(2)}%
@@ -103,7 +103,7 @@ const PoolBurnCard: React.FC<PoolBurnCardProps> = ({ pool, onClick, isSelected =
           <div className="space-y-1">
             <div className="flex items-center space-x-1">
               <Users className="w-3 h-3 text-purple-400" />
-              <span className="text-xs text-muted-foreground">Burns</span>
+              <span className="text-xs text-white/70">Burns</span>
             </div>
             <p className="text-sm font-semibold text-white">
               {pool.burnCount24h}
@@ -113,7 +113,7 @@ const PoolBurnCard: React.FC<PoolBurnCardProps> = ({ pool, onClick, isSelected =
           <div className="space-y-1">
             <div className="flex items-center space-x-1">
               <TrendIcon className={`w-3 h-3 ${trendColor}`} />
-              <span className="text-xs text-muted-foreground">Trend</span>
+              <span className="text-xs text-white/70">Trend</span>
             </div>
             <p className={`text-sm font-semibold ${trendColor}`}>
               {pool.trends.previousPeriodComparison >= 0 ? '+' : ''}
@@ -126,7 +126,7 @@ const PoolBurnCard: React.FC<PoolBurnCardProps> = ({ pool, onClick, isSelected =
         {pool.avgBurnPerSwap > 0 && (
           <div className="pt-2 border-t border-white/10">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Avg Burn/Swap</span>
+              <span className="text-xs text-white/70">Avg Burn/Swap</span>
               <span className="text-xs font-bold text-white">
                 {formatNumber(pool.avgBurnPerSwap)} ARK
               </span>
@@ -138,7 +138,7 @@ const PoolBurnCard: React.FC<PoolBurnCardProps> = ({ pool, onClick, isSelected =
         {pool.topBurner && (
           <div className="pt-2 border-t border-white/10">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Top Burner</span>
+              <span className="text-xs text-white/70">Top Burner</span>
               <span className="text-xs font-mono text-video-cyan">
                 {pool.topBurner.slice(0, 6)}...{pool.topBurner.slice(-4)}
               </span>
