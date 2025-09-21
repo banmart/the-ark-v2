@@ -15,7 +15,7 @@ import { useContractData } from '../hooks/useContractData';
 import { BurnAccordionSection } from '../components/burn/BurnAccordionSection';
 import LazyPoolBurnDashboard from '../components/burn/LazyPoolBurnDashboard';
 import LazyBurnProtocolAnalytics from '../components/burn/LazyBurnProtocolAnalytics';
-import LazyEnhancedBurnDashboard from '../components/burn/LazyEnhancedBurnDashboard';
+import EnhancedBurnDashboard from '../components/burn/EnhancedBurnDashboard';
 
 // Format number utility function
 const formatNumber = (num: number): string => {
@@ -438,7 +438,7 @@ const Burn: React.FC = () => {
 
             {/* Protocol Analytics */}
             <BurnAccordionSection title="Advanced Analytics" description="Burn rate charts, efficiency metrics, and projections" icon={<Target className="w-5 h-5 text-video-gold" />}>
-              <LazyEnhancedBurnDashboard />
+              <EnhancedBurnDashboard />
             </BurnAccordionSection>
 
 

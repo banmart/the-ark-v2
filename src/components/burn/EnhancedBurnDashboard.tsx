@@ -171,6 +171,7 @@ const EnhancedBurnDashboard: React.FC = () => {
     }
   };
 
+  // Show loading skeleton while data is being fetched
   if (loading && !aggregatedData) {
     return (
       <div className="space-y-6">
@@ -181,6 +182,19 @@ const EnhancedBurnDashboard: React.FC = () => {
                 <Skeleton className="h-4 w-20 mb-2" />
                 <Skeleton className="h-8 w-full mb-2" />
                 <Skeleton className="h-3 w-16" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="bg-black/30 backdrop-blur-sm border border-white/10">
+              <CardContent className="p-6">
+                <Skeleton className="h-6 w-48 mb-4" />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -206,6 +220,22 @@ const EnhancedBurnDashboard: React.FC = () => {
       </Alert>
     );
   }
+
+  // Provide fallback data to prevent component from disappearing
+  const safeAggregatedData = aggregatedData || {
+    totalBurnedAllPools: 0,
+    totalVolumeUSD: 0,
+    overallEfficiency: 0,
+    overallBurnPerMillionUSD: 0,
+    recentBurnEvents: []
+  };
+
+  const safeStats = stats || {
+    activePools: 0,
+    totalPools: 0,
+    highConfidencePools: 0,
+    stablePairPools: 0
+  };
 
   return (
     <div className="space-y-6">
@@ -250,7 +280,7 @@ const EnhancedBurnDashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <LiveDataCard
           title="Total Burned (24h)"
-          value={aggregatedData?.totalBurnedAllPools || 0}
+          value={safeAggregatedData.totalBurnedAllPools}
           subtitle="ARK tokens"
           icon={<Flame className="h-8 w-8 text-orange-400" />}
           isLoading={loading}
@@ -260,7 +290,7 @@ const EnhancedBurnDashboard: React.FC = () => {
 
         <LiveDataCard
           title="Volume (24h USD)"
-          value={formatUSD(aggregatedData?.totalVolumeUSD || 0)}
+          value={formatUSD(safeAggregatedData.totalVolumeUSD)}
           subtitle="Trading volume"
           icon={<DollarSign className="h-8 w-8 text-green-400" />}
           isLoading={loading}
@@ -270,7 +300,7 @@ const EnhancedBurnDashboard: React.FC = () => {
 
         <LiveDataCard
           title="Burn Efficiency"
-          value={`${(aggregatedData?.overallEfficiency || 0).toFixed(2)}%`}
+          value={`${safeAggregatedData.overallEfficiency.toFixed(2)}%`}
           subtitle="Burn/swap ratio"
           icon={<Target className="h-8 w-8 text-blue-400" />}
           isLoading={loading}
@@ -280,7 +310,7 @@ const EnhancedBurnDashboard: React.FC = () => {
 
         <LiveDataCard
           title="Burn per $1M USD"
-          value={aggregatedData?.overallBurnPerMillionUSD || 0}
+          value={safeAggregatedData.overallBurnPerMillionUSD}
           subtitle="ARK tokens"
           icon={<BarChart3 className="h-8 w-8 text-purple-400" />}
           isLoading={loading}
@@ -290,7 +320,7 @@ const EnhancedBurnDashboard: React.FC = () => {
 
         <LiveDataCard
           title="Active Pools"
-          value={`${stats.activePools}/${stats.totalPools}`}
+          value={`${safeStats.activePools}/${safeStats.totalPools}`}
           subtitle="Pools with burns"
           icon={<Activity className="h-8 w-8 text-cyan-400" />}
           isLoading={loading}
@@ -323,7 +353,7 @@ const EnhancedBurnDashboard: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 max-h-64 overflow-y-auto">
-                  {aggregatedData?.recentBurnEvents.slice(0, 5).map((event, index) => (
+                  {safeAggregatedData.recentBurnEvents.slice(0, 5).map((event, index) => (
                     <div key={index} className="flex justify-between items-center p-2 bg-white/5 rounded">
                        <div>
                          <p className="text-sm text-white font-medium">{event.poolName}</p>

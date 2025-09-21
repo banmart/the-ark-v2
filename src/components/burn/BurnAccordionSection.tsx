@@ -12,6 +12,8 @@ interface BurnAccordionSectionProps {
   children: React.ReactNode;
   defaultOpen?: boolean;
   className?: string;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 const SectionSkeleton = () => (
@@ -37,7 +39,9 @@ export const BurnAccordionSection: React.FC<BurnAccordionSectionProps> = ({
   icon,
   children,
   defaultOpen = false,
-  className
+  className,
+  isLoading = false,
+  error = null
 }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -70,9 +74,27 @@ export const BurnAccordionSection: React.FC<BurnAccordionSectionProps> = ({
         
         <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
           <CardContent className="pt-0">
-            <Suspense fallback={<SectionSkeleton />}>
-              {isOpen && children}
-            </Suspense>
+            {isOpen && (
+              <>
+                {error ? (
+                  <div className="text-center py-8">
+                    <p className="text-red-400 mb-4">Error loading data: {error}</p>
+                    <button 
+                      onClick={() => window.location.reload()}
+                      className="px-4 py-2 bg-video-cyan/20 text-video-cyan rounded hover:bg-video-cyan/30 transition-colors"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                ) : isLoading ? (
+                  <SectionSkeleton />
+                ) : (
+                  <Suspense fallback={<SectionSkeleton />}>
+                    {children}
+                  </Suspense>
+                )}
+              </>
+            )}
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
