@@ -353,30 +353,38 @@ const EnhancedBurnDashboard: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 max-h-64 overflow-y-auto">
-                  {safeAggregatedData.recentBurnEvents.slice(0, 5).map((event, index) => (
+                  {safeAggregatedData.recentBurnEvents.slice(0, 8).map((event, index) => (
                     <div key={index} className="flex justify-between items-center p-2 bg-white/5 rounded">
                        <div>
-                         <p className="text-sm text-white font-medium">{event.poolName}</p>
+                         <div className="flex items-center gap-2">
+                           <p className="text-sm text-white font-medium">{event.poolName}</p>
+                           <span 
+                             className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                               event.burnAddressType === 'Dead Address' 
+                                 ? 'bg-red-500/20 text-red-400' 
+                                 : event.burnAddressType === 'Null Address'
+                                 ? 'bg-purple-500/20 text-purple-400'
+                                 : 'bg-orange-500/20 text-orange-400'
+                             }`}
+                             title={`Burned to: ${event.burnAddress}`}
+                           >
+                             {event.burnAddressType === 'Dead Address' ? 'DEAD' 
+                              : event.burnAddressType === 'Null Address' ? 'NULL' 
+                              : 'BURN'}
+                           </span>
+                         </div>
                          <p className="text-xs text-white/80">
                            {formatNumber(event.burnAmount)} ARK burned
                          </p>
                        </div>
-                      <div className="text-right">
-                        <Badge 
-                          variant="outline" 
-                          className={`text-xs ${
-                            event.burnType === 'penalty' ? 'border-yellow-400 text-yellow-400' :
-                            event.burnType === 'burn' ? 'border-orange-400 text-orange-400' :
-                            event.burnType === 'dead' ? 'border-red-400 text-red-400' :
-                            'border-gray-400 text-gray-400'
-                          }`}
-                        >
-                          {event.burnType === 'penalty' ? 'penalty' : event.burnType}
-                        </Badge>
-                        <p className="text-xs text-gray-400 mt-1">
-                          {new Date(event.timestamp).toLocaleTimeString()}
-                        </p>
-                      </div>
+                       <div className="text-right">
+                         <p className="text-sm text-white font-bold">
+                           {formatNumber(event.burnAmount)} ARK
+                         </p>
+                         <p className="text-xs text-gray-400">
+                           {new Date(event.timestamp).toLocaleTimeString()}
+                         </p>
+                       </div>
                     </div>
                   ))}
                 </div>

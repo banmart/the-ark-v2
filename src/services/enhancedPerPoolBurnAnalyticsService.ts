@@ -18,6 +18,7 @@ export interface EnhancedPoolBurnEvent {
   volumeUSD: number;
   burnPerMillionUSD: number;
   penaltySource?: 'early_unlock' | 'regular_burn';
+  burnAddressType?: string;
 }
 
 export interface EnhancedPoolBurnMetrics {
@@ -318,7 +319,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
                 burnEfficiency,
                 volumeUSD,
                 burnPerMillionUSD,
-                penaltySource: this.getPenaltySource(burnEvent.transactionHash, penaltyEvents)
+                penaltySource: this.getPenaltySource(burnEvent.transactionHash, penaltyEvents),
+                burnAddressType: this.getBurnAddressType(burnAddress)
               });
             }
           }
@@ -442,16 +444,22 @@ export class EnhancedPerPoolBurnAnalyticsService {
         byBurnAmount: [...activePools].sort((a, b) => b.totalBurned24h - a.totalBurned24h).slice(0, 5)
       };
       
-      // Recent burn events
+      // Recent burn events from all pools and burn addresses
       const allBurnEvents: EnhancedPoolBurnEvent[] = [];
-      for (const pool of poolMetrics.slice(0, 5)) {
+      for (const pool of poolMetrics) {
         const poolEvents = this.burnEventsCache.get(pool.poolAddress) || [];
-        allBurnEvents.push(...poolEvents.slice(0, 20));
+        // Take more events per pool and add burn address info
+        const enhancedEvents = poolEvents.slice(0, 50).map(event => ({
+          ...event,
+          burnAddressType: this.getBurnAddressType(event.burnAddress)
+        }));
+        allBurnEvents.push(...enhancedEvents);
       }
       
+      // Sort all events by timestamp to get unified chronological order
       const recentBurnEvents = allBurnEvents
         .sort((a, b) => b.timestamp - a.timestamp)
-        .slice(0, 100);
+        .slice(0, 200); // Increased to show more recent activity
       
       return {
         totalBurnedAllPools,
@@ -547,6 +555,17 @@ export class EnhancedPerPoolBurnAnalyticsService {
         byBurnAmount: []
       }
     };
+  }
+
+  private getBurnAddressType(burnAddress: string): string {
+    if (burnAddress.toLowerCase() === this.BURN_ADDRESSES.NULL_ADDRESS.toLowerCase()) {
+      return 'Null Address';
+    } else if (burnAddress.toLowerCase() === this.BURN_ADDRESSES.DEAD_ADDRESS.toLowerCase()) {
+      return 'Dead Address';
+    } else if (burnAddress.toLowerCase() === this.BURN_ADDRESSES.BURN_ADDRESS.toLowerCase()) {
+      return 'Burn Address';
+    }
+    return 'Unknown';
   }
 
   clearCache(): void {
