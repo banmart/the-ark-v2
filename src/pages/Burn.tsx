@@ -319,6 +319,20 @@ const Burn: React.FC = () => {
             </CardContent>
           </Card>
 
+          {/* Enhanced Burn Analytics - Priority Loading */}
+          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 mb-8">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold text-video-gold flex items-center gap-2">
+                <Flame className="w-6 h-6 text-orange-400" />
+                Enhanced Burn Analytics
+              </CardTitle>
+              <p className="text-white/60">Live burn tracking with USD volume analysis and detailed metrics</p>
+            </CardHeader>
+            <CardContent>
+              <LazyEnhancedBurnDashboard />
+            </CardContent>
+          </Card>
+
           {/* Accordion-based sections for better performance */}
           <div className="space-y-6">
             {/* Overview Metrics - Always visible */}
@@ -472,14 +486,6 @@ const Burn: React.FC = () => {
               <LazyBurnProtocolAnalytics />
             </BurnAccordionSection>
 
-            {/* Enhanced Burn Analytics */}
-            <BurnAccordionSection
-              title="Enhanced Burn Analytics"
-              description="Comprehensive burn tracking with USD volume analysis and CSV export"
-              icon={<Flame className="w-5 h-5 text-orange-400" />}
-            >
-              <LazyEnhancedBurnDashboard />
-            </BurnAccordionSection>
 
             {/* Live Activity */}
             <BurnAccordionSection
