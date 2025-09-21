@@ -236,7 +236,7 @@ const Burn: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="relative z-10 container mx-auto px-4 pt-24 pb-8">
         <div className="max-w-7xl mx-auto">
           {/* Header with Quantum Field Background */}
           <div className="relative mb-8">
