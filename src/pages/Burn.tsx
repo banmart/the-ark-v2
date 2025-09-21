@@ -255,7 +255,7 @@ const Burn: React.FC = () => {
 
                 {/* System Description */}
                 <p className="text-white/70 text-lg max-w-2xl">
-                  Real-time ARK token burn analytics and statistics
+                  Real-time ARK token burn analytics and statistics. Please be patient while calculating.
                 </p>
               </div>
               
