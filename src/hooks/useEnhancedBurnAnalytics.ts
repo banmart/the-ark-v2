@@ -6,6 +6,7 @@ import {
   EnhancedPoolBurnEvent,
   CSVExportData
 } from '../services/enhancedPerPoolBurnAnalyticsService';
+import { enhancedBurnDataProvider } from '../services/enhancedBurnDataProvider';
 
 export const useEnhancedBurnAnalytics = () => {
   const [poolMetrics, setPoolMetrics] = useState<EnhancedPoolBurnMetrics[]>([]);
@@ -21,12 +22,15 @@ export const useEnhancedBurnAnalytics = () => {
       setLoading(true);
       setError(null);
 
-      await enhancedPerPoolBurnAnalyticsService.initialize();
+      console.log('Starting enhanced burn analytics fetch...');
       
-      const [metrics, aggregated] = await Promise.all([
-        enhancedPerPoolBurnAnalyticsService.getEnhancedPerPoolBurnMetrics(),
-        enhancedPerPoolBurnAnalyticsService.getEnhancedAggregatedBurnData()
-      ]);
+      // Use the optimized data provider for faster loading
+      const { metrics, aggregated } = await enhancedBurnDataProvider.getQuickData();
+
+      console.log('Enhanced burn data loaded:', { 
+        metricsCount: metrics.length, 
+        hasAggregated: !!aggregated 
+      });
 
       setPoolMetrics(metrics);
       setAggregatedData(aggregated);

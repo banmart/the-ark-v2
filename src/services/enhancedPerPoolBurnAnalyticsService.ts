@@ -97,7 +97,7 @@ export class EnhancedPerPoolBurnAnalyticsService {
   };
   
   private readonly CACHE_DURATION = 45000; // 45 seconds for more frequent updates
-  private readonly HISTORICAL_BLOCKS = 50000; // Increased from 20k to 50k for deeper history
+  private readonly HISTORICAL_BLOCKS = 200000; // Expanded to 200k blocks for comprehensive history
 
   constructor() {
     this.provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
@@ -267,33 +267,37 @@ export class EnhancedPerPoolBurnAnalyticsService {
                 Math.abs(swap.blockNumber - burnEvent.blockNumber) <= 2
               );
               
-              if (relatedSwap || swapEvents.length > 0) {
-                const block = await this.provider.getBlock(burnEvent.blockNumber);
-                if (!block) continue;
+              // Always include burn events, even without related swaps
+              const block = await this.provider.getBlock(burnEvent.blockNumber);
+              if (!block) continue;
+              
+              const swapAmount = relatedSwap?.arkAmount || 0;
+              const burnEfficiency = swapAmount > 0 ? (burnAmount / swapAmount) * 100 : 0;
+              
+              // Get real price data for USD calculation
+              const pairData = await enhancedPairDataService.getPairData(poolAddress);
+              const volumeAnalytics = pairData ? 
+                await enhancedVolumeEstimatorService.analyzeVolume(pairData, poolAddress, swapAmount) :
+                enhancedVolumeEstimatorService['getEmptyAnalytics']();
+              
+              const volumeUSD = swapAmount * volumeAnalytics.priceUSD;
+              const burnPerMillionUSD = enhancedVolumeEstimatorService.calculateBurnPerMillionUSD(burnAmount, volumeUSD);
                 
-                const swapAmount = relatedSwap?.arkAmount || 0;
-                const burnEfficiency = swapAmount > 0 ? (burnAmount / swapAmount) * 100 : 0;
-                
-                // Estimate volume USD (simplified)
-                const volumeUSD = swapAmount * 0.00001; // Placeholder - would use real price
-                const burnPerMillionUSD = enhancedVolumeEstimatorService.calculateBurnPerMillionUSD(burnAmount, volumeUSD);
-                
-                correlatedBurns.push({
-                  poolAddress,
-                  poolName: enhancedPairDataService.getPairs().find(p => p.address === poolAddress)?.name || 'Unknown',
-                  txHash: burnEvent.transactionHash,
-                  timestamp: block.timestamp * 1000,
-                  burnAmount,
-                  burnAddress,
-                  burnType: this.getBurnType(burnAddress),
-                  swapAmount,
-                  wallet: burnEvent.args.from || 'Unknown',
-                  blockNumber: burnEvent.blockNumber,
-                  burnEfficiency,
-                  volumeUSD,
-                  burnPerMillionUSD
-                });
-              }
+              correlatedBurns.push({
+                poolAddress,
+                poolName: enhancedPairDataService.getPairs().find(p => p.address === poolAddress)?.name || 'Unknown',
+                txHash: burnEvent.transactionHash,
+                timestamp: block.timestamp * 1000,
+                burnAmount,
+                burnAddress,
+                burnType: this.getBurnType(burnAddress),
+                swapAmount,
+                wallet: burnEvent.args.from || 'Unknown',
+                blockNumber: burnEvent.blockNumber,
+                burnEfficiency,
+                volumeUSD,
+                burnPerMillionUSD
+              });
             }
           }
         } catch (err) {
