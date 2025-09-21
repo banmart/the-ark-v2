@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
 import { useBurnAnalytics, BurnTransaction as BurnAnalyticsTransaction } from '../hooks/useBurnAnalytics';
+import { useEnhancedBurnAnalytics } from '../hooks/useEnhancedBurnAnalytics';
 import { useWalletContext } from '../components/providers/WalletProvider';
 import { useLockerData } from '../hooks/useLockerData';
 import { useContractData } from '../hooks/useContractData';
@@ -125,6 +126,18 @@ const Burn: React.FC = () => {
   const {
     data: contractData
   } = useContractData();
+
+  // Enhanced burn analytics data
+  const {
+    aggregatedData,
+    burnAddressStats,
+    recentActivity,
+    totalBurnAmount,
+    totalVolumeUSD,
+    averageEfficiency,
+    loading: enhancedLoading,
+    error: enhancedError
+  } = useEnhancedBurnAnalytics();
 
   // Convert burn analytics data to our local format
   const convertedBurnHistory: BurnTransaction[] = burnHistory.map(burn => ({
@@ -269,50 +282,6 @@ const Burn: React.FC = () => {
             </div>
           </div>
 
-          {/* Timeframe Stats Banner */}
-          <Card className="bg-black/40 backdrop-blur-sm border border-white/20 mb-8">
-            <CardContent className="p-6">
-              {burnLoading ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="animate-pulse">
-                      <div className="h-4 bg-white/20 rounded mb-2"></div>
-                      <div className="h-8 bg-white/20 rounded"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : burnError ? (
-                <div className="text-center py-4">
-                  <p className="text-white text-sm">Error loading burn data</p>
-                  <button 
-                    onClick={refetchBurnData}
-                    className="mt-2 px-4 py-2 bg-video-cyan/20 text-video-cyan rounded hover:bg-video-cyan/30 transition-colors"
-                  >
-                    Retry
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div>
-                    <p className="text-sm text-white font-medium mb-1">Total Burns</p>
-                    <p className="text-3xl font-bold text-white">{timeframeStats.totalBurns}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-white font-medium mb-1">Amount Burned</p>
-                    <p className="text-3xl font-bold text-white">{formatNumber(timeframeStats.totalAmount)} ARK</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-white font-medium mb-1">Unique Wallets</p>
-                    <p className="text-3xl font-bold text-white">{timeframeStats.uniqueWallets}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-white font-medium mb-1">Avg Burn Size</p>
-                    <p className="text-3xl font-bold text-white">{formatNumber(timeframeStats.avgBurnSize)} ARK</p>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
 
           {/* Enhanced Burn Analytics - Priority Loading */}
           
@@ -320,83 +289,193 @@ const Burn: React.FC = () => {
           {/* Accordion-based sections for better performance */}
           <div className="space-y-6">
             {/* Overview Metrics - Always visible */}
-            <BurnAccordionSection title="Burn Overview" description="Key burn metrics and real-time statistics" icon={<Flame className="w-5 h-5 text-video-red" />} defaultOpen={false}>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-6 mb-6">
-                <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
-                  <CardContent className="p-3 md:p-6">
-                    <div className="flex items-center gap-2 md:gap-3 mb-2">
-                      <Flame className="w-4 h-4 md:w-5 md:h-5 text-video-red animate-pulse" />
-                      <h3 className="text-xs md:text-sm font-medium text-white/80">Total Burned</h3>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-white">
-                        {contractData?.burnedTokens ? formatNumber(parseFloat(contractData.burnedTokens)) : '0'} ARK
-                      </p>
-                      <p className="text-xs text-white/70">
-                        {contractData?.burnedTokens && arkTokenData?.price ? `$${formatNumber(parseFloat(contractData.burnedTokens) * (Number(arkTokenData.price) || 0))}` : '$0'}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+            <BurnAccordionSection title="Burn Overview" description="Comprehensive burn analytics across all addresses" icon={<Flame className="w-5 h-5 text-video-red" />} defaultOpen={false}>
+              {enhancedLoading ? (
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-6 mb-6">
+                  {[...Array(5)].map((_, i) => (
+                    <Card key={i} className="bg-black/30 backdrop-blur-sm border border-white/10">
+                      <CardContent className="p-3 md:p-6">
+                        <div className="animate-pulse">
+                          <div className="h-4 bg-white/20 rounded mb-2"></div>
+                          <div className="h-8 bg-white/20 rounded"></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : enhancedError ? (
+                <div className="text-center py-8">
+                  <p className="text-white text-sm">Error loading enhanced analytics</p>
+                </div>
+              ) : (
+                <>
+                  {/* Enhanced Metrics Cards */}
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-6 mb-6">
+                    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+                      <CardContent className="p-3 md:p-6">
+                        <div className="flex items-center gap-2 md:gap-3 mb-2">
+                          <Flame className="w-4 h-4 md:w-5 md:h-5 text-video-red animate-pulse" />
+                          <h3 className="text-xs md:text-sm font-medium text-white/80">Total Burned</h3>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-lg md:text-2xl font-bold text-white">
+                            {totalBurnAmount ? formatNumber(totalBurnAmount) : '0'} ARK
+                          </p>
+                          <p className="text-xs text-white/70">
+                            {totalVolumeUSD ? `$${formatNumber(totalVolumeUSD)}` : '$0'} volume
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
-                  <CardContent className="p-3 md:p-6">
-                    <div className="flex items-center gap-2 md:gap-3 mb-2">
-                      <Activity className="w-4 h-4 md:w-5 md:h-5 text-video-cyan animate-pulse" />
-                      <h3 className="text-xs md:text-sm font-medium text-white/80">Burn Rate</h3>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-white">
-                        {(timeframeStats.totalBurns / (timeframes.find(t => t.value === selectedTimeframe)?.minutes || 1440) * 60).toFixed(2)}
-                      </p>
-                      <p className="text-xs text-white/70">burns/hour</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+                      <CardContent className="p-3 md:p-6">
+                        <div className="flex items-center gap-2 md:gap-3 mb-2">
+                          <Activity className="w-4 h-4 md:w-5 md:h-5 text-video-cyan animate-pulse" />
+                          <h3 className="text-xs md:text-sm font-medium text-white/80">Burn Efficiency</h3>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-lg md:text-2xl font-bold text-white">
+                            {averageEfficiency ? averageEfficiency.toFixed(2) : '0'}%
+                          </p>
+                          <p className="text-xs text-white/70">avg efficiency</p>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
-                  <CardContent className="p-3 md:p-6">
-                    <div className="flex items-center gap-2 md:gap-3 mb-2">
-                      <Zap className="w-4 h-4 md:w-5 md:h-5 text-video-gold animate-pulse" />
-                      <h3 className="text-xs md:text-sm font-medium text-white/80">Burn Efficiency</h3>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-white">
-                        {timeframeStats.totalAmount > 0 ? (timeframeStats.totalAmount / timeframeStats.totalBurns).toFixed(0) : '0'}
-                      </p>
-                      <p className="text-xs text-white/70">ARK/burn</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+                      <CardContent className="p-3 md:p-6">
+                        <div className="flex items-center gap-2 md:gap-3 mb-2">
+                          <Zap className="w-4 h-4 md:w-5 md:h-5 text-video-gold animate-pulse" />
+                          <h3 className="text-xs md:text-sm font-medium text-white/80">Dead Address</h3>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-lg md:text-2xl font-bold text-white">
+                            {burnAddressStats?.totalDeadBurns ? formatNumber(burnAddressStats.totalDeadBurns) : '0'}
+                          </p>
+                          <p className="text-xs text-white/70">0x...dEaD</p>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
-                  <CardContent className="p-3 md:p-6">
-                    <div className="flex items-center gap-2 md:gap-3 mb-2">
-                      <Users className="w-4 h-4 md:w-5 md:h-5 text-video-purple animate-pulse" />
-                      <h3 className="text-xs md:text-sm font-medium text-white/80">Active Burners</h3>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-white">{timeframeStats.uniqueWallets}</p>
-                      <p className="text-xs text-white/70">wallets</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+                      <CardContent className="p-3 md:p-6">
+                        <div className="flex items-center gap-2 md:gap-3 mb-2">
+                          <Users className="w-4 h-4 md:w-5 md:h-5 text-video-purple animate-pulse" />
+                          <h3 className="text-xs md:text-sm font-medium text-white/80">Burn Address</h3>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-lg md:text-2xl font-bold text-white">
+                            {burnAddressStats?.totalBurnAddressBurns ? formatNumber(burnAddressStats.totalBurnAddressBurns) : '0'}
+                          </p>
+                          <p className="text-xs text-white/70">0x...369</p>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
-                  <CardContent className="p-3 md:p-6">
-                    <div className="flex items-center gap-2 md:gap-3 mb-2">
-                      <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-video-green animate-pulse" />
-                      <h3 className="text-xs md:text-sm font-medium text-white/80">Supply Burned</h3>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-foreground">
-                        {contractData?.burnedTokens && arkTokenData?.totalSupply ? (parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1) * 100).toFixed(3) : '0'}%
-                      </p>
-                      <p className="text-xs text-foreground/70">of total supply</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+                      <CardContent className="p-3 md:p-6">
+                        <div className="flex items-center gap-2 md:gap-3 mb-2">
+                          <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-video-green animate-pulse" />
+                          <h3 className="text-xs md:text-sm font-medium text-white/80">Penalty Burns</h3>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-lg md:text-2xl font-bold text-white">
+                            {burnAddressStats?.totalPenaltyBurns ? formatNumber(burnAddressStats.totalPenaltyBurns) : '0'}
+                          </p>
+                          <p className="text-xs text-white/70">early unlock</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Burn Address Distribution */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+                      <CardHeader>
+                        <CardTitle className="text-lg font-semibold text-video-cyan">Burn Address Distribution</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-white/5">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-video-red rounded-full"></div>
+                              <span className="text-sm text-white/80">Dead Address (0x...dEaD)</span>
+                            </div>
+                            <span className="text-sm font-bold text-white">
+                              {burnAddressStats?.totalDeadBurns ? formatNumber(burnAddressStats.totalDeadBurns) : '0'}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-white/5">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-video-gold rounded-full"></div>
+                              <span className="text-sm text-white/80">Burn Address (0x...369)</span>
+                            </div>
+                            <span className="text-sm font-bold text-white">
+                              {burnAddressStats?.totalBurnAddressBurns ? formatNumber(burnAddressStats.totalBurnAddressBurns) : '0'}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-white/5">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-video-purple rounded-full"></div>
+                              <span className="text-sm text-white/80">Penalty Burns</span>
+                            </div>
+                            <span className="text-sm font-bold text-white">
+                              {burnAddressStats?.totalPenaltyBurns ? formatNumber(burnAddressStats.totalPenaltyBurns) : '0'}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-white/5">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-video-cyan rounded-full"></div>
+                              <span className="text-sm text-white/80">Null Burns</span>
+                            </div>
+                            <span className="text-sm font-bold text-white">
+                              {burnAddressStats?.totalNullBurns ? formatNumber(burnAddressStats.totalNullBurns) : '0'}
+                            </span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
+                      <CardHeader>
+                        <CardTitle className="text-lg font-semibold text-video-cyan">Recent Activity Timeline</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="bg-black/20 rounded-lg p-3 max-h-96 overflow-y-auto border border-white/5">
+                          <div className="space-y-3">
+                            {recentActivity && recentActivity.length > 0 ? (
+                              recentActivity.slice(0, 10).map((activity, index) => (
+                                <div key={index} className="flex items-start gap-3 p-2 bg-white/5 rounded-lg border border-white/10">
+                                  <div className="w-2 h-2 bg-video-cyan rounded-full mt-2 animate-pulse flex-shrink-0" />
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-white/90">
+                                      {formatNumber(activity.burnAmount)} ARK → {activity.burnType}
+                                    </p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                      <span className="text-xs text-white/60">
+                                        {new Date(activity.timestamp).toLocaleTimeString()}
+                                      </span>
+                                      <Badge variant="outline" className="text-xs">
+                                        {activity.burnType}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="text-center py-6">
+                                <Activity className="w-8 h-8 text-white/40 mx-auto mb-2" />
+                                <p className="text-white/60">No recent activity</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </>
+              )}
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
