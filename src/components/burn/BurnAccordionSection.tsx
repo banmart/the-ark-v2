@@ -50,17 +50,17 @@ export const BurnAccordionSection: React.FC<BurnAccordionSectionProps> = ({
               <div className="flex items-center gap-3">
                 {icon}
                 <div>
-                  <CardTitle className="text-lg font-semibold text-video-cyan flex items-center gap-2">
+                  <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
                     {title}
                   </CardTitle>
                   {description && (
-                    <p className="text-sm text-white/60 mt-1">{description}</p>
+                    <p className="text-base font-medium text-white/80 mt-1">{description}</p>
                   )}
                 </div>
               </div>
               <ChevronDown 
                 className={cn(
-                  "h-5 w-5 text-white/60 transition-transform duration-200",
+                  "h-6 w-6 text-white transition-transform duration-200",
                   isOpen && "rotate-180"
                 )}
               />
