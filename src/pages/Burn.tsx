@@ -270,26 +270,47 @@ const Burn: React.FC = () => {
           </div>
 
           {/* Timeframe Stats Banner */}
-          <Card className="bg-black/30 backdrop-blur-sm border border-white/10 mb-8">
+          <Card className="bg-black/40 backdrop-blur-sm border border-white/20 mb-8">
             <CardContent className="p-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                <div>
-                  <p className="text-sm text-white/60 mb-1">Total Burns</p>
-                  <p className="text-2xl font-bold text-video-cyan">{timeframeStats.totalBurns}</p>
+              {burnLoading ? (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-4 bg-white/20 rounded mb-2"></div>
+                      <div className="h-8 bg-white/20 rounded"></div>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <p className="text-sm text-white/60 mb-1">Amount Burned</p>
-                  <p className="text-2xl font-bold text-video-red">{formatNumber(timeframeStats.totalAmount)} ARK</p>
+              ) : burnError ? (
+                <div className="text-center py-4">
+                  <p className="text-white text-sm">Error loading burn data</p>
+                  <button 
+                    onClick={refetchBurnData}
+                    className="mt-2 px-4 py-2 bg-video-cyan/20 text-video-cyan rounded hover:bg-video-cyan/30 transition-colors"
+                  >
+                    Retry
+                  </button>
                 </div>
-                <div>
-                  <p className="text-sm text-white/60 mb-1">Unique Wallets</p>
-                  <p className="text-2xl font-bold text-video-purple">{timeframeStats.uniqueWallets}</p>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div>
+                    <p className="text-sm text-white font-medium mb-1">Total Burns</p>
+                    <p className="text-3xl font-bold text-white">{timeframeStats.totalBurns}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-white font-medium mb-1">Amount Burned</p>
+                    <p className="text-3xl font-bold text-white">{formatNumber(timeframeStats.totalAmount)} ARK</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-white font-medium mb-1">Unique Wallets</p>
+                    <p className="text-3xl font-bold text-white">{timeframeStats.uniqueWallets}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-white font-medium mb-1">Avg Burn Size</p>
+                    <p className="text-3xl font-bold text-white">{formatNumber(timeframeStats.avgBurnSize)} ARK</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-white/60 mb-1">Avg Burn Size</p>
-                  <p className="text-2xl font-bold text-video-gold">{formatNumber(timeframeStats.avgBurnSize)} ARK</p>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
