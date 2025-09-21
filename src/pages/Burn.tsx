@@ -320,7 +320,7 @@ const Burn: React.FC = () => {
           {/* Accordion-based sections for better performance */}
           <div className="space-y-6">
             {/* Overview Metrics - Always visible */}
-            <BurnAccordionSection title="Burn Overview" description="Key burn metrics and real-time statistics" icon={<Flame className="w-5 h-5 text-video-red" />} defaultOpen={true}>
+            <BurnAccordionSection title="Burn Overview" description="Key burn metrics and real-time statistics" icon={<Flame className="w-5 h-5 text-video-red" />} defaultOpen={false}>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-6 mb-6">
                 <Card className="bg-black/30 backdrop-blur-sm border border-white/10">
                   <CardContent className="p-3 md:p-6">
@@ -329,10 +329,10 @@ const Burn: React.FC = () => {
                       <h3 className="text-xs md:text-sm font-medium text-white/80">Total Burned</h3>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-video-red">
+                      <p className="text-lg md:text-2xl font-bold text-foreground">
                         {contractData?.burnedTokens ? formatNumber(parseFloat(contractData.burnedTokens)) : '0'} ARK
                       </p>
-                      <p className="text-xs text-white/60">
+                      <p className="text-xs text-foreground/70">
                         {contractData?.burnedTokens && arkTokenData?.price ? `$${formatNumber(parseFloat(contractData.burnedTokens) * (Number(arkTokenData.price) || 0))}` : '$0'}
                       </p>
                     </div>
@@ -346,10 +346,10 @@ const Burn: React.FC = () => {
                       <h3 className="text-xs md:text-sm font-medium text-white/80">Burn Rate</h3>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-video-cyan">
+                      <p className="text-lg md:text-2xl font-bold text-foreground">
                         {(timeframeStats.totalBurns / (timeframes.find(t => t.value === selectedTimeframe)?.minutes || 1440) * 60).toFixed(2)}
                       </p>
-                      <p className="text-xs text-white/60">burns/hour</p>
+                      <p className="text-xs text-foreground/70">burns/hour</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -361,10 +361,10 @@ const Burn: React.FC = () => {
                       <h3 className="text-xs md:text-sm font-medium text-white/80">Burn Efficiency</h3>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-video-gold">
+                      <p className="text-lg md:text-2xl font-bold text-foreground">
                         {timeframeStats.totalAmount > 0 ? (timeframeStats.totalAmount / timeframeStats.totalBurns).toFixed(0) : '0'}
                       </p>
-                      <p className="text-xs text-white/60">ARK/burn</p>
+                      <p className="text-xs text-foreground/70">ARK/burn</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -376,8 +376,8 @@ const Burn: React.FC = () => {
                       <h3 className="text-xs md:text-sm font-medium text-white/80">Active Burners</h3>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-video-purple">{timeframeStats.uniqueWallets}</p>
-                      <p className="text-xs text-white/60">wallets</p>
+                      <p className="text-lg md:text-2xl font-bold text-foreground">{timeframeStats.uniqueWallets}</p>
+                      <p className="text-xs text-foreground/70">wallets</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -389,10 +389,10 @@ const Burn: React.FC = () => {
                       <h3 className="text-xs md:text-sm font-medium text-white/80">Supply Burned</h3>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-video-green">
+                      <p className="text-lg md:text-2xl font-bold text-foreground">
                         {contractData?.burnedTokens && arkTokenData?.totalSupply ? (parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1) * 100).toFixed(3) : '0'}%
                       </p>
-                      <p className="text-xs text-white/60">of total supply</p>
+                      <p className="text-xs text-foreground/70">of total supply</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -438,7 +438,7 @@ const Burn: React.FC = () => {
 
             {/* Protocol Analytics */}
             <BurnAccordionSection title="Advanced Analytics" description="Burn rate charts, efficiency metrics, and projections" icon={<Target className="w-5 h-5 text-video-gold" />}>
-              <LazyBurnProtocolAnalytics />
+              <LazyEnhancedBurnDashboard />
             </BurnAccordionSection>
 
 
