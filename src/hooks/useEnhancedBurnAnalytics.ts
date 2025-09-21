@@ -144,7 +144,8 @@ export const useEnhancedBurnAnalytics = () => {
   const burnAddressStats = aggregatedData?.burnAddressBreakdown || {
     totalNullBurns: 0,
     totalDeadBurns: 0,
-    totalBurnAddressBurns: 0
+    totalBurnAddressBurns: 0,
+    totalPenaltyBurns: 0
   };
 
   const topPerformers = aggregatedData?.topPerformers || {

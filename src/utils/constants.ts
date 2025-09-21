@@ -91,7 +91,7 @@ export const LOCKER_VAULT_ABI = [
   'event RewardsDistributed(uint256 totalRewards, uint256 totalRecipients)',
   'event RewardsClaimed(address indexed user, uint256 amount)',
   'event LockExtended(address indexed user, uint256 lockId, uint256 newUnlockTime)',
-  'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount)',
+  'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount, uint256 burnedAmount)',
 ];
 
 // Locker vault contract address - UPDATED TO LIVE ADDRESS

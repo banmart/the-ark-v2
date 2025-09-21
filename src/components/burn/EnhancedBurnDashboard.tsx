@@ -29,7 +29,7 @@ const formatUSD = (num: number): string => {
 };
 
 const BurnAddressBreakdown: React.FC<{ data: any }> = ({ data }) => {
-  const total = data.totalNullBurns + data.totalDeadBurns + data.totalBurnAddressBurns;
+  const total = data.totalNullBurns + data.totalDeadBurns + data.totalBurnAddressBurns + data.totalPenaltyBurns;
   
   if (total === 0) {
     return (
@@ -87,6 +87,17 @@ const BurnAddressBreakdown: React.FC<{ data: any }> = ({ data }) => {
             <Progress value={(data.totalBurnAddressBurns / total) * 100} className="h-2 bg-gray-700" />
             <p className="text-xs text-white/70 mt-1">
               {((data.totalBurnAddressBurns / total) * 100).toFixed(1)}% of total burns
+            </p>
+          </div>
+          
+          <div>
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-white/90">Penalty Burns (Locker)</span>
+              <span className="text-white font-bold">{formatNumber(data.totalPenaltyBurns)} ARK</span>
+            </div>
+            <Progress value={(data.totalPenaltyBurns / total) * 100} className="h-2 bg-gray-700" />
+            <p className="text-xs text-white/70 mt-1">
+              {((data.totalPenaltyBurns / total) * 100).toFixed(1)}% of total burns
             </p>
           </div>
         </div>
@@ -324,12 +335,13 @@ const EnhancedBurnDashboard: React.FC = () => {
                         <Badge 
                           variant="outline" 
                           className={`text-xs ${
+                            event.burnType === 'penalty' ? 'border-yellow-400 text-yellow-400' :
                             event.burnType === 'burn' ? 'border-orange-400 text-orange-400' :
                             event.burnType === 'dead' ? 'border-red-400 text-red-400' :
                             'border-gray-400 text-gray-400'
                           }`}
                         >
-                          {event.burnType}
+                          {event.burnType === 'penalty' ? 'penalty' : event.burnType}
                         </Badge>
                         <p className="text-xs text-gray-400 mt-1">
                           {new Date(event.timestamp).toLocaleTimeString()}
@@ -420,6 +432,12 @@ const EnhancedBurnDashboard: React.FC = () => {
                       {formatNumber(burnAddressStats.totalNullBurns)}
                     </p>
                     <p className="text-sm text-white/70">Null Address (0x000...000)</p>
+                  </div>
+                  <div className="text-center p-4 bg-white/5 rounded">
+                    <p className="text-3xl font-bold text-white">
+                      {formatNumber(burnAddressStats.totalPenaltyBurns)}
+                    </p>
+                    <p className="text-sm text-white/70">Penalty Burns (Locker)</p>
                   </div>
                 </div>
               </CardContent>

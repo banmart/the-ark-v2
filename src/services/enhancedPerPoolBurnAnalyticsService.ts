@@ -10,13 +10,14 @@ export interface EnhancedPoolBurnEvent {
   timestamp: number;
   burnAmount: number;
   burnAddress: string;
-  burnType: 'null' | 'dead' | 'burn';
+  burnType: 'null' | 'dead' | 'burn' | 'penalty';
   swapAmount: number;
   wallet: string;
   blockNumber: number;
   burnEfficiency: number;
   volumeUSD: number;
   burnPerMillionUSD: number;
+  penaltySource?: 'early_unlock' | 'regular_burn';
 }
 
 export interface EnhancedPoolBurnMetrics {
@@ -36,6 +37,7 @@ export interface EnhancedPoolBurnMetrics {
     nullAddress: number;
     deadAddress: number;
     burnAddress: number;
+    penaltyBurns: number;
   };
   trends: {
     hourlyChange: number;
@@ -61,6 +63,7 @@ export interface EnhancedAggregatedBurnData {
     totalNullBurns: number;
     totalDeadBurns: number;
     totalBurnAddressBurns: number;
+    totalPenaltyBurns: number;
   };
   topPerformers: {
     byEfficiency: EnhancedPoolBurnMetrics[];
@@ -85,8 +88,10 @@ export interface CSVExportData {
 export class EnhancedPerPoolBurnAnalyticsService {
   private provider: ethers.JsonRpcProvider;
   private arkContract: ethers.Contract;
+  private lockerContract: ethers.Contract;
   private burnEventsCache: Map<string, EnhancedPoolBurnEvent[]> = new Map();
   private metricsCache: Map<string, EnhancedPoolBurnMetrics> = new Map();
+  private penaltyEventsCache: Map<string, any[]> = new Map();
   private lastUpdateTime: number = 0;
   
   // Enhanced burn addresses monitoring
@@ -108,9 +113,19 @@ export class EnhancedPerPoolBurnAnalyticsService {
       'function decimals() view returns (uint8)'
     ];
     
+    const lockerABI = [
+      'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount, uint256 burnedAmount)'
+    ];
+    
     this.arkContract = new ethers.Contract(
       CONTRACT_ADDRESSES.ARK_TOKEN, 
       arkABI, 
+      this.provider
+    );
+
+    this.lockerContract = new ethers.Contract(
+      CONTRACT_ADDRESSES.LOCKER,
+      lockerABI,
       this.provider
     );
   }
@@ -179,6 +194,9 @@ export class EnhancedPerPoolBurnAnalyticsService {
           .reduce((sum, burn) => sum + burn.burnAmount, 0),
         burnAddress: recent24hBurns
           .filter(b => b.burnType === 'burn')
+          .reduce((sum, burn) => sum + burn.burnAmount, 0),
+        penaltyBurns: recent24hBurns
+          .filter(b => b.burnType === 'penalty')
           .reduce((sum, burn) => sum + burn.burnAmount, 0)
       };
 
@@ -249,6 +267,9 @@ export class EnhancedPerPoolBurnAnalyticsService {
       const currentBlock = await this.provider.getBlockNumber();
       const fromBlock = Math.max(0, currentBlock - this.HISTORICAL_BLOCKS);
       
+      // Get penalty events for correlation
+      const penaltyEvents = await this.getPenaltyEvents(fromBlock, currentBlock);
+      
       // Query burns to all three addresses
       const burnAddresses = Object.values(this.BURN_ADDRESSES);
       
@@ -290,13 +311,14 @@ export class EnhancedPerPoolBurnAnalyticsService {
                 timestamp: block.timestamp * 1000,
                 burnAmount,
                 burnAddress,
-                burnType: this.getBurnType(burnAddress),
+                burnType: this.getBurnType(burnAddress, burnEvent.transactionHash, penaltyEvents),
                 swapAmount,
                 wallet: burnEvent.args.from || 'Unknown',
                 blockNumber: burnEvent.blockNumber,
                 burnEfficiency,
                 volumeUSD,
-                burnPerMillionUSD
+                burnPerMillionUSD,
+                penaltySource: this.getPenaltySource(burnEvent.transactionHash, penaltyEvents)
               });
             }
           }
@@ -316,7 +338,14 @@ export class EnhancedPerPoolBurnAnalyticsService {
     }
   }
 
-  private getBurnType(burnAddress: string): 'null' | 'dead' | 'burn' {
+  private getBurnType(burnAddress: string, txHash: string, penaltyEvents: any[]): 'null' | 'dead' | 'burn' | 'penalty' {
+    // Check if this burn is related to a penalty event
+    const isPenaltyBurn = penaltyEvents.some(event => event.txHash === txHash);
+    
+    if (isPenaltyBurn) {
+      return 'penalty';
+    }
+    
     switch (burnAddress.toLowerCase()) {
       case this.BURN_ADDRESSES.NULL_ADDRESS:
         return 'null';
@@ -326,6 +355,40 @@ export class EnhancedPerPoolBurnAnalyticsService {
         return 'burn';
       default:
         return 'burn';
+    }
+  }
+
+  private getPenaltySource(txHash: string, penaltyEvents: any[]): 'early_unlock' | 'regular_burn' | undefined {
+    const penaltyEvent = penaltyEvents.find(event => event.txHash === txHash);
+    return penaltyEvent ? 'early_unlock' : undefined;
+  }
+
+  private async getPenaltyEvents(fromBlock: number, toBlock: number): Promise<any[]> {
+    try {
+      const cacheKey = `${fromBlock}-${toBlock}`;
+      const cached = this.penaltyEventsCache.get(cacheKey);
+      if (cached) return cached;
+
+      const penaltyFilter = this.lockerContract.filters.EarlyUnlockPenalty();
+      const events = await this.lockerContract.queryFilter(penaltyFilter, fromBlock, toBlock);
+      
+      const formattedEvents = events.map(event => {
+        const eventLog = event as ethers.EventLog;
+        return {
+          txHash: event.transactionHash,
+          blockNumber: event.blockNumber,
+          user: eventLog.args?.[0],
+          lockId: eventLog.args?.[1],
+          penaltyAmount: eventLog.args?.[2] ? parseFloat(ethers.formatEther(eventLog.args[2])) : 0,
+          burnedAmount: eventLog.args?.[3] ? parseFloat(ethers.formatEther(eventLog.args[3])) : 0
+        };
+      });
+
+      this.penaltyEventsCache.set(cacheKey, formattedEvents);
+      return formattedEvents;
+    } catch (error) {
+      console.error('Error fetching penalty events:', error);
+      return [];
     }
   }
 
@@ -367,7 +430,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
       const burnAddressBreakdown = {
         totalNullBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.nullAddress, 0),
         totalDeadBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.deadAddress, 0),
-        totalBurnAddressBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.burnAddress, 0)
+        totalBurnAddressBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.burnAddress, 0),
+        totalPenaltyBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.penaltyBurns, 0)
       };
 
       // Top performers
@@ -446,7 +510,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
       burnBreakdown: {
         nullAddress: 0,
         deadAddress: 0,
-        burnAddress: 0
+        burnAddress: 0,
+        penaltyBurns: 0
       },
       trends: {
         hourlyChange: 0,
@@ -473,7 +538,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
       burnAddressBreakdown: {
         totalNullBurns: 0,
         totalDeadBurns: 0,
-        totalBurnAddressBurns: 0
+        totalBurnAddressBurns: 0,
+        totalPenaltyBurns: 0
       },
       topPerformers: {
         byEfficiency: [],
@@ -486,6 +552,7 @@ export class EnhancedPerPoolBurnAnalyticsService {
   clearCache(): void {
     this.burnEventsCache.clear();
     this.metricsCache.clear();
+    this.penaltyEventsCache.clear();
     this.lastUpdateTime = 0;
   }
 
