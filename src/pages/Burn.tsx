@@ -398,10 +398,10 @@ const Burn: React.FC = () => {
                       <h3 className="text-xs md:text-sm font-medium text-white/80">Supply Burned</h3>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-lg md:text-2xl font-bold text-foreground">
+                      <p className="text-lg md:text-2xl font-bold text-white">
                         {contractData?.burnedTokens && arkTokenData?.totalSupply ? (parseFloat(contractData.burnedTokens) / Number(arkTokenData.totalSupply || 1) * 100).toFixed(3) : '0'}%
                       </p>
-                      <p className="text-xs text-foreground/70">of total supply</p>
+                      <p className="text-xs text-white/70">of total supply</p>
                     </div>
                   </CardContent>
                 </Card>

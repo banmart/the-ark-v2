@@ -47,7 +47,7 @@ const PoolBurnCard: React.FC<PoolBurnCardProps> = ({ pool, onClick, isSelected =
               text-xs border-0
               ${pool.burnCount24h > 0 
                 ? 'bg-green-500/20 text-green-400' 
-                : 'bg-gray-500/20 text-gray-400'
+                : 'bg-gray-500/20 text-white/70'
               }
             `}
           >

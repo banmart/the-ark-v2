@@ -94,7 +94,7 @@ export const LiveDataCard: React.FC<LiveDataCardProps> = ({
                     <span className={`text-xs ${
                       trend.direction === 'up' ? 'text-green-400' :
                       trend.direction === 'down' ? 'text-red-400' :
-                      'text-gray-400'
+                      'text-white/70'
                     }`}>
                       {trend.direction === 'up' ? '↗' : 
                        trend.direction === 'down' ? '↘' : '→'} {trend.value}
