@@ -10,7 +10,7 @@ export interface EnhancedPoolBurnEvent {
   timestamp: number;
   burnAmount: number;
   burnAddress: string;
-  burnType: 'null' | 'dead' | 'burn' | 'penalty';
+  burnType: 'burn' | 'penalty';
   swapAmount: number;
   wallet: string;
   blockNumber: number;
@@ -35,8 +35,6 @@ export interface EnhancedPoolBurnMetrics {
   topBurner?: string;
   volumeAnalytics: VolumeAnalytics;
   burnBreakdown: {
-    nullAddress: number;
-    deadAddress: number;
     burnAddress: number;
     penaltyBurns: number;
   };
@@ -61,8 +59,6 @@ export interface EnhancedAggregatedBurnData {
   recentBurnEvents: EnhancedPoolBurnEvent[];
   poolComparison: EnhancedPoolBurnMetrics[];
   burnAddressBreakdown: {
-    totalNullBurns: number;
-    totalDeadBurns: number;
     totalBurnAddressBurns: number;
     totalPenaltyBurns: number;
   };
@@ -95,12 +91,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
   private penaltyEventsCache: Map<string, any[]> = new Map();
   private lastUpdateTime: number = 0;
   
-  // Enhanced burn addresses monitoring
-  private readonly BURN_ADDRESSES = {
-    NULL_ADDRESS: CONTRACT_ADDRESSES.BURN_ADDRESSES.NULL_ADDRESS.toLowerCase(),
-    DEAD_ADDRESS: CONTRACT_ADDRESSES.BURN_ADDRESSES.DEAD_ADDRESS.toLowerCase(),
-    BURN_ADDRESS: CONTRACT_ADDRESSES.BURN_ADDRESSES.BURN_ADDRESS.toLowerCase()
-  };
+  // Only monitoring the 369 burn address
+  private readonly BURN_ADDRESS = CONTRACT_ADDRESSES.BURN_ADDRESSES.BURN_ADDRESS.toLowerCase();
   
   private readonly CACHE_DURATION = 45000; // 45 seconds for more frequent updates
   private readonly HISTORICAL_BLOCKS = 200000; // Expanded to 200k blocks for comprehensive history
@@ -211,14 +203,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
       const burnPerMillionUSD = totalVolumeUSD24h > 0 ? 
         enhancedVolumeEstimatorService.calculateBurnPerMillionUSD(totalBurned24h, totalVolumeUSD24h) : 0;
       
-      // Burn breakdown by address type
+      // Burn breakdown by type (only 369 address)
       const burnBreakdown = {
-        nullAddress: recent24hBurns
-          .filter(b => b.burnType === 'null')
-          .reduce((sum, burn) => sum + burn.burnAmount, 0),
-        deadAddress: recent24hBurns
-          .filter(b => b.burnType === 'dead')
-          .reduce((sum, burn) => sum + burn.burnAmount, 0),
         burnAddress: recent24hBurns
           .filter(b => b.burnType === 'burn')
           .reduce((sum, burn) => sum + burn.burnAmount, 0),
@@ -297,15 +283,12 @@ export class EnhancedPerPoolBurnAnalyticsService {
       // Get penalty events for correlation
       const penaltyEvents = await this.getPenaltyEvents(fromBlock, currentBlock);
       
-      // Query burns to all three addresses
-      const burnAddresses = Object.values(this.BURN_ADDRESSES);
-      
-      for (const burnAddress of burnAddresses) {
-        try {
-          const transferFilter = this.arkContract.filters.Transfer(null, burnAddress);
-          const burnEvents = await this.arkContract.queryFilter(transferFilter, fromBlock, 'latest');
-          
-          for (const burnEvent of burnEvents) {
+      // Query burns only to the 369 address
+      try {
+        const transferFilter = this.arkContract.filters.Transfer(null, this.BURN_ADDRESS);
+        const burnEvents = await this.arkContract.queryFilter(transferFilter, fromBlock, 'latest');
+        
+        for (const burnEvent of burnEvents) {
             if ('args' in burnEvent && burnEvent.args && burnEvent.blockNumber) {
               const burnAmount = parseFloat(ethers.formatEther(burnEvent.args.value || '0'));
               if (burnAmount <= 0) continue;
@@ -337,8 +320,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
                 txHash: burnEvent.transactionHash,
                 timestamp: block.timestamp * 1000,
                 burnAmount,
-                burnAddress,
-                burnType: this.getBurnType(burnAddress, burnEvent.transactionHash, penaltyEvents),
+                burnAddress: this.BURN_ADDRESS,
+                burnType: this.getBurnType(burnEvent.transactionHash, penaltyEvents),
                 swapAmount,
                 wallet: burnEvent.args.from || 'Unknown',
                 blockNumber: burnEvent.blockNumber,
@@ -346,13 +329,12 @@ export class EnhancedPerPoolBurnAnalyticsService {
                 volumeUSD,
                 burnPerMillionUSD,
                 penaltySource: this.getPenaltySource(burnEvent.transactionHash, penaltyEvents),
-                burnAddressType: this.getBurnAddressType(burnAddress)
+                burnAddressType: '369'
               });
             }
           }
-        } catch (err) {
-          console.error(`Error querying burns for address ${burnAddress}:`, err);
-        }
+      } catch (err) {
+        console.error(`Error querying burns for address ${this.BURN_ADDRESS}:`, err);
       }
       
       const sortedBurns = correlatedBurns.sort((a, b) => b.timestamp - a.timestamp);
@@ -366,7 +348,7 @@ export class EnhancedPerPoolBurnAnalyticsService {
     }
   }
 
-  private getBurnType(burnAddress: string, txHash: string, penaltyEvents: any[]): 'null' | 'dead' | 'burn' | 'penalty' {
+  private getBurnType(txHash: string, penaltyEvents: any[]): 'burn' | 'penalty' {
     // Check if this burn is related to a penalty event
     const isPenaltyBurn = penaltyEvents.some(event => event.txHash === txHash);
     
@@ -374,16 +356,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
       return 'penalty';
     }
     
-    switch (burnAddress.toLowerCase()) {
-      case this.BURN_ADDRESSES.NULL_ADDRESS:
-        return 'null';
-      case this.BURN_ADDRESSES.DEAD_ADDRESS:
-        return 'dead';
-      case this.BURN_ADDRESSES.BURN_ADDRESS:
-        return 'burn';
-      default:
-        return 'burn';
-    }
+    // All burns to 369 address are regular burns unless they're penalties
+    return 'burn';
   }
 
   private getPenaltySource(txHash: string, penaltyEvents: any[]): 'early_unlock' | 'regular_burn' | undefined {
@@ -454,10 +428,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
       const overallBurnPerMillionUSD = totalVolumeUSD > 0 ? 
         enhancedVolumeEstimatorService.calculateBurnPerMillionUSD(totalBurnedAllPools, totalVolumeUSD) : 0;
       
-      // Burn address breakdown
+      // Burn address breakdown (only 369 address)
       const burnAddressBreakdown = {
-        totalNullBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.nullAddress, 0),
-        totalDeadBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.deadAddress, 0),
         totalBurnAddressBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.burnAddress, 0),
         totalPenaltyBurns: poolMetrics.reduce((sum, pool) => sum + pool.burnBreakdown.penaltyBurns, 0)
       };
@@ -542,8 +514,6 @@ export class EnhancedPerPoolBurnAnalyticsService {
       burnPerMillionUSD: 0,
       volumeAnalytics: enhancedVolumeEstimatorService['getEmptyAnalytics'](),
       burnBreakdown: {
-        nullAddress: 0,
-        deadAddress: 0,
         burnAddress: 0,
         penaltyBurns: 0
       },
@@ -570,8 +540,6 @@ export class EnhancedPerPoolBurnAnalyticsService {
       recentBurnEvents: [],
       poolComparison: [],
       burnAddressBreakdown: {
-        totalNullBurns: 0,
-        totalDeadBurns: 0,
         totalBurnAddressBurns: 0,
         totalPenaltyBurns: 0
       },
@@ -584,12 +552,8 @@ export class EnhancedPerPoolBurnAnalyticsService {
   }
 
   private getBurnAddressType(burnAddress: string): string {
-    if (burnAddress.toLowerCase() === this.BURN_ADDRESSES.NULL_ADDRESS.toLowerCase()) {
-      return 'Null Address';
-    } else if (burnAddress.toLowerCase() === this.BURN_ADDRESSES.DEAD_ADDRESS.toLowerCase()) {
-      return 'Dead Address';
-    } else if (burnAddress.toLowerCase() === this.BURN_ADDRESSES.BURN_ADDRESS.toLowerCase()) {
-      return 'Burn Address';
+    if (burnAddress.toLowerCase() === this.BURN_ADDRESS.toLowerCase()) {
+      return '369 Burn Address';
     }
     return 'Unknown';
   }

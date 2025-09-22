@@ -481,19 +481,7 @@ const EnhancedBurnDashboard: React.FC = () => {
                     <p className="text-3xl font-bold text-white">
                       {formatNumber(burnAddressStats.totalBurnAddressBurns)}
                     </p>
-                    <p className="text-sm text-white/70">Burn Address (0x000...369)</p>
-                  </div>
-                  <div className="text-center p-4 bg-white/5 rounded">
-                    <p className="text-3xl font-bold text-white">
-                      {formatNumber(burnAddressStats.totalDeadBurns)}
-                    </p>
-                    <p className="text-sm text-white/70">Dead Address (0x000...dEaD)</p>
-                  </div>
-                  <div className="text-center p-4 bg-white/5 rounded">
-                    <p className="text-3xl font-bold text-white">
-                      {formatNumber(burnAddressStats.totalNullBurns)}
-                    </p>
-                    <p className="text-sm text-white/70">Null Address (0x000...000)</p>
+                    <p className="text-sm text-white/70">Regular Burns (0x000...369)</p>
                   </div>
                   <div className="text-center p-4 bg-white/5 rounded">
                     <p className="text-3xl font-bold text-white">
