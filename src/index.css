@@ -4,3 +4,7 @@
 @import './styles/design-system.css';
 @import './styles/typography.css';
 @import './styles/animations.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

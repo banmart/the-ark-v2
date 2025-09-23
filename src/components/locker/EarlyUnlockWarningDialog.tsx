@@ -49,7 +49,7 @@ const EarlyUnlockWarningDialog = ({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-md mx-auto">
+      <AlertDialogContent className="max-w-md mx-auto bg-white text-gray-900">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-xl">
             {hasPenalty ? (
@@ -75,17 +75,17 @@ const EarlyUnlockWarningDialog = ({
 
         <div className="space-y-4">
           {/* Lock Details */}
-          <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+          <div className="bg-gray-100 rounded-lg p-4 space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Lock Amount</span>
-              <span className="font-semibold">{lock.amount.toLocaleString()} ARK</span>
+              <span className="text-sm text-gray-600">Lock Amount</span>
+              <span className="font-semibold text-gray-900">{lock.amount.toLocaleString()} ARK</span>
             </div>
             
             {hasPenalty && (
               <>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Time Remaining</span>
-                  <span className="font-semibold flex items-center gap-1">
+                  <span className="text-sm text-gray-600">Time Remaining</span>
+                  <span className="font-semibold flex items-center gap-1 text-gray-900">
                     <Clock className="w-4 h-4" />
                     {lock.daysRemaining} days
                   </span>
@@ -135,7 +135,7 @@ const EarlyUnlockWarningDialog = ({
 
           {/* Confirmation Checkbox for Penalty */}
           {hasPenalty && (
-            <div className="flex items-start space-x-2 p-4 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800">
+            <div className="flex items-start space-x-2 p-4 bg-red-50 rounded-lg border border-red-200">
               <Checkbox
                 id="penalty-confirmation"
                 checked={confirmationChecked}
@@ -144,7 +144,7 @@ const EarlyUnlockWarningDialog = ({
               />
               <label
                 htmlFor="penalty-confirmation"
-                className="text-sm text-red-700 dark:text-red-300 leading-relaxed cursor-pointer"
+                className="text-sm text-red-700 leading-relaxed cursor-pointer"
               >
                 I understand that I will lose <strong>{penalty.penalty.toFixed(0)} ARK</strong> ({penalty.penaltyRate.toFixed(1)}%) by unlocking early and I want to proceed anyway.
               </label>

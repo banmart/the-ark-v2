@@ -1,6 +1,4 @@
 /* Custom Animations and Effects */
-
-@layer utilities {
   /* Animated Grid Pattern with video colors */
   .pulse-grid {
     position: absolute;
@@ -300,7 +298,6 @@
   .hero-bg-animated {
     animation: heroBackgroundFadeIn 2.5s ease-out;
   }
-}
 
 /* Keyframes */
 @keyframes grid-move {
