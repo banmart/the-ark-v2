@@ -29,13 +29,13 @@ const TransactionImpactChart = ({ burnHistory, burnProjections }: TransactionImp
       return (
         <div className="glass-card p-4 rounded-lg border border-video-cyan/20">
           <p className="text-video-cyan font-semibold">Transaction Impact</p>
-          <p className="text-white">
+          <p className="text-foreground">
             Volume: ${(data.volume * 1000000).toLocaleString()}
           </p>
-          <p className="text-white">
+          <p className="text-foreground">
             Burned: {(data.burnAmount * 1000).toLocaleString()} ARK
           </p>
-          <p className="text-white/70">
+          <p className="text-muted-foreground">
             Efficiency: {data.efficiency?.toFixed(1)}%
           </p>
         </div>
@@ -50,10 +50,10 @@ const TransactionImpactChart = ({ burnHistory, burnProjections }: TransactionImp
       return (
         <div className="glass-card p-4 rounded-lg border border-orange-500/20">
           <p className="text-orange-500 font-semibold">Projection</p>
-          <p className="text-white">
+          <p className="text-foreground">
             Volume: ${(data.volume * 1000000).toLocaleString()}
           </p>
-          <p className="text-white">
+          <p className="text-foreground">
             Projected Burn: {(data.projectedBurn * 1000).toLocaleString()} ARK
           </p>
         </div>
@@ -65,8 +65,8 @@ const TransactionImpactChart = ({ burnHistory, burnProjections }: TransactionImp
   return (
     <Card className="glass-card">
       <CardHeader>
-        <CardTitle className="text-white">Transaction Volume vs Burn Impact</CardTitle>
-        <p className="text-sm text-white/70">
+        <CardTitle className="text-foreground">Transaction Volume vs Burn Impact</CardTitle>
+        <p className="text-sm text-muted-foreground">
           Historical burn amounts (blue) vs projected burns (orange) based on transaction volume
         </p>
       </CardHeader>
@@ -78,7 +78,7 @@ const TransactionImpactChart = ({ burnHistory, burnProjections }: TransactionImp
               type="number" 
               dataKey="volume" 
               name="Volume (M $)"
-              stroke="rgba(255,255,255,0.7)"
+              stroke="hsl(var(--muted-foreground))"
               fontSize={12}
               tickFormatter={(value) => `$${value.toFixed(1)}M`}
             />
@@ -86,7 +86,7 @@ const TransactionImpactChart = ({ burnHistory, burnProjections }: TransactionImp
               type="number" 
               dataKey="burnAmount" 
               name="Burn Amount (K ARK)"
-              stroke="rgba(255,255,255,0.7)"
+              stroke="hsl(var(--muted-foreground))"
               fontSize={12}
               tickFormatter={(value) => `${value.toFixed(0)}K`}
             />
@@ -114,7 +114,7 @@ const TransactionImpactChart = ({ burnHistory, burnProjections }: TransactionImp
             {scatterData.length > 0 && (
               <ReferenceLine 
                 x={scatterData[scatterData.length - 1]?.volume} 
-                stroke="rgba(255,255,255,0.5)" 
+                stroke="hsl(var(--muted-foreground))" 
                 strokeDasharray="2 2"
                 label={{ value: "Current", position: "top" }}
               />

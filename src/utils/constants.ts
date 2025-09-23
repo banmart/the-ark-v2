@@ -22,13 +22,6 @@ export const CONTRACT_ADDRESSES = {
   DAI: '0xefD766cCb38EaF1dfd701853BFCe31359239F305', // DAI token on PulseChain
   ARK_DAI_PAIR: '0x03f0bdb4f14e76a35a39ef0ffd87c8bb6d451366', // ARK/DAI pair
   DEAD_ADDRESS: '0x0000000000000000000000000000000000000369', // Updated from contract
-  
-  // Enhanced burn addresses for comprehensive monitoring
-  BURN_ADDRESSES: {
-    NULL_ADDRESS: '0x0000000000000000000000000000000000000000',
-    DEAD_ADDRESS: '0x000000000000000000000000000000000000dEaD',
-    BURN_ADDRESS: '0x0000000000000000000000000000000000000369'
-  }
 };
 
 // Complete SimplifiedLockerVault ABI - UPDATED FOR LATEST CONTRACT
@@ -91,7 +84,7 @@ export const LOCKER_VAULT_ABI = [
   'event RewardsDistributed(uint256 totalRewards, uint256 totalRecipients)',
   'event RewardsClaimed(address indexed user, uint256 amount)',
   'event LockExtended(address indexed user, uint256 lockId, uint256 newUnlockTime)',
-  'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount, uint256 burnedAmount)',
+  'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount)',
 ];
 
 // Locker vault contract address - UPDATED TO LIVE ADDRESS

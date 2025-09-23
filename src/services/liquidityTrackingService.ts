@@ -55,42 +55,13 @@ class LiquidityTrackingService {
       const currentBlock = await this.provider.getBlockNumber();
       const fromBlock = Math.max(0, currentBlock - 50000); // Look back ~7 days
 
-      // Create a proper transfer filter with correct parameters
-      const filter = {
-        address: CONTRACT_ADDRESSES.ARK_TOKEN,
-        topics: [
-          ethers.id("Transfer(address,address,uint256)"),
-          ethers.zeroPadValue(CONTRACT_ADDRESSES.ARK_TOKEN, 32),
-          null
-        ]
-      };
-      
-      const events = await this.provider.getLogs({
-        ...filter,
-        fromBlock,
-        toBlock: currentBlock
-      });
-
-      // Parse events manually
-      const transferInterface = new ethers.Interface([
-        "event Transfer(address indexed from, address indexed to, uint256 value)"
-      ]);
-
-      const parsedEvents = events.map(event => {
-        try {
-          return {
-            ...transferInterface.parseLog(event),
-            transactionHash: event.transactionHash,
-            blockNumber: event.blockNumber
-          };
-        } catch {
-          return null;
-        }
-      }).filter(Boolean);
+      // Get transfers from contract that indicate liquidity swaps
+      const filter = this.arkToken.filters.Transfer(CONTRACT_ADDRESSES.ARK_TOKEN, null);
+      const events = await this.arkToken.queryFilter(filter, fromBlock, currentBlock);
 
       // Find the most recent large transfer that indicates a swap
-      const swapEvents = parsedEvents.filter(event => {
-        if (event && event.args) {
+      const swapEvents = events.filter(event => {
+        if ('args' in event && event.args) {
           const amount = parseFloat(ethers.formatEther(event.args.value || '0'));
           return amount > 1000; // Threshold for detecting swaps
         }
@@ -106,7 +77,7 @@ class LiquidityTrackingService {
         transactionHash: lastEvent.transactionHash,
         blockNumber: lastEvent.blockNumber,
         timestamp: block?.timestamp || 0,
-        tokensSwapped: lastEvent.args ? ethers.formatEther(lastEvent.args.value || '0') : '0',
+        tokensSwapped: 'args' in lastEvent && lastEvent.args ? ethers.formatEther(lastEvent.args.value || '0') : '0',
         plsReceived: '0', // Would need to parse transaction details
         lpTokensBurned: '0' // Would need additional tracking
       };
@@ -192,55 +163,25 @@ class LiquidityTrackingService {
       const currentBlock = await this.provider.getBlockNumber();
       const fromBlock = Math.max(0, currentBlock - 1000); // Look back ~3 hours
 
-      const filter = {
-        address: CONTRACT_ADDRESSES.ARK_TOKEN,
-        topics: [
-          ethers.id("Transfer(address,address,uint256)"),
-          ethers.zeroPadValue(CONTRACT_ADDRESSES.ARK_TOKEN, 32),
-          null
-        ]
-      };
-      
-      const events = await this.provider.getLogs({
-        ...filter,
-        fromBlock,
-        toBlock: currentBlock
-      });
-
-      const transferInterface = new ethers.Interface([
-        "event Transfer(address indexed from, address indexed to, uint256 value)"
-      ]);
-
-      const parsedEvents = events.map(event => {
-        try {
-          return {
-            ...transferInterface.parseLog(event),
-            transactionHash: event.transactionHash,
-            blockNumber: event.blockNumber
-          };
-        } catch {
-          return null;
-        }
-      }).filter(Boolean);
+      const filter = this.arkToken.filters.Transfer(CONTRACT_ADDRESSES.ARK_TOKEN, null);
+      const events = await this.arkToken.queryFilter(filter, fromBlock, currentBlock);
 
       const recentSwaps: LiquiditySwapEvent[] = [];
       
-      for (const event of parsedEvents) {
-        if (event) {
-          const block = await this.provider.getBlock(event.blockNumber);
-          if (block && block.timestamp > sinceTimestamp && event.args) {
-            const amount = parseFloat(ethers.formatEther(event.args.value || '0'));
-            
-            if (amount > 1000) { // Threshold for detecting swaps
-              recentSwaps.push({
-                transactionHash: event.transactionHash,
-                blockNumber: event.blockNumber,
-                timestamp: block.timestamp,
-                tokensSwapped: ethers.formatEther(event.args.value || '0'),
-                plsReceived: '0',
-                lpTokensBurned: '0'
-              });
-            }
+      for (const event of events) {
+        const block = await this.provider.getBlock(event.blockNumber);
+        if (block && block.timestamp > sinceTimestamp && 'args' in event && event.args) {
+          const amount = parseFloat(ethers.formatEther(event.args.value || '0'));
+          
+          if (amount > 1000) { // Threshold for detecting swaps
+            recentSwaps.push({
+              transactionHash: event.transactionHash,
+              blockNumber: event.blockNumber,
+              timestamp: block.timestamp,
+              tokensSwapped: ethers.formatEther(event.args.value || '0'),
+              plsReceived: '0',
+              lpTokensBurned: '0'
+            });
           }
         }
       }

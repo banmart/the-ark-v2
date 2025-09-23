@@ -131,8 +131,8 @@ class FeeCalculatorService {
       const blocksPerDay = Math.floor(24 * 60 * 60 / 3);
       const startBlock = Math.max(0, currentBlock - blocksPerDay);
       
-      const BURN_ADDRESS = '0x0000000000000000000000000000000000000369';
-      const transferFilter = this.arkContract.filters.Transfer(null, BURN_ADDRESS);
+      const DEAD_ADDRESS = '0x0000000000000000000000000000000000000369';
+      const transferFilter = this.arkContract.filters.Transfer(null, DEAD_ADDRESS);
       const burnEvents = await this.arkContract.queryFilter(transferFilter, startBlock, currentBlock);
       
       let dailyBurnAmount = 0;
@@ -144,7 +144,7 @@ class FeeCalculatorService {
       }
       
       // Get total burned amount
-      const totalBurned = await this.arkContract.balanceOf(BURN_ADDRESS);
+      const totalBurned = await this.arkContract.balanceOf(DEAD_ADDRESS);
       const totalBurnedAmount = parseFloat(ethers.formatEther(totalBurned));
       
       return {
@@ -268,9 +268,9 @@ class FeeCalculatorService {
       const fromBlock = Math.max(currentBlock - 20000, 0);
       console.log('Querying from block:', fromBlock, 'to latest');
       
-      // Query Transfer events to BURN_ADDRESS from Token contract (using the address directly)
-      const BURN_ADDRESS = '0x0000000000000000000000000000000000000369';
-      const tokenFilter = this.arkContract.filters.Transfer(null, BURN_ADDRESS);
+      // Query Transfer events to DEAD_ADDRESS from Token contract (using the address directly)
+      const DEAD_ADDRESS = '0x0000000000000000000000000000000000000369';
+      const tokenFilter = this.arkContract.filters.Transfer(null, DEAD_ADDRESS);
       const tokenEvents = await this.arkContract.queryFilter(tokenFilter, fromBlock, 'latest');
       console.log('Found', tokenEvents.length, 'token burn events');
       

@@ -1,11 +1,18 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Terminal, Wifi, Shield, Activity } from 'lucide-react';
 import DisclaimerDialog from './DisclaimerDialog';
+
 const Footer = () => {
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
-  return <>
-      <DisclaimerDialog isOpen={isDisclaimerOpen} onClose={() => setIsDisclaimerOpen(false)} />
+
+  return (
+    <>
+      <DisclaimerDialog 
+        isOpen={isDisclaimerOpen} 
+        onClose={() => setIsDisclaimerOpen(false)} 
+      />
     <footer className="relative py-8 md:py-16 px-4 sm:px-6 border-t border-cyan-500/20 overflow-hidden">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 z-0">
@@ -77,7 +84,10 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                
+                <Link to="/burn" className="text-gray-400 hover:text-cyan-400 transition-colors font-mono flex items-center gap-2 group">
+                  <span className="w-1 h-1 bg-gray-600 group-hover:bg-cyan-400 rounded-full transition-colors"></span>
+                  Burn
+                </Link>
               </li>
             </ul>
           </div>
@@ -104,19 +114,32 @@ const Footer = () => {
             </div>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="https://scan.pulsechain.com/address/0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group">
+                <a 
+                  href="https://scan.pulsechain.com/address/0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group"
+                >
                   <span className="w-1 h-1 bg-gray-600 group-hover:bg-teal-400 rounded-full transition-colors"></span>
                   Contract
                 </a>
               </li>
               <li>
-                <a href="https://app.pulsex.com/swap?outputCurrency=0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group">
+                <a 
+                  href="https://app.pulsex.com/swap?outputCurrency=0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group"
+                >
                   <span className="w-1 h-1 bg-gray-600 group-hover:bg-teal-400 rounded-full transition-colors"></span>
                   PulseX
                 </a>
               </li>
               <li>
-                <button onClick={() => setIsDisclaimerOpen(true)} className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group">
+                <button 
+                  onClick={() => setIsDisclaimerOpen(true)}
+                  className="text-gray-400 hover:text-teal-400 transition-colors font-mono flex items-center gap-2 group"
+                >
                   <span className="w-1 h-1 bg-gray-600 group-hover:bg-teal-400 rounded-full transition-colors"></span>
                   No Expectations
                 </button>
@@ -149,6 +172,8 @@ const Footer = () => {
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent animate-scan"></div>
       </div>
     </footer>
-    </>;
+    </>
+  );
 };
+
 export default Footer;

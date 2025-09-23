@@ -25,7 +25,7 @@ const BurnEfficiencyGauge = ({ efficiency, trend }: BurnEfficiencyGaugeProps) =>
   const getTrendIcon = () => {
     if (trend > 0.5) return <TrendingUp className="h-4 w-4 text-green-500" />;
     if (trend < -0.5) return <TrendingDown className="h-4 w-4 text-red-500" />;
-    return <Minus className="h-4 w-4 text-white/70" />;
+    return <Minus className="h-4 w-4 text-muted-foreground" />;
   };
 
   const getTrendText = () => {
@@ -45,7 +45,7 @@ const BurnEfficiencyGauge = ({ efficiency, trend }: BurnEfficiencyGaugeProps) =>
   return (
     <Card className="glass-card">
       <CardHeader>
-        <CardTitle className="text-white flex items-center justify-between">
+        <CardTitle className="text-foreground flex items-center justify-between">
           <span>Burn Efficiency</span>
           <Badge variant={efficiency >= 70 ? 'default' : 'destructive'}>
             {getEfficiencyStatus(efficiency)}
@@ -86,14 +86,14 @@ const BurnEfficiencyGauge = ({ efficiency, trend }: BurnEfficiencyGaugeProps) =>
             <span className={`text-3xl font-bold ${getEfficiencyColor(efficiency)}`}>
               {efficiency.toFixed(1)}%
             </span>
-            <span className="text-xs text-white/70">efficiency</span>
+            <span className="text-xs text-muted-foreground">efficiency</span>
           </div>
         </div>
 
         {/* Trend indicator */}
         <div className="flex items-center space-x-2">
           {getTrendIcon()}
-          <span className="text-sm text-white/70">
+          <span className="text-sm text-muted-foreground">
             7-day trend: {getTrendText()}
           </span>
         </div>
@@ -101,16 +101,16 @@ const BurnEfficiencyGauge = ({ efficiency, trend }: BurnEfficiencyGaugeProps) =>
         {/* Efficiency breakdown */}
         <div className="w-full space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-white/70">Theoretical Max:</span>
-            <span className="text-white">100%</span>
+            <span className="text-muted-foreground">Theoretical Max:</span>
+            <span className="text-foreground">100%</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-white/70">Current:</span>
+            <span className="text-muted-foreground">Current:</span>
             <span className={getEfficiencyColor(efficiency)}>{efficiency.toFixed(1)}%</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-white/70">Gap:</span>
-            <span className="text-white/70">{(100 - efficiency).toFixed(1)}%</span>
+            <span className="text-muted-foreground">Gap:</span>
+            <span className="text-muted-foreground">{(100 - efficiency).toFixed(1)}%</span>
           </div>
         </div>
       </CardContent>

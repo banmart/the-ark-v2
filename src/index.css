@@ -1,9 +1,6 @@
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Main CSS entry point - imports all style modules */
 
-/* CSS imports after Tailwind for custom styles */
 @import './styles/design-system.css';
 @import './styles/typography.css';
 @import './styles/animations.css';

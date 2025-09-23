@@ -71,7 +71,7 @@ const VolumeImpactCalculator = ({
               placeholder="Enter volume in USD"
               className="text-lg"
             />
-            <div className="flex justify-between text-sm text-white/70">
+            <div className="flex justify-between text-sm text-muted-foreground">
               <span>Current: ${currentVolume.toLocaleString()}</span>
               <span>
                 {customVolume > currentVolume ? '+' : ''}
@@ -91,7 +91,7 @@ const VolumeImpactCalculator = ({
               step={5}
               className="w-full"
             />
-            <div className="flex justify-between text-sm text-white/70">
+            <div className="flex justify-between text-sm text-muted-foreground">
               <span>50% (Poor)</span>
               <span>100% (Current)</span>
               <span>150% (Optimal)</span>
@@ -133,24 +133,24 @@ const VolumeImpactCalculator = ({
           {/* Key Metrics */}
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 bg-secondary/20 rounded-lg">
-              <div className="text-sm text-white/70">Theoretical Burn</div>
-              <div className="text-xl font-bold text-white">
+              <div className="text-sm text-muted-foreground">Theoretical Burn</div>
+              <div className="text-xl font-bold text-foreground">
                 {burnCalculation.theoretical.toLocaleString()}
               </div>
-              <div className="text-xs text-white/70">ARK tokens</div>
+              <div className="text-xs text-muted-foreground">ARK tokens</div>
             </div>
             <div className="text-center p-4 bg-destructive/20 rounded-lg">
-              <div className="text-sm text-white/70">Actual Burn</div>
+              <div className="text-sm text-muted-foreground">Actual Burn</div>
               <div className="text-xl font-bold text-destructive">
                 {burnCalculation.actual.toLocaleString()}
               </div>
-              <div className="text-xs text-white/70">ARK tokens</div>
+              <div className="text-xs text-muted-foreground">ARK tokens</div>
             </div>
           </div>
 
           {/* Efficiency Display */}
           <div className="text-center p-4 bg-video-cyan/20 rounded-lg">
-            <div className="text-sm text-white/70">Burn Efficiency</div>
+            <div className="text-sm text-muted-foreground">Burn Efficiency</div>
             <div className="text-2xl font-bold text-video-cyan">
               {burnCalculation.efficiency.toFixed(1)}%
             </div>
@@ -168,7 +168,7 @@ const VolumeImpactCalculator = ({
               <div className={`text-lg font-semibold ${getImpactColor(burnCalculation.difference)}`}>
                 {getImpactText(burnCalculation.difference)}
               </div>
-              <div className="text-sm text-white/70 mt-1">
+              <div className="text-sm text-muted-foreground mt-1">
                 Compared to current volume and efficiency
               </div>
             </div>
@@ -179,20 +179,20 @@ const VolumeImpactCalculator = ({
             <Label>Time Projections</Label>
             <div className="grid grid-cols-3 gap-2 text-sm">
               <div className="text-center">
-                <div className="text-white/70">Weekly</div>
-                <div className="font-semibold text-white">
+                <div className="text-muted-foreground">Weekly</div>
+                <div className="font-semibold">
                   {(burnCalculation.actual * 7).toLocaleString()}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-white/70">Monthly</div>
-                <div className="font-semibold text-white">
+                <div className="text-muted-foreground">Monthly</div>
+                <div className="font-semibold">
                   {(burnCalculation.actual * 30).toLocaleString()}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-white/70">Yearly</div>
-                <div className="font-semibold text-white">
+                <div className="text-muted-foreground">Yearly</div>
+                <div className="font-semibold">
                   {(burnCalculation.actual * 365 / 1000000).toFixed(2)}M
                 </div>
               </div>

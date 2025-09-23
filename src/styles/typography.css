@@ -1,6 +1,5 @@
 
 /* Typography and Font Styles */
-@tailwind base;
 
 @layer base {
   /* Global heading styles with Michroma font */

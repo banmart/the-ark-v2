@@ -69,13 +69,8 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
           <div className="flex items-center gap-4">
             <Link 
               to="/" 
-              className="flex items-center gap-2 text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform relative group"
+              className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent hover:scale-105 transition-transform relative group"
             >
-              <img 
-                src="/assets/icons/ark-logo.png" 
-                alt="The ARK Logo" 
-                className="w-8 h-8 transition-transform group-hover:scale-110"
-              />
               The ARK
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></div>
             </Link>
