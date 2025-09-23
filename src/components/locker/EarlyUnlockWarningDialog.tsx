@@ -49,7 +49,7 @@ const EarlyUnlockWarningDialog = ({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-md mx-auto">
+      <AlertDialogContent className="max-w-md mx-auto bg-white text-gray-900">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-xl">
             {hasPenalty ? (
@@ -75,17 +75,17 @@ const EarlyUnlockWarningDialog = ({
 
         <div className="space-y-4">
           {/* Lock Details */}
-          <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+          <div className="bg-gray-100 rounded-lg p-4 space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Lock Amount</span>
-              <span className="font-semibold">{lock.amount.toLocaleString()} ARK</span>
+              <span className="text-sm text-gray-600">Lock Amount</span>
+              <span className="font-semibold text-gray-900">{lock.amount.toLocaleString()} ARK</span>
             </div>
             
             {hasPenalty && (
               <>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Time Remaining</span>
-                  <span className="font-semibold flex items-center gap-1">
+                  <span className="text-sm text-gray-600">Time Remaining</span>
+                  <span className="font-semibold flex items-center gap-1 text-gray-900">
                     <Clock className="w-4 h-4" />
                     {lock.daysRemaining} days
                   </span>
