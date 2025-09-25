@@ -164,7 +164,19 @@ const LockerTiersSection = ({
             <div className={`text-sm font-mono text-${tier.color}/80 mb-2`}>
               LOCK_PERIOD: {tier.duration}
             </div>
-            <div className={`text-3xl font-black ${tier.special ? `bg-gradient-to-r from-${tier.color} to-${tier.accent} bg-clip-text text-transparent` : `text-${tier.accent}`} font-mono`}>
+            <div className={`text-3xl font-black font-mono ${
+              tier.name === 'LEGENDARY' 
+                ? 'bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent' 
+                : tier.name === 'PLATINUM'
+                ? 'text-purple-400'
+                : tier.name === 'DIAMOND'
+                ? 'text-cyan-400'
+                : tier.name === 'GOLD'
+                ? 'text-yellow-400'
+                : tier.name === 'SILVER'
+                ? 'text-gray-400'
+                : 'text-yellow-400'
+            }`}>
               {tier.multiplier}
             </div>
             <div className="text-xs text-gray-400 font-mono">
