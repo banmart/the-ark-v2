@@ -1,33 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Flame, Users, Droplets, Lock, Zap, Database, Activity, Shield } from 'lucide-react';
-import { useARKTokenData } from '../hooks/useARKTokenData';
-import { useFeeMetrics } from '../hooks/useFeeMetrics';
-import { useLockerData } from '../hooks/useLockerData';
-import { liquidityTrackingService } from '../services/liquidityTrackingService';
+import React, { useState, useEffect } from 'react';
+import { Flame, Users, Droplets, Lock, Database, Activity } from 'lucide-react';
 const FeaturesSection = () => {
   const [pillarsPhase, setPillarsPhase] = useState(0);
   const [activePillar, setActivePillar] = useState(0);
-  const [liquidityAccumulation, setLiquidityAccumulation] = useState<any>(null);
-  
-  // Fetch live data
-  const { data: arkData, loading: arkLoading } = useARKTokenData();
-  const { feeMetrics, loading: feeLoading } = useFeeMetrics(arkData?.volume24h ? parseFloat(arkData.volume24h) : undefined);
-  const { protocolStats, loading: lockerLoading } = useLockerData();
-  // Fetch liquidity accumulation data
-  useEffect(() => {
-    const fetchLiquidityData = async () => {
-      try {
-        const accumulation = await liquidityTrackingService.getCurrentAccumulation();
-        setLiquidityAccumulation(accumulation);
-      } catch (error) {
-        console.error('Failed to fetch liquidity data:', error);
-      }
-    };
-    
-    fetchLiquidityData();
-    const interval = setInterval(fetchLiquidityData, 30000); // Update every 30 seconds
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     // Cinematic pillars revelation sequence
@@ -59,88 +34,65 @@ const FeaturesSection = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-  // Helper functions for formatting
-  const formatNumber = (value: number | undefined) => {
-    if (!value) return '0';
-    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
-    return value.toFixed(2);
-  };
-
-  const formatPercentage = (value: number | undefined) => {
-    if (!value) return '0%';
-    return `${value.toFixed(2)}%`;
-  };
-
-  // Generate live pillar data
-  const pillars = useMemo(() => {
-    const isLoading = arkLoading || feeLoading || lockerLoading;
-    
-    // Calculate liquidity status
-    const liquidityStatus = liquidityAccumulation?.thresholdReached 
-      ? 'THRESHOLD REACHED' 
-      : liquidityAccumulation?.currentAccumulation > 0 
-      ? 'ACCUMULATING' 
-      : 'MONITORING';
-
-    const liquidityProgress = liquidityAccumulation 
-      ? (liquidityAccumulation.currentAccumulation / liquidityAccumulation.swapThreshold) * 100 
-      : 0;
-
-    return [{
+  // Hardcoded pillars data with fixed percentages
+  const pillars = [
+    {
       id: 0,
       icon: Flame,
       emoji: '🔥',
       title: 'BURN PROTOCOL',
       subtitle: 'Molecular Disintegration',
-      percentage: isLoading ? '...' : formatPercentage(feeMetrics?.feesCollected?.burn?.rate || 2),
-      detail: isLoading ? 'Loading...' : `${formatNumber(arkData?.burnedTokens ? parseFloat(arkData.burnedTokens) : 0)} Burned`,
+      percentage: '2%',
+      detail: 'Deflationary Mechanics',
       description: 'Permanent molecular disintegration through quantum incineration to void address plus automated LP token annihilation for maximum deflationary cascade.',
       color: 'red',
-      status: (arkData?.dailyBurnRate ? parseFloat(arkData.dailyBurnRate) : 0) > 0 ? 'ACTIVE BURN' : 'MONITORING',
+      status: 'ACTIVE BURN',
       gradient: 'from-red-500 to-orange-500',
-      liveMetric: isLoading ? 'Loading...' : `${formatNumber(arkData?.dailyBurnRate ? parseFloat(arkData.dailyBurnRate) : 0)} daily`
-    }, {
+      liveMetric: 'Continuous burn rate'
+    },
+    {
       id: 1,
       icon: Users,
       emoji: '🫂',
       title: 'REFLECTION MATRIX',
       subtitle: 'Quantum Redistribution',
-      percentage: isLoading ? '...' : formatPercentage(feeMetrics?.feesCollected?.reflection?.rate || 2),
-      detail: isLoading ? 'Loading...' : `${formatNumber(feeMetrics?.efficiency?.reflection || 0)}% Efficiency`,
+      percentage: '2%',
+      detail: 'Holder Rewards',
       description: 'Autonomous quantum redistribution to all vessel holders based on molecular weight. Extended holding periods amplify reflection coefficients.',
       color: 'blue',
-      status: (feeMetrics?.efficiency?.reflection || 0) > 80 ? 'OPTIMAL' : 'DISTRIBUTING',
+      status: 'DISTRIBUTING',
       gradient: 'from-blue-500 to-cyan-500',
-      liveMetric: isLoading ? 'Loading...' : `${formatNumber(feeMetrics?.feesCollected?.reflection?.dailyFees || 0)} redistributed`
-    }, {
+      liveMetric: 'Active redistribution'
+    },
+    {
       id: 2,
       icon: Droplets,
       emoji: '💧',
       title: 'LIQUIDITY ENGINE',
       subtitle: 'Fluid Dynamics Control',
-      percentage: isLoading ? '...' : `${liquidityProgress.toFixed(1)}%`,
-      detail: isLoading ? 'Loading...' : `${formatNumber(liquidityAccumulation?.currentAccumulation || 0)} accumulated`,
+      percentage: '3%',
+      detail: 'Market Stability',
       description: 'Automated liquidity synthesis with quantum slippage protection. Threshold: 0.1% supply, Max: 0.2% supply for optimal market equilibrium.',
       color: 'purple',
-      status: liquidityStatus,
+      status: 'ACCUMULATING',
       gradient: 'from-purple-500 to-pink-500',
-      liveMetric: isLoading ? 'Loading...' : `Next swap: ${liquidityAccumulation?.estimatedSwapTime || 'Calculating...'}`
-    }, {
+      liveMetric: 'Pool enhancement'
+    },
+    {
       id: 3,
       icon: Lock,
       emoji: '🔒',
       title: 'VAULT REWARDS',
       subtitle: 'Temporal Amplification',
-      percentage: isLoading ? '...' : formatPercentage(protocolStats?.averageAPY || 0),
-      detail: isLoading ? 'Loading...' : `${formatNumber(protocolStats?.totalLockedTokens)} TVL`,
+      percentage: '2%',
+      detail: 'Lock Incentives',
       description: 'Dedicated quantum vault rewards for temporal commitment. Earn amplified rewards through time-lock mechanics with up to 8x multipliers.',
       color: 'green',
-      status: protocolStats?.rewardPool > 0 ? 'REWARDS ACTIVE' : 'ACCUMULATING',
+      status: 'REWARDS ACTIVE',
       gradient: 'from-green-500 to-teal-500',
-      liveMetric: isLoading ? 'Loading...' : `${formatNumber(protocolStats?.rewardPool || 0)} reward pool`
-    }];
-  }, [arkData, feeMetrics, protocolStats, liquidityAccumulation, arkLoading, feeLoading, lockerLoading]);
+      liveMetric: 'Vault allocation'
+    }
+  ];
   return <section id="features" className="relative z-30 py-20 px-6 bg-gradient-to-b from-black/10 to-black/30">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">

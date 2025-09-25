@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, Layers, Coins, Activity, Flame } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
-import { useARKPriceData } from '../hooks/useARKPriceData';
-import { formatTokenAmount, formatPrice } from '../lib/utils';
+import { useARKTokenData } from '../hooks/useARKTokenData';
 interface StatsSectionProps {
   contractData: any;
   contractLoading: boolean;
@@ -12,13 +11,8 @@ const StatsSection = ({
   contractLoading
 }: StatsSectionProps) => {
   const [statsPhase, setStatsPhase] = useState(0);
-  const {
-    protocolStats
-  } = useLockerData();
-  const {
-    priceData,
-    loading: priceLoading
-  } = useARKPriceData();
+  const { protocolStats } = useLockerData();
+  const { data: arkData, loading: arkLoading } = useARKTokenData();
   useEffect(() => {
     // Cinematic reveal sequence
     const phases = [{
@@ -103,10 +97,10 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
+                {arkLoading ? (
                   <span className="animate-pulse">$---.--M</span>
                 ) : (
-                  `$${formatNumber(contractData.marketCap)}`
+                  `$${formatNumber(arkData.marketCap)}`
                 )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
@@ -126,10 +120,10 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {priceLoading ? (
+                {arkLoading ? (
                   <span className="animate-pulse">$--.----</span>
                 ) : (
-                  `$${formatPrice(priceData?.price || 0)}`
+                  `$${parseFloat(arkData.price).toFixed(6)}`
                 )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
@@ -172,10 +166,10 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
+                {arkLoading ? (
                   <span className="animate-pulse">---.--B</span>
                 ) : (
-                  formatNumber(contractData.totalSupply)
+                  formatNumber(arkData.totalSupply)
                 )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
@@ -195,10 +189,10 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
+                {arkLoading ? (
                   <span className="animate-pulse">---.--B</span>
                 ) : (
-                  formatNumber(contractData.circulatingSupply)
+                  formatNumber(arkData.circulatingSupply)
                 )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
@@ -218,10 +212,10 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {contractLoading ? (
+                {arkLoading ? (
                   <span className="animate-pulse">---.--M</span>
                 ) : (
-                  formatNumber(contractData.burnedTokens)
+                  formatNumber(arkData.burnedTokens)
                 )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
