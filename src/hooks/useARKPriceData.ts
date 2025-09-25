@@ -16,7 +16,7 @@ export const useARKPriceData = () => {
       
       // Use ARK/PLS pair from contract if available
       const pairAddress = contractData?.contractAddresses?.pulseXPair && 
-                          contractData.contractAddresses.pulseXPair !== '0x0000000000000000000000000000000000000000'
+                          contractData.contractAddresses.pulseXPair !== '0x5f49421c0f74873bc02d0a912f171a030008f2c9'
                           ? contractData.contractAddresses.pulseXPair
                           : undefined;
       
