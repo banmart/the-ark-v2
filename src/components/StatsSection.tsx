@@ -11,8 +11,15 @@ const StatsSection = ({
   contractLoading
 }: StatsSectionProps) => {
   const [statsPhase, setStatsPhase] = useState(0);
-  const { protocolStats } = useLockerData();
-  const { data: arkData, loading: arkLoading, refetch, isStale } = useOptimizedARKData();
+  const {
+    protocolStats
+  } = useLockerData();
+  const {
+    data: arkData,
+    loading: arkLoading,
+    refetch,
+    isStale
+  } = useOptimizedARKData();
   useEffect(() => {
     // Cinematic reveal sequence
     const phases = [{
@@ -86,18 +93,12 @@ const StatsSection = ({
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-4">
             <h2 className="text-2xl font-bold text-white font-mono">PROTOCOL METRICS</h2>
-            {arkData && (
-              <div className="flex items-center space-x-2 text-sm text-gray-400">
+            {arkData && <div className="flex items-center space-x-2 text-sm text-gray-400">
                 <span>Updated {formatLastUpdated(arkData.lastUpdated)}</span>
                 {isStale && <span className="text-yellow-400">•</span>}
-              </div>
-            )}
+              </div>}
           </div>
-          <button
-            onClick={refetch}
-            className="flex items-center space-x-2 px-3 py-1 bg-cyan-500/20 border border-cyan-500/30 rounded text-cyan-400 hover:bg-cyan-500/30 transition-colors text-sm"
-            disabled={arkLoading}
-          >
+          <button onClick={refetch} className="flex items-center space-x-2 px-3 py-1 bg-cyan-500/20 border border-cyan-500/30 rounded text-cyan-400 hover:bg-cyan-500/30 transition-colors text-sm" disabled={arkLoading}>
             <RefreshCw className={`h-4 w-4 ${arkLoading ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
@@ -115,11 +116,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading || !arkData ? (
-                  <span className="animate-pulse">$---.--M</span>
-                ) : (
-                  `$${formatNumber(arkData.marketCap)}`
-                )}
+                {arkLoading || !arkData ? <span className="animate-pulse">$---.--M</span> : `$${formatNumber(arkData.marketCap)}`}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 {arkData?.dataSource || 'ARK/PLS PulseX'} • Circulating supply
@@ -138,11 +135,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading || !arkData ? (
-                  <span className="animate-pulse">$--.----</span>
-                ) : (
-                  `$${parseFloat(arkData.price).toFixed(6)}`
-                )}
+                {arkLoading || !arkData ? <span className="animate-pulse">$--.----</span> : `$${parseFloat(arkData.price).toFixed(6)}`}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 {arkData?.dataSource || 'ARK/PLS PulseX'} • Live price
@@ -155,21 +148,15 @@ const StatsSection = ({
             <div className="flex items-center justify-between mb-4">
               <Layers className="h-6 w-6 text-cyan-400" />
               <div className="text-right">
-                <p className="text-sm text-gray-400 font-mono">TTL</p>
+                <p className="text-sm text-gray-400 font-mono">TVL</p>
               </div>
             </div>
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {protocolStats.totalLockedTokens ? (
-                  `${formatTVL(protocolStats.totalLockedTokens)} ARK`
-                ) : (
-                  <span className="animate-pulse">$---.--M</span>
-                )}
+                {protocolStats.totalLockedTokens ? `${formatTVL(protocolStats.totalLockedTokens)} ARK` : <span className="animate-pulse">$---.--M</span>}
               </p>
-              <p className="text-xs text-gray-500 font-mono">
-                Total Value Locked
-              </p>
+              <p className="text-xs text-gray-500 font-mono">Total Tokens Locked</p>
             </div>
           </div>
 
@@ -184,11 +171,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading || !arkData ? (
-                  <span className="animate-pulse">---.--B</span>
-                ) : (
-                  formatNumber(arkData.totalSupply)
-                )}
+                {arkLoading || !arkData ? <span className="animate-pulse">---.--B</span> : formatNumber(arkData.totalSupply)}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Maximum token supply
@@ -207,11 +190,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading || !arkData ? (
-                  <span className="animate-pulse">---.--B</span>
-                ) : (
-                  formatNumber(arkData.circulatingSupply)
-                )}
+                {arkLoading || !arkData ? <span className="animate-pulse">---.--B</span> : formatNumber(arkData.circulatingSupply)}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Tokens in active circulation
@@ -230,11 +209,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading || !arkData ? (
-                  <span className="animate-pulse">---.--M</span>
-                ) : (
-                  formatNumber(arkData.burnedTokens)
-                )}
+                {arkLoading || !arkData ? <span className="animate-pulse">---.--M</span> : formatNumber(arkData.burnedTokens)}
               </p>
               <p className="text-xs text-gray-500 font-mono">
                 Tokens permanently removed
