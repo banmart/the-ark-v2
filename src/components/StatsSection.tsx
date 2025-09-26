@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, Layers, Coins, Activity, Flame } from 'lucide-react';
+import { DollarSign, TrendingUp, Layers, Coins, Activity, Flame, RefreshCw } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
-import { useARKTokenData } from '../hooks/useARKTokenData';
+import { useOptimizedARKData } from '../hooks/useOptimizedARKData';
 interface StatsSectionProps {
   contractData: any;
   contractLoading: boolean;
@@ -12,7 +12,7 @@ const StatsSection = ({
 }: StatsSectionProps) => {
   const [statsPhase, setStatsPhase] = useState(0);
   const { protocolStats } = useLockerData();
-  const { data: arkData, loading: arkLoading } = useARKTokenData();
+  const { data: arkData, loading: arkLoading, refetch, isStale } = useOptimizedARKData();
   useEffect(() => {
     // Cinematic reveal sequence
     const phases = [{
@@ -82,8 +82,26 @@ const StatsSection = ({
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* System Header */}
-        
+        {/* System Header with Refresh */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center space-x-4">
+            <h2 className="text-2xl font-bold text-white font-mono">PROTOCOL METRICS</h2>
+            {arkData && (
+              <div className="flex items-center space-x-2 text-sm text-gray-400">
+                <span>Updated {formatLastUpdated(arkData.lastUpdated)}</span>
+                {isStale && <span className="text-yellow-400">•</span>}
+              </div>
+            )}
+          </div>
+          <button
+            onClick={refetch}
+            className="flex items-center space-x-2 px-3 py-1 bg-cyan-500/20 border border-cyan-500/30 rounded text-cyan-400 hover:bg-cyan-500/30 transition-colors text-sm"
+            disabled={arkLoading}
+          >
+            <RefreshCw className={`h-4 w-4 ${arkLoading ? 'animate-spin' : ''}`} />
+            <span>Refresh</span>
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Market Cap */}
@@ -97,14 +115,14 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading ? (
+                {arkLoading || !arkData ? (
                   <span className="animate-pulse">$---.--M</span>
                 ) : (
                   `$${formatNumber(arkData.marketCap)}`
                 )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
-                Based on current price & supply
+                {arkData?.dataSource || 'ARK/PLS PulseX'} • Circulating supply
               </p>
             </div>
           </div>
@@ -120,14 +138,14 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading ? (
+                {arkLoading || !arkData ? (
                   <span className="animate-pulse">$--.----</span>
                 ) : (
                   `$${parseFloat(arkData.price).toFixed(6)}`
                 )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
-                Real-time market price
+                {arkData?.dataSource || 'ARK/PLS PulseX'} • Live price
               </p>
             </div>
           </div>
@@ -166,7 +184,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading ? (
+                {arkLoading || !arkData ? (
                   <span className="animate-pulse">---.--B</span>
                 ) : (
                   formatNumber(arkData.totalSupply)
@@ -189,7 +207,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading ? (
+                {arkLoading || !arkData ? (
                   <span className="animate-pulse">---.--B</span>
                 ) : (
                   formatNumber(arkData.circulatingSupply)
@@ -212,7 +230,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {arkLoading ? (
+                {arkLoading || !arkData ? (
                   <span className="animate-pulse">---.--M</span>
                 ) : (
                   formatNumber(arkData.burnedTokens)
