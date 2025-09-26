@@ -18,6 +18,8 @@ export class PriceCalculatorService {
       
       // Determine which token is ARK 
       const isToken0ARK = token0.toLowerCase() === CONTRACT_ADDRESSES.ARK_TOKEN.toLowerCase();
+      const isWPLS = token0.toLowerCase() === CONTRACT_ADDRESSES.WPLS.toLowerCase() || 
+                     token1.toLowerCase() === CONTRACT_ADDRESSES.WPLS.toLowerCase();
       
       const arkReserve = isToken0ARK ? reserve0 : reserve1;
       const otherReserve = isToken0ARK ? reserve1 : reserve0;
@@ -33,17 +35,41 @@ export class PriceCalculatorService {
       }
       
       // Price of ARK in terms of the other token (PLS, DAI, etc.)
-      const arkPrice = otherAmount / arkAmount;
+      const arkPriceInOtherToken = otherAmount / arkAmount;
+      
+      // Convert to USD if the pair is ARK/PLS
+      let arkPriceUSD = arkPriceInOtherToken;
+      
+      if (isWPLS) {
+        // ARK/PLS pair - convert PLS to USD
+        try {
+          const { priceOracleService } = await import('../priceOracleService');
+          const plsData = await priceOracleService.getPLSUSDPrice();
+          arkPriceUSD = arkPriceInOtherToken * plsData.plsUsdPrice;
+          
+          console.log('ARK/PLS price conversion:', {
+            arkPriceInPLS: arkPriceInOtherToken.toFixed(8),
+            plsUsdPrice: plsData.plsUsdPrice.toFixed(8),
+            arkPriceUSD: arkPriceUSD.toFixed(8),
+            plsSource: plsData.source
+          });
+        } catch (error) {
+          console.warn('Failed to fetch PLS price, using fallback:', error);
+          arkPriceUSD = arkPriceInOtherToken * 0.00002; // Fallback PLS price
+        }
+      }
       
       console.log('Price calculation:', {
         arkAmount: arkAmount.toFixed(2),
         otherAmount: otherAmount.toFixed(2),
         otherToken,
-        arkPrice: arkPrice.toFixed(8),
-        isToken0ARK
+        arkPriceInOtherToken: arkPriceInOtherToken.toFixed(8),
+        arkPriceUSD: arkPriceUSD.toFixed(8),
+        isToken0ARK,
+        isWPLS
       });
       
-      return arkPrice;
+      return arkPriceUSD;
     } catch (error) {
       console.error('Error calculating price:', error);
       return 0;

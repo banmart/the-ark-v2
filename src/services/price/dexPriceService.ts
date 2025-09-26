@@ -19,8 +19,8 @@ class DexPriceService {
     try {
       console.log('Fetching live ARK price data...');
       
-      // Use provided pair address or fallback to DAI pair
-      const targetPairAddress = pairAddress || CONTRACT_ADDRESSES.ARK_DAI_PAIR;
+      // Use ARK/PLS pair by default for most accurate pricing
+      const targetPairAddress = pairAddress || CONTRACT_ADDRESSES.ARK_PLS_PAIR;
       const pairData = await this.pairDataService.getPairData(targetPairAddress);
       
       if (!pairData) {
@@ -29,22 +29,20 @@ class DexPriceService {
 
       const arkPriceInPair = await this.priceCalculatorService.calculatePrice(pairData);
       
-      // Convert to USD based on pair type
-      let arkPriceUSD = arkPriceInPair;
-      let baseCurrency = 'USD';
+      // The price calculator now handles PLS to USD conversion internally
+      const arkPriceUSD = arkPriceInPair;
       
-      if (pairAddress && pairAddress !== CONTRACT_ADDRESSES.ARK_DAI_PAIR) {
-        // This is likely ARK/PLS pair - convert PLS to USD
-        const plsToUsd = 0.0001; // Rough PLS price estimate
-        arkPriceUSD = arkPriceInPair * plsToUsd;
-        baseCurrency = 'PLS';
-        
-        console.log('ARK/PLS price conversion:', {
-          arkPricePLS: arkPriceInPair.toFixed(8),
-          plsToUsd,
-          arkPriceUSD: arkPriceUSD.toFixed(8)
-        });
-      }
+      // Determine the actual base currency and data source
+      const isARKPLSPair = targetPairAddress.toLowerCase() === CONTRACT_ADDRESSES.ARK_PLS_PAIR.toLowerCase();
+      const baseCurrency = 'USD'; // Always convert to USD for consistency
+      const dataSource = isARKPLSPair ? 'ARK/PLS PulseX' : `PulseX Pair`;
+      
+      console.log('ARK price calculation details:', {
+        pairAddress: targetPairAddress,
+        arkPriceUSD: arkPriceUSD.toFixed(8),
+        isARKPLSPair,
+        dataSource
+      });
       
       // Bounds checking - flag obviously wrong prices
       if (arkPriceUSD > 1 || arkPriceUSD < 0.00000001) {
@@ -64,7 +62,7 @@ class DexPriceService {
         priceChange24h: priceChange24h.toFixed(2),
         volume24h: volume24h.toFixed(2),
         totalLiquidityUSD: totalLiquidityUSD.toFixed(2),
-        baseCurrency
+        dataSource
       });
       
       return {
@@ -73,7 +71,7 @@ class DexPriceService {
         volume24h,
         liquidity: totalLiquidityUSD,
         lastUpdated: new Date(),
-        dataSource: 'PulseX',
+        dataSource,
         baseCurrency
       };
     } catch (error) {

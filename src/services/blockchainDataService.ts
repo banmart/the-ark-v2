@@ -57,7 +57,7 @@ class BlockchainDataService {
         
         // Type guard to check if event is an EventLog
         if ('args' in event && event.args) {
-          const isBurn = event.args.to?.toLowerCase() === CONTRACT_ADDRESSES.DEAD_ADDRESS.toLowerCase();
+          const isBurn = event.args.to?.toLowerCase() === CONTRACT_ADDRESSES.BURN_ADDRESS.toLowerCase();
           
           events.push({
             blockNumber: event.blockNumber,
@@ -92,7 +92,7 @@ class BlockchainDataService {
       
       for (const event of events) {
         if (event.eventType === 'transfer') {
-          if (event.to && event.to !== CONTRACT_ADDRESSES.DEAD_ADDRESS) {
+          if (event.to && event.to !== CONTRACT_ADDRESSES.BURN_ADDRESS) {
             holderSet.add(event.to.toLowerCase());
           }
         }
@@ -113,7 +113,7 @@ class BlockchainDataService {
     try {
       const burnEvents = this.eventCache.filter(e => e.eventType === 'burn');
       
-      const totalBurned = await this.arkContract.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS);
+      const totalBurned = await this.arkContract.balanceOf(CONTRACT_ADDRESSES.BURN_ADDRESS);
       
       // Calculate daily burn rate from recent events
       const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
@@ -176,6 +176,7 @@ class BlockchainDataService {
       let volume24h = 0;
       const feeGeneratingAddresses = new Set([
         CONTRACT_ADDRESSES.PULSEX_V2_ROUTER.toLowerCase(),
+        CONTRACT_ADDRESSES.ARK_PLS_PAIR.toLowerCase(),
         CONTRACT_ADDRESSES.ARK_DAI_PAIR.toLowerCase()
       ]);
       
@@ -224,6 +225,7 @@ class BlockchainDataService {
         
         const feeGeneratingAddresses = new Set([
           CONTRACT_ADDRESSES.PULSEX_V2_ROUTER.toLowerCase(),
+          CONTRACT_ADDRESSES.ARK_PLS_PAIR.toLowerCase(),
           CONTRACT_ADDRESSES.ARK_DAI_PAIR.toLowerCase()
         ]);
         
