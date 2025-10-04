@@ -23,7 +23,6 @@ import { Badge } from "@/components/ui/badge";
 import { LockedPosition } from '../../hooks/locker/types';
 import { useLockerData } from '../../hooks/useLockerData';
 import EarlyUnlockWarningDialog from './EarlyUnlockWarningDialog';
-import { formatTokenAmount, formatBigIntFixed, bigIntToNumber } from '@/utils/formatters';
 
 interface CompactLockPositionProps {
   lock: LockedPosition;
@@ -36,12 +35,10 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
   const [dialogOpen, setDialogOpen] = useState(false);
   
   const now = Date.now() / 1000;
-  const unlockTime = bigIntToNumber(lock.unlockTime);
-  const lockTime = bigIntToNumber(lock.lockTime);
-  const isUnlocked = now >= unlockTime;
+  const isUnlocked = now >= lock.unlockTime;
   const penalty = calculateEarlyUnlockPenalty(lock);
   const tierInfo = lockTiers[lock.tier] || lockTiers[0];
-  const progress = Math.max(0, Math.min(100, ((now - lockTime) / (unlockTime - lockTime)) * 100));
+  const progress = Math.max(0, Math.min(100, ((now - lock.lockTime) / (lock.unlockTime - lock.lockTime)) * 100));
   
   const getTierIconComponent = (tierName: string) => {
     switch (tierName.toLowerCase()) {
@@ -86,7 +83,7 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
               </div>
               <div className="text-left">
                 <div className="text-base sm:text-lg font-bold text-white">
-                  {formatTokenAmount(lock.amount)} ARK
+                  {lock.amount.toLocaleString()} ARK
                 </div>
                 <div className="text-xs sm:text-sm" style={{ color: tierInfo.color }}>
                   {tierInfo.name} Tier • {lock.multiplier} multiplier
@@ -104,7 +101,7 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
                   {isUnlocked ? 'Ready!' : `${lock.daysRemaining}d left`}
                 </div>
                 <div className="text-xs text-gray-400">
-                  +{formatTokenAmount(lock.totalRewardsEarned)} earned
+                  +{lock.totalRewardsEarned.toLocaleString()} earned
                 </div>
               </div>
             </div>
@@ -136,7 +133,7 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
                 <Calendar className="w-4 h-4 text-gray-400 mr-2" />
                 <span className="text-gray-400 text-sm">Duration</span>
               </div>
-              <div className="text-white font-semibold">{Math.round(bigIntToNumber(lock.lockPeriod) / (24 * 60 * 60))} days</div>
+              <div className="text-white font-semibold">{Math.round(lock.lockPeriod / (24 * 60 * 60))} days</div>
             </div>
             
             <div className="bg-black/30 rounded-lg p-3 border border-gray-600/50">
@@ -145,7 +142,7 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
                 <span className="text-gray-400 text-sm">Weight</span>
               </div>
               <div className="text-white font-semibold">
-                {(bigIntToNumber(lock.amount) * (tierInfo.multiplier / 10000)).toFixed(0)}
+                {(lock.amount * (tierInfo.multiplier / 10000)).toFixed(0)}
               </div>
             </div>
             
@@ -155,13 +152,13 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
                 <span className="text-gray-400 text-sm">Unlock Date</span>
               </div>
               <div className="text-white font-semibold text-sm">
-                {new Date(unlockTime * 1000).toLocaleDateString()}
+                {new Date(lock.unlockTime * 1000).toLocaleDateString()}
               </div>
             </div>
           </div>
 
           {/* Early Unlock Warning - Compact */}
-          {!isUnlocked && penalty.penalty > 0n && (
+          {!isUnlocked && penalty.penalty > 0 && (
             <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3 mb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -170,10 +167,10 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
                 </div>
                 <div className="text-right">
                   <div className="text-red-400 text-sm font-bold">
-                    -{formatBigIntFixed(penalty.penalty, 0)} ARK ({penalty.penaltyRate.toFixed(1)}%)
+                    -{penalty.penalty.toFixed(0)} ARK ({penalty.penaltyRate.toFixed(1)}%)
                   </div>
                   <div className="text-xs text-red-300">
-                    You'd receive: {formatBigIntFixed(penalty.userReceives, 0)} ARK
+                    You'd receive: {penalty.userReceives.toFixed(0)} ARK
                   </div>
                 </div>
               </div>

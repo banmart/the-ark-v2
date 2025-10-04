@@ -9,7 +9,6 @@ import TierDisplay from './TierDisplay';
 import ApprovalStatus from './ApprovalStatus';
 import SecurityInfoPanel from './SecurityInfoPanel';
 import LockButton from './LockButton';
-import { bigIntToNumber } from '@/utils/formatters';
 interface EnhancedLockInterfaceProps {
   isConnected: boolean;
 }
@@ -128,13 +127,13 @@ const EnhancedLockInterface = ({
         <EmergencyModeAlert emergencyMode={emergencyMode} />
 
         <div className="space-y-8">
-          <LockAmountInput lockAmount={lockAmount} setLockAmount={setLockAmount} userArkBalance={bigIntToNumber(userArkBalance)} isConnected={isConnected} emergencyMode={emergencyMode} contractPaused={contractPaused} isProcessing={isProcessing} />
+          <LockAmountInput lockAmount={lockAmount} setLockAmount={setLockAmount} userArkBalance={userArkBalance} isConnected={isConnected} emergencyMode={emergencyMode} contractPaused={contractPaused} isProcessing={isProcessing} />
 
           <LockDurationSlider lockDuration={lockDuration} setLockDuration={setLockDuration} CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} emergencyMode={emergencyMode} contractPaused={contractPaused} isProcessing={isProcessing} />
 
           <TierDisplay currentTier={currentTier} lockAmount={lockAmount} lockDuration={lockDuration} CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} />
 
-          <ApprovalStatus lockAmount={lockAmount} isConnected={isConnected} needsApproval={needsApproval} currentAllowance={bigIntToNumber(currentAllowance)} />
+          <ApprovalStatus lockAmount={lockAmount} isConnected={isConnected} needsApproval={needsApproval} currentAllowance={currentAllowance} />
 
           <SecurityInfoPanel CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} />
 

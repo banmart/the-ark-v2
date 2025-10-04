@@ -10,13 +10,13 @@ export enum LockTier {
 
 export interface LockedPosition {
   id: number;
-  amount: bigint;
-  lockTime: bigint;
-  unlockTime: bigint;
-  lockPeriod: bigint;
+  amount: number;
+  lockTime: number;
+  unlockTime: number;
+  lockPeriod: number;
   tier: LockTier;
   tierName: string;
-  totalRewardsEarned: bigint;
+  totalRewardsEarned: number;
   active: boolean;
   multiplier: string;
   daysRemaining: number;
@@ -33,24 +33,24 @@ export interface LockTierInfo {
 }
 
 export interface UserStats {
-  totalLocked: bigint;
-  totalRewardsEarned: bigint;
-  pendingRewards: bigint;
-  activeLocksCount: bigint;
-  userWeight: bigint;
+  totalLocked: number;
+  totalRewardsEarned: number;
+  pendingRewards: number;
+  activeLocksCount: number;
+  userWeight: number;
 }
 
 export interface ProtocolStats {
-  totalLockedTokens: bigint;
-  totalRewardsDistributed: bigint;
-  totalActiveLockers: bigint;
-  rewardPool: bigint;
+  totalLockedTokens: number;
+  totalRewardsDistributed: number;
+  totalActiveLockers: number;
+  rewardPool: number;
   averageAPY: number;
 }
 
 export interface PenaltyCalculation {
-  penalty: bigint;
-  userReceives: bigint;
+  penalty: number;
+  userReceives: number;
   penaltyRate: number;
 }
 

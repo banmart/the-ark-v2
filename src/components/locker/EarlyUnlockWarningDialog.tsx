@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LockedPosition, PenaltyCalculation } from '../../hooks/locker/types';
-import { formatTokenAmount, formatBigIntFixed } from '@/utils/formatters';
 
 interface EarlyUnlockWarningDialogProps {
   open: boolean;
@@ -93,10 +92,10 @@ const EarlyUnlockWarningDialog = ({
                 </div>
                 
                 <div className="border-t pt-3 mt-3">
-                    <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                  <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg p-3">
                     <div className="text-center space-y-2">
                       <div className="text-red-600 dark:text-red-400 font-bold text-lg">
-                        YOU WILL LOSE {formatBigIntFixed(penalty.penalty, 0)} ARK
+                        YOU WILL LOSE {penalty.penalty.toFixed(0)} ARK
                       </div>
                       <div className="text-sm text-red-600 dark:text-red-400">
                         Penalty: {penalty.penaltyRate.toFixed(1)}% of locked amount
@@ -107,13 +106,13 @@ const EarlyUnlockWarningDialog = ({
                       <div className="flex justify-between text-sm">
                         <span>Penalty Amount:</span>
                         <span className="text-red-600 dark:text-red-400 font-semibold">
-                          -{formatBigIntFixed(penalty.penalty, 0)} ARK
+                          -{penalty.penalty.toFixed(0)} ARK
                         </span>
                       </div>
                       <div className="flex justify-between text-sm border-t pt-2">
                         <span className="font-semibold">You Will Receive:</span>
                         <span className="font-bold text-green-600 dark:text-green-400">
-                          {formatBigIntFixed(penalty.userReceives, 0)} ARK
+                          {penalty.userReceives.toFixed(0)} ARK
                         </span>
                       </div>
                     </div>
@@ -128,7 +127,7 @@ const EarlyUnlockWarningDialog = ({
                   No Penalty - Full Amount Available
                 </div>
                 <div className="text-sm text-green-600 dark:text-green-400 mt-1">
-                  You will receive the full {formatTokenAmount(lock.amount)} ARK
+                  You will receive the full {lock.amount.toLocaleString()} ARK
                 </div>
               </div>
             )}
@@ -147,7 +146,7 @@ const EarlyUnlockWarningDialog = ({
                 htmlFor="penalty-confirmation"
                 className="text-sm text-red-700 leading-relaxed cursor-pointer"
               >
-                I understand that I will lose <strong>{formatBigIntFixed(penalty.penalty, 0)} ARK</strong> ({penalty.penaltyRate.toFixed(1)}%) by unlocking early and I want to proceed anyway.
+                I understand that I will lose <strong>{penalty.penalty.toFixed(0)} ARK</strong> ({penalty.penaltyRate.toFixed(1)}%) by unlocking early and I want to proceed anyway.
               </label>
             </div>
           )}

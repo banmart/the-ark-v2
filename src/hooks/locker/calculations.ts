@@ -9,15 +9,15 @@ export const calculateEarlyUnlockPenalty = (
   lockPosition: LockedPosition, 
   CONTRACT_CONSTANTS: ContractConstants
 ): PenaltyCalculation => {
-  const now = BigInt(Math.floor(Date.now() / 1000));
+  const now = Date.now() / 1000;
   if (now >= lockPosition.unlockTime) {
-    return { penalty: 0n, userReceives: lockPosition.amount, penaltyRate: 0 };
+    return { penalty: 0, userReceives: lockPosition.amount, penaltyRate: 0 };
   }
 
-  const timeRemaining = Number(lockPosition.unlockTime - now);
-  const totalLockTime = Number(lockPosition.lockPeriod);
+  const timeRemaining = lockPosition.unlockTime - now;
+  const totalLockTime = lockPosition.lockPeriod;
   const penaltyRate = (CONTRACT_CONSTANTS.EARLY_UNLOCK_PENALTY * timeRemaining) / totalLockTime;
-  const penalty = (lockPosition.amount * BigInt(Math.floor(penaltyRate))) / BigInt(CONTRACT_CONSTANTS.BASIS_POINTS);
+  const penalty = (lockPosition.amount * penaltyRate) / CONTRACT_CONSTANTS.BASIS_POINTS;
   
   return {
     penalty,
@@ -31,14 +31,13 @@ export const calculateLockWeight = (
   lockTiers: LockTierInfo[],
   CONTRACT_CONSTANTS: ContractConstants
 ): number => {
-  const now = BigInt(Math.floor(Date.now() / 1000));
+  const now = Date.now() / 1000;
   if (!lockPosition.active || now >= lockPosition.unlockTime) return 0;
 
-  const timeRemaining = Number(lockPosition.unlockTime - now);
+  const timeRemaining = lockPosition.unlockTime - now;
   const tierMultiplier = lockTiers[lockPosition.tier].multiplier;
-  const amount = Number(lockPosition.amount);
   
-  return (amount * timeRemaining * tierMultiplier) / CONTRACT_CONSTANTS.BASIS_POINTS;
+  return (lockPosition.amount * timeRemaining * tierMultiplier) / CONTRACT_CONSTANTS.BASIS_POINTS;
 };
 
 export const calculateUserWeight = (
