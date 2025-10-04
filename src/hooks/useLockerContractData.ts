@@ -165,17 +165,22 @@ export const useLockerContractData = (userAddress?: string) => {
         activeLocksCount
       });
 
-      // Parse user locks
-      const locks: LockPosition[] = userLocksData.map((lock: any, index: number) => ({
-        id: index,
-        amount: parseFloat(ethers.formatEther(lock.amount)),
-        lockTime: parseInt(lock.lockTime.toString()),
-        unlockTime: parseInt(lock.unlockTime.toString()),
-        lockPeriod: parseInt(lock.lockPeriod.toString()),
-        tier: parseInt(lock.tier.toString()),
-        totalRewardsEarned: parseFloat(ethers.formatEther(lock.totalRewardsEarned)),
-        active: lock.active
-      }));
+      // Parse user locks - use lockId from contract if available
+      const locks: LockPosition[] = userLocksData.map((lock: any, index: number) => {
+        // Try to get lockId from the contract data, fallback to fetching from user's lock indices
+        const lockId = lock.lockId !== undefined ? parseInt(lock.lockId.toString()) : index;
+        
+        return {
+          id: lockId,
+          amount: parseFloat(ethers.formatEther(lock.amount)),
+          lockTime: parseInt(lock.lockTime.toString()),
+          unlockTime: parseInt(lock.unlockTime.toString()),
+          lockPeriod: parseInt(lock.lockPeriod.toString()),
+          tier: parseInt(lock.tier.toString()),
+          totalRewardsEarned: parseFloat(ethers.formatEther(lock.totalRewardsEarned)),
+          active: lock.active
+        };
+      });
 
       setUserLocks(locks);
       setUserWeight(parseFloat(ethers.formatEther(weight)));
@@ -238,10 +243,26 @@ export const useLockerContractData = (userAddress?: string) => {
   useEffect(() => {
     fetchContractData();
     
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchContractData, 30000);
+    // Smart refresh intervals based on data type
+    // Protocol stats: 90 seconds (slow-changing)
+    // User data: 60 seconds (more dynamic)
+    const protocolInterval = setInterval(fetchProtocolStats, 90000);
+    const userInterval = userAddress ? setInterval(() => fetchUserData(userAddress), 60000) : null;
     
-    return () => clearInterval(interval);
+    // Only refresh when tab is visible (Page Visibility API)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchContractData();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(protocolInterval);
+      if (userInterval) clearInterval(userInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [userAddress]);
 
   return {
