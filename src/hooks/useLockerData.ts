@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { useLockerContractData } from './useLockerContractData';
 import { useWallet } from './useWallet';
 import { 
@@ -26,15 +26,20 @@ import {
   claimRewardsOnContract
 } from './locker/contractInteractions';
 
-const BN0 = BigNumber.from(0);
-const toBN = (v: any) => BigNumber.isBigNumber(v) ? v as BigNumber : BigNumber.from(v ?? 0);
-const toNum = (v: any) => {
+const BN0 = 0n;
+const toBN = (v: any): bigint => {
+  if (typeof v === 'bigint') return v;
+  if (typeof v === 'number') return BigInt(Math.floor(v));
+  if (typeof v === 'string') return BigInt(v);
+  if (v?._isBigNumber || v?.type === 'BigNumber') return BigInt(v.toString());
+  return 0n;
+};
+const toNum = (v: any): number => {
   try {
-    if (BigNumber.isBigNumber(v)) return (v as BigNumber).toNumber();
     if (typeof v === 'bigint') return Number(v);
+    if (v?._isBigNumber || v?.type === 'BigNumber') return Number(v.toString());
     return Number(v ?? 0);
   } catch {
-    // As a last resort to avoid crashes; prefer not to hit this branch
     return 0;
   }
 };
@@ -56,8 +61,8 @@ export const useLockerData = () => {
 
   const [isProcessingApproval, setIsProcessingApproval] = useState(false);
   const [isProcessingLock, setIsProcessingLock] = useState(false);
-  const [userArkBalance, setUserArkBalance] = useState<BigNumber>(BN0);
-  const [currentAllowance, setCurrentAllowance] = useState<BigNumber>(BN0);
+  const [userArkBalance, setUserArkBalance] = useState<bigint>(BN0);
+  const [currentAllowance, setCurrentAllowance] = useState<bigint>(BN0);
   const [realContractConstants, setRealContractConstants] = useState<ContractConstants | null>(null);
 
   const CONTRACT_CONSTANTS = realContractConstants || DEFAULT_CONSTANTS;
@@ -138,12 +143,12 @@ export const useLockerData = () => {
 
     for (const l of userLocks) {
       if (l.active) {
-        totalLocked = totalLocked.add(l.amount);
+        totalLocked = totalLocked + l.amount;
         const unlock = toNum(l.unlockTime);
         if (unlock <= now) {
-          readyToUnlock = readyToUnlock.add(l.amount);
+          readyToUnlock = readyToUnlock + l.amount;
         } else {
-          inProgress = inProgress.add(l.amount);
+          inProgress = inProgress + l.amount;
         }
       }
     }
@@ -151,14 +156,14 @@ export const useLockerData = () => {
   }, [userLocks]);
 
   // Approvals
-  const approveTokensWrapper = async (amount: BigNumber | number | string): Promise<boolean> => {
+  const approveTokensWrapper = async (amount: bigint | number | string): Promise<boolean> => {
     if (!signer || !account) {
       throw new Error('Wallet not connected');
     }
     const amtBN = toBN(amount);
     setIsProcessingApproval(true);
     try {
-      await approveTokens(amtBN, signer);
+      await approveTokens(Number(amtBN), signer);
       await fetchUserTokenDataWrapper();
       return true;
     } catch (error: any) {
@@ -170,7 +175,7 @@ export const useLockerData = () => {
   };
 
   // Locks
-  const lockTokens = async (amount: BigNumber | number | string, durationSeconds: number): Promise<void> => {
+  const lockTokens = async (amount: bigint | number | string, durationSeconds: number): Promise<void> => {
     if (!signer || !account) {
       throw new Error('Wallet not connected');
     }
@@ -185,13 +190,13 @@ export const useLockerData = () => {
     }
 
     const amtBN = toBN(amount);
-    if (currentAllowance.lt(amtBN)) {
+    if (currentAllowance < amtBN) {
       await approveTokensWrapper(amtBN);
     }
 
     setIsProcessingLock(true);
     try {
-      await lockTokensOnContract(amtBN, durationSeconds, signer, CONTRACT_CONSTANTS);
+      await lockTokensOnContract(Number(amtBN), durationSeconds, signer, CONTRACT_CONSTANTS);
       await Promise.all([fetchUserTokenDataWrapper(), refetch()]);
     } catch (error: any) {
       console.error('Lock failed:', error);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, Layers, Coins, Activity, Flame, RefreshCw } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
 import { useOptimizedARKData } from '../hooks/useOptimizedARKData';
+import { bigIntToNumber } from '@/utils/formatters';
 interface StatsSectionProps {
   contractData: any;
   contractLoading: boolean;
@@ -154,7 +155,7 @@ const StatsSection = ({
             
             <div className="space-y-2">
               <p className="text-lg font-bold font-mono text-white">
-                {protocolStats.totalLockedTokens ? `${formatTVL(protocolStats.totalLockedTokens)} ARK` : <span className="animate-pulse">$---.--M</span>}
+                {protocolStats.totalLockedTokens ? `${formatTVL(bigIntToNumber(protocolStats.totalLockedTokens))} ARK` : <span className="animate-pulse">$---.--M</span>}
               </p>
               <p className="text-xs text-gray-500 font-mono">Total Tokens Locked</p>
             </div>

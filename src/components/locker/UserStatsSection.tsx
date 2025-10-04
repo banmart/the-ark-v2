@@ -11,6 +11,7 @@ import { useLockerData } from '../../hooks/useLockerData';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
 import { formatPoolSharePercentage, formatTokenPoolShare } from '../../lib/utils';
 import { toast } from "@/components/ui/use-toast";
+import { formatTokenAmount, bigIntToNumber } from '@/utils/formatters';
 
 interface UserStatsSectionProps {
   isConnected: boolean;
@@ -23,14 +24,14 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
 
   // Mock data for demonstration when not connected
   const displayStats = isConnected ? userStats : {
-    totalLocked: 150000,
-    totalRewardsEarned: 23500,
-    pendingRewards: 12847,
-    activeLocksCount: 2,
-    userWeight: 85000
+    totalLocked: 150000n,
+    totalRewardsEarned: 23500n,
+    pendingRewards: 12847n,
+    activeLocksCount: 2n,
+    userWeight: 85000n
   };
 
-  const displayRewards = isConnected ? userStats.pendingRewards : 12847;
+  const displayRewards = isConnected ? userStats.pendingRewards : 12847n;
 
   const handleClaimRewards = async () => {
     if (!isConnected) return;
@@ -113,15 +114,15 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
         <div className="bg-black/20 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/40 transition-all duration-300">
           <div className="flex items-center justify-between mb-3">
             <BarChart3 className="w-8 h-8 text-purple-400" />
-            <div className="text-right">
-              <div className="text-sm text-gray-400">Pool Share</div>
-              <div className="text-xl font-bold text-purple-300">
-                {protocolStats?.totalLockedTokens ? formatTokenPoolShare(displayStats.totalLocked, protocolStats.totalLockedTokens) : '0.00% of tokens'}
+              <div className="text-right">
+                <div className="text-sm text-gray-400">Pool Share</div>
+                <div className="text-xl font-bold text-purple-300">
+                  {protocolStats?.totalLockedTokens ? formatTokenPoolShare(bigIntToNumber(displayStats.totalLocked), bigIntToNumber(protocolStats.totalLockedTokens)) : '0.00% of tokens'}
+                </div>
+                <div className="text-xs text-gray-500">
+                  Weight: {totalProtocolWeight > 0 ? formatPoolSharePercentage(bigIntToNumber(displayStats.userWeight), totalProtocolWeight) : '0.00% of pool'}
+                </div>
               </div>
-              <div className="text-xs text-gray-500">
-                Weight: {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00% of pool'}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -134,12 +135,12 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
             <div>
               <h2 className="text-2xl font-bold text-green-400">Pending Rewards</h2>
               <p className="text-sm text-gray-400">
-                From protocol fees • Pool: {protocolStats.rewardPool.toLocaleString()} ARK
+                From protocol fees • Pool: {formatTokenAmount(protocolStats.rewardPool)} ARK
               </p>
             </div>
           </div>
           <button
-            disabled={!isConnected || displayRewards === 0 || claimingRewards}
+            disabled={!isConnected || (typeof displayRewards === 'bigint' ? displayRewards === 0n : displayRewards === 0) || claimingRewards}
             onClick={handleClaimRewards}
             className="bg-gradient-to-r from-green-500 to-emerald-600 text-black font-bold px-8 py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300 shadow-lg shadow-green-500/30 flex items-center gap-2"
           >

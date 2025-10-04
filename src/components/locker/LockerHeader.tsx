@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLockerData } from '../../hooks/useLockerData';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from 'ethers';
 
 const TOKEN_DECIMALS = 18; // Adjust if ARK uses a different decimals value
 
@@ -62,7 +62,7 @@ const LockerHeader: React.FC = () => {
               {loading ? '...' : `${fmt(inProgress)} ARK`}
             </div>
           </div>
-          <div className={`p-4 rounded-lg border ${readyToUnlock?.gt?.(0) ? 'bg-yellow-500/10 border-yellow-400/30' : 'bg-black/40 border-emerald-500/20'}`}>
+          <div className={`p-4 rounded-lg border ${readyToUnlock > 0n ? 'bg-yellow-500/10 border-yellow-400/30' : 'bg-black/40 border-emerald-500/20'}`}>
             <div className="text-sm text-emerald-300/70">Ready to Unlock</div>
             <div className="text-2xl font-semibold text-white">
               {loading ? '...' : `${fmt(readyToUnlock)} ARK`}
@@ -70,7 +70,7 @@ const LockerHeader: React.FC = () => {
           </div>
         </div>
 
-        {readyToUnlock?.gt?.(0) && (
+        {readyToUnlock > 0n && (
           <div className="mt-3 text-yellow-300">
             You have positions ready to unlock.
           </div>

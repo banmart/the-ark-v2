@@ -9,6 +9,7 @@ import LockPositionFilters, { FilterOptions } from './LockPositionFilters';
 import { toast } from "@/components/ui/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { bigIntToNumber } from '@/utils/formatters';
 interface EnhancedUserDashboardProps {
   isConnected: boolean;
 }
@@ -42,25 +43,25 @@ const EnhancedUserDashboard = ({
   // Mock data for demonstration when not connected
   const mockLocks = [{
     id: 1,
-    amount: 50000,
-    lockTime: Date.now() / 1000 - 86400 * 45,
-    unlockTime: Date.now() / 1000 + 86400 * 45,
-    lockPeriod: 86400 * 90,
+    amount: 50000n,
+    lockTime: BigInt(Math.floor(Date.now() / 1000 - 86400 * 45)),
+    unlockTime: BigInt(Math.floor(Date.now() / 1000 + 86400 * 45)),
+    lockPeriod: BigInt(86400 * 90),
     tier: 0,
     tierName: 'Bronze',
-    totalRewardsEarned: 2500,
+    totalRewardsEarned: 2500n,
     active: true,
     multiplier: '1.0x',
     daysRemaining: 45
   }, {
     id: 2,
-    amount: 100000,
-    lockTime: Date.now() / 1000 - 86400 * 120,
-    unlockTime: Date.now() / 1000 + 86400 * 60,
-    lockPeriod: 86400 * 180,
+    amount: 100000n,
+    lockTime: BigInt(Math.floor(Date.now() / 1000 - 86400 * 120)),
+    unlockTime: BigInt(Math.floor(Date.now() / 1000 + 86400 * 60)),
+    lockPeriod: BigInt(86400 * 180),
     tier: 1,
     tierName: 'Silver',
-    totalRewardsEarned: 8750,
+    totalRewardsEarned: 8750n,
     active: true,
     multiplier: '1.5x',
     daysRemaining: 60
@@ -86,7 +87,8 @@ const EnhancedUserDashboard = ({
       // Status filter
       if (filters.status !== 'all') {
         const now = Date.now() / 1000;
-        const daysUntilUnlock = (lock.unlockTime - now) / (24 * 60 * 60);
+        const unlockTime = bigIntToNumber(lock.unlockTime);
+        const daysUntilUnlock = (unlockTime - now) / (24 * 60 * 60);
         if (filters.status === 'ready' && daysUntilUnlock > 0) return false;
         if (filters.status === 'soon' && (daysUntilUnlock <= 0 || daysUntilUnlock > 7)) return false;
         if (filters.status === 'active' && daysUntilUnlock <= 0) return false;
@@ -95,7 +97,8 @@ const EnhancedUserDashboard = ({
       // Time remaining filter
       if (filters.timeRemaining !== 'all') {
         const now = Date.now() / 1000;
-        const daysUntilUnlock = (lock.unlockTime - now) / (24 * 60 * 60);
+        const unlockTime = bigIntToNumber(lock.unlockTime);
+        const daysUntilUnlock = (unlockTime - now) / (24 * 60 * 60);
         if (filters.timeRemaining === 'ready' && daysUntilUnlock > 0) return false;
         if (filters.timeRemaining === 'week' && (daysUntilUnlock <= 0 || daysUntilUnlock > 7)) return false;
         if (filters.timeRemaining === 'month' && (daysUntilUnlock <= 0 || daysUntilUnlock > 30)) return false;
@@ -253,7 +256,7 @@ const EnhancedUserDashboard = ({
                   
                   {/* Penalty Calculator for locks with time remaining */}
                   {lock.daysRemaining > 0 && <div className="ml-6">
-                      <PenaltyCalculatorCard lockAmount={lock.amount} lockTimeRemaining={lock.daysRemaining * 24 * 60 * 60} totalLockDuration={lock.lockPeriod} />
+                      <PenaltyCalculatorCard lockAmount={bigIntToNumber(lock.amount)} lockTimeRemaining={lock.daysRemaining * 24 * 60 * 60} totalLockDuration={bigIntToNumber(lock.lockPeriod)} />
                     </div>}
                 </div>)}
             </div>
