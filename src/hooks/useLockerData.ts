@@ -65,41 +65,13 @@ export const useLockerData = () => {
     fetchUserTokenDataWrapper();
   }, [account, provider]);
 
-  // Calculate dynamic APY based on protocol state
-  const calculateDynamicAPY = (): number => {
-    const { min, max } = calculateAPYRange(lockTiers, CONTRACT_CONSTANTS);
-    
-    // If we have active locks, calculate weighted average based on user's positions
-    if (contractUserLocks.length > 0) {
-      const totalWeight = contractUserLocks.reduce((sum, lock) => {
-        if (!lock.active) return sum;
-        const tierMultiplier = lockTiers[lock.tier]?.multiplier || CONTRACT_CONSTANTS.BASIS_POINTS;
-        return sum + (lock.amount * tierMultiplier);
-      }, 0);
-      
-      const weightedAPY = contractUserLocks.reduce((sum, lock) => {
-        if (!lock.active) return sum;
-        const tierMultiplier = lockTiers[lock.tier]?.multiplier || CONTRACT_CONSTANTS.BASIS_POINTS;
-        const weight = lock.amount * tierMultiplier;
-        const baseAPY = 15;
-        const tierAPY = baseAPY * (tierMultiplier / CONTRACT_CONSTANTS.BASIS_POINTS);
-        return sum + (tierAPY * weight);
-      }, 0);
-      
-      return totalWeight > 0 ? weightedAPY / totalWeight : (min + max) / 2;
-    }
-    
-    // Default to midpoint of APY range
-    return (min + max) / 2;
-  };
-
   // Transform contract data to match UI expectations
   const protocolStats: ProtocolStats = {
     totalLockedTokens: contractProtocolStats.totalLockedTokens,
     totalRewardsDistributed: contractProtocolStats.totalRewardsDistributed,
     totalActiveLockers: contractProtocolStats.totalActiveLockers,
     rewardPool: contractProtocolStats.rewardPool,
-    averageAPY: calculateDynamicAPY()
+    averageAPY: 82.5
   };
 
   const userStats: UserStats = {

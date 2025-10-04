@@ -61,13 +61,6 @@ const EnhancedProtocolStats = () => {
     }
     return value.toString();
   };
-  if (loading) {
-    return <div className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-gradient-to-br from-background/50 to-background/30 border border-border/50 rounded-xl animate-pulse" />)}
-        </div>
-      </div>;
-  }
   return <div className="space-y-8">
       {/* System Status Header */}
       
