@@ -89,7 +89,7 @@ const EnhancedUserDashboard = ({
         const daysUntilUnlock = (lock.unlockTime - now) / (24 * 60 * 60);
         if (filters.status === 'ready' && daysUntilUnlock > 0) return false;
         if (filters.status === 'soon' && (daysUntilUnlock <= 0 || daysUntilUnlock > 7)) return false;
-        if (filters.status === 'active' && daysUntilUnlock <= 0) return false;
+        if (filters.status === 'active' && (daysUntilUnlock <= 0 || daysUntilUnlock <= 7)) return false;
       }
 
       // Time remaining filter

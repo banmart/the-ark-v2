@@ -74,12 +74,19 @@ export const useLockerData = () => {
     averageAPY: 82.5
   };
 
+  // Compute ready to unlock and in progress counts
+  const now = Date.now() / 1000;
+  const readyToUnlockCount = contractUserLocks.filter(lock => lock.active && lock.unlockTime <= now).length;
+  const inProgressCount = contractUserLocks.filter(lock => lock.active && lock.unlockTime > now).length;
+
   const userStats: UserStats = {
     totalLocked: contractUserStats.totalLocked,
     totalRewardsEarned: contractUserStats.totalRewardsEarned,
     pendingRewards: contractUserStats.pendingRewards,
     activeLocksCount: contractUserStats.activeLocksCount,
-    userWeight: contractUserWeight
+    userWeight: contractUserWeight,
+    readyToUnlockCount,
+    inProgressCount
   };
 
   const userLocks: LockedPosition[] = contractUserLocks.map(lock => {

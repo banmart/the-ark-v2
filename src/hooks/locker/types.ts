@@ -38,6 +38,8 @@ export interface UserStats {
   pendingRewards: number;
   activeLocksCount: number;
   userWeight: number;
+  readyToUnlockCount: number;
+  inProgressCount: number;
 }
 
 export interface ProtocolStats {

@@ -27,7 +27,9 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
     totalRewardsEarned: 23500,
     pendingRewards: 12847,
     activeLocksCount: 2,
-    userWeight: 85000
+    userWeight: 85000,
+    readyToUnlockCount: 1,
+    inProgressCount: 1
   };
 
   const displayRewards = isConnected ? userStats.pendingRewards : 12847;
@@ -92,7 +94,10 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
               <div className="text-xl font-bold text-green-300">
                 {displayStats.totalLocked.toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500">ARK</div>
+              <div className="text-xs text-gray-500">
+                <span className="text-cyan-400">{displayStats.readyToUnlockCount}</span> ready • {' '}
+                <span className="text-blue-400">{displayStats.inProgressCount}</span> in progress
+              </div>
             </div>
           </div>
         </div>
