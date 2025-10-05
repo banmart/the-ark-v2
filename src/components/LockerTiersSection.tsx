@@ -156,9 +156,9 @@ const LockerTiersSection = ({
           </div>
 
           {/* Tier Title */}
-          <h4 className={`text-xl font-bold text-${tier.color} text-center mb-2 font-mono`}>
+          <h3 className={`text-xl font-bold text-${tier.color} text-center mb-2 font-mono`}>
             [{tier.name}]
-          </h4>
+          </h3>
           
           <div className="text-center mb-6">
             <div className={`text-sm font-mono text-${tier.color}/80 mb-2`}>
