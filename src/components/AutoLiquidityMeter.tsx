@@ -74,12 +74,12 @@ const AutoLiquidityMeter = ({
 
   const getStateText = () => {
     switch (meterState) {
-      case 'MONITORING': return 'MONITORING_BLOCKCHAIN';
-      case 'ACCUMULATING': return 'ACCUMULATING_FEES';
-      case 'THRESHOLD_REACHED': return 'THRESHOLD_REACHED';
-      case 'PENDING_SWAP': return 'AWAITING_NEXT_TX';
-      case 'COMPLETED': return 'SWAP_EXECUTED';
-      default: return 'MONITORING_BLOCKCHAIN';
+      case 'MONITORING': return 'MONITORING BLOCKCHAIN';
+      case 'ACCUMULATING': return 'ACCUMULATING FEES';
+      case 'THRESHOLD_REACHED': return 'THRESHOLD REACHED';
+      case 'PENDING_SWAP': return 'AWAITING NEXT TX';
+      case 'COMPLETED': return 'SWAP EXECUTED';
+      default: return 'MONITORING BLOCKCHAIN';
     }
   };
 
@@ -103,7 +103,7 @@ const AutoLiquidityMeter = ({
         <div className="flex items-center gap-3">
           <Activity className={`w-5 h-5 text-${getStateColor()}-400 ${meterState === 'PENDING_SWAP' ? 'animate-spin' : 'animate-pulse'}`} />
           <h4 className="text-lg font-bold text-green-400 font-mono">
-            [AUTO_LIQUIDITY_METER]
+            [AUTO LIQUIDITY METER]
           </h4>
         </div>
         <div className={`text-${getStateColor()}-400 font-mono text-sm px-3 py-1 bg-${getStateColor()}-500/20 border border-${getStateColor()}-500/30 rounded`}>
@@ -115,7 +115,7 @@ const AutoLiquidityMeter = ({
       <div className="mb-6">
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm text-gray-400 font-mono">
-            CURRENT_ACCUMULATION
+            CURRENT ACCUMULATION
           </span>
           <span className={`text-sm text-${getStateColor()}-400 font-mono`}>
             {percentage.toFixed(1)}%
@@ -146,7 +146,7 @@ const AutoLiquidityMeter = ({
       {meterState === 'PENDING_SWAP' && (
         <div className="bg-orange-500/20 border border-orange-500/30 rounded-lg p-4">
           <div className="text-orange-400 font-mono text-sm mb-2 text-center animate-pulse">
-            [THRESHOLD_REACHED - WAITING_FOR_NEXT_TRANSACTION]
+            [THRESHOLD REACHED - WAITING FOR NEXT TRANSACTION]
           </div>
           <div className="text-xs text-gray-400 font-mono text-center">
             Auto-swap will trigger on next qualifying transaction
@@ -158,7 +158,7 @@ const AutoLiquidityMeter = ({
       {meterState === 'ACCUMULATING' && getEstimatedTime() && (
         <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
           <div className="text-blue-400 font-mono text-sm text-center">
-            ESTIMATED_NEXT_SWAP: {getEstimatedTime()}
+            ESTIMATED NEXT SWAP: {getEstimatedTime()}
           </div>
         </div>
       )}
@@ -167,7 +167,7 @@ const AutoLiquidityMeter = ({
       {(meterState === 'THRESHOLD_REACHED' || meterState === 'PENDING_SWAP') && (
         <div className="bg-black/50 border border-yellow-500/30 rounded-lg p-4">
           <div className="text-yellow-400 font-mono text-sm mb-3 text-center">
-            [LIQUIDITY_PROCESS_READY]
+            [LIQUIDITY PROCESS READY]
           </div>
           
           <div className="flex items-center justify-between text-xs font-mono">
@@ -216,7 +216,7 @@ const AutoLiquidityMeter = ({
       {meterState === 'COMPLETED' && (
         <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-center">
           <div className="text-green-400 font-mono text-sm animate-pulse">
-            ✓ LIQUIDITY_SWAP_EXECUTED_ON_BLOCKCHAIN
+            ✓ LIQUIDITY SWAP EXECUTED ON BLOCKCHAIN
           </div>
           {lastSwapTimestamp > 0 && (
             <div className="text-xs text-gray-400 font-mono mt-1">
@@ -230,7 +230,7 @@ const AutoLiquidityMeter = ({
       {meterState === 'MONITORING' && (
         <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4 text-center">
           <div className="text-blue-400 font-mono text-sm">
-            [BLOCKCHAIN_MONITORING_ACTIVE]
+            [BLOCKCHAIN MONITORING ACTIVE]
           </div>
           <div className="text-xs text-gray-400 font-mono mt-1">
             Tracking liquidity fee accumulation in real-time

@@ -138,7 +138,7 @@ const InteractiveQuantumPillars = memo(() => {
         unit: 'ARK/day',
         state: getBurnState(burnDaily, burnMaxCapacity, efficiency?.burn || 0),
         liveData: burnDaily > 0 ? `${burnDaily > 1000 ? (burnDaily / 1000).toFixed(1) + 'K' : burnDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
-        actionText: 'VIEW_BURN_ANALYTICS',
+        actionText: 'VIEW BURN ANALYTICS',
         onClick: () => navigate('/burn-analytics')
       },
       {
@@ -155,7 +155,7 @@ const InteractiveQuantumPillars = memo(() => {
         unit: 'ARK/day',
         state: getReflectionState(reflectionDaily, reflectionMaxCapacity, efficiency?.reflection || 0),
         liveData: reflectionDaily > 0 ? `${reflectionDaily > 1000 ? (reflectionDaily / 1000).toFixed(1) + 'K' : reflectionDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
-        actionText: 'VIEW_REFLECTIONS'
+        actionText: 'VIEW REFLECTIONS'
       },
       {
         id: 2,
@@ -171,7 +171,7 @@ const InteractiveQuantumPillars = memo(() => {
         unit: 'ARK',
         state: getLiquidityState(currentLiquidity, liquidityThreshold, efficiency?.liquidity || 0),
         liveData: `${((currentLiquidity / liquidityThreshold) * 100).toFixed(1)}% TO SWAP`,
-        actionText: 'VIEW_LIQUIDITY'
+        actionText: 'VIEW LIQUIDITY'
       },
       {
         id: 3,
@@ -187,7 +187,7 @@ const InteractiveQuantumPillars = memo(() => {
         unit: 'ARK/day',
         state: getRewardState(lockerDaily, rewardMaxCapacity, efficiency?.locker || 0),
         liveData: lockerDaily > 0 ? `${lockerDaily > 1000 ? (lockerDaily / 1000).toFixed(1) + 'K' : lockerDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
-        actionText: 'ENTER_VAULT'
+        actionText: 'ENTER VAULT'
       }
     ];
   }, [feeMetrics, contractData, tokenData, protocolStats, realTimeUpdate]);
@@ -217,7 +217,7 @@ const InteractiveQuantumPillars = memo(() => {
         <div className={`text-center mb-12 transition-all duration-1000 ${pillarsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/60 font-mono text-xs mb-4">
             <Database className="w-3 h-3 animate-pulse" />
-            <span>[QUANTUM_ARCHITECTURE_SCAN]</span>
+            <span>[QUANTUM ARCHITECTURE SCAN]</span>
             <Database className="w-3 h-3 animate-pulse" />
           </div>
           
@@ -228,7 +228,7 @@ const InteractiveQuantumPillars = memo(() => {
           </h2>
           
           <div className="text-sm text-gray-400 font-mono">
-            [LIVE_BLOCKCHAIN_DATA_INTERFACE]
+            [LIVE BLOCKCHAIN DATA INTERFACE]
           </div>
         </div>
 
@@ -275,7 +275,7 @@ const InteractiveQuantumPillars = memo(() => {
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-gray-400 font-mono">
-                        LIVE_DATA
+                        LIVE DATA
                       </span>
                       <span className={`text-sm text-${pillar.color}-400 font-mono`}>
                         {loading ? '[LOADING...]' : pillar.liveData}
@@ -336,7 +336,7 @@ const InteractiveQuantumPillars = memo(() => {
         <div className={`text-center mt-8 transition-all duration-1000 delay-700 ${pillarsLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center gap-2 text-cyan-400/40 font-mono text-xs">
             <Activity className="w-3 h-3 animate-pulse" />
-            <span>[QUANTUM_FIELD_SYNCHRONIZATION_COMPLETE]</span>
+            <span>[QUANTUM FIELD SYNCHRONIZATION COMPLETE]</span>
             <Activity className="w-3 h-3 animate-pulse" />
           </div>
         </div>

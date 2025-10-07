@@ -55,7 +55,7 @@ const ContractTransparencySection = ({
           <div className="flex items-center justify-center mb-4">
             <Shield className="w-8 h-8 text-cyan-400 mr-3" />
             <h2 className="text-4xl md:text-5xl font-bold text-white font-mono">
-              [CONTRACT_TRANSPARENCY]
+              [CONTRACT TRANSPARENCY]
             </h2>
           </div>
           <p className="text-gray-300 text-lg max-w-3xl mx-auto font-mono">

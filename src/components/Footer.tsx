@@ -38,7 +38,7 @@ const Footer = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6 md:mb-8">
           <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
             <Terminal className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs font-mono text-cyan-400 tracking-wider">SYSTEM_FOOTER</span>
+            <span className="text-xs font-mono text-cyan-400 tracking-wider">SYSTEM FOOTER</span>
           </div>
           <div className="hidden sm:block flex-1 h-px bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
           
@@ -63,7 +63,7 @@ const Footer = () => {
             </div>
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 text-green-400" />
-              <span className="text-xs font-mono text-green-400">PROTOCOL_SECURE</span>
+              <span className="text-xs font-mono text-green-400">PROTOCOL SECURE</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
               Salvation from the crypto flood. Join the ARK and be saved.
@@ -74,7 +74,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-              <h4 className="font-mono text-cyan-400 text-sm tracking-wider">QUICK_LINKS</h4>
+              <h4 className="font-mono text-cyan-400 text-sm tracking-wider">QUICK LINKS</h4>
             </div>
             <ul className="space-y-3 text-sm">
               <li>

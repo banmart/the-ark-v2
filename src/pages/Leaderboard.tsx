@@ -229,17 +229,17 @@ const Leaderboard = () => {
             {/* System Status Indicator */}
             <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-xs font-mono text-green-400 tracking-wider">ARK_LEADERBOARD_ONLINE</span>
+              <span className="text-xs font-mono text-green-400 tracking-wider">ARK LEADERBOARD ONLINE</span>
             </div>
 
             {/* Main Title with Diagnostic Styling */}
             <div className="mb-6">
               <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
-                [DIVINE_ASCENSION_PROTOCOL]
+                [DIVINE ASCENSION PROTOCOL]
               </div>
               <h1 className="text-3xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">ARK LEADERBOARD</h1>
               <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
-                [NOAH_COUNCIL_RANKINGS]
+                [NOAH COUNCIL RANKINGS]
               </div>
             </div>
 
@@ -248,7 +248,7 @@ const Leaderboard = () => {
               <div className="bg-black/30 backdrop-blur-xl border border-teal-500/30 rounded-xl p-6">
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <div className="w-1 h-1 bg-teal-400 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-mono text-teal-400 tracking-wider">DIVINE_HIERARCHY</span>
+                  <span className="text-sm font-mono text-teal-400 tracking-wider">DIVINE HIERARCHY</span>
                   <div className="w-1 h-1 bg-teal-400 rounded-full animate-pulse"></div>
                 </div>
                 <p className="text-gray-300 text-lg leading-relaxed">
@@ -326,7 +326,7 @@ const Leaderboard = () => {
           <div className="max-w-6xl mx-auto">
             <div className="relative mb-12">
               <div className="text-center mb-6">
-                <h3 className="text-lg font-semibold text-cyan-400 mb-2 font-mono tracking-wider">[DIVINE_RANKING_PROTOCOL]</h3>
+                <h3 className="text-lg font-semibold text-cyan-400 mb-2 font-mono tracking-wider">[DIVINE RANKING PROTOCOL]</h3>
                 <p className="text-sm text-gray-400">Choose your divine ascension metric</p>
               </div>
               
@@ -359,7 +359,7 @@ const Leaderboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-cyan-400 font-mono tracking-wider">
                   <Search className="w-5 h-5" />
-                  [DIVINE_SEEKER_PROTOCOL]
+                  [DIVINE SEEKER PROTOCOL]
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative z-10">
@@ -367,10 +367,10 @@ const Leaderboard = () => {
                   <Input placeholder="Enter divine address to locate..." value={searchAddress} onChange={e => setSearchAddress(e.target.value)} className="bg-black/50 border-cyan-500/30 text-white font-mono placeholder:text-gray-500 text-sm" />
                   <div className="flex gap-2">
                     <Button onClick={handleSearch} disabled={searchLoading || !searchAddress} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform px-4 py-2 text-xs sm:text-sm flex-1 sm:flex-none">
-                      {searchLoading ? 'SEEKING...' : 'DIVINE_SEEK'}
+                      {searchLoading ? 'SEEKING...' : 'DIVINE SEEK'}
                     </Button>
                     {isConnected && <Button onClick={handleFindMyRank} disabled={searchLoading} variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 font-mono tracking-wide px-4 py-2 text-xs sm:text-sm flex-1 sm:flex-none">
-                        MY_ASCENSION
+                        MY ASCENSION
                       </Button>}
                   </div>
                 </div>

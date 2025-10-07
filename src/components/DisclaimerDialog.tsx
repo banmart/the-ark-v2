@@ -29,7 +29,7 @@ const DisclaimerDialog = ({ isOpen, onClose }: DisclaimerDialogProps) => {
             <div className="flex items-center gap-3 mb-4">
               <div className="flex items-center gap-2 px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                 <AlertTriangle className="w-4 h-4 text-yellow-400" />
-                <span className="text-xs font-mono text-yellow-400 tracking-wider">WARNING_NOTICE</span>
+                <span className="text-xs font-mono text-yellow-400 tracking-wider">WARNING NOTICE</span>
               </div>
               <div className="flex-1 h-px bg-gradient-to-r from-yellow-500/50 to-transparent"></div>
             </div>
@@ -52,7 +52,7 @@ const DisclaimerDialog = ({ isOpen, onClose }: DisclaimerDialogProps) => {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                <h3 className="font-mono text-cyan-400 text-lg tracking-wider">KEY_POINTS</h3>
+                <h3 className="font-mono text-cyan-400 text-lg tracking-wider">KEY POINTS</h3>
               </div>
 
               <div className="space-y-4 pl-4 border-l border-cyan-500/20">

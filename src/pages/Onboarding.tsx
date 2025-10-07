@@ -151,17 +151,17 @@ const Onboarding = () => {
             {/* System Status Indicator */}
             <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-xs font-mono text-green-400 tracking-wider">ARK_ONBOARDING_PROTOCOL</span>
+              <span className="text-xs font-mono text-green-400 tracking-wider">ARK ONBOARDING PROTOCOL</span>
             </div>
 
             {/* Main Title */}
             <div className="mb-8">
               <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
-                [INITIALIZATION_SEQUENCE]
+                [INITIALIZATION SEQUENCE]
               </div>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent">GET STARTED WITH ARK</h1>
               <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
-                [DIVINE_ASCENSION_AWAITS]
+                [DIVINE ASCENSION AWAITS]
               </div>
             </div>
 
@@ -186,7 +186,7 @@ const Onboarding = () => {
               <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
                   <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                  <span className="text-xs font-mono text-cyan-400 tracking-wider">{section.title}_PROTOCOL</span>
+                  <span className="text-xs font-mono text-cyan-400 tracking-wider">{section.title} PROTOCOL</span>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent font-mono">
                   {section.title}
@@ -277,7 +277,7 @@ const Onboarding = () => {
                 // This will trigger wallet connection from the navigation
                 (document.querySelector('nav button') as HTMLButtonElement)?.click();
               }} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black px-8 py-3 font-mono font-bold tracking-wide hover:scale-105 transition-all">
-                    INITIALIZE_WALLET_CONNECTION
+                    INITIALIZE WALLET CONNECTION
                   </Button>
                 </CardContent>
               </Card>
