@@ -145,7 +145,7 @@ const EnhancedLockInterface = ({
               <div>
                 <p className="text-sm font-semibold text-yellow-400 mb-1">Important Lock Notice</p>
                 <p className="text-sm text-yellow-400/80">
-                  Tokens locked cannot be unlocked for a minimum of 30 days. Early unlock penalties apply based on time remaining.
+                  Lock durations start at a minimum of 30 days. Early unlock penalties apply based on time remaining.
                 </p>
               </div>
             </div>
