@@ -13,6 +13,8 @@ interface LockAmountInputProps {
   isProcessing: boolean;
 }
 
+const MINIMUM_LOCK_AMOUNT = 20000;
+
 const LockAmountInput = ({ 
   lockAmount, 
   setLockAmount, 
@@ -24,6 +26,7 @@ const LockAmountInput = ({
 }: LockAmountInputProps) => {
   const amount = parseFloat(lockAmount || '0');
   const hasInsufficientBalance = amount > userArkBalance;
+  const isBelowMinimum = amount > 0 && amount < MINIMUM_LOCK_AMOUNT;
   const validation = validateLockAmount(lockAmount);
 
   const handleAmountChange = (value: string) => {
@@ -47,7 +50,7 @@ const LockAmountInput = ({
     <div>
       <div className="flex items-center justify-between mb-2">
         <label className="block text-sm font-medium">Amount to Lock (ARK)</label>
-        <div className="text-lg font-bold text-white">
+        <div className="text-lg font-bold text-green-400">
           Balance: {isConnected ? userArkBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '--'} ARK
         </div>
       </div>
@@ -102,7 +105,14 @@ const LockAmountInput = ({
         </div>
       )}
       
-      {validation.isValid && hasInsufficientBalance && lockAmount && (
+      {validation.isValid && isBelowMinimum && lockAmount && (
+        <div className="flex items-center text-red-400 text-sm mt-2">
+          <AlertTriangle className="w-4 h-4 mr-2" />
+          Minimum lock amount is {MINIMUM_LOCK_AMOUNT.toLocaleString()} ARK
+        </div>
+      )}
+      
+      {validation.isValid && !isBelowMinimum && hasInsufficientBalance && lockAmount && (
         <div className="flex items-center text-red-400 text-sm mt-2">
           <AlertTriangle className="w-4 h-4 mr-2" />
           Insufficient ARK balance

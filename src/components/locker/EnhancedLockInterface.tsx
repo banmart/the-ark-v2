@@ -12,6 +12,8 @@ import LockButton from './LockButton';
 interface EnhancedLockInterfaceProps {
   isConnected: boolean;
 }
+const MINIMUM_LOCK_AMOUNT = 20000;
+
 const EnhancedLockInterface = ({
   isConnected
 }: EnhancedLockInterfaceProps) => {
@@ -36,6 +38,7 @@ const EnhancedLockInterface = ({
   const amount = parseFloat(lockAmount || '0');
   const needsApproval = amount > 0 && currentAllowance < amount;
   const hasInsufficientBalance = amount > userArkBalance;
+  const isBelowMinimum = amount > 0 && amount < MINIMUM_LOCK_AMOUNT;
   const isProcessing = isProcessingApproval || isProcessingLock;
   const isValidDuration = lockDuration >= CONTRACT_CONSTANTS.MIN_LOCK_DURATION && lockDuration <= CONTRACT_CONSTANTS.MAX_LOCK_DURATION;
 
@@ -72,7 +75,7 @@ const EnhancedLockInterface = ({
     }
   };
   const handleLock = async () => {
-    if (!lockAmount || !isConnected || hasInsufficientBalance) return;
+    if (!lockAmount || !isConnected || hasInsufficientBalance || isBelowMinimum) return;
     try {
       await lockTokens(amount, lockDuration);
       toast({
@@ -135,6 +138,19 @@ const EnhancedLockInterface = ({
 
           <ApprovalStatus lockAmount={lockAmount} isConnected={isConnected} needsApproval={needsApproval} currentAllowance={currentAllowance} />
 
+          {/* 30-Day Minimum Lock Warning */}
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-yellow-400 mb-1">Important Lock Notice</p>
+                <p className="text-sm text-yellow-400/80">
+                  Tokens locked cannot be unlocked for a minimum of 30 days. Early unlock penalties apply based on time remaining.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <SecurityInfoPanel CONTRACT_CONSTANTS={CONTRACT_CONSTANTS} />
 
           <LockButton 
@@ -144,7 +160,7 @@ const EnhancedLockInterface = ({
             emergencyMode={emergencyMode} 
             contractPaused={contractPaused} 
             isProcessing={isProcessing} 
-            hasInsufficientBalance={hasInsufficientBalance} 
+            hasInsufficientBalance={hasInsufficientBalance || isBelowMinimum} 
             needsApproval={needsApproval}
             currentStep={currentStep}
             onApprove={handleApproval}
