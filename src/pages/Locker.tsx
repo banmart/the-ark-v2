@@ -1,26 +1,20 @@
-
-import React from 'react';
-import { useWallet } from '../hooks/useWallet';
-import { useLockerData } from '../hooks/useLockerData';
-import { BrowserPopupProvider } from '../components/providers/BrowserPopupProvider';
-import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
-import Navigation from '../components/Navigation';
-import Footer from '../components/Footer';
-import LockerHeader from '../components/locker/LockerHeader';
-import EmergencyStatus from '../components/locker/EmergencyStatus';
-import TierLegend from '../components/locker/TierLegend';
-import CompactTierDisplay from '../components/locker/CompactTierDisplay';
-import LockerOperations from '../components/locker/LockerOperations';
-import ContractAddressDisplay from '../components/locker/ContractAddressDisplay';
-import MobileBrowserPopup from '../components/MobileBrowserPopup';
+import React from "react";
+import { useWallet } from "../hooks/useWallet";
+import { useLockerData } from "../hooks/useLockerData";
+import { BrowserPopupProvider } from "../components/providers/BrowserPopupProvider";
+import { useBrowserPopup } from "../components/providers/BrowserPopupProvider";
+import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
+import LockerHeader from "../components/locker/LockerHeader";
+import EmergencyStatus from "../components/locker/EmergencyStatus";
+import TierLegend from "../components/locker/TierLegend";
+import CompactTierDisplay from "../components/locker/CompactTierDisplay";
+import LockerOperations from "../components/locker/LockerOperations";
+import ContractAddressDisplay from "../components/locker/ContractAddressDisplay";
+import MobileBrowserPopup from "../components/MobileBrowserPopup";
 
 const LockerContent = () => {
-  const {
-    isConnected,
-    account,
-    isConnecting,
-    connectWallet,
-  } = useWallet();
+  const { isConnected, account, isConnecting, connectWallet } = useWallet();
 
   const { emergencyMode, contractPaused } = useLockerData();
   const { isOpen, url, title, closePopup } = useBrowserPopup();
@@ -29,7 +23,7 @@ const LockerContent = () => {
     try {
       await connectWallet();
     } catch (error) {
-      console.error('Error connecting wallet:', error);
+      console.error("Error connecting wallet:", error);
     }
   };
 
@@ -40,17 +34,17 @@ const LockerContent = () => {
         <div className="fixed inset-0 z-0">
           {/* Base quantum gradient */}
           <div className="absolute inset-0 bg-gradient-radial from-teal-900/20 via-black to-black"></div>
-          
+
           {/* Animated quantum grid */}
           <div className="absolute inset-0 opacity-30">
             <div className="pulse-grid bg-grid bg-grid-size animate-pulse"></div>
           </div>
-          
+
           {/* Floating quantum orbs */}
           <div className="floating-orb orb1 bg-gradient-radial from-cyan-500/20 to-transparent blur-3xl"></div>
           <div className="floating-orb orb2 bg-gradient-radial from-teal-500/20 to-transparent blur-3xl"></div>
           <div className="floating-orb orb3 bg-gradient-radial from-green-500/20 to-transparent blur-3xl"></div>
-          
+
           {/* Breathing Gradient Bursts */}
           <div className="gradient-burst burst1"></div>
           <div className="gradient-burst burst2"></div>
@@ -58,15 +52,18 @@ const LockerContent = () => {
           <div className="gradient-burst burst4"></div>
           <div className="gradient-burst burst5"></div>
           <div className="gradient-burst burst6"></div>
-          
+
           {/* Scanning lines */}
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/50 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div
+            className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/50 to-transparent animate-pulse"
+            style={{ animationDelay: "1s" }}
+          ></div>
         </div>
 
         {/* Navigation */}
         <div className="relative z-20">
-          <Navigation 
+          <Navigation
             handleConnectWallet={handleConnectWallet}
             isConnecting={isConnecting}
             isConnected={isConnected}
@@ -79,16 +76,13 @@ const LockerContent = () => {
           <LockerHeader />
 
           {/* Emergency Status */}
-          <EmergencyStatus 
-            emergencyMode={emergencyMode} 
-            contractPaused={contractPaused} 
-          />
-
-          {/* Tier Legend */}
-          <TierLegend />
+          <EmergencyStatus emergencyMode={emergencyMode} contractPaused={contractPaused} />
 
           {/* Compact Tier Display */}
           <CompactTierDisplay />
+
+          {/* Tier Legend */}
+          <TierLegend />
 
           {/* Operations */}
           <LockerOperations isConnected={isConnected} />
@@ -97,27 +91,28 @@ const LockerContent = () => {
           <div className="relative max-w-6xl mx-auto px-6 py-16">
             {/* Quantum Field Background */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `
                   radial-gradient(circle at 25% 25%, rgba(34, 211, 238, 0.2) 1px, transparent 1px),
                   radial-gradient(circle at 75% 75%, rgba(34, 211, 238, 0.1) 1px, transparent 1px)
                 `,
-                backgroundSize: '50px 50px'
-              }}></div>
+                  backgroundSize: "50px 50px",
+                }}
+              ></div>
             </div>
 
             <div className="relative">
               <div className="text-center mb-8">
-                <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.15em]">
-                  [CONTRACT INFORMATION]
-                </div>
+                <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.15em]">[CONTRACT INFORMATION]</div>
                 <h3 className="text-2xl font-bold text-cyan-400 mb-2">Smart Contract Address</h3>
                 <div className="flex items-center justify-center gap-2">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                   <span className="text-sm font-mono text-green-400">VERIFIED ON PULSECHAIN</span>
                 </div>
               </div>
-              
+
               <ContractAddressDisplay />
             </div>
           </div>
@@ -127,16 +122,10 @@ const LockerContent = () => {
         <div className="relative z-10">
           <Footer />
         </div>
-
       </div>
 
       {/* Mobile Browser Popup */}
-      <MobileBrowserPopup 
-        isOpen={isOpen}
-        onClose={closePopup}
-        url={url}
-        title={title}
-      />
+      <MobileBrowserPopup isOpen={isOpen} onClose={closePopup} url={url} title={title} />
     </>
   );
 };
