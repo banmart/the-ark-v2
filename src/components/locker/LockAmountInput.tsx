@@ -50,7 +50,7 @@ const LockAmountInput = ({
     <div>
       <div className="flex items-center justify-between mb-2">
         <label className="block text-sm font-medium">Amount to Lock (ARK)</label>
-        <div className="text-lg font-bold text-green-400 animate-pulse drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]">
+        <div className="text-2xl font-bold text-green-400 animate-pulse drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]">
           Balance: {isConnected ? userArkBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '--'} ARK
         </div>
       </div>
