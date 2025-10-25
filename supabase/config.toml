@@ -1,8 +1,1 @@
 project_id = "xtailgacbmhdtdxnqjdv"
-
-[functions.update-ark-cache]
-verify_jwt = false
-
-[functions.automated-rewards]
-
-[functions.chat-assistant]
