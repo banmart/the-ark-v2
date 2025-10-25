@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      ark_token_cache: {
+        Row: {
+          created_at: string | null
+          data: Json
+          data_type: string
+          expires_at: string
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data: Json
+          data_type: string
+          expires_at: string
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json
+          data_type?: string
+          expires_at?: string
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       automation_logs: {
         Row: {
           details: Json | null
@@ -82,6 +109,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      upsert_ark_cache: {
+        Args: { p_data: Json; p_data_type: string; p_ttl_minutes?: number }
+        Returns: undefined
       }
     }
     Enums: {
