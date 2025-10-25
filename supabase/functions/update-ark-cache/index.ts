@@ -6,11 +6,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Contract addresses and ABIs
-const ARK_TOKEN_ADDRESS = '0x5f49421c0f74873bc02d0a912f171a030008f2c9';
-const LOCKER_ADDRESS = '0x8a8a0f0fb44f44854e0fac749c6e2a67c8c19e66';
-const PULSEX_ROUTER_ADDRESS = '0x98bf93ebf5c380C0e6Ae8e192A7e2AE08edAcc02';
-const PULSEX_PAIR_ADDRESS = '0x6753560538ecA67617A9Ce605178F788bE7E524E';
+// Contract addresses - checksummed to match constants.ts
+const ARK_TOKEN_ADDRESS = ethers.getAddress('0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67');
+const LOCKER_ADDRESS = ethers.getAddress('0x3ba44a1de77025b78d7430449569dd1112ac4473');
+const PULSEX_PAIR_ADDRESS = ethers.getAddress('0x5f49421c0f74873bc02d0a912f171a030008f2c9'); // ARK/PLS pair
+const BURN_ADDRESS = '0x0000000000000000000000000000000000000369';
 
 const ARK_ABI = [
   'function totalSupply() view returns (uint256)',
@@ -21,9 +21,8 @@ const ARK_ABI = [
 const LOCKER_ABI = [
   'function totalLockedTokens() view returns (uint256)',
   'function totalRewardsDistributed() view returns (uint256)',
-  'function getActiveLockerCount() view returns (uint256)',
+  'function totalActiveLockers() view returns (uint256)',
   'function rewardPool() view returns (uint256)',
-  'function totalProtocolWeight() view returns (uint256)',
   'function emergencyMode() view returns (bool)',
   'function paused() view returns (bool)',
 ];
@@ -55,6 +54,7 @@ Deno.serve(async (req) => {
     const pairContract = new ethers.Contract(PULSEX_PAIR_ADDRESS, PAIR_ABI, provider);
 
     // Fetch blockchain data in parallel
+    console.log('Fetching contract data...');
     const [
       totalSupply,
       decimals,
@@ -63,25 +63,25 @@ Deno.serve(async (req) => {
       totalRewards,
       activeLockers,
       rewardPool,
-      totalWeight,
       emergencyMode,
       paused,
       reserves,
       token0,
     ] = await Promise.all([
-      arkContract.totalSupply(),
-      arkContract.decimals(),
-      arkContract.balanceOf('0x0000000000000000000000000000000000000000'),
-      lockerContract.totalLockedTokens(),
-      lockerContract.totalRewardsDistributed(),
-      lockerContract.getActiveLockerCount(),
-      lockerContract.rewardPool(),
-      lockerContract.totalProtocolWeight(),
-      lockerContract.emergencyMode(),
-      lockerContract.paused(),
-      pairContract.getReserves(),
-      pairContract.token0(),
+      arkContract.totalSupply().catch(e => { console.error('totalSupply error:', e); throw e; }),
+      arkContract.decimals().catch(e => { console.error('decimals error:', e); throw e; }),
+      arkContract.balanceOf(BURN_ADDRESS).catch(e => { console.error('burnedTokens error:', e); throw e; }),
+      lockerContract.totalLockedTokens().catch(e => { console.error('totalLockedTokens error:', e); throw e; }),
+      lockerContract.totalRewardsDistributed().catch(e => { console.error('totalRewardsDistributed error:', e); throw e; }),
+      lockerContract.totalActiveLockers().catch(e => { console.error('totalActiveLockers error:', e); throw e; }),
+      lockerContract.rewardPool().catch(e => { console.error('rewardPool error:', e); throw e; }),
+      lockerContract.emergencyMode().catch(e => { console.error('emergencyMode error:', e); throw e; }),
+      lockerContract.paused().catch(e => { console.error('paused error:', e); throw e; }),
+      pairContract.getReserves().catch(e => { console.error('getReserves error:', e); throw e; }),
+      pairContract.token0().catch(e => { console.error('token0 error:', e); throw e; }),
     ]);
+
+    console.log('Contract data fetched successfully');
 
     // Calculate price from reserves (ARK/PLS pair)
     const reserve0 = Number(ethers.formatUnits(reserves[0], 18));
@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
       totalRewardsDistributed: ethers.formatUnits(totalRewards, Number(decimals)),
       activeLockerCount: Number(activeLockers),
       rewardPool: ethers.formatUnits(rewardPool, Number(decimals)),
-      totalProtocolWeight: Number(totalWeight),
+      totalProtocolWeight: 0, // Not available in this contract version
       emergencyMode: emergencyMode,
       contractPaused: paused,
       lastUpdated: new Date().toISOString(),
