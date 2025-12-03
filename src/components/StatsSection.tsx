@@ -252,17 +252,17 @@ const StatsSection = ({
                       <div className={`absolute inset-0 rounded-xl ${accentClasses.icon} opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-500`} />
                     </div>
                     
-                    <p className="text-xs text-muted-foreground/50 font-mono tracking-[0.2em] uppercase">
+                    <p className="text-xs text-white/60 font-mono tracking-[0.2em] uppercase">
                       {stat.label}
                     </p>
                   </div>
                   
                   {/* Value */}
                   <div className="space-y-2">
-                    <p className="text-2xl md:text-3xl font-bold font-mono text-foreground/90 tracking-tight group-hover:text-foreground transition-colors duration-300">
-                      {stat.value || <span className="animate-pulse text-muted-foreground/40">{stat.placeholder}</span>}
+                    <p className="text-2xl md:text-3xl font-bold font-mono text-white tracking-tight transition-colors duration-300">
+                      {stat.value || <span className="animate-pulse text-white/40">{stat.placeholder}</span>}
                     </p>
-                    <p className="text-xs text-muted-foreground/40 font-mono tracking-wide">
+                    <p className="text-xs text-white/50 font-mono tracking-wide">
                       {stat.subtitle}
                     </p>
                   </div>
