@@ -444,3 +444,81 @@
 .animate-scan {
   animation: chart-scan 4s linear infinite;
 }
+
+/* ===== Premium Hero Effects ===== */
+
+/* Film Grain Effect */
+.film-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  animation: grain 0.5s steps(10) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
+}
+
+/* Light Rays Effect */
+.light-rays {
+  background: 
+    linear-gradient(180deg, transparent 0%, transparent 40%, rgba(251,191,36,0.1) 50%, transparent 60%, transparent 100%),
+    repeating-conic-gradient(from 0deg at 50% 0%, transparent 0deg, rgba(255,255,255,0.02) 1deg, transparent 2deg);
+  animation: rays-pulse 8s ease-in-out infinite;
+}
+
+@keyframes rays-pulse {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.12; }
+}
+
+/* Floating Particles */
+.particle-float {
+  animation: particle-drift 20s ease-in-out infinite;
+}
+
+@keyframes particle-drift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(30px, -50px) scale(1.2);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-20px, -100px) scale(0.8);
+    opacity: 0.2;
+  }
+  75% {
+    transform: translate(40px, -30px) scale(1.1);
+    opacity: 0.4;
+  }
+}
+
+/* Scan Lines Effect */
+.scan-lines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.03) 2px,
+    rgba(255, 255, 255, 0.03) 4px
+  );
+}
+
+/* Reduced motion for premium effects */
+@media (prefers-reduced-motion: reduce) {
+  .film-grain,
+  .particle-float,
+  .light-rays {
+    animation: none;
+  }
+}
