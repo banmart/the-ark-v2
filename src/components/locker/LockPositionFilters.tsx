@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Filter, SortAsc, SortDesc, Search } from 'lucide-react';
+import { Filter, SortAsc, SortDesc, Search, X } from 'lucide-react';
 import { 
   Select,
   SelectContent,
@@ -55,107 +54,116 @@ const LockPositionFilters = ({
                           filters.searchTerm !== '';
 
   return (
-    <div className="bg-black/20 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-6 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <Filter className="w-5 h-5 text-cyan-400" />
-          <h3 className="text-lg font-semibold text-cyan-400">Filter & Sort Positions</h3>
+    <div className="relative group/filter mb-6">
+      {/* Outer glow */}
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/10 via-teal-500/10 to-cyan-500/10 rounded-xl blur-sm opacity-40"></div>
+      
+      {/* Filter container */}
+      <div className="relative bg-black/40 backdrop-blur-xl border border-white/[0.08] rounded-xl p-4 md:p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+              <Filter className="w-4 h-4 text-cyan-400" />
+            </div>
+            <h3 className="text-base font-semibold text-white">Filter & Sort</h3>
+            {hasActiveFilters && (
+              <Badge className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                {filteredCount} of {totalLocks}
+              </Badge>
+            )}
+          </div>
           {hasActiveFilters && (
-            <Badge variant="secondary" className="bg-cyan-500/20 text-cyan-300">
-              {filteredCount} of {totalLocks}
-            </Badge>
+            <button
+              onClick={clearFilters}
+              className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors px-3 py-1.5 bg-white/[0.05] hover:bg-white/[0.1] rounded-lg border border-white/[0.08]"
+            >
+              <X className="w-3.5 h-3.5" />
+              Clear
+            </button>
           )}
         </div>
-        {hasActiveFilters && (
-          <button
-            onClick={clearFilters}
-            className="text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            Clear All
-          </button>
-        )}
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
-        {/* Search */}
-        <div className="sm:col-span-2 lg:col-span-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input
-              placeholder="Search by amount or tier..."
-              value={filters.searchTerm}
-              onChange={(e) => updateFilter('searchTerm', e.target.value)}
-              className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 h-10"
-            />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+          {/* Search */}
+          <div className="sm:col-span-2 lg:col-span-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Input
+                placeholder="Search amount or tier..."
+                value={filters.searchTerm}
+                onChange={(e) => updateFilter('searchTerm', e.target.value)}
+                className="pl-10 bg-black/60 border-white/[0.1] text-white placeholder-gray-500 h-10 focus:border-cyan-500/50"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Tier Filter */}
-        <Select value={filters.tier} onValueChange={(value) => updateFilter('tier', value)}>
-          <SelectTrigger className="bg-white border-gray-300 text-gray-900 h-10">
-            <SelectValue placeholder="All Tiers" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border-gray-300 z-50">
-            <SelectItem value="all">All Tiers</SelectItem>
-            <SelectItem value="bronze">🛡️ Bronze</SelectItem>
-            <SelectItem value="silver">🥈 Silver</SelectItem>
-            <SelectItem value="gold">👑 Gold</SelectItem>
-            <SelectItem value="diamond">💎 Diamond</SelectItem>
-            <SelectItem value="platinum">✨ Platinum</SelectItem>
-            <SelectItem value="legendary">⚡ Legendary</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Status Filter */}
-        <Select value={filters.status} onValueChange={(value) => updateFilter('status', value)}>
-          <SelectTrigger className="bg-white border-gray-300 text-gray-900 h-10">
-            <SelectValue placeholder="All Status" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border-gray-300 z-50">
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="ready">Ready to Unlock</SelectItem>
-            <SelectItem value="soon">Unlocking Soon</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Time Remaining Filter */}
-        <Select value={filters.timeRemaining} onValueChange={(value) => updateFilter('timeRemaining', value)}>
-          <SelectTrigger className="bg-white border-gray-300 text-gray-900 h-10">
-            <SelectValue placeholder="Time Remaining" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border-gray-300 z-50">
-            <SelectItem value="all">All Time</SelectItem>
-            <SelectItem value="ready">Ready Now</SelectItem>
-            <SelectItem value="week">Less than 7 days</SelectItem>
-            <SelectItem value="month">Less than 30 days</SelectItem>
-            <SelectItem value="long">More than 30 days</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Sort Options */}
-        <div className="sm:col-span-2 lg:col-span-1 flex gap-2">
-          <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
-            <SelectTrigger className="bg-white border-gray-300 text-gray-900 h-10 flex-1">
-              <SelectValue placeholder="Sort by" />
+          {/* Tier Filter */}
+          <Select value={filters.tier} onValueChange={(value) => updateFilter('tier', value)}>
+            <SelectTrigger className="bg-black/60 border-white/[0.1] text-white h-10 focus:border-cyan-500/50">
+              <SelectValue placeholder="All Tiers" />
             </SelectTrigger>
-            <SelectContent className="bg-white border-gray-300 z-50">
-              <SelectItem value="timeRemaining">Time Remaining</SelectItem>
-              <SelectItem value="amount">Amount Locked</SelectItem>
-              <SelectItem value="tier">Tier Level</SelectItem>
-              <SelectItem value="rewards">Rewards Earned</SelectItem>
+            <SelectContent className="bg-gray-900 border-white/[0.1] text-white">
+              <SelectItem value="all">All Tiers</SelectItem>
+              <SelectItem value="bronze">🛡️ Bronze</SelectItem>
+              <SelectItem value="silver">🥈 Silver</SelectItem>
+              <SelectItem value="gold">👑 Gold</SelectItem>
+              <SelectItem value="diamond">💎 Diamond</SelectItem>
+              <SelectItem value="platinum">✨ Platinum</SelectItem>
+              <SelectItem value="legendary">⚡ Legendary</SelectItem>
             </SelectContent>
           </Select>
 
-          <button
-            onClick={() => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="px-3 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition-colors min-w-[44px] h-10"
-          >
-            {filters.sortOrder === 'asc' ? 
-              <SortAsc className="w-4 h-4 text-gray-600" /> : 
-              <SortDesc className="w-4 h-4 text-gray-600" />
-            }
-          </button>
+          {/* Status Filter */}
+          <Select value={filters.status} onValueChange={(value) => updateFilter('status', value)}>
+            <SelectTrigger className="bg-black/60 border-white/[0.1] text-white h-10 focus:border-cyan-500/50">
+              <SelectValue placeholder="All Status" />
+            </SelectTrigger>
+            <SelectContent className="bg-gray-900 border-white/[0.1] text-white">
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="ready">🟢 Ready to Unlock</SelectItem>
+              <SelectItem value="soon">🟡 Unlocking Soon</SelectItem>
+              <SelectItem value="active">🔵 Active</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Time Remaining Filter */}
+          <Select value={filters.timeRemaining} onValueChange={(value) => updateFilter('timeRemaining', value)}>
+            <SelectTrigger className="bg-black/60 border-white/[0.1] text-white h-10 focus:border-cyan-500/50">
+              <SelectValue placeholder="Time Remaining" />
+            </SelectTrigger>
+            <SelectContent className="bg-gray-900 border-white/[0.1] text-white">
+              <SelectItem value="all">All Time</SelectItem>
+              <SelectItem value="ready">Ready Now</SelectItem>
+              <SelectItem value="week">&lt; 7 days</SelectItem>
+              <SelectItem value="month">&lt; 30 days</SelectItem>
+              <SelectItem value="long">&gt; 30 days</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Sort Options */}
+          <div className="flex gap-2">
+            <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
+              <SelectTrigger className="bg-black/60 border-white/[0.1] text-white h-10 flex-1 focus:border-cyan-500/50">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-900 border-white/[0.1] text-white">
+                <SelectItem value="timeRemaining">Time</SelectItem>
+                <SelectItem value="amount">Amount</SelectItem>
+                <SelectItem value="tier">Tier</SelectItem>
+                <SelectItem value="rewards">Rewards</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <button
+              onClick={() => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="p-2.5 bg-black/60 border border-white/[0.1] rounded-lg hover:bg-white/[0.1] hover:border-cyan-500/50 transition-all h-10 w-10 flex items-center justify-center"
+            >
+              {filters.sortOrder === 'asc' ? 
+                <SortAsc className="w-4 h-4 text-gray-400" /> : 
+                <SortDesc className="w-4 h-4 text-gray-400" />
+              }
+            </button>
+          </div>
         </div>
       </div>
     </div>
