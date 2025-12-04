@@ -259,22 +259,27 @@ const HeroSection = ({
               </p>
               
               <button
+                type="button"
                 onClick={handleCopy}
-                className="flex items-center gap-2 sm:gap-3 group/btn"
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  handleCopy();
+                }}
+                className="flex items-center gap-2 sm:gap-3 group/btn cursor-pointer touch-manipulation min-h-[44px] px-2 -mx-2"
               >
                 {/* Truncated on mobile, full on desktop */}
                 <span className="font-mono text-[10px] sm:text-sm md:text-base text-cyan-400/80 group-hover/btn:text-cyan-300 
-                  transition-colors duration-300 tracking-wide">
+                  transition-colors duration-300 tracking-wide pointer-events-none">
                   <span className="sm:hidden">{contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</span>
                   <span className="hidden sm:inline">{contractAddress}</span>
                 </span>
                 
-                <div className={`p-1.5 rounded-lg transition-all duration-300 
+                <div className={`p-2 sm:p-1.5 rounded-lg transition-all duration-300 pointer-events-none
                   ${copied 
                     ? 'bg-emerald-500/20 text-emerald-400' 
                     : 'bg-white/5 text-white/40 group-hover/btn:text-cyan-400 group-hover/btn:bg-cyan-500/10'
                   }`}>
-                  {copied ? <Check size={14} /> : <Copy size={14} />}
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
                 </div>
               </button>
             </div>
