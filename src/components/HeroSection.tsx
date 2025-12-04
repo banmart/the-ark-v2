@@ -260,11 +260,13 @@ const HeroSection = ({
               
               <button
                 onClick={handleCopy}
-                className="flex items-center gap-3 group/btn"
+                className="flex items-center gap-2 sm:gap-3 group/btn"
               >
-                <span className="font-mono text-sm md:text-base text-cyan-400/80 group-hover/btn:text-cyan-300 
+                {/* Truncated on mobile, full on desktop */}
+                <span className="font-mono text-[10px] sm:text-sm md:text-base text-cyan-400/80 group-hover/btn:text-cyan-300 
                   transition-colors duration-300 tracking-wide">
-                  {contractAddress}
+                  <span className="sm:hidden">{contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</span>
+                  <span className="hidden sm:inline">{contractAddress}</span>
                 </span>
                 
                 <div className={`p-1.5 rounded-lg transition-all duration-300 
