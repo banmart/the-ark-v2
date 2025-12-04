@@ -76,11 +76,11 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
   // Use real data when connected, include all active locks regardless of unlock status
   const displayLocks = isConnected ? userLocks : mockLocks;
 
-  // Filter and sort locks - FIX: properly handle finished locks
+  // Filter and sort locks - Show ALL locks without restrictions
   const getFilteredAndSortedLocks = () => {
     let filtered = displayLocks.filter(lock => {
-      // Only show locks that are still active (haven't been withdrawn)
-      if (!lock.active) return false;
+      // IMPORTANT: Show ALL locks - both active and withdrawn positions
+      // No restriction on lock.active status - users should see their full history
 
       const now = Date.now() / 1000;
       const daysUntilUnlock = (lock.unlockTime - now) / (24 * 60 * 60);
@@ -271,7 +271,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
               <LockPositionFilters 
                 filters={filters} 
                 onFiltersChange={setFilters} 
-                totalLocks={displayLocks.filter(l => l.active).length} 
+                totalLocks={displayLocks.length} 
                 filteredCount={filteredLocks.length} 
               />
             )}
@@ -288,7 +288,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                 <div className="text-gray-400 mb-2 text-lg">No locks match your filters</div>
                 <div className="text-sm text-gray-500">Try adjusting your filter criteria</div>
               </div>
-            ) : displayLocks.filter(l => l.active).length === 0 ? (
+            ) : displayLocks.length === 0 ? (
               <div className="text-center py-12">
                 <div className="relative inline-block mb-4">
                   <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl"></div>
