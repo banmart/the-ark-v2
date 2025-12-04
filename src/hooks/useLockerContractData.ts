@@ -145,10 +145,10 @@ export const useLockerContractData = (userAddress?: string) => {
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
       const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
 
-      // Use new getUserActiveLocks function for better performance
+      // Use getUserLocks to fetch ALL locks (both active and inactive/withdrawn)
       const [userStatsData, userLocksData, weight] = await Promise.all([
         contract.userStats(address),
-        contract.getUserActiveLocks(address), // This only returns active locks
+        contract.getUserLocks(address), // Get ALL locks, not just active ones
         contract.calculateUserWeight(address)
       ]);
 

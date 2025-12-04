@@ -54,6 +54,14 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
   const TierIconComponent = getTierIconComponent(tierInfo.name);
 
   const getStatusInfo = () => {
+    // Handle withdrawn/inactive locks first
+    if (!lock.active) {
+      return { 
+        label: 'Withdrawn', 
+        colorRGB: '156, 163, 175',
+        bgClass: 'bg-gray-500/20 border-gray-500/40'
+      };
+    }
     if (isUnlocked) {
       return { 
         label: 'Ready to Unlock', 
@@ -242,38 +250,48 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
               </div>
             )}
 
-            {/* Action Button */}
-            <div className="relative group/btn">
-              <div 
-                className={`absolute -inset-1 rounded-xl blur opacity-40 group-hover/btn:opacity-60 transition-opacity ${isUnlocked ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-red-500 to-red-600'}`}
-              ></div>
-              <button
-                onClick={() => setDialogOpen(true)}
-                disabled={processingUnlock === lock.id}
-                className={`relative w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 ${
-                  isUnlocked 
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-black' 
-                    : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
-                }`}
-              >
-                {processingUnlock === lock.id ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                    Processing...
-                  </>
-                ) : isUnlocked ? (
-                  <>
-                    <Zap className="w-4 h-4" />
-                    Unlock Tokens
-                  </>
-                ) : (
-                  <>
-                    <AlertTriangle className="w-4 h-4" />
-                    Early Unlock (-{penalty.penaltyRate.toFixed(1)}%)
-                  </>
-                )}
-              </button>
-            </div>
+            {/* Action Button - Only show for active locks */}
+            {lock.active && (
+              <div className="relative group/btn">
+                <div 
+                  className={`absolute -inset-1 rounded-xl blur opacity-40 group-hover/btn:opacity-60 transition-opacity ${isUnlocked ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-red-500 to-red-600'}`}
+                ></div>
+                <button
+                  onClick={() => setDialogOpen(true)}
+                  disabled={processingUnlock === lock.id}
+                  className={`relative w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 ${
+                    isUnlocked 
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-black' 
+                      : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
+                  }`}
+                >
+                  {processingUnlock === lock.id ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                      Processing...
+                    </>
+                  ) : isUnlocked ? (
+                    <>
+                      <Zap className="w-4 h-4" />
+                      Unlock Tokens
+                    </>
+                  ) : (
+                    <>
+                      <AlertTriangle className="w-4 h-4" />
+                      Early Unlock (-{penalty.penaltyRate.toFixed(1)}%)
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+            
+            {/* Withdrawn Status Message */}
+            {!lock.active && (
+              <div className="bg-gray-500/10 border border-gray-500/30 rounded-xl p-4 text-center">
+                <CheckCircle className="w-5 h-5 text-gray-400 mx-auto mb-2" />
+                <span className="text-gray-400 text-sm">This position has been withdrawn</span>
+              </div>
+            )}
 
             {/* Early Unlock Warning Dialog */}
             <EarlyUnlockWarningDialog
