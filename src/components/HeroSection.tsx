@@ -248,7 +248,7 @@ const HeroSection = ({
               shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_40px_rgba(34,211,238,0.1)]">
               
               {/* Inner glow */}
-              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                 style={{
                   background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.05) 0%, transparent 70%)'
                 }}
