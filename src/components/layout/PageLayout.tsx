@@ -64,12 +64,36 @@ const PageLayout = ({ children }: PageLayoutProps) => {
     img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
   }, []);
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Copied!",
-      description: "Contract address copied to clipboard"
-    });
+  const copyToClipboard = async (text: string) => {
+    try {
+      // Try modern clipboard API first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback for mobile browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        textArea.style.top = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      toast({
+        title: "Copied!",
+        description: "Contract address copied to clipboard"
+      });
+    } catch (err) {
+      // Final fallback - show address in toast for manual copy
+      toast({
+        title: "Copy manually:",
+        description: text,
+        duration: 8000
+      });
+    }
   };
 
   // Updated to use the live ARK contract address
