@@ -34,7 +34,7 @@ const ChatInput = ({ onSendMessage, isLoading }: ChatInputProps) => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask me about ARK, bridges, or Coinbase..."
-            className="w-full bg-gray-900/50 border border-gray-700/50 rounded-lg px-3 py-2 text-white font-mono text-sm resize-none focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 placeholder-gray-500"
+            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground font-mono text-sm resize-none focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 placeholder:text-muted-foreground"
             rows={1}
             style={{ minHeight: '38px', maxHeight: '120px' }}
             disabled={isLoading}

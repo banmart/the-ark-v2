@@ -62,7 +62,7 @@ const LockAmountInput = ({
           placeholder="0.0"
           step="0.000001"
           disabled={emergencyMode || contractPaused || isProcessing}
-          className="w-full bg-black/60 border border-white/20 rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-[hsl(var(--video-cyan))] focus:ring-1 focus:ring-[hsl(var(--video-cyan))]/50 focus:outline-none disabled:opacity-50 transition-colors"
+          className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring/50 focus:outline-none disabled:opacity-50 transition-colors"
         />
       </div>
       

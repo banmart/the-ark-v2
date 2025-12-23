@@ -200,7 +200,7 @@ const LockInterface = ({
               value={lockAmount}
               onChange={(e) => handleAmountChange(e.target.value)}
               placeholder="0.0"
-              className="w-full bg-black/40 border-2 border-gray-600 rounded-lg px-4 py-4 pr-20 text-white text-lg placeholder-gray-400 focus:border-cyan-500 focus:outline-none transition-colors"
+              className="w-full bg-muted border-2 border-border rounded-lg px-4 py-4 pr-20 text-foreground text-lg placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors"
             />
             <button
               onClick={handleMaxClick}
