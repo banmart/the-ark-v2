@@ -40,7 +40,7 @@ interface GraphQLResponse {
 }
 
 async function querySubgraph(): Promise<GraphQLResponse> {
-  // Use only pair-based queries which are more reliable
+  // Simplified query - just get pair data without problematic filters
   const query = `{
     pair(id: "${ARK_PLS_PAIR_ADDRESS}") {
       id
@@ -52,16 +52,6 @@ async function querySubgraph(): Promise<GraphQLResponse> {
       token1 { id symbol name }
       token0Price
       token1Price
-    }
-    pairDayDatas(
-      where: { pair: "${ARK_PLS_PAIR_ADDRESS}" }
-      orderBy: date
-      orderDirection: desc
-      first: 30
-    ) {
-      date
-      dailyVolumeUSD
-      reserveUSD
     }
   }`;
 
