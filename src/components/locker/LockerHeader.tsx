@@ -11,19 +11,19 @@ const LockerHeader = () => {
         {/* System Status Indicator */}
         <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-xs font-mono text-green-400 tracking-wider">SYSTEM_ONLINE</span>
+          <span className="text-xs font-mono text-green-400 tracking-wider">SYSTEM ONLINE</span>
         </div>
 
         {/* Main Title with Diagnostic Styling */}
         <div className="mb-6">
           <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
-            [TOKEN_LOCKER_SYSTEM]
+            [TOKEN LOCKER SYSTEM]
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">
             QUANTUM VAULT
           </h1>
           <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
-            [PROTOCOL_INITIALIZED]
+            [PROTOCOL INITIALIZED]
           </div>
         </div>
 

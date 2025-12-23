@@ -5,7 +5,7 @@ import { useWalletContext } from '../providers/WalletProvider';
 import { useSwapContext } from '../providers/SwapProvider';
 import { useOnboardingContext } from '../providers/OnboardingProvider';
 import OnboardingModal from '../OnboardingModal';
-import AnimatedBackground from '../AnimatedBackground';
+import PremiumBackground from './PremiumBackground';
 import Navigation from '../Navigation';
 import HeroSection from '../HeroSection';
 import ContractAddressSection from '../ContractAddressSection';
@@ -107,8 +107,8 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         onClose={() => setShowOnboarding(false)} 
       />
 
-      {/* Animated Background System */}
-      <AnimatedBackground />
+      {/* Premium Background System */}
+      <PremiumBackground variant="default" />
 
       {/* Navigation */}
       <Navigation 

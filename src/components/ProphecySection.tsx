@@ -18,7 +18,7 @@ const ProphecySection = () => {
   const prophecies = [
     {
       id: 'flood',
-      title: 'FLOOD_PROTOCOL',
+      title: 'FLOOD PROTOCOL',
       emoji: '🌊',
       icon: Waves,
       description: 'System analysis indicates catastrophic market liquidation event imminent. Only ARK protocol holders maintain operational integrity during crypto matrix purge sequence.',
@@ -30,7 +30,7 @@ const ProphecySection = () => {
     },
     {
       id: 'chosen',
-      title: 'CHOSEN_ALGORITHM',
+      title: 'CHOSEN ALGORITHM',
       emoji: '⚡',
       icon: Zap,
       description: 'ARK token holders identified as prime candidates for survival protocol. Divine tokenomics engine provides navigation through market storm matrices.',
@@ -42,7 +42,7 @@ const ProphecySection = () => {
     },
     {
       id: 'newworld',
-      title: 'GENESIS_REBUILD',
+      title: 'GENESIS REBUILD',
       emoji: '🕊️',
       icon: Bird,
       description: 'Post-flood reconstruction algorithms engage. ARK passengers designated as foundational nodes for next-generation crypto ecosystem architecture.',
@@ -249,7 +249,7 @@ const ProphecySection = () => {
           {/* Gradient title */}
           <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">
             <span className="bg-gradient-to-r from-purple-400 via-cyan-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
-              [PROPHECY_MODULES]
+              [PROPHECY MODULES]
             </span>
           </h2>
           

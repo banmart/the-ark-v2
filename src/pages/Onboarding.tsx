@@ -4,6 +4,7 @@ import BaseLayout from '../components/layout/BaseLayout';
 import ProcessFlow from '../components/onboarding/ProcessFlow';
 import ServiceCard from '../components/onboarding/ServiceCard';
 import MobileBrowserPopup from '../components/MobileBrowserPopup';
+import PremiumBackground from '../components/layout/PremiumBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { useBrowserPopup } from '../components/providers/BrowserPopupProvider';
@@ -184,48 +185,8 @@ const Onboarding = () => {
   return (
     <BaseLayout>
       <div className="min-h-screen bg-black text-white relative overflow-hidden">
-        {/* Premium Multi-Layer Background System */}
-        <div className="fixed inset-0 pointer-events-none">
-          {/* Deep vignette */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.4)_50%,rgba(0,0,0,0.8)_100%)]" />
-          
-          {/* Animated gradient orbs */}
-          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-cyan-500/8 rounded-full blur-[120px] animate-[pulse_8s_ease-in-out_infinite]" />
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-teal-500/6 rounded-full blur-[100px] animate-[pulse_10s_ease-in-out_infinite_1s]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-purple-500/5 rounded-full blur-[140px] animate-[pulse_12s_ease-in-out_infinite_2s]" />
-          <div className="absolute bottom-1/3 left-1/3 w-[400px] h-[400px] bg-gold-500/4 rounded-full blur-[80px] animate-[pulse_9s_ease-in-out_infinite_0.5s]" />
-          
-          {/* Film grain texture */}
-          <div className="absolute inset-0 opacity-[0.015] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIi8+PC9zdmc+')]" />
-          
-          {/* Tech grid */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
-          
-          {/* Floating particles */}
-          {[...Array(16)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 rounded-full animate-[pulse_4s_ease-in-out_infinite]"
-              style={{
-                left: `${10 + (i * 5.5) % 80}%`,
-                top: `${15 + (i * 7.3) % 70}%`,
-                backgroundColor: ['rgba(34,211,238,0.4)', 'rgba(45,212,191,0.4)', 'rgba(168,85,247,0.4)', 'rgba(251,191,36,0.3)'][i % 4],
-                animationDelay: `${i * 0.3}s`,
-                animationDuration: `${3 + (i % 3)}s`
-              }}
-            />
-          ))}
-          
-          {/* Corner glow accents */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/8 rounded-full blur-[80px] translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-500/8 rounded-full blur-[70px] -translate-x-1/2 translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
-          
-          {/* Dual animated scan lines */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent animate-[scan_8s_ease-in-out_infinite]" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400/30 to-transparent animate-[scan_10s_ease-in-out_infinite_2s]" />
-        </div>
+        {/* Premium Background */}
+        <PremiumBackground variant="onboarding" particleCount={16} />
 
         {/* Hero Section */}
         <div className="relative z-10">
