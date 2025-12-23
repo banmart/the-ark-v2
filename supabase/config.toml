@@ -3,6 +3,9 @@ project_id = "xtailgacbmhdtdxnqjdv"
 [functions.rpc-proxy]
 verify_jwt = false
 
+[functions.price-api]
+verify_jwt = false
+
 [functions.automated-rewards]
 verify_jwt = false
 
