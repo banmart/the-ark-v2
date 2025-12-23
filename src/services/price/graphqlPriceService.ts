@@ -8,19 +8,12 @@ export interface GraphQLPriceData {
   liquidityUSD: number;
   priceChange24h: number;
   totalVolumeUSD: number;
-  totalLiquidity: number;
-  txCount: number;
   reserves: {
-    reserve0: string;
-    reserve1: string;
-    token0: { id: string; symbol: string };
-    token1: { id: string; symbol: string };
+    arkReserve: number;
+    plsReserve: number;
+    token0: { id: string; symbol: string; name: string };
+    token1: { id: string; symbol: string; name: string };
   } | null;
-  priceHistory: Array<{
-    date: number;
-    priceUSD: number;
-    volumeUSD: number;
-  }>;
   volumeHistory: Array<{
     date: number;
     volumeUSD: number;
@@ -125,8 +118,9 @@ class GraphQLPriceService {
   }
 
   async getPriceHistory(): Promise<Array<{ date: number; priceUSD: number }>> {
-    const data = await this.fetchPriceData();
-    return data?.priceHistory || [];
+    // Note: Price history not available from simplified pair query
+    // Could be enhanced by calculating from volumeHistory if needed
+    return [];
   }
 
   async getVolumeHistory(): Promise<Array<{ date: number; volumeUSD: number; liquidityUSD: number }>> {

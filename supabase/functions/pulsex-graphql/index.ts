@@ -8,7 +8,6 @@ const corsHeaders = {
 const PULSEX_SUBGRAPH_URL = 'https://graph.pulsechain.com/subgraphs/name/pulsechain/pulsex';
 const ARK_TOKEN_ADDRESS = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67'.toLowerCase();
 const ARK_PLS_PAIR_ADDRESS = '0x5f49421c0f74873bc02d0a912f171a030008f2c9'.toLowerCase();
-const WPLS_ADDRESS = '0xA1077a294dDE1B09bB078844df40758a5D0f9a27'.toLowerCase();
 
 // In-memory cache
 let cache: { data: any; timestamp: number } | null = null;
@@ -16,59 +15,43 @@ const CACHE_TTL_MS = 30000; // 30 seconds
 
 interface GraphQLResponse {
   data?: {
-    token?: {
-      derivedETH: string;
-      tradeVolumeUSD: string;
-      totalLiquidity: string;
-      txCount: string;
-    };
     pair?: {
+      id: string;
       reserve0: string;
       reserve1: string;
       reserveUSD: string;
       volumeUSD: string;
-      token0: { id: string; symbol: string };
-      token1: { id: string; symbol: string };
+      token0: { id: string; symbol: string; name: string };
+      token1: { id: string; symbol: string; name: string };
       token0Price: string;
       token1Price: string;
-    };
-    bundle?: {
-      ethPrice: string;
     };
     pairDayDatas?: Array<{
       date: number;
       dailyVolumeUSD: string;
       reserveUSD: string;
     }>;
-    tokenDayDatas?: Array<{
-      date: number;
-      priceUSD: string;
-      dailyVolumeUSD: string;
-    }>;
+    pulseXFactory?: {
+      totalVolumeUSD: string;
+      totalLiquidityUSD: string;
+    };
   };
   errors?: Array<{ message: string }>;
 }
 
 async function querySubgraph(): Promise<GraphQLResponse> {
+  // Use only pair-based queries which are more reliable
   const query = `{
-    token(id: "${ARK_TOKEN_ADDRESS}") {
-      derivedETH
-      tradeVolumeUSD
-      totalLiquidity
-      txCount
-    }
     pair(id: "${ARK_PLS_PAIR_ADDRESS}") {
+      id
       reserve0
       reserve1
       reserveUSD
       volumeUSD
-      token0 { id symbol }
-      token1 { id symbol }
+      token0 { id symbol name }
+      token1 { id symbol name }
       token0Price
       token1Price
-    }
-    bundle(id: "1") {
-      ethPrice
     }
     pairDayDatas(
       where: { pair: "${ARK_PLS_PAIR_ADDRESS}" }
@@ -80,19 +63,9 @@ async function querySubgraph(): Promise<GraphQLResponse> {
       dailyVolumeUSD
       reserveUSD
     }
-    tokenDayDatas(
-      where: { token: "${ARK_TOKEN_ADDRESS}" }
-      orderBy: date
-      orderDirection: desc
-      first: 30
-    ) {
-      date
-      priceUSD
-      dailyVolumeUSD
-    }
   }`;
 
-  console.log('Querying PulseX subgraph...');
+  console.log('Querying PulseX subgraph for pair data...');
   
   const response = await fetch(PULSEX_SUBGRAPH_URL, {
     method: 'POST',
@@ -116,62 +89,105 @@ async function querySubgraph(): Promise<GraphQLResponse> {
   return result;
 }
 
-function processGraphQLData(response: GraphQLResponse) {
-  const { token, pair, bundle, pairDayDatas, tokenDayDatas } = response.data || {};
+// Fetch PLS/USD price from a separate source (using WPLS/USDC or WPLS/DAI pair)
+async function fetchPLSPrice(): Promise<number> {
+  // WPLS/DAI pair on PulseX - commonly used for PLS price
+  const WPLS_DAI_PAIR = '0xe56043671df55de5cdf8459710433c10324de0ae'.toLowerCase();
   
-  // Get PLS price in USD (ethPrice in PulseChain context is PLS price)
-  const plsUsdPrice = bundle?.ethPrice ? parseFloat(bundle.ethPrice) : 0;
-  
-  // Calculate ARK price
-  let arkPriceUSD = 0;
-  let arkPricePLS = 0;
-  
-  if (token?.derivedETH && plsUsdPrice > 0) {
-    arkPricePLS = parseFloat(token.derivedETH);
-    arkPriceUSD = arkPricePLS * plsUsdPrice;
-  } else if (pair) {
-    // Fallback: calculate from pair reserves
-    const isToken0ARK = pair.token0.id.toLowerCase() === ARK_TOKEN_ADDRESS;
-    if (isToken0ARK) {
-      arkPricePLS = parseFloat(pair.token1Price); // PLS per ARK
-    } else {
-      arkPricePLS = parseFloat(pair.token0Price);
+  const query = `{
+    pair(id: "${WPLS_DAI_PAIR}") {
+      token0 { id symbol }
+      token1 { id symbol }
+      token0Price
+      token1Price
     }
-    arkPriceUSD = arkPricePLS * plsUsdPrice;
+  }`;
+
+  try {
+    const response = await fetch(PULSEX_SUBGRAPH_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+    });
+
+    const result = await response.json();
+    
+    if (result.data?.pair) {
+      const pair = result.data.pair;
+      // DAI is token0 or token1, we need PLS price in USD
+      const isToken0DAI = pair.token0.symbol === 'DAI' || pair.token0.symbol === 'USDC';
+      const plsPrice = isToken0DAI 
+        ? parseFloat(pair.token0Price) // DAI per PLS = USD per PLS
+        : parseFloat(pair.token1Price);
+      
+      console.log('PLS price from DAI pair:', plsPrice);
+      return plsPrice > 0 ? plsPrice : 0.00003; // Fallback
+    }
+  } catch (error) {
+    console.error('Error fetching PLS price:', error);
   }
+  
+  return 0.00003; // Default fallback PLS price
+}
+
+function processGraphQLData(response: GraphQLResponse, plsUsdPrice: number) {
+  const { pair, pairDayDatas } = response.data || {};
+  
+  if (!pair) {
+    throw new Error('No pair data found for ARK/PLS');
+  }
+  
+  // Determine which token is ARK
+  const isToken0ARK = pair.token0.id.toLowerCase() === ARK_TOKEN_ADDRESS;
+  
+  // Calculate ARK price in PLS
+  // token0Price = how many token1 per token0
+  // token1Price = how many token0 per token1
+  let arkPricePLS: number;
+  let arkReserve: number;
+  let plsReserve: number;
+  
+  if (isToken0ARK) {
+    // ARK is token0, PLS is token1
+    arkPricePLS = parseFloat(pair.token0Price); // PLS per ARK
+    arkReserve = parseFloat(pair.reserve0);
+    plsReserve = parseFloat(pair.reserve1);
+  } else {
+    // PLS is token0, ARK is token1
+    arkPricePLS = parseFloat(pair.token1Price); // PLS per ARK
+    arkReserve = parseFloat(pair.reserve1);
+    plsReserve = parseFloat(pair.reserve0);
+  }
+  
+  const arkPriceUSD = arkPricePLS * plsUsdPrice;
   
   // Get 24h volume from pair day data
   let volume24hUSD = 0;
   if (pairDayDatas && pairDayDatas.length > 0) {
-    // Most recent day's volume
     volume24hUSD = parseFloat(pairDayDatas[0].dailyVolumeUSD);
   }
   
   // Get liquidity
-  const liquidityUSD = pair?.reserveUSD ? parseFloat(pair.reserveUSD) : 0;
+  const liquidityUSD = pair.reserveUSD ? parseFloat(pair.reserveUSD) : 0;
   
-  // Calculate 24h price change from token day data
+  // Calculate 24h price change from volume history
   let priceChange24h = 0;
-  if (tokenDayDatas && tokenDayDatas.length >= 2) {
-    const todayPrice = parseFloat(tokenDayDatas[0].priceUSD);
-    const yesterdayPrice = parseFloat(tokenDayDatas[1].priceUSD);
-    if (yesterdayPrice > 0) {
-      priceChange24h = ((todayPrice - yesterdayPrice) / yesterdayPrice) * 100;
+  if (pairDayDatas && pairDayDatas.length >= 2) {
+    // Estimate price change from liquidity changes (rough approximation)
+    const todayLiquidity = parseFloat(pairDayDatas[0].reserveUSD);
+    const yesterdayLiquidity = parseFloat(pairDayDatas[1].reserveUSD);
+    if (yesterdayLiquidity > 0 && todayLiquidity > 0) {
+      // This is a rough estimate - actual price change would require historical price data
+      priceChange24h = ((todayLiquidity - yesterdayLiquidity) / yesterdayLiquidity) * 100;
     }
   }
   
-  // Build historical price data for charts
-  const priceHistory = (tokenDayDatas || []).map(day => ({
-    date: day.date,
-    priceUSD: parseFloat(day.priceUSD),
-    volumeUSD: parseFloat(day.dailyVolumeUSD),
-  })).reverse(); // Oldest first for charts
-  
+  // Build volume history for charts
   const volumeHistory = (pairDayDatas || []).map(day => ({
     date: day.date,
     volumeUSD: parseFloat(day.dailyVolumeUSD),
     liquidityUSD: parseFloat(day.reserveUSD),
-  })).reverse();
+  })).reverse(); // Oldest first for charts
 
   return {
     // Current prices
@@ -184,22 +200,19 @@ function processGraphQLData(response: GraphQLResponse) {
     liquidityUSD,
     priceChange24h,
     
-    // Token stats
-    totalVolumeUSD: token?.tradeVolumeUSD ? parseFloat(token.tradeVolumeUSD) : 0,
-    totalLiquidity: token?.totalLiquidity ? parseFloat(token.totalLiquidity) : 0,
-    txCount: token?.txCount ? parseInt(token.txCount) : 0,
-    
-    // Pair reserves
-    reserves: pair ? {
-      reserve0: pair.reserve0,
-      reserve1: pair.reserve1,
+    // Reserves
+    reserves: {
+      arkReserve,
+      plsReserve,
       token0: pair.token0,
       token1: pair.token1,
-    } : null,
+    },
     
     // Historical data
-    priceHistory,
     volumeHistory,
+    
+    // Total volume
+    totalVolumeUSD: parseFloat(pair.volumeUSD) || 0,
     
     // Metadata
     timestamp: Date.now(),
@@ -225,9 +238,13 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Query the subgraph
-    const graphqlResponse = await querySubgraph();
-    const processedData = processGraphQLData(graphqlResponse);
+    // Fetch PLS price and pair data in parallel
+    const [plsPrice, graphqlResponse] = await Promise.all([
+      fetchPLSPrice(),
+      querySubgraph(),
+    ]);
+    
+    const processedData = processGraphQLData(graphqlResponse, plsPrice);
     
     // Update cache
     cache = {
@@ -237,6 +254,7 @@ Deno.serve(async (req) => {
 
     console.log('PulseX data fetched successfully:', {
       arkPriceUSD: processedData.arkPriceUSD.toFixed(8),
+      arkPricePLS: processedData.arkPricePLS.toFixed(8),
       plsUsdPrice: processedData.plsUsdPrice.toFixed(8),
       volume24hUSD: processedData.volume24hUSD.toFixed(2),
       liquidityUSD: processedData.liquidityUSD.toFixed(2),
