@@ -10,6 +10,7 @@ import { WalletProvider } from "./components/providers/WalletProvider";
 import { SwapProvider } from "./components/providers/SwapProvider";
 import { OnboardingProvider } from "./components/providers/OnboardingProvider";
 import { BrowserPopupProvider } from "./components/providers/BrowserPopupProvider";
+import { ARKDataProvider } from "./contexts/ARKDataContext";
 import ChatDrawer from "./components/chat/ChatDrawer";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
@@ -27,30 +28,32 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserPopupProvider>
-          <WalletProvider>
-            <SwapProvider>
-              <OnboardingProvider>
-                <ChatProvider>
-                  <Toaster />
-                  <Sonner />
-                  <BrowserRouter>
-                    <ScrollToTop />
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/onboarding" element={<Onboarding />} />
-                      <Route path="/locker" element={<Locker />} />
-                      <Route path="/leaderboard" element={<Leaderboard />} />
-                      <Route path="/burn-analytics" element={<BurnAnalytics />} />
-                      <Route path="/burn" element={<Burn />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                    <ChatDrawer />
-                  </BrowserRouter>
-                </ChatProvider>
-              </OnboardingProvider>
-            </SwapProvider>
-          </WalletProvider>
+          <ARKDataProvider>
+            <WalletProvider>
+              <SwapProvider>
+                <OnboardingProvider>
+                  <ChatProvider>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                      <ScrollToTop />
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/onboarding" element={<Onboarding />} />
+                        <Route path="/locker" element={<Locker />} />
+                        <Route path="/leaderboard" element={<Leaderboard />} />
+                        <Route path="/burn-analytics" element={<BurnAnalytics />} />
+                        <Route path="/burn" element={<Burn />} />
+                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                      <ChatDrawer />
+                    </BrowserRouter>
+                  </ChatProvider>
+                </OnboardingProvider>
+              </SwapProvider>
+            </WalletProvider>
+          </ARKDataProvider>
         </BrowserPopupProvider>
       </TooltipProvider>
     </QueryClientProvider>
