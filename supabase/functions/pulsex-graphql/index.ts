@@ -9,6 +9,10 @@ const PULSEX_SUBGRAPH_URL = 'https://graph.pulsechain.com/subgraphs/name/pulsech
 const ARK_TOKEN_ADDRESS = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67'.toLowerCase();
 const WPLS_ADDRESS = '0xA1077a294dDE1B09bB078844df40758a5D0f9a27'.toLowerCase();
 
+// Known pair addresses from the app config (may not be indexed by the subgraph)
+const ARK_PLS_PAIR = '0x5f49421c0f74873bc02d0a912f171a030008f2c9'.toLowerCase();
+const ARK_DAI_PAIR = '0x03f0bdb4f14e76a35a39ef0ffd87c8bb6d451366'.toLowerCase();
+
 // In-memory cache
 let cache: { data: any; timestamp: number } | null = null;
 const CACHE_TTL_MS = 30000; // 30 seconds
@@ -33,8 +37,63 @@ interface GraphQLResponse {
   errors?: Array<{ message: string }>;
 }
 
+async function fetchPairById(pairId: string): Promise<PairData | null> {
+  const query = `{
+    pair(id: "${pairId}") {
+      id
+      reserve0
+      reserve1
+      reserveUSD
+      volumeUSD
+      token0 { id symbol name }
+      token1 { id symbol name }
+      token0Price
+      token1Price
+    }
+  }`;
+
+  try {
+    const response = await fetch(PULSEX_SUBGRAPH_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+    });
+
+    const result: GraphQLResponse = await response.json();
+
+    if (result.errors) {
+      console.error('GraphQL errors fetching pair by id:', { pairId, errors: result.errors });
+      return null;
+    }
+
+    return result.data?.pair ?? null;
+  } catch (error) {
+    console.error('Error fetching pair by id:', { pairId, error });
+    return null;
+  }
+}
+
 // Search for pairs containing ARK token
 async function findARKPairs(): Promise<PairData | null> {
+  // First try the known pair ids (fast + most reliable if indexed)
+  console.log('Trying known ARK pair ids...');
+  const [knownPls, knownDai] = await Promise.all([
+    fetchPairById(ARK_PLS_PAIR),
+    fetchPairById(ARK_DAI_PAIR),
+  ]);
+
+  const knownPairs = [knownPls, knownDai].filter(Boolean) as PairData[];
+  const verifiedKnown = knownPairs.find(
+    (p) =>
+      p.token0.id.toLowerCase() === ARK_TOKEN_ADDRESS ||
+      p.token1.id.toLowerCase() === ARK_TOKEN_ADDRESS,
+  );
+
+  if (verifiedKnown) {
+    console.log('Found known ARK pair:', verifiedKnown.id);
+    return verifiedKnown;
+  }
+
   // Query for pairs where ARK is token0 or token1
   const query = `{
     pairs(
@@ -61,7 +120,7 @@ async function findARKPairs(): Promise<PairData | null> {
   }`;
 
   console.log('Searching for ARK pairs in PulseX subgraph...');
-  
+
   try {
     const response = await fetch(PULSEX_SUBGRAPH_URL, {
       method: 'POST',
@@ -70,7 +129,7 @@ async function findARKPairs(): Promise<PairData | null> {
     });
 
     const result = await response.json();
-    
+
     if (result.errors) {
       console.error('GraphQL errors searching pairs:', result.errors);
       // Try alternative query without 'or' operator
@@ -80,9 +139,10 @@ async function findARKPairs(): Promise<PairData | null> {
     if (result.data?.pairs && result.data.pairs.length > 0) {
       console.log(`Found ${result.data.pairs.length} ARK pairs`);
       // Prefer pair with WPLS, otherwise use highest liquidity
-      const wplsPair = result.data.pairs.find((p: PairData) => 
-        p.token0.id.toLowerCase() === WPLS_ADDRESS || 
-        p.token1.id.toLowerCase() === WPLS_ADDRESS
+      const wplsPair = result.data.pairs.find(
+        (p: PairData) =>
+          p.token0.id.toLowerCase() === WPLS_ADDRESS ||
+          p.token1.id.toLowerCase() === WPLS_ADDRESS,
       );
       return wplsPair || result.data.pairs[0];
     }
@@ -204,34 +264,42 @@ async function fetchPLSPrice(): Promise<number> {
 
 function processGraphQLData(pair: PairData, plsUsdPrice: number) {
   const isToken0ARK = pair.token0.id.toLowerCase() === ARK_TOKEN_ADDRESS;
-  
-  let arkPricePLS: number;
-  let arkReserve: number;
-  let plsReserve: number;
-  
-  if (isToken0ARK) {
-    arkPricePLS = parseFloat(pair.token0Price);
-    arkReserve = parseFloat(pair.reserve0);
-    plsReserve = parseFloat(pair.reserve1);
-  } else {
-    arkPricePLS = parseFloat(pair.token1Price);
-    arkReserve = parseFloat(pair.reserve1);
-    plsReserve = parseFloat(pair.reserve0);
-  }
-  
-  const arkPriceUSD = arkPricePLS * plsUsdPrice;
+
+  const token0Symbol = (pair.token0.symbol || '').toUpperCase();
+  const token1Symbol = (pair.token1.symbol || '').toUpperCase();
+
+  const counterTokenId = (isToken0ARK ? pair.token1.id : pair.token0.id).toLowerCase();
+  const counterSymbol = isToken0ARK ? token1Symbol : token0Symbol;
+
+  const counterIsStable = ['DAI', 'USDC', 'USDT'].includes(counterSymbol);
+
+  const arkPriceInCounter = isToken0ARK
+    ? parseFloat(pair.token0Price)
+    : parseFloat(pair.token1Price);
+
+  // Reserves
+  const arkReserve = parseFloat(isToken0ARK ? pair.reserve0 : pair.reserve1);
+  const counterReserve = parseFloat(isToken0ARK ? pair.reserve1 : pair.reserve0);
+
+  // Prices
+  const arkPriceUSD = counterIsStable ? arkPriceInCounter : arkPriceInCounter * plsUsdPrice;
+  const arkPricePLS = plsUsdPrice > 0 ? arkPriceUSD / plsUsdPrice : 0;
+
   const liquidityUSD = pair.reserveUSD ? parseFloat(pair.reserveUSD) : 0;
 
+  // Note: volume/day data isn't available in this simplified query.
   return {
     arkPriceUSD,
     arkPricePLS,
     plsUsdPrice,
-    volume24hUSD: 0, // Not available without day data
+    volume24hUSD: 0,
     liquidityUSD,
     priceChange24h: 0,
     reserves: {
       arkReserve,
-      plsReserve,
+      // Kept as `plsReserve` for backwards compatibility with the frontend type.
+      // For stable pairs, this represents the counter token reserve.
+      plsReserve: counterReserve,
       token0: pair.token0,
       token1: pair.token1,
     },
@@ -264,9 +332,28 @@ Deno.serve(async (req) => {
     ]);
     
     if (!arkPair) {
-      throw new Error('No ARK pairs found in PulseX subgraph');
+      console.warn('No ARK pairs found in PulseX subgraph; returning graceful error payload');
+      return new Response(
+        JSON.stringify({
+          arkPriceUSD: 0,
+          arkPricePLS: 0,
+          plsUsdPrice: plsPrice,
+          volume24hUSD: 0,
+          liquidityUSD: 0,
+          priceChange24h: 0,
+          totalVolumeUSD: 0,
+          reserves: null,
+          volumeHistory: [],
+          timestamp: Date.now(),
+          source: 'PulseX Subgraph',
+          error: 'No ARK pairs found in PulseX subgraph',
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      );
     }
-    
+
     const processedData = processGraphQLData(arkPair, plsPrice);
     
     cache = { data: processedData, timestamp: Date.now() };
