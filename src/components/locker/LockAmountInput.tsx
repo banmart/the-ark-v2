@@ -48,9 +48,9 @@ const LockAmountInput = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
-        <label className="block text-sm font-medium">Amount to Lock (ARK)</label>
-        <div className="text-2xl font-bold text-green-400 animate-pulse drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+        <label className="block text-sm font-medium text-white/90">Amount to Lock (ARK)</label>
+        <div className="text-sm sm:text-base lg:text-lg font-bold text-green-400 animate-pulse drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]">
           Balance: {isConnected ? userArkBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '--'} ARK
         </div>
       </div>
@@ -62,7 +62,7 @@ const LockAmountInput = ({
           placeholder="0.0"
           step="0.000001"
           disabled={emergencyMode || contractPaused || isProcessing}
-          className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring/50 focus:outline-none disabled:opacity-50 transition-colors"
+          className="w-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 focus:outline-none disabled:opacity-50 transition-all duration-300"
         />
       </div>
       

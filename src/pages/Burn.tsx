@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Flame, Activity, Users, TrendingUp, Zap, AlertTriangle, Info, ExternalLink, Droplets, Sparkles } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import PremiumBackground from '../components/layout/PremiumBackground';
 import { useARKTokenData } from '../hooks/useARKTokenData';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
 import { useBurnAnalytics, BurnTransaction as BurnAnalyticsTransaction } from '../hooks/useBurnAnalytics';
@@ -246,48 +247,8 @@ const Burn = () => {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Premium Multi-Layer Background */}
-      <div className="fixed inset-0 z-0">
-        {/* Deep vignette overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(0,0,0,0.4)_50%,_rgba(0,0,0,0.9)_100%)]" />
-        
-        {/* Animated gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-radial from-cyan-500/15 via-cyan-500/5 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-radial from-teal-500/12 via-teal-500/4 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
-        <div className="absolute top-1/2 right-1/3 w-[400px] h-[400px] bg-gradient-radial from-orange-500/10 via-orange-500/3 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
-        <div className="absolute bottom-1/3 left-1/3 w-[450px] h-[450px] bg-gradient-radial from-gold-500/10 via-amber-500/3 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDuration: '9s', animationDelay: '1s' }} />
-        
-        {/* Film grain texture */}
-        <div className="absolute inset-0 opacity-[0.015] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
-        
-        {/* Tech grid overlay */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(34,211,238,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.1) 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
-        
-        {/* Floating particles */}
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              backgroundColor: i % 3 === 0 ? 'rgba(34,211,238,0.4)' : i % 3 === 1 ? 'rgba(251,146,60,0.4)' : 'rgba(251,191,36,0.4)',
-              animationDuration: `${3 + Math.random() * 4}s`,
-              animationDelay: `${Math.random() * 2}s`
-            }}
-          />
-        ))}
-        
-        {/* Corner glow accents */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-radial from-cyan-500/10 to-transparent blur-3xl" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-orange-500/8 to-transparent blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-radial from-teal-500/8 to-transparent blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-radial from-gold-500/10 to-transparent blur-3xl" />
-        
-        {/* Dual animated scan lines */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/60 to-transparent animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
+      {/* Premium Background */}
+      <PremiumBackground variant="burn" particleCount={20} />
 
       {/* Navigation */}
       <div className="relative z-20">

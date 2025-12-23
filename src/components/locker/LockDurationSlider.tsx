@@ -25,9 +25,9 @@ const LockDurationSlider = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
-        <label className="text-sm font-medium">Lock Duration (Days)</label>
-        <div className="flex items-center gap-1 text-xs text-gray-400">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+        <label className="text-sm font-medium text-white/90">Lock Duration (Days)</label>
+        <div className="flex items-center gap-1 text-xs text-white/50">
           <Info className="w-3 h-3" />
           Min: {CONTRACT_CONSTANTS.MIN_LOCK_DURATION}, Max: {CONTRACT_CONSTANTS.MAX_LOCK_DURATION}
         </div>
@@ -39,9 +39,9 @@ const LockDurationSlider = ({
         value={lockDuration}
         onChange={(e) => setLockDuration(Number(e.target.value))}
         disabled={emergencyMode || contractPaused || isProcessing}
-        className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider disabled:opacity-50"
+        className="w-full h-2 bg-white/[0.1] rounded-lg appearance-none cursor-pointer slider disabled:opacity-50 accent-cyan-500"
       />
-      <div className="flex justify-between text-sm text-gray-400 mt-2">
+      <div className="flex justify-between text-xs sm:text-sm text-white/50 mt-2">
         <span>{CONTRACT_CONSTANTS.MIN_LOCK_DURATION} days</span>
         <span className={`font-bold ${isValidDuration ? 'text-cyan-400' : 'text-red-400'}`}>
           {lockDuration} days
