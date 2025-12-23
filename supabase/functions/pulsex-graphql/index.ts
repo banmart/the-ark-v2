@@ -7,42 +7,47 @@ const corsHeaders = {
 
 const PULSEX_SUBGRAPH_URL = 'https://graph.pulsechain.com/subgraphs/name/pulsechain/pulsex';
 const ARK_TOKEN_ADDRESS = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67'.toLowerCase();
-const ARK_PLS_PAIR_ADDRESS = '0x5f49421c0f74873bc02d0a912f171a030008f2c9'.toLowerCase();
+const WPLS_ADDRESS = '0xA1077a294dDE1B09bB078844df40758a5D0f9a27'.toLowerCase();
 
 // In-memory cache
 let cache: { data: any; timestamp: number } | null = null;
 const CACHE_TTL_MS = 30000; // 30 seconds
 
+interface PairData {
+  id: string;
+  reserve0: string;
+  reserve1: string;
+  reserveUSD: string;
+  volumeUSD: string;
+  token0: { id: string; symbol: string; name: string };
+  token1: { id: string; symbol: string; name: string };
+  token0Price: string;
+  token1Price: string;
+}
+
 interface GraphQLResponse {
   data?: {
-    pair?: {
-      id: string;
-      reserve0: string;
-      reserve1: string;
-      reserveUSD: string;
-      volumeUSD: string;
-      token0: { id: string; symbol: string; name: string };
-      token1: { id: string; symbol: string; name: string };
-      token0Price: string;
-      token1Price: string;
-    };
-    pairDayDatas?: Array<{
-      date: number;
-      dailyVolumeUSD: string;
-      reserveUSD: string;
-    }>;
-    pulseXFactory?: {
-      totalVolumeUSD: string;
-      totalLiquidityUSD: string;
-    };
+    pairs?: PairData[];
+    pair?: PairData;
   };
   errors?: Array<{ message: string }>;
 }
 
-async function querySubgraph(): Promise<GraphQLResponse> {
-  // Simplified query - just get pair data without problematic filters
+// Search for pairs containing ARK token
+async function findARKPairs(): Promise<PairData | null> {
+  // Query for pairs where ARK is token0 or token1
   const query = `{
-    pair(id: "${ARK_PLS_PAIR_ADDRESS}") {
+    pairs(
+      where: {
+        or: [
+          { token0: "${ARK_TOKEN_ADDRESS}" },
+          { token1: "${ARK_TOKEN_ADDRESS}" }
+        ]
+      }
+      first: 10
+      orderBy: reserveUSD
+      orderDirection: desc
+    ) {
       id
       reserve0
       reserve1
@@ -55,33 +60,111 @@ async function querySubgraph(): Promise<GraphQLResponse> {
     }
   }`;
 
-  console.log('Querying PulseX subgraph for pair data...');
+  console.log('Searching for ARK pairs in PulseX subgraph...');
   
-  const response = await fetch(PULSEX_SUBGRAPH_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query }),
-  });
+  try {
+    const response = await fetch(PULSEX_SUBGRAPH_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+    });
 
-  if (!response.ok) {
-    throw new Error(`GraphQL request failed: ${response.status} ${response.statusText}`);
+    const result = await response.json();
+    
+    if (result.errors) {
+      console.error('GraphQL errors searching pairs:', result.errors);
+      // Try alternative query without 'or' operator
+      return await findARKPairsAlternative();
+    }
+
+    if (result.data?.pairs && result.data.pairs.length > 0) {
+      console.log(`Found ${result.data.pairs.length} ARK pairs`);
+      // Prefer pair with WPLS, otherwise use highest liquidity
+      const wplsPair = result.data.pairs.find((p: PairData) => 
+        p.token0.id.toLowerCase() === WPLS_ADDRESS || 
+        p.token1.id.toLowerCase() === WPLS_ADDRESS
+      );
+      return wplsPair || result.data.pairs[0];
+    }
+
+    return await findARKPairsAlternative();
+  } catch (error) {
+    console.error('Error searching for ARK pairs:', error);
+    return await findARKPairsAlternative();
   }
-
-  const result = await response.json();
-  
-  if (result.errors && result.errors.length > 0) {
-    console.error('GraphQL errors:', result.errors);
-    throw new Error(`GraphQL errors: ${result.errors.map((e: any) => e.message).join(', ')}`);
-  }
-
-  return result;
 }
 
-// Fetch PLS/USD price from a separate source (using WPLS/USDC or WPLS/DAI pair)
+// Alternative query without 'or' operator
+async function findARKPairsAlternative(): Promise<PairData | null> {
+  console.log('Trying alternative query for ARK pairs...');
+  
+  // Query token0 = ARK
+  const query0 = `{
+    pairs(where: { token0: "${ARK_TOKEN_ADDRESS}" }, first: 5, orderBy: reserveUSD, orderDirection: desc) {
+      id reserve0 reserve1 reserveUSD volumeUSD
+      token0 { id symbol name }
+      token1 { id symbol name }
+      token0Price token1Price
+    }
+  }`;
+  
+  // Query token1 = ARK
+  const query1 = `{
+    pairs(where: { token1: "${ARK_TOKEN_ADDRESS}" }, first: 5, orderBy: reserveUSD, orderDirection: desc) {
+      id reserve0 reserve1 reserveUSD volumeUSD
+      token0 { id symbol name }
+      token1 { id symbol name }
+      token0Price token1Price
+    }
+  }`;
+
+  try {
+    const [res0, res1] = await Promise.all([
+      fetch(PULSEX_SUBGRAPH_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query0 }),
+      }),
+      fetch(PULSEX_SUBGRAPH_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query1 }),
+      }),
+    ]);
+
+    const [data0, data1] = await Promise.all([res0.json(), res1.json()]);
+    
+    const pairs0 = data0.data?.pairs || [];
+    const pairs1 = data1.data?.pairs || [];
+    const allPairs = [...pairs0, ...pairs1];
+    
+    console.log(`Alternative query found ${allPairs.length} pairs (${pairs0.length} as token0, ${pairs1.length} as token1)`);
+
+    if (allPairs.length > 0) {
+      // Prefer pair with WPLS
+      const wplsPair = allPairs.find((p: PairData) => 
+        p.token0.id.toLowerCase() === WPLS_ADDRESS || 
+        p.token1.id.toLowerCase() === WPLS_ADDRESS
+      );
+      if (wplsPair) {
+        console.log('Found WPLS pair:', wplsPair.id);
+        return wplsPair;
+      }
+      // Return highest liquidity pair
+      allPairs.sort((a, b) => parseFloat(b.reserveUSD) - parseFloat(a.reserveUSD));
+      console.log('Using highest liquidity pair:', allPairs[0].id);
+      return allPairs[0];
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Alternative query error:', error);
+    return null;
+  }
+}
+
+// Fetch PLS/USD price
 async function fetchPLSPrice(): Promise<number> {
-  // WPLS/DAI pair on PulseX - commonly used for PLS price
   const WPLS_DAI_PAIR = '0xe56043671df55de5cdf8459710433c10324de0ae'.toLowerCase();
   
   const query = `{
@@ -104,163 +187,105 @@ async function fetchPLSPrice(): Promise<number> {
     
     if (result.data?.pair) {
       const pair = result.data.pair;
-      // DAI is token0 or token1, we need PLS price in USD
       const isToken0DAI = pair.token0.symbol === 'DAI' || pair.token0.symbol === 'USDC';
       const plsPrice = isToken0DAI 
-        ? parseFloat(pair.token0Price) // DAI per PLS = USD per PLS
+        ? parseFloat(pair.token0Price)
         : parseFloat(pair.token1Price);
       
       console.log('PLS price from DAI pair:', plsPrice);
-      return plsPrice > 0 ? plsPrice : 0.00003; // Fallback
+      return plsPrice > 0 ? plsPrice : 0.00003;
     }
   } catch (error) {
     console.error('Error fetching PLS price:', error);
   }
   
-  return 0.00003; // Default fallback PLS price
+  return 0.00003;
 }
 
-function processGraphQLData(response: GraphQLResponse, plsUsdPrice: number) {
-  const { pair, pairDayDatas } = response.data || {};
-  
-  if (!pair) {
-    throw new Error('No pair data found for ARK/PLS');
-  }
-  
-  // Determine which token is ARK
+function processGraphQLData(pair: PairData, plsUsdPrice: number) {
   const isToken0ARK = pair.token0.id.toLowerCase() === ARK_TOKEN_ADDRESS;
   
-  // Calculate ARK price in PLS
-  // token0Price = how many token1 per token0
-  // token1Price = how many token0 per token1
   let arkPricePLS: number;
   let arkReserve: number;
   let plsReserve: number;
   
   if (isToken0ARK) {
-    // ARK is token0, PLS is token1
-    arkPricePLS = parseFloat(pair.token0Price); // PLS per ARK
+    arkPricePLS = parseFloat(pair.token0Price);
     arkReserve = parseFloat(pair.reserve0);
     plsReserve = parseFloat(pair.reserve1);
   } else {
-    // PLS is token0, ARK is token1
-    arkPricePLS = parseFloat(pair.token1Price); // PLS per ARK
+    arkPricePLS = parseFloat(pair.token1Price);
     arkReserve = parseFloat(pair.reserve1);
     plsReserve = parseFloat(pair.reserve0);
   }
   
   const arkPriceUSD = arkPricePLS * plsUsdPrice;
-  
-  // Get 24h volume from pair day data
-  let volume24hUSD = 0;
-  if (pairDayDatas && pairDayDatas.length > 0) {
-    volume24hUSD = parseFloat(pairDayDatas[0].dailyVolumeUSD);
-  }
-  
-  // Get liquidity
   const liquidityUSD = pair.reserveUSD ? parseFloat(pair.reserveUSD) : 0;
-  
-  // Calculate 24h price change from volume history
-  let priceChange24h = 0;
-  if (pairDayDatas && pairDayDatas.length >= 2) {
-    // Estimate price change from liquidity changes (rough approximation)
-    const todayLiquidity = parseFloat(pairDayDatas[0].reserveUSD);
-    const yesterdayLiquidity = parseFloat(pairDayDatas[1].reserveUSD);
-    if (yesterdayLiquidity > 0 && todayLiquidity > 0) {
-      // This is a rough estimate - actual price change would require historical price data
-      priceChange24h = ((todayLiquidity - yesterdayLiquidity) / yesterdayLiquidity) * 100;
-    }
-  }
-  
-  // Build volume history for charts
-  const volumeHistory = (pairDayDatas || []).map(day => ({
-    date: day.date,
-    volumeUSD: parseFloat(day.dailyVolumeUSD),
-    liquidityUSD: parseFloat(day.reserveUSD),
-  })).reverse(); // Oldest first for charts
 
   return {
-    // Current prices
     arkPriceUSD,
     arkPricePLS,
     plsUsdPrice,
-    
-    // Market data
-    volume24hUSD,
+    volume24hUSD: 0, // Not available without day data
     liquidityUSD,
-    priceChange24h,
-    
-    // Reserves
+    priceChange24h: 0,
     reserves: {
       arkReserve,
       plsReserve,
       token0: pair.token0,
       token1: pair.token1,
     },
-    
-    // Historical data
-    volumeHistory,
-    
-    // Total volume
+    volumeHistory: [],
     totalVolumeUSD: parseFloat(pair.volumeUSD) || 0,
-    
-    // Metadata
+    pairAddress: pair.id,
     timestamp: Date.now(),
     source: 'PulseX Subgraph',
   };
 }
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Check cache first
+    // Check cache
     if (cache && (Date.now() - cache.timestamp) < CACHE_TTL_MS) {
       console.log('Returning cached PulseX data');
-      return new Response(JSON.stringify({
-        ...cache.data,
-        cached: true,
-      }), {
+      return new Response(JSON.stringify({ ...cache.data, cached: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Fetch PLS price and pair data in parallel
-    const [plsPrice, graphqlResponse] = await Promise.all([
+    // Fetch data
+    const [plsPrice, arkPair] = await Promise.all([
       fetchPLSPrice(),
-      querySubgraph(),
+      findARKPairs(),
     ]);
     
-    const processedData = processGraphQLData(graphqlResponse, plsPrice);
+    if (!arkPair) {
+      throw new Error('No ARK pairs found in PulseX subgraph');
+    }
     
-    // Update cache
-    cache = {
-      data: processedData,
-      timestamp: Date.now(),
-    };
+    const processedData = processGraphQLData(arkPair, plsPrice);
+    
+    cache = { data: processedData, timestamp: Date.now() };
 
     console.log('PulseX data fetched successfully:', {
       arkPriceUSD: processedData.arkPriceUSD.toFixed(8),
       arkPricePLS: processedData.arkPricePLS.toFixed(8),
       plsUsdPrice: processedData.plsUsdPrice.toFixed(8),
-      volume24hUSD: processedData.volume24hUSD.toFixed(2),
       liquidityUSD: processedData.liquidityUSD.toFixed(2),
+      pairAddress: processedData.pairAddress,
     });
 
-    return new Response(JSON.stringify({
-      ...processedData,
-      cached: false,
-    }), {
+    return new Response(JSON.stringify({ ...processedData, cached: false }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
     console.error('PulseX GraphQL error:', error);
     
-    // Return cached data on error if available
     if (cache) {
       console.log('Returning stale cache due to error');
       return new Response(JSON.stringify({
