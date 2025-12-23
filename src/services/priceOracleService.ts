@@ -76,7 +76,7 @@ class PriceOracleService {
     try {
       // Check PLS/DAI pair on PulseX to estimate PLS price
       const { ethers } = await import('ethers');
-      const provider = new ethers.JsonRpcProvider('https://api.speedynodes.net/http/pulsechain-http?apikey=17666dccac3cdb9d244b413bab8cf3204a25461f');
+      const provider = new ethers.JsonRpcProvider('https://xtailgacbmhdtdxnqjdv.supabase.co/functions/v1/rpc-proxy');
       
       const PLS_DAI_PAIR = '0x6753560538ECa67617A9Ce605178F788bE7E524E'; // PLS/DAI pair
       const PAIR_ABI = [
