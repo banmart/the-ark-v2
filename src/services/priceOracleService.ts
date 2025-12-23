@@ -1,3 +1,4 @@
+import { graphqlPriceService } from './price/graphqlPriceService';
 
 interface PriceOracleData {
   plsUsdPrice: number;
@@ -12,6 +13,26 @@ class PriceOracleService {
   private lastUpdated: Date = new Date();
 
   async getPLSUSDPrice(): Promise<PriceOracleData> {
+    // Primary: Try GraphQL service first (single source of truth)
+    try {
+      const graphqlPrice = await graphqlPriceService.getPLSPrice();
+      
+      if (graphqlPrice > 0) {
+        this.plsPrice = graphqlPrice;
+        this.lastUpdated = new Date();
+        console.log('PLS price from GraphQL:', this.plsPrice);
+        
+        return {
+          plsUsdPrice: this.plsPrice,
+          lastUpdated: this.lastUpdated,
+          source: 'PulseX GraphQL'
+        };
+      }
+    } catch (error) {
+      console.warn('GraphQL PLS price failed, trying fallback:', error);
+    }
+
+    // Fallback: Use existing price API
     try {
       const response = await fetch(PRICE_API_URL, {
         method: 'GET',
@@ -23,7 +44,7 @@ class PriceOracleService {
         if (data.plsUsdPrice && data.plsUsdPrice > 0) {
           this.plsPrice = data.plsUsdPrice;
           this.lastUpdated = new Date(data.timestamp || Date.now());
-          console.log('PLS price from edge function:', this.plsPrice, 'source:', data.source);
+          console.log('PLS price from fallback API:', this.plsPrice);
           
           return {
             plsUsdPrice: this.plsPrice,
@@ -33,7 +54,7 @@ class PriceOracleService {
         }
       }
     } catch (error) {
-      console.warn('Price API failed:', error);
+      console.warn('Price API fallback also failed:', error);
     }
 
     // Return cached/fallback price
@@ -45,6 +66,11 @@ class PriceOracleService {
   }
 
   getCachedPrice(): number {
+    // Check if GraphQL has a cached price
+    const graphqlCached = graphqlPriceService.getCachedPLSPrice();
+    if (graphqlCached > 0) {
+      return graphqlCached;
+    }
     return this.plsPrice;
   }
 }
