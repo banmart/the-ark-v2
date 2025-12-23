@@ -20,11 +20,29 @@ interface HistoricalMetrics {
   volume: number;
 }
 
+// Block timestamp cache with 10 minute TTL
+interface BlockCache {
+  timestamp: number;
+  cachedAt: number;
+}
+
+// Volume data cache with 5 minute TTL
+interface VolumeCache {
+  data: { volume24h: number; volumeChange: number };
+  cachedAt: number;
+}
+
 class BlockchainDataService {
   private provider: ethers.JsonRpcProvider;
   private arkContract: ethers.Contract;
   private eventCache: BlockchainEvent[] = [];
   private metricsHistory: HistoricalMetrics[] = [];
+  private blockCache: Map<number, BlockCache> = new Map();
+  private volumeCache: VolumeCache | null = null;
+  
+  private static readonly BLOCK_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+  private static readonly VOLUME_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+  private static readonly DEFAULT_BLOCK_RANGE = 100; // Reduced from 1000 for faster initial load
   
   constructor() {
     this.provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
@@ -39,30 +57,104 @@ class BlockchainDataService {
     this.arkContract = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, erc20ABI, this.provider);
   }
 
-  async getRecentEvents(fromBlock: number = -1000): Promise<BlockchainEvent[]> {
+  // Get block timestamp with caching
+  private async getBlockTimestamp(blockNumber: number): Promise<number> {
+    const cached = this.blockCache.get(blockNumber);
+    const now = Date.now();
+    
+    if (cached && (now - cached.cachedAt) < BlockchainDataService.BLOCK_CACHE_TTL) {
+      return cached.timestamp;
+    }
+    
+    const block = await this.provider.getBlock(blockNumber);
+    const timestamp = block ? block.timestamp * 1000 : now;
+    
+    this.blockCache.set(blockNumber, { timestamp, cachedAt: now });
+    
+    // Clean old cache entries periodically
+    if (this.blockCache.size > 500) {
+      this.cleanBlockCache();
+    }
+    
+    return timestamp;
+  }
+
+  // Batch fetch block timestamps in parallel
+  private async batchGetBlockTimestamps(blockNumbers: number[]): Promise<Map<number, number>> {
+    const uniqueBlocks = [...new Set(blockNumbers)];
+    const now = Date.now();
+    const result = new Map<number, number>();
+    const blocksToFetch: number[] = [];
+    
+    // Check cache first
+    for (const blockNum of uniqueBlocks) {
+      const cached = this.blockCache.get(blockNum);
+      if (cached && (now - cached.cachedAt) < BlockchainDataService.BLOCK_CACHE_TTL) {
+        result.set(blockNum, cached.timestamp);
+      } else {
+        blocksToFetch.push(blockNum);
+      }
+    }
+    
+    // Fetch missing blocks in parallel batches
+    if (blocksToFetch.length > 0) {
+      const batchSize = 10; // Limit concurrent requests
+      for (let i = 0; i < blocksToFetch.length; i += batchSize) {
+        const batch = blocksToFetch.slice(i, i + batchSize);
+        const blockPromises = batch.map(bn => 
+          this.provider.getBlock(bn).then(block => ({
+            blockNumber: bn,
+            timestamp: block ? block.timestamp * 1000 : now
+          }))
+        );
+        
+        const blocks = await Promise.all(blockPromises);
+        
+        for (const { blockNumber, timestamp } of blocks) {
+          result.set(blockNumber, timestamp);
+          this.blockCache.set(blockNumber, { timestamp, cachedAt: now });
+        }
+      }
+    }
+    
+    return result;
+  }
+
+  private cleanBlockCache(): void {
+    const now = Date.now();
+    for (const [blockNum, cached] of this.blockCache.entries()) {
+      if ((now - cached.cachedAt) > BlockchainDataService.BLOCK_CACHE_TTL) {
+        this.blockCache.delete(blockNum);
+      }
+    }
+  }
+
+  async getRecentEvents(fromBlock: number = -BlockchainDataService.DEFAULT_BLOCK_RANGE): Promise<BlockchainEvent[]> {
     try {
       const currentBlock = await this.provider.getBlockNumber();
       const startBlock = fromBlock < 0 ? Math.max(0, currentBlock + fromBlock) : fromBlock;
       
-      console.log(`Fetching events from block ${startBlock} to ${currentBlock}`);
+      console.log(`Fetching events from block ${startBlock} to ${currentBlock} (${currentBlock - startBlock} blocks)`);
       
       // Get Transfer events (includes burns to dead address)
       const transferFilter = this.arkContract.filters.Transfer();
       const transferEvents = await this.arkContract.queryFilter(transferFilter, startBlock, currentBlock);
       
+      // Batch fetch all block timestamps at once
+      const blockNumbers = transferEvents.map(e => e.blockNumber);
+      const blockTimestamps = await this.batchGetBlockTimestamps(blockNumbers);
+      
       const events: BlockchainEvent[] = [];
       
       for (const event of transferEvents) {
-        const block = await this.provider.getBlock(event.blockNumber);
-        
-        // Type guard to check if event is an EventLog
         if ('args' in event && event.args) {
           const isBurn = event.args.to?.toLowerCase() === CONTRACT_ADDRESSES.BURN_ADDRESS.toLowerCase();
+          const timestamp = blockTimestamps.get(event.blockNumber) || Date.now();
           
           events.push({
             blockNumber: event.blockNumber,
             transactionHash: event.transactionHash,
-            timestamp: block ? block.timestamp * 1000 : Date.now(),
+            timestamp,
             eventType: isBurn ? 'burn' : 'transfer',
             amount: event.args.value?.toString() || '0',
             from: event.args.from,
@@ -84,9 +176,10 @@ class BlockchainDataService {
 
   async calculateHolderCount(): Promise<number> {
     try {
-      // This is a simplified approach - in production, you'd maintain a holder database
-      // For now, we'll estimate based on transfer events
-      const events = this.eventCache.length > 0 ? this.eventCache : await this.getRecentEvents(-10000);
+      // Use cached events if available, otherwise fetch with smaller range
+      const events = this.eventCache.length > 0 
+        ? this.eventCache 
+        : await this.getRecentEvents(-500); // Reduced from -10000
       
       const holderSet = new Set<string>();
       
@@ -161,19 +254,26 @@ class BlockchainDataService {
 
   async getVolumeData(): Promise<{ volume24h: number; volumeChange: number }> {
     try {
-      // Enhanced volume calculation with fee tracking
-      const oneDayAgo = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000);
+      // Check cache first
+      const now = Date.now();
+      if (this.volumeCache && (now - this.volumeCache.cachedAt) < BlockchainDataService.VOLUME_CACHE_TTL) {
+        console.log('Using cached volume data');
+        return this.volumeCache.data;
+      }
+
+      console.log('Fetching fresh volume data...');
       const currentBlock = await this.provider.getBlockNumber();
       
-      // Estimate blocks in last 24 hours (assuming ~3 second block time)
-      const blocksPerDay = Math.floor(24 * 60 * 60 / 3);
-      const startBlock = Math.max(0, currentBlock - blocksPerDay);
+      // Reduced block range for faster loading - 2 hours instead of 24 hours
+      // Estimate blocks in last 2 hours (assuming ~3 second block time)
+      const blocksToFetch = Math.floor(2 * 60 * 60 / 3); // ~2400 blocks
+      const startBlock = Math.max(0, currentBlock - blocksToFetch);
       
       // Get transfer events to calculate volume
       const transferFilter = this.arkContract.filters.Transfer();
       const transferEvents = await this.arkContract.queryFilter(transferFilter, startBlock, currentBlock);
       
-      let volume24h = 0;
+      let recentVolume = 0;
       const feeGeneratingAddresses = new Set([
         CONTRACT_ADDRESSES.PULSEX_V2_ROUTER.toLowerCase(),
         CONTRACT_ADDRESSES.ARK_PLS_PAIR.toLowerCase(),
@@ -188,10 +288,13 @@ class BlockchainDataService {
           // Count transfers involving DEX contracts as volume
           if (feeGeneratingAddresses.has(from || '') || feeGeneratingAddresses.has(to || '')) {
             const amount = parseFloat(ethers.formatEther(event.args.value || '0'));
-            volume24h += amount;
+            recentVolume += amount;
           }
         }
       }
+      
+      // Extrapolate to 24h based on 2h sample
+      let volume24h = recentVolume * 12;
       
       // If no DEX volume found, use base estimate
       if (volume24h === 0) {
@@ -202,10 +305,15 @@ class BlockchainDataService {
       
       const volumeChange = (Math.random() - 0.5) * 0.3; // ±15% change
       
-      return {
+      const result = {
         volume24h: Math.max(0, volume24h),
         volumeChange: volumeChange * 100
       };
+      
+      // Cache the result
+      this.volumeCache = { data: result, cachedAt: now };
+      
+      return result;
     } catch (error) {
       console.error('Error calculating volume data:', error);
       return {
@@ -215,7 +323,7 @@ class BlockchainDataService {
     }
   }
 
-  async getFeeGeneratingTransactions(fromBlock: number = -1000): Promise<BlockchainEvent[]> {
+  async getFeeGeneratingTransactions(fromBlock: number = -BlockchainDataService.DEFAULT_BLOCK_RANGE): Promise<BlockchainEvent[]> {
     try {
       const events = await this.getRecentEvents(fromBlock);
       

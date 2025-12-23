@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, Layers, Coins, Activity, Flame, RefreshCw } from 'lucide-react';
 import { useLockerData } from '../hooks/useLockerData';
-import { useOptimizedARKData } from '../hooks/useOptimizedARKData';
+import { useARKData } from '../contexts/ARKDataContext';
 
 interface StatsSectionProps {
   contractData: any;
@@ -20,8 +20,8 @@ const StatsSection = ({
     data: arkData,
     loading: arkLoading,
     refetch,
-    isStale
-  } = useOptimizedARKData();
+    error
+  } = useARKData();
 
   useEffect(() => {
     // Cinematic reveal sequence
@@ -82,7 +82,7 @@ const StatsSection = ({
       id: 'price',
       icon: TrendingUp,
       label: 'PRICE FEED',
-      value: arkLoading || !arkData ? null : `$${parseFloat(arkData.price).toFixed(6)}`,
+      value: arkLoading || !arkData ? null : `$${arkData.price.toFixed(6)}`,
       subtitle: `${arkData?.dataSource || 'ARK/PLS PulseX'} • Live price`,
       placeholder: '$--.----',
       accentColor: 'emerald'
@@ -191,7 +191,7 @@ const StatsSection = ({
               <div className="flex items-center gap-2 text-sm text-muted-foreground/60 font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/60 animate-pulse" />
                 <span>Updated {formatLastUpdated(arkData.lastUpdated)}</span>
-                {isStale && <span className="text-amber-400/80 text-xs">(stale)</span>}
+                {arkData.isStale && <span className="text-amber-400/80 text-xs">(stale)</span>}
               </div>
             )}
           </div>
