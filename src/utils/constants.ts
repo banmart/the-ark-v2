@@ -9,7 +9,7 @@ export const NETWORKS = {
       symbol: 'PLS',
       decimals: 18,
     },
-    rpcUrls: ['https://rpc.pulsechain.com'],
+    rpcUrls: ['https://api.speedynodes.net/http/pulsechain-http?apikey=17666dccac3cdb9d244b413bab8cf3204a25461f'],
     blockExplorerUrls: ['https://scan.pulsechain.com/'],
   },
 };

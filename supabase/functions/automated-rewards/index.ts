@@ -21,7 +21,7 @@ const ARK_TOKEN_ABI = [
 ];
 
 const CONTRACT_ADDRESS = "0x4d547181427Ee90342b4781E0eF2cd46F189cb2C";
-const PULSECHAIN_RPC = "https://rpc.pulsechain.com";
+const PULSECHAIN_RPC = "https://api.speedynodes.net/http/pulsechain-http?apikey=17666dccac3cdb9d244b413bab8cf3204a25461f";
 
 // Network conditions and retry configuration
 const NETWORK_CONFIG = {
