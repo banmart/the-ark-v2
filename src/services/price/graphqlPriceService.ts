@@ -57,8 +57,10 @@ class GraphQLPriceService {
 
       const data: GraphQLPriceData = await response.json();
       
-      if (data.error && !data.arkPriceUSD) {
-        throw new Error(data.error);
+      // If the edge function returns an error payload (but still 200), don't throw here.
+      // We want upstream services (DexPriceService) to gracefully fall back to RPC pricing.
+      if (data.error && (!data.arkPriceUSD || data.arkPriceUSD === 0)) {
+        console.warn('PulseX GraphQL returned error payload:', data.error);
       }
 
       // Update local cache
