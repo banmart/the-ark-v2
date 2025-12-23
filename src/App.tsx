@@ -26,16 +26,16 @@ const queryClient = new QueryClient();
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserPopupProvider>
-          <ARKDataProvider>
-            <WalletProvider>
-              <SwapProvider>
-                <OnboardingProvider>
-                  <ChatProvider>
-                    <Toaster />
-                    <Sonner />
-                    <BrowserRouter>
+      <BrowserRouter>
+        <TooltipProvider>
+          <BrowserPopupProvider>
+            <ARKDataProvider>
+              <WalletProvider>
+                <SwapProvider>
+                  <OnboardingProvider>
+                    <ChatProvider>
+                      <Toaster />
+                      <Sonner />
                       <ScrollToTop />
                       <Routes>
                         <Route path="/" element={<Index />} />
@@ -48,14 +48,14 @@ const App = () => (
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                       <ChatDrawer />
-                    </BrowserRouter>
-                  </ChatProvider>
-                </OnboardingProvider>
-              </SwapProvider>
-            </WalletProvider>
-          </ARKDataProvider>
-        </BrowserPopupProvider>
-      </TooltipProvider>
+                    </ChatProvider>
+                  </OnboardingProvider>
+                </SwapProvider>
+              </WalletProvider>
+            </ARKDataProvider>
+          </BrowserPopupProvider>
+        </TooltipProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   </ErrorBoundary>
 );
