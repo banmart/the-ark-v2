@@ -92,17 +92,17 @@ const LockPositionFilters = ({
                 placeholder="Search amount or tier..."
                 value={filters.searchTerm}
                 onChange={(e) => updateFilter('searchTerm', e.target.value)}
-                className="pl-10 bg-black/60 border-white/[0.1] text-white placeholder-gray-500 h-10 focus:border-cyan-500/50"
+                className="pl-10 bg-muted border-border text-foreground placeholder:text-muted-foreground h-10 focus:border-ring"
               />
             </div>
           </div>
 
           {/* Tier Filter */}
           <Select value={filters.tier} onValueChange={(value) => updateFilter('tier', value)}>
-            <SelectTrigger className="bg-black/60 border-white/[0.1] text-white h-10 focus:border-cyan-500/50">
+            <SelectTrigger className="bg-muted border-border text-foreground h-10 focus:border-ring">
               <SelectValue placeholder="All Tiers" />
             </SelectTrigger>
-            <SelectContent className="bg-gray-900 border-white/[0.1] text-white">
+            <SelectContent className="bg-popover border-border text-popover-foreground">
               <SelectItem value="all">All Tiers</SelectItem>
               <SelectItem value="bronze">🛡️ Bronze</SelectItem>
               <SelectItem value="silver">🥈 Silver</SelectItem>
@@ -115,10 +115,10 @@ const LockPositionFilters = ({
 
           {/* Status Filter */}
           <Select value={filters.status} onValueChange={(value) => updateFilter('status', value)}>
-            <SelectTrigger className="bg-black/60 border-white/[0.1] text-white h-10 focus:border-cyan-500/50">
+            <SelectTrigger className="bg-muted border-border text-foreground h-10 focus:border-ring">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
-            <SelectContent className="bg-gray-900 border-white/[0.1] text-white">
+            <SelectContent className="bg-popover border-border text-popover-foreground">
               <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="ready">🟢 Ready to Unlock</SelectItem>
               <SelectItem value="soon">🟡 Unlocking Soon</SelectItem>
@@ -128,10 +128,10 @@ const LockPositionFilters = ({
 
           {/* Time Remaining Filter */}
           <Select value={filters.timeRemaining} onValueChange={(value) => updateFilter('timeRemaining', value)}>
-            <SelectTrigger className="bg-black/60 border-white/[0.1] text-white h-10 focus:border-cyan-500/50">
+            <SelectTrigger className="bg-muted border-border text-foreground h-10 focus:border-ring">
               <SelectValue placeholder="Time Remaining" />
             </SelectTrigger>
-            <SelectContent className="bg-gray-900 border-white/[0.1] text-white">
+            <SelectContent className="bg-popover border-border text-popover-foreground">
               <SelectItem value="all">All Time</SelectItem>
               <SelectItem value="ready">Ready Now</SelectItem>
               <SelectItem value="week">&lt; 7 days</SelectItem>
@@ -143,10 +143,10 @@ const LockPositionFilters = ({
           {/* Sort Options */}
           <div className="flex gap-2">
             <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
-              <SelectTrigger className="bg-black/60 border-white/[0.1] text-white h-10 flex-1 focus:border-cyan-500/50">
+              <SelectTrigger className="bg-muted border-border text-foreground h-10 flex-1 focus:border-ring">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-white/[0.1] text-white">
+              <SelectContent className="bg-popover border-border text-popover-foreground">
                 <SelectItem value="timeRemaining">Time</SelectItem>
                 <SelectItem value="amount">Amount</SelectItem>
                 <SelectItem value="tier">Tier</SelectItem>
@@ -156,11 +156,11 @@ const LockPositionFilters = ({
 
             <button
               onClick={() => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="p-2.5 bg-black/60 border border-white/[0.1] rounded-lg hover:bg-white/[0.1] hover:border-cyan-500/50 transition-all h-10 w-10 flex items-center justify-center"
+              className="p-2.5 bg-muted border border-border rounded-lg hover:bg-accent hover:border-ring transition-all h-10 w-10 flex items-center justify-center"
             >
               {filters.sortOrder === 'asc' ? 
-                <SortAsc className="w-4 h-4 text-gray-400" /> : 
-                <SortDesc className="w-4 h-4 text-gray-400" />
+                <SortAsc className="w-4 h-4 text-muted-foreground" /> : 
+                <SortDesc className="w-4 h-4 text-muted-foreground" />
               }
             </button>
           </div>

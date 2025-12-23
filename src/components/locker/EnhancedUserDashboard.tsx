@@ -310,10 +310,10 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-gray-400">Per page:</span>
                       <Select value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
-                        <SelectTrigger className="w-20 h-8 bg-black/60 border-white/[0.1] text-white">
+                        <SelectTrigger className="w-20 h-8 bg-muted border-border text-foreground">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-white/[0.1]">
+                        <SelectContent className="bg-popover border-border text-popover-foreground">
                           <SelectItem value="5">5</SelectItem>
                           <SelectItem value="10">10</SelectItem>
                           <SelectItem value="20">20</SelectItem>
