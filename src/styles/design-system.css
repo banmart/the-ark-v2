@@ -3,193 +3,261 @@
 @tailwind utilities;
 
 /* =============================================================================
-   DESIGN SYSTEM - Color Tokens & Variables
+   DESIGN SYSTEM - Mythic Brutalism Theme
    ============================================================================= */
 @layer base {
   :root {
-    /* Core UI Colors */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Mythic Brutalism Core Palette */
+    --ark-obsidian: 0 0% 5%;
+    --ark-charcoal: 0 0% 12%;
+    --ark-stone: 30 5% 25%;
+    --ark-gold: 42 85% 55%;
+    --ark-copper: 25 60% 45%;
+    --ark-blood: 0 70% 40%;
+    --ark-ivory: 40 30% 92%;
+    --ark-pulse: 185 40% 45%;
+    
+    /* Core UI Colors - Light Mode */
+    --background: 40 30% 96%;
+    --foreground: 0 0% 8%;
+    --card: 40 25% 94%;
+    --card-foreground: 0 0% 8%;
+    --popover: 40 25% 94%;
+    --popover-foreground: 0 0% 8%;
     
     /* Brand Colors */
-    --primary: 218 89% 24%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 30 88% 32%;
-    --secondary-foreground: 210 40% 98%;
-    --accent: 45 98% 51%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --primary: 42 85% 50%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 25 60% 45%;
+    --secondary-foreground: 40 30% 92%;
+    --accent: 0 70% 45%;
+    --accent-foreground: 40 30% 92%;
     
     /* State Colors */
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --muted: 30 10% 85%;
+    --muted-foreground: 30 5% 40%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 40 30% 92%;
     
     /* Interactive Elements */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 188 95% 48%;
+    --border: 30 10% 80%;
+    --input: 30 10% 80%;
+    --ring: 42 85% 55%;
     
-    /* Video Theme Palette */
-    --video-blue: 218 89% 24%;
-    --video-brown: 30 88% 32%;
-    --video-gold: 45 98% 51%;
-    --video-cyan: 180 100% 50%;
+    /* Layout */
+    --radius: 0.25rem;
     
-    /* Layout & Spacing */
-    --radius: 0.5rem;
-    
-    /* Sidebar Colors */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: 40 25% 94%;
+    --sidebar-foreground: 0 0% 8%;
+    --sidebar-primary: 42 85% 50%;
+    --sidebar-primary-foreground: 0 0% 5%;
+    --sidebar-accent: 30 10% 85%;
+    --sidebar-accent-foreground: 0 0% 8%;
+    --sidebar-border: 30 10% 80%;
+    --sidebar-ring: 42 85% 55%;
   }
 
   .dark {
+    /* Mythic Brutalism Dark Mode */
+    --ark-obsidian: 0 0% 4%;
+    --ark-charcoal: 0 0% 8%;
+    --ark-stone: 30 5% 20%;
+    --ark-gold: 42 85% 55%;
+    --ark-copper: 25 60% 50%;
+    --ark-blood: 0 70% 45%;
+    --ark-ivory: 40 20% 88%;
+    --ark-pulse: 185 50% 50%;
+    
     /* Core UI Colors - Dark Mode */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --background: 0 0% 4%;
+    --foreground: 40 20% 88%;
+    --card: 0 0% 8%;
+    --card-foreground: 40 20% 88%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 40 20% 88%;
     
     /* Brand Colors - Dark Mode */
-    --primary: 218 89% 65%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 30 88% 45%;
-    --secondary-foreground: 210 40% 98%;
-    --accent: 45 98% 65%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --primary: 42 85% 55%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 25 60% 50%;
+    --secondary-foreground: 40 20% 88%;
+    --accent: 0 70% 50%;
+    --accent-foreground: 40 20% 88%;
     
     /* State Colors - Dark Mode */
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 30 5% 55%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 40 20% 88%;
     
     /* Interactive Elements - Dark Mode */
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 188 95% 65%;
+    --border: 0 0% 18%;
+    --input: 0 0% 15%;
+    --ring: 42 85% 55%;
     
-    /* Video Theme Palette - Dark Mode */
-    --video-blue: 218 89% 65%;
-    --video-brown: 30 88% 45%;
-    --video-gold: 45 98% 65%;
-    --video-cyan: 180 100% 50%;
-    
-    /* Sidebar Colors - Dark Mode */
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar - Dark Mode */
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 40 20% 88%;
+    --sidebar-primary: 42 85% 55%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 40 20% 88%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 42 85% 55%;
   }
 }
 
 /* =============================================================================
-   BASE STYLES & RESETS
+   BASE STYLES
    ============================================================================= */
 @layer base {
   * {
     @apply border-border;
   }
   
+  html {
+    scroll-behavior: smooth;
+  }
+  
   body {
-    @apply bg-background text-foreground;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    @apply bg-background text-foreground font-serif antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1, 'liga' 1;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Distinctive heading styles */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-display;
+    text-transform: uppercase;
+  }
+  
+  /* Elegant paragraph styling */
+  p {
+    @apply leading-relaxed;
+  }
+  
+  /* Editorial pull-quotes */
+  blockquote {
+    @apply font-accent italic text-xl border-l-4 border-ark-gold pl-6 my-8;
   }
 }
 
 /* =============================================================================
-   CUSTOM SCROLLBAR STYLING
+   CUSTOM SCROLLBAR - Brutalist Style
    ============================================================================= */
 @layer base {
   * {
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--video-cyan) / 0.8) hsl(var(--background));
+    scrollbar-color: hsl(var(--ark-gold) / 0.6) hsl(var(--ark-obsidian));
   }
 
   *::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   *::-webkit-scrollbar-track {
-    background: hsl(var(--background));
-    border-radius: calc(var(--radius) * 0.8);
+    background: hsl(var(--ark-obsidian));
   }
 
   *::-webkit-scrollbar-thumb {
-    background: linear-gradient(
-      180deg, 
-      hsl(var(--video-cyan) / 0.8) 0%, 
-      hsl(var(--video-blue) / 0.8) 100%
-    );
-    border-radius: calc(var(--radius) * 0.8);
-    border: 1px solid hsl(var(--border));
-    transition: background 0.2s ease;
+    background: hsl(var(--ark-gold) / 0.6);
+    border: none;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(
-      180deg, 
-      hsl(var(--video-gold) / 0.9) 0%, 
-      hsl(var(--video-brown) / 0.9) 100%
-    );
-  }
-
-  *::-webkit-scrollbar-corner {
-    background: hsl(var(--background));
+    background: hsl(var(--ark-gold));
   }
 }
 
 /* =============================================================================
-   ANIMATIONS & KEYFRAMES
+   UTILITY CLASSES
+   ============================================================================= */
+@layer utilities {
+  /* Text gradient utility */
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-ark-gold via-ark-copper to-ark-gold bg-clip-text text-transparent;
+  }
+  
+  /* Brutalist border utilities */
+  .border-brutal {
+    @apply border-4 border-ark-obsidian;
+  }
+  
+  .border-brutal-gold {
+    @apply border-l-4 border-ark-gold;
+  }
+  
+  /* Film grain overlay */
+  .film-grain {
+    @apply pointer-events-none fixed inset-0 z-50;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+  }
+  
+  /* Stone texture overlay */
+  .stone-texture {
+    background-image: 
+      radial-gradient(circle at 20% 80%, hsl(var(--ark-stone) / 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(var(--ark-copper) / 0.1) 0%, transparent 50%);
+  }
+  
+  /* Premium input styling */
+  .premium-input {
+    @apply w-full bg-ark-charcoal/80 backdrop-blur-sm 
+           border-2 border-ark-stone/30 
+           px-4 py-3 text-ark-ivory font-serif
+           placeholder:text-ark-stone placeholder:italic
+           focus:border-ark-gold/60 focus:ring-0
+           focus:outline-none disabled:opacity-50 
+           transition-colors duration-300;
+  }
+  
+  /* Dramatic shadow */
+  .shadow-dramatic {
+    box-shadow: 
+      0 20px 40px -15px hsl(var(--ark-obsidian) / 0.5),
+      0 0 0 1px hsl(var(--ark-stone) / 0.1);
+  }
+}
+
+/* =============================================================================
+   COMPONENT STYLES
+   ============================================================================= */
+@layer components {
+  /* Brutalist card */
+  .card-brutal {
+    @apply bg-ark-charcoal border-l-4 border-ark-gold p-6 relative overflow-hidden;
+    box-shadow: 8px 8px 0 hsl(var(--ark-obsidian));
+  }
+  
+  .card-brutal::before {
+    content: '';
+    @apply absolute top-0 right-0 w-20 h-20;
+    background: linear-gradient(135deg, hsl(var(--ark-gold) / 0.1) 0%, transparent 50%);
+  }
+  
+  /* Editorial stat display */
+  .stat-editorial {
+    @apply font-display text-8xl tracking-tightest text-ark-gold leading-none;
+  }
+  
+  /* Accent line */
+  .accent-line {
+    @apply h-1 bg-gradient-to-r from-ark-gold via-ark-copper to-transparent;
+  }
+}
+
+/* =============================================================================
+   ANIMATIONS
    ============================================================================= */
 @layer base {
-  @keyframes scale-in {
+  @keyframes reveal-up {
     from {
       opacity: 0;
-      transform: scale(0.95) translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-  }
-
-  @keyframes scan {
-    0%, 10% {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    90%, 100% {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-  }
-
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(4px);
+      transform: translateY(40px);
     }
     to {
       opacity: 1;
@@ -197,29 +265,51 @@
     }
   }
 
-  /* Animation Classes */
-  .animate-scale-in {
-    animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .animate-scan {
-    animation: scan 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.4s ease-out;
-  }
-
-  /* Reduced Motion Support */
-  @media (prefers-reduced-motion: reduce) {
-    .animate-scale-in,
-    .animate-scan,
-    .animate-fade-in {
-      animation: none;
+  @keyframes reveal-left {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
     }
-    
-    *::-webkit-scrollbar-thumb {
-      transition: none;
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes gold-shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  .animate-reveal-up {
+    animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .animate-reveal-left {
+    animation: reveal-left 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Staggered animation delays */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-800 { animation-delay: 800ms; }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-reveal-up,
+    .animate-reveal-left {
+      animation: none;
+      opacity: 1;
+      transform: none;
     }
   }
 }

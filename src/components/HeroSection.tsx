@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX, Copy, Check } from 'lucide-react';
 import { useChatContext } from './providers/ChatProvider';
 import { useBrowserPopup } from './providers/BrowserPopupProvider';
-import { TextGenerateEffect } from './ui/text-generate-effect';
 import { mediaUrls } from '@/lib/media-urls';
 
 interface HeroSectionProps {
@@ -73,10 +72,10 @@ const HeroSection = ({
   };
   
   return (
-    <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col items-center overflow-hidden">
+    <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col overflow-hidden">
       {/* Black Intro Overlay */}
       <div 
-        className={`absolute inset-0 bg-black z-30 transition-opacity duration-[4000ms] ease-in-out ${
+        className={`absolute inset-0 bg-ark-obsidian z-30 transition-opacity duration-[4000ms] ease-in-out ${
           showIntro ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       />
@@ -101,75 +100,48 @@ const HeroSection = ({
         />
       </div>
 
-      {/* Film Grain Overlay */}
-      <div className="absolute inset-0 z-[5] pointer-events-none opacity-[0.03] mix-blend-overlay">
-        <div className="absolute inset-0 film-grain" />
+      {/* Stone Texture Overlay */}
+      <div className="absolute inset-0 z-[4] pointer-events-none stone-texture opacity-50" />
+
+      {/* Heavy Film Grain */}
+      <div className="absolute inset-0 z-[5] pointer-events-none opacity-[0.05] mix-blend-overlay">
+        <div 
+          className="absolute inset-0 animate-grain"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
+          }} 
+        />
       </div>
 
-      {/* Vignette Overlay */}
+      {/* Deep Vignette */}
       <div 
         className="absolute inset-0 z-[6] pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.8) 100%)'
+          background: 'radial-gradient(ellipse at center, transparent 0%, transparent 30%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.95) 100%)'
         }}
       />
 
-      {/* Premium Gradient Layers */}
+      {/* Dramatic Gradient Layers */}
       <div className="absolute inset-0 z-[7] pointer-events-none">
-        {/* Top gradient - deeper */}
-        <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-black/90 via-black/50 to-transparent" />
-        {/* Bottom gradient - richer */}
-        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black via-black/70 to-transparent" />
-        {/* Side gradients */}
-        <div className="absolute top-0 bottom-0 left-0 w-48 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
-        <div className="absolute top-0 bottom-0 right-0 w-48 bg-gradient-to-l from-black/70 via-black/30 to-transparent" />
+        {/* Top gradient */}
+        <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-ark-obsidian via-ark-obsidian/60 to-transparent" />
+        {/* Bottom gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-80 bg-gradient-to-t from-ark-obsidian via-ark-obsidian/80 to-transparent" />
+        {/* Left gradient - editorial asymmetry */}
+        <div className="absolute top-0 bottom-0 left-0 w-1/3 bg-gradient-to-r from-ark-obsidian/80 to-transparent" />
         
-        {/* Golden accent glow - center bottom */}
+        {/* Gold accent glow - asymmetric position */}
         <div 
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] opacity-20"
+          className="absolute bottom-20 left-1/4 w-[500px] h-[300px] opacity-20 animate-gold-pulse"
           style={{
-            background: 'radial-gradient(ellipse at center bottom, rgba(251,191,36,0.3) 0%, transparent 70%)'
+            background: 'radial-gradient(ellipse at center, hsl(42 85% 55% / 0.4) 0%, transparent 60%)'
           }}
         />
-        
-        {/* Cyan accent glow - center */}
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] opacity-10"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.4) 0%, transparent 60%)'
-          }}
-        />
-      </div>
-
-      {/* Ambient Light Rays */}
-      <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full light-rays opacity-[0.08]" />
-      </div>
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0 z-[9] pointer-events-none overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 rounded-full bg-cyan-400/30 particle-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 10}s`,
-              animationDuration: `${15 + Math.random() * 20}s`
-            }}
-          />
-        ))}
       </div>
 
       {/* Letterbox Bars - Cinematic */}
-      <div className="absolute top-0 left-0 right-0 h-[4vh] bg-black z-[10] hidden md:block" />
-      <div className="absolute bottom-0 left-0 right-0 h-[4vh] bg-black z-[10] hidden md:block" />
-
-      {/* Subtle Scan Line */}
-      <div className="absolute inset-0 z-[11] pointer-events-none opacity-[0.02]">
-        <div className="absolute inset-0 scan-lines" />
-      </div>
+      <div className="absolute top-0 left-0 right-0 h-[5vh] bg-ark-obsidian z-[10] hidden md:block" />
+      <div className="absolute bottom-0 left-0 right-0 h-[5vh] bg-ark-obsidian z-[10] hidden md:block" />
 
       {/* Premium Audio Control Button */}
       <button
@@ -177,111 +149,97 @@ const HeroSection = ({
         aria-label={isMuted ? "Unmute background audio" : "Mute background audio"}
         className="absolute top-6 right-6 z-[60] group"
       >
-        <div className="relative p-3 rounded-full bg-black/20 backdrop-blur-xl border border-white/10 
-          hover:border-amber-500/30 hover:bg-black/40 transition-all duration-500 
-          shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.15)]">
-          {/* Glow ring */}
-          <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(251,191,36,0.1) 0%, transparent 70%)'
-            }}
-          />
+        <div className="relative p-3 bg-ark-charcoal/80 backdrop-blur-sm border-2 border-ark-stone/30 
+          hover:border-ark-gold/50 transition-all duration-300 
+          shadow-brutal-sm hover:shadow-brutal-gold">
           {isMuted ? (
-            <VolumeX size={20} className="text-white/70 group-hover:text-amber-400/90 transition-colors duration-300" />
+            <VolumeX size={20} className="text-ark-ivory/70 group-hover:text-ark-gold transition-colors duration-300" />
           ) : (
-            <Volume2 size={20} className="text-amber-400/90 transition-colors duration-300" />
+            <Volume2 size={20} className="text-ark-gold transition-colors duration-300" />
           )}
         </div>
       </button>
 
-      {/* Content */}
-      <div className="flex-grow" />
-      
-      {/* Bottom Section - Logo and Contract Address */}
-      <div className="max-w-7xl mx-auto w-full relative z-20">
-        {/* Logo Section - The ARK */}
-        <div 
-          className={`relative z-20 pb-8 transition-all duration-1000 ease-out ${
-            videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
-        >
-          <div className="text-center">
-            {/* Premium Title with Glow */}
-            <h1 className="relative">
-              <TextGenerateEffect
-                words="The ARK"
-                className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold 
-                  bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-400 bg-clip-text text-transparent
-                  drop-shadow-[0_0_30px_rgba(34,211,238,0.3)]"
-                duration={0.5}
-              />
-              {/* Subtle glow behind text */}
-              <div 
-                className="absolute inset-0 -z-10 blur-3xl opacity-30"
-                style={{
-                  background: 'linear-gradient(90deg, rgba(34,211,238,0.5) 0%, rgba(45,212,191,0.5) 50%, rgba(251,191,36,0.3) 100%)'
-                }}
-              />
+      {/* ========== MAIN CONTENT - EDITORIAL ASYMMETRIC LAYOUT ========== */}
+      <div className="flex-grow flex items-end pb-20 md:pb-32">
+        <div className="max-w-7xl mx-auto w-full relative z-20">
+          
+          {/* Title Section - Left Aligned, Massive Typography */}
+          <div 
+            className={`transition-all duration-1000 ease-out ${
+              videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+            }`}
+          >
+            {/* Accent Line */}
+            <div className="w-24 h-1 bg-ark-gold mb-8 animate-reveal-left" style={{ animationDelay: '200ms' }} />
+            
+            {/* Main Title - Massive Bebas Neue */}
+            <h1 className="text-editorial-hero text-ark-ivory leading-[0.85] tracking-tight mb-6">
+              <span className="block opacity-0 animate-reveal-up" style={{ animationDelay: '100ms' }}>
+                THE
+              </span>
+              <span className="block text-ark-gold opacity-0 animate-reveal-up" style={{ animationDelay: '300ms' }}>
+                ARK
+              </span>
             </h1>
             
-            {/* Premium Tagline */}
+            {/* Editorial Subtitle - Cormorant Garamond Italic */}
             <p 
-              className={`mt-4 text-sm md:text-base tracking-[0.3em] uppercase text-white/40 font-light
-                transition-all duration-1000 delay-500 ${videoPlaying ? 'opacity-100' : 'opacity-0'}`}
+              className="text-editorial-subtitle text-ark-ivory/60 max-w-lg mb-12 opacity-0 animate-reveal-up"
+              style={{ animationDelay: '500ms' }}
             >
-              Decentralized Protocol
+              Seek refuge from the deluge. <br />
+              <span className="text-ark-copper">A sanctuary forged in code.</span>
             </p>
           </div>
-        </div>
-        
-        {/* Premium Contract Address Card */}
-        <div 
-          className={`flex justify-center pb-8 transition-all duration-1000 delay-300 ${
-            videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <div className="relative group">
-            {/* Glassmorphism Card */}
-            <div className="relative px-6 py-4 rounded-2xl bg-white/[0.03] backdrop-blur-xl 
-              border border-white/[0.08] hover:border-cyan-500/20 
-              transition-all duration-500 hover:bg-white/[0.05]
-              shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_40px_rgba(34,211,238,0.1)]">
-              
-              {/* Inner glow */}
-              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{
-                  background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.05) 0%, transparent 70%)'
-                }}
-              />
-              
-              <p className="text-xs text-white/30 mb-2 tracking-widest uppercase font-light">
-                Contract Address
-              </p>
-              
-              <button
-                type="button"
-                onClick={handleCopy}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  handleCopy();
-                }}
-                className="flex items-center gap-2 sm:gap-3 group/btn cursor-pointer touch-manipulation min-h-[44px] px-2 -mx-2"
-              >
-                {/* Truncated on mobile, full on desktop */}
-                <span className="font-mono text-[10px] sm:text-sm md:text-base text-cyan-400/80 group-hover/btn:text-cyan-300 
-                  transition-colors duration-300 tracking-wide pointer-events-none">
-                  <span className="sm:hidden">{contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</span>
-                  <span className="hidden sm:inline">{contractAddress}</span>
-                </span>
+          
+          {/* Contract Address - Brutalist Stamp Style */}
+          <div 
+            className={`transition-all duration-1000 delay-700 ${
+              videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <div className="inline-block group">
+              {/* Brutalist Card */}
+              <div className="relative px-6 py-5 bg-ark-charcoal/90 backdrop-blur-sm 
+                border-l-4 border-ark-gold
+                shadow-brutal transition-all duration-300 
+                hover:shadow-brutal-gold group-hover:translate-x-1 group-hover:-translate-y-1">
                 
-                <div className={`p-2 sm:p-1.5 rounded-lg transition-all duration-300 pointer-events-none
-                  ${copied 
-                    ? 'bg-emerald-500/20 text-emerald-400' 
-                    : 'bg-white/5 text-white/40 group-hover/btn:text-cyan-400 group-hover/btn:bg-cyan-500/10'
-                  }`}>
-                  {copied ? <Check size={16} /> : <Copy size={16} />}
-                </div>
-              </button>
+                {/* Corner Accent */}
+                <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-ark-stone/30" />
+                <div className="absolute bottom-0 left-4 right-0 h-px bg-gradient-to-r from-ark-gold/50 to-transparent" />
+                
+                <p className="text-brutal-label text-ark-stone mb-2">
+                  Contract Address
+                </p>
+                
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  onTouchEnd={(e) => {
+                    e.preventDefault();
+                    handleCopy();
+                  }}
+                  className="flex items-center gap-3 group/btn cursor-pointer touch-manipulation min-h-[44px]"
+                >
+                  {/* Address Text */}
+                  <span className="font-mono text-sm md:text-base text-ark-ivory/90 group-hover/btn:text-ark-gold 
+                    transition-colors duration-300 tracking-wide">
+                    <span className="sm:hidden">{contractAddress.slice(0, 8)}...{contractAddress.slice(-6)}</span>
+                    <span className="hidden sm:inline">{contractAddress}</span>
+                  </span>
+                  
+                  {/* Copy Icon */}
+                  <div className={`p-2 transition-all duration-300
+                    ${copied 
+                      ? 'bg-green-500/20 text-green-400' 
+                      : 'bg-ark-stone/20 text-ark-stone group-hover/btn:text-ark-gold group-hover/btn:bg-ark-gold/10'
+                    }`}>
+                    {copied ? <Check size={18} /> : <Copy size={18} />}
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
