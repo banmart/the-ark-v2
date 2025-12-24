@@ -1,74 +1,23 @@
-/* =============================================================================
-   TYPOGRAPHY SYSTEM - Mythic Brutalism
-   ============================================================================= */
 
-/* Global heading styles with Bebas Neue */
+/* Typography and Font Styles */
+
+/* Global heading styles with Michroma font */
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Bebas Neue", system-ui, sans-serif;
+  font-family: "Michroma", system-ui;
   font-weight: 400;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-style: normal;
 }
 
-/* Display font utility class */
-.font-display {
-  font-family: "Bebas Neue", system-ui, sans-serif;
+/* Michroma font utility class */
+.michroma-regular {
+  font-family: "Michroma", system-ui;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  font-style: normal;
 }
 
-/* Serif body font utility class */
-.font-serif {
-  font-family: "Libre Baskerville", Georgia, serif;
+/* Megrim font utility class */
+.megrim-regular {
+  font-family: "Megrim", system-ui;
   font-weight: 400;
-}
-
-/* Accent font utility class - for elegant pull-quotes and accents */
-.font-accent {
-  font-family: "Cormorant Garamond", serif;
-  font-weight: 400;
-}
-
-/* Mono font for technical/code elements */
-.font-mono {
-  font-family: "JetBrains Mono", "Fira Code", monospace;
-  font-weight: 400;
-}
-
-/* Editorial typography classes */
-.text-editorial-hero {
-  font-family: "Bebas Neue", system-ui, sans-serif;
-  font-size: clamp(4rem, 15vw, 12rem);
-  line-height: 0.85;
-  letter-spacing: 0.02em;
-}
-
-.text-editorial-subtitle {
-  font-family: "Cormorant Garamond", serif;
-  font-style: italic;
-  font-size: clamp(1.25rem, 3vw, 2rem);
-  line-height: 1.4;
-  letter-spacing: 0.02em;
-}
-
-.text-editorial-body {
-  font-family: "Libre Baskerville", Georgia, serif;
-  font-size: 1.125rem;
-  line-height: 1.75;
-}
-
-/* Brutalist label styling */
-.text-brutal-label {
-  font-family: "Bebas Neue", system-ui, sans-serif;
-  font-size: 0.875rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-/* Large display numbers */
-.text-stat-display {
-  font-family: "Bebas Neue", system-ui, sans-serif;
-  font-size: clamp(3rem, 10vw, 8rem);
-  line-height: 0.9;
-  letter-spacing: -0.02em;
+  font-style: normal;
 }

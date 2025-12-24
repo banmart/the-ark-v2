@@ -5,22 +5,27 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-display text-sm tracking-widest uppercase transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-ark-gold text-ark-obsidian shadow-brutal-sm hover:shadow-brutal-gold hover:translate-x-0.5 hover:-translate-y-0.5",
-        destructive: "bg-ark-blood text-ark-ivory shadow-brutal-sm hover:shadow-brutal hover:translate-x-0.5 hover:-translate-y-0.5",
-        outline: "border-2 border-ark-stone/30 bg-transparent text-ark-ivory hover:border-ark-gold hover:text-ark-gold",
-        secondary: "bg-ark-charcoal text-ark-ivory border-l-4 border-ark-gold hover:bg-ark-charcoal/80",
-        ghost: "text-ark-ivory hover:text-ark-gold hover:bg-ark-charcoal/50",
-        link: "text-ark-gold underline-offset-4 hover:underline",
-        brutal: "bg-ark-gold text-ark-obsidian shadow-brutal hover:shadow-brutal-gold hover:translate-x-1 hover:-translate-y-1",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        quantum: "bg-black/40 backdrop-blur-xl border border-cyan-500/30 text-cyan-400 font-mono hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all duration-300",
+        "quantum-ghost": "bg-transparent border border-cyan-500/20 text-cyan-400 font-mono hover:bg-cyan-500/10 hover:border-cyan-400/40 hover:text-cyan-300 transition-all duration-300",
+        "quantum-active": "bg-cyan-500/20 backdrop-blur-xl border border-cyan-400/60 text-cyan-300 font-mono shadow-lg shadow-cyan-500/20",
       },
       size: {
-        default: "h-10 px-6 py-2",
-        sm: "h-9 px-4",
-        lg: "h-12 px-8",
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
       },
     },
