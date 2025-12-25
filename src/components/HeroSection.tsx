@@ -211,15 +211,15 @@ const HeroSection = ({
               <TextGenerateEffect
                 words="The ARK"
                 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold 
-                  bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-400 bg-clip-text text-transparent
-                  drop-shadow-[0_0_30px_rgba(34,211,238,0.3)]"
+                  text-cyan-400
+                  drop-shadow-[0_0_30px_rgba(34,211,238,0.4)]"
                 duration={0.5}
               />
               {/* Subtle glow behind text */}
               <div 
-                className="absolute inset-0 -z-10 blur-3xl opacity-30"
+                className="absolute inset-0 -z-10 blur-3xl opacity-40"
                 style={{
-                  background: 'linear-gradient(90deg, rgba(34,211,238,0.5) 0%, rgba(45,212,191,0.5) 50%, rgba(251,191,36,0.3) 100%)'
+                  background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.6) 0%, transparent 70%)'
                 }}
               />
             </h1>

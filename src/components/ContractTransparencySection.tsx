@@ -54,8 +54,8 @@ const ContractTransparencySection = ({
         <div className={`text-center mb-16 transition-all duration-1000 ${liquidityPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center mb-4">
             <Shield className="w-8 h-8 text-cyan-400 mr-3" />
-            <h2 className="text-4xl md:text-5xl font-bold text-white font-mono">
-              [CONTRACT TRANSPARENCY]
+            <h2 className="text-white">
+              CONTRACT TRANSPARENCY
             </h2>
           </div>
           <p className="text-gray-300 text-lg max-w-3xl mx-auto font-mono">
