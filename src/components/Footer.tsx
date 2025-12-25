@@ -149,7 +149,7 @@ const Footer = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
               {/* Premium Brand Section */}
               <div className="space-y-5 lg:col-span-1">
-                <div className="text-2xl sm:text-3xl michroma-regular bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+                <div className="text-2xl sm:text-3xl michroma-regular text-cyan-400 drop-shadow-[0_0_20px_rgba(6,182,212,0.3)]">
                   The Ark
                 </div>
                 

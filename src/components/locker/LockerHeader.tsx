@@ -19,7 +19,7 @@ const LockerHeader = () => {
           <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
             [TOKEN LOCKER SYSTEM]
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">
+          <h1 className="mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">
             QUANTUM VAULT
           </h1>
           <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">

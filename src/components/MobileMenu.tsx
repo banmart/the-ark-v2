@@ -139,7 +139,7 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
               <div className="relative">
                 <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 rounded-xl blur-lg opacity-60"></div>
                 <div className="relative px-3 py-1.5 bg-white/[0.03] backdrop-blur-sm border border-white/[0.05] rounded-lg">
-                  <span className="text-xl michroma-regular bg-gradient-to-r from-cyan-400 via-teal-400 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">
+                  <span className="text-xl michroma-regular text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">
                     ARK
                   </span>
                 </div>

@@ -274,8 +274,8 @@ const Burn = () => {
                 </div>
               </div>
               
-              <h1 className="text-2xl md:text-4xl font-bold michroma-regular mb-2">
-                <span className="bg-gradient-to-r from-cyan-400 via-orange-400 to-gold-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(251,146,60,0.4)]">
+              <h1 className="mb-2">
+                <span className="bg-gradient-to-r from-cyan-400 via-orange-400 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(251,146,60,0.4)]">
                   🔥 ARK Burn Tracker
                 </span>
               </h1>

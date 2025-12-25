@@ -182,7 +182,7 @@ const StatsSection = ({
         {/* Premium Header */}
         <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 transition-all duration-1000 ${statsPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="space-y-2">
-            <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 font-mono tracking-wider drop-shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+            <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 tracking-wider drop-shadow-[0_0_20px_rgba(6,182,212,0.3)]">
               PROTOCOL METRICS
             </h2>
             {/* Accent line */}

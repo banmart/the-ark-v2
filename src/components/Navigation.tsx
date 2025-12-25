@@ -152,13 +152,13 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
                 
                 {/* Glass Container */}
                 <div className="relative px-4 py-2 bg-white/[0.02] backdrop-blur-sm border border-white/[0.05] rounded-xl group-hover:border-cyan-500/20 transition-all duration-300">
-                  {/* Logo Text with Multi-Gradient */}
-                  <span className="text-2xl michroma-regular bg-gradient-to-r from-cyan-400 via-teal-400 to-amber-400 bg-clip-text text-transparent group-hover:from-cyan-300 group-hover:via-teal-300 group-hover:to-amber-300 transition-all duration-300 drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]">
+                  {/* Logo Text - Solid Cyan */}
+                  <span className="text-2xl michroma-regular text-cyan-400 group-hover:text-cyan-300 transition-all duration-300 drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]">
                     The ARK
                   </span>
                   
                   {/* Animated Underline */}
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 via-teal-400 to-amber-400 group-hover:w-3/4 transition-all duration-500 rounded-full shadow-[0_0_8px_rgba(34,211,238,0.5)]"></div>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-cyan-400 group-hover:w-3/4 transition-all duration-500 rounded-full shadow-[0_0_8px_rgba(34,211,238,0.5)]"></div>
                 </div>
               </Link>
               
