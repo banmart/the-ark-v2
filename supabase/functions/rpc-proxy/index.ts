@@ -5,7 +5,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const SPEEDYNODES_RPC = "https://api.speedynodes.net/http/pulsechain-http?apikey=17666dccac3cdb9d244b413bab8cf3204a25461f";
+// Public PulseChain RPC endpoints (no auth required)
+const RPC_ENDPOINTS = [
+  "https://rpc.pulsechain.com",
+  "https://rpc-pulsechain.g4mm4.io",
+  "https://pulsechain.publicnode.com",
+];
+
+// Track which endpoint is working
+let currentEndpointIndex = 0;
 
 // Rate limiting
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -106,26 +114,64 @@ serve(async (req) => {
     
     console.log(`RPC Proxy: Forwarding ${body.method || 'batch'} request`);
 
-    const response = await fetch(SPEEDYNODES_RPC, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    // Try endpoints with failover
+    let lastError: Error | null = null;
+    for (let attempt = 0; attempt < RPC_ENDPOINTS.length; attempt++) {
+      const endpointIndex = (currentEndpointIndex + attempt) % RPC_ENDPOINTS.length;
+      const endpoint = RPC_ENDPOINTS[endpointIndex];
+      
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
 
-    const data = await response.json();
-    
-    if (cacheKey && data.result !== undefined && !data.error) {
-      cache.set(cacheKey, { data, timestamp: Date.now() });
-      console.log(`RPC Proxy: Cached ${body.method}`);
+        const data = await response.json();
+        
+        // Check for RPC-level errors
+        if (data.error) {
+          console.log(`RPC Proxy: RPC error from ${endpoint}:`, data.error);
+          throw new Error(data.error.message || 'RPC error');
+        }
+        
+        // Success - update preferred endpoint
+        if (endpointIndex !== currentEndpointIndex) {
+          currentEndpointIndex = endpointIndex;
+          console.log(`RPC Proxy: Switched to endpoint ${endpoint}`);
+        }
+        
+        if (cacheKey && data.result !== undefined) {
+          cache.set(cacheKey, { data, timestamp: Date.now() });
+        }
+        
+        if (Math.random() < 0.1) cleanupCache();
+        
+        console.log(`RPC Proxy: Response received for ${body.method || 'batch'}`);
+
+        return new Response(JSON.stringify(data), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      } catch (err) {
+        lastError = err as Error;
+        console.log(`RPC Proxy: Endpoint ${endpoint} failed: ${err.message}`);
+        continue;
+      }
     }
     
-    if (Math.random() < 0.1) cleanupCache();
+    // All endpoints failed
+    throw lastError || new Error('All RPC endpoints failed');
     
-    console.log(`RPC Proxy: Response received for ${body.method || 'batch'}`);
-
-    return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
   } catch (error) {
     console.error('RPC Proxy Error:', error);
     return new Response(
