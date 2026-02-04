@@ -1,6 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useARKTokenData } from './useARKTokenData';
-import { useContractData } from './useContractData';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useARKData } from '../contexts/ARKDataContext';
 import { dexPriceService } from '../services/dexPriceService';
 
 export interface ChartDataPoint {
@@ -23,115 +22,127 @@ export interface TimeSeriesData {
   price: number;
 }
 
+// Hoist static fee distribution (rule: rendering-hoist-jsx)
+const STATIC_FEE_DISTRIBUTION: ChartDataPoint[] = [
+  { name: 'Burn Fee', value: 3, color: '#ff6b35' },
+  { name: 'Reflection Fee', value: 2, color: '#00ffff' },
+  { name: 'Liquidity Fee', value: 2, color: '#3b82f6' },
+  { name: 'Locker Fee', value: 2, color: '#8b5cf6' }
+];
+
 export const useChartData = () => {
-  const { data: arkTokenData, loading } = useARKTokenData();
-  const { data: contractData } = useContractData();
+  // Use centralized data context instead of redundant hooks (rule: client-swr-dedup)
+  const { data: arkData, loading } = useARKData();
+  
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [priceHistory, setPriceHistory] = useState<{ timestamp: number; price: number }[]>([]);
-  const [currentPriceInfo, setCurrentPriceInfo] = useState<{
-    dataSource: string;
-    baseCurrency: string;
-    lastUpdated: Date;
-  }>({
+  const [currentPriceInfo, setCurrentPriceInfo] = useState({
     dataSource: 'Loading',
     baseCurrency: 'DAI',
     lastUpdated: new Date()
   });
+  
+  // Use ref for interval cleanup (rule: advanced-init-once)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastFetchRef = useRef<number>(0);
 
-  // Fetch live price data and build history - prioritize PLS/ARK pair
-  useEffect(() => {
-    const fetchLivePriceData = async () => {
-      try {
-        console.log('Fetching live PLS/ARK price data for chart...');
-        
-        // Always prioritize PLS/ARK pair from contract, fallback to DAI
-        const pairAddress = contractData?.contractAddresses?.pulseXPair && 
-                           contractData.contractAddresses.pulseXPair !== '0x0000000000000000000000000000000000000000'
-                           ? contractData.contractAddresses.pulseXPair
-                           : undefined;
-        
-        console.log('Using pair address:', pairAddress || 'ARK/DAI fallback');
-        
-        const priceData = await dexPriceService.getLivePrice(pairAddress);
-        
-        // Store data in historical service for long-term persistence
-        const { historicalDataService } = await import('../services/price/historicalDataService');
-        historicalDataService.addPriceData(priceData);
-        
-        const currentTime = Date.now();
-        
-        // Update price info
-        setCurrentPriceInfo({
-          dataSource: priceData.dataSource,
-          baseCurrency: priceData.baseCurrency,
-          lastUpdated: priceData.lastUpdated
-        });
-        
-        // Add current price to history if valid
-        if (priceData.price > 0) {
-          setPriceHistory(prev => {
-            const updated = [...prev, { timestamp: currentTime, price: priceData.price }];
-            
-            // Keep only last 50 data points for immediate chart (about 25 minutes of data)
-            const maxPoints = 50;
-            if (updated.length > maxPoints) {
-              return updated.slice(-maxPoints);
-            }
-            
-            return updated;
-          });
-        }
-        
-        console.log('PLS/ARK price data updated:', {
-          price: priceData.price.toFixed(8),
-          source: priceData.dataSource,
-          baseCurrency: priceData.baseCurrency,
-          pairUsed: pairAddress ? 'PLS/ARK' : 'ARK/DAI'
-        });
-      } catch (error) {
-        console.error('Error fetching price data:', error);
-        setCurrentPriceInfo(prev => ({
-          ...prev,
-          dataSource: 'Error'
-        }));
-      }
-    };
+  // Fetch live price data - memoized callback (rule: rerender-functional-setstate)
+  const fetchLivePriceData = useCallback(async () => {
+    // Debounce: don't fetch more than once per 25 seconds
+    const now = Date.now();
+    if (now - lastFetchRef.current < 25000) return;
+    lastFetchRef.current = now;
 
-    if (!loading && arkTokenData) {
-      fetchLivePriceData();
+    try {
+      console.log('Fetching live PLS/ARK price data for chart...');
       
-      // Update price every 30 seconds for live data
-      const interval = setInterval(fetchLivePriceData, 30000);
-      return () => clearInterval(interval);
-    }
-  }, [arkTokenData, loading, contractData?.contractAddresses?.pulseXPair]);
-
-  // Convert price history to chart format
-  useEffect(() => {
-    if (priceHistory.length > 0) {
-      const chartData: TimeSeriesData[] = priceHistory.map((point, index) => {
-        const date = new Date(point.timestamp);
-        return {
-          time: priceHistory.length > 20 
-            ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-            : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-          price: point.price
-        };
+      const priceData = await dexPriceService.getLivePrice();
+      
+      // Defer dynamic import for non-critical data (rule: bundle-defer-third-party)
+      import('../services/price/historicalDataService').then(({ historicalDataService }) => {
+        historicalDataService.addPriceData(priceData);
       });
       
-      setTimeSeriesData(chartData);
+      const currentTime = Date.now();
+      
+      // Update price info
+      setCurrentPriceInfo({
+        dataSource: priceData.dataSource,
+        baseCurrency: priceData.baseCurrency,
+        lastUpdated: priceData.lastUpdated
+      });
+      
+      // Add current price to history if valid (rule: rerender-functional-setstate)
+      if (priceData.price > 0) {
+        setPriceHistory(prev => {
+          const updated = [...prev, { timestamp: currentTime, price: priceData.price }];
+          // Keep only last 50 data points (rule: js-length-check-first)
+          return updated.length > 50 ? updated.slice(-50) : updated;
+        });
+      }
+      
+      console.log('PLS/ARK price data updated:', {
+        price: priceData.price.toFixed(8),
+        source: priceData.dataSource,
+        baseCurrency: priceData.baseCurrency
+      });
+    } catch (error) {
+      console.error('Error fetching price data:', error);
+      setCurrentPriceInfo(prev => ({ ...prev, dataSource: 'Error' }));
     }
+  }, []);
+
+  // Effect with proper cleanup and primitive dependencies (rule: rerender-dependencies)
+  const hasData = arkData !== null;
+  const isLoading = loading;
+  
+  useEffect(() => {
+    if (isLoading || !hasData) return;
+    
+    fetchLivePriceData();
+    
+    // Update price every 30 seconds for live data
+    intervalRef.current = setInterval(fetchLivePriceData, 30000);
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [hasData, isLoading, fetchLivePriceData]);
+
+  // Convert price history to chart format - optimized single pass (rule: js-combine-iterations)
+  useEffect(() => {
+    const historyLength = priceHistory.length;
+    if (historyLength === 0) return;
+    
+    const useShortFormat = historyLength > 20;
+    
+    const chartData: TimeSeriesData[] = new Array(historyLength);
+    for (let i = 0; i < historyLength; i++) {
+      const point = priceHistory[i];
+      const date = new Date(point.timestamp);
+      chartData[i] = {
+        time: useShortFormat 
+          ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+          : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        price: point.price
+      };
+    }
+    
+    setTimeSeriesData(chartData);
   }, [priceHistory]);
 
-  // Token Distribution Data - using real contract data
+  // Token Distribution Data - memoized with early exit (rule: js-early-exit)
   const tokenDistribution = useMemo((): ChartDataPoint[] => {
-    if (!arkTokenData) return [];
+    if (!arkData) return [];
     
-    const total = parseFloat(arkTokenData.totalSupply.replace(/,/g, ''));
-    const burned = parseFloat(arkTokenData.burnedTokens.replace(/,/g, ''));
-    const circulating = parseFloat(arkTokenData.circulatingSupply.replace(/,/g, ''));
-    
+    const total = arkData.totalSupply;
     if (total === 0) return [];
+    
+    const burned = arkData.burnedTokens;
+    const circulating = arkData.circulatingSupply;
     
     return [
       {
@@ -147,69 +158,46 @@ export const useChartData = () => {
         percentage: (burned / total) * 100
       }
     ];
-  }, [arkTokenData]);
+  }, [arkData]);
 
-  // Fee Distribution Data - using contract fee structure
-  const feeDistribution = useMemo((): ChartDataPoint[] => {
-    return [
-      {
-        name: 'Burn Fee',
-        value: 3,
-        color: '#ff6b35'
-      },
-      {
-        name: 'Reflection Fee',
-        value: 2,
-        color: '#00ffff'
-      },
-      {
-        name: 'Liquidity Fee',
-        value: 2,
-        color: '#3b82f6'
-      },
-      {
-        name: 'Locker Fee',
-        value: 2,
-        color: '#8b5cf6'
-      }
-    ];
-  }, []);
+  // Static fee distribution - hoisted (rule: rendering-hoist-jsx)
+  const feeDistribution = STATIC_FEE_DISTRIBUTION;
 
-  // Metric Cards with live data
+  // Metric Cards with live data - memoized
   const metricCards = useMemo((): MetricCard[] => {
-    if (!arkTokenData) return [];
+    if (!arkData) return [];
     
     return [
       {
         title: 'Market Cap',
-        value: `$${arkTokenData.marketCap}`,
-        change: arkTokenData.priceChange24h + '%',
+        value: `$${arkData.marketCap.toLocaleString()}`,
+        change: `${arkData.priceChange24h > 0 ? '+' : ''}${arkData.priceChange24h.toFixed(1)}%`,
         icon: '💰',
         color: 'cyan'
       },
       {
         title: 'Total Holders',
-        value: arkTokenData.holders,
+        value: arkData.holders.toLocaleString(),
         change: '+1.8%',
         icon: '👥',
         color: 'blue'
       },
       {
         title: 'Burned Tokens',
-        value: arkTokenData.burnedTokens,
+        value: arkData.burnedTokens.toLocaleString(),
         change: '+0.12%',
         icon: '🔥',
         color: 'orange'
       },
       {
         title: '24h Volume',
-        value: arkTokenData.volume24h ? `${arkTokenData.volume24h} ARK` : 'N/A',
-        change: arkTokenData.volumeChange24h ? arkTokenData.volumeChange24h + '%' : '0%',
+        value: arkData.volume24h ? `${arkData.volume24h.toLocaleString()} ARK` : 'N/A',
+        change: '0%',
         icon: '📊',
         color: 'purple'
       }
     ];
-  }, [arkTokenData]);
+  }, [arkData]);
 
   return {
     tokenDistribution,
@@ -217,7 +205,7 @@ export const useChartData = () => {
     timeSeriesData,
     metricCards,
     loading,
-    lastUpdated: arkTokenData?.lastUpdated,
+    lastUpdated: arkData?.lastUpdated,
     dataSource: currentPriceInfo.dataSource,
     baseCurrency: currentPriceInfo.baseCurrency,
     priceDataPoints: priceHistory.length
