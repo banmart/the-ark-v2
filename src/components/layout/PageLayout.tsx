@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { toast } from "@/components/ui/use-toast";
 import { useContractData } from '../../hooks/useContractData';
 import { useWalletContext } from '../providers/WalletProvider';
@@ -23,48 +23,29 @@ interface PageLayoutProps {
   children?: React.ReactNode;
 }
 
-const PageLayout = ({ children }: PageLayoutProps) => {
+// Hoist static contract address (rule: rendering-hoist-jsx)
+const CONTRACT_ADDRESS = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67';
+
+// Hoist static background image URL
+const BACKGROUND_IMAGE_URL = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
+
+const PageLayout = memo(({ children }: PageLayoutProps) => {
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
 
-  const {
-    data: contractData,
-    loading: contractLoading
-  } = useContractData();
+  const { data: contractData, loading: contractLoading } = useContractData();
+  const { isConnected, account, plsBalance, arkBalance, isConnecting, handleConnectWallet } = useWalletContext();
+  const { fromAmount, toAmount, isLoading: swapLoading, slippage, canSwap, setFromAmount, handleSwap } = useSwapContext();
+  const { showOnboarding, setShowOnboarding } = useOnboardingContext();
 
-  const {
-    isConnected,
-    account,
-    plsBalance,
-    arkBalance,
-    isConnecting,
-    handleConnectWallet,
-  } = useWalletContext();
-
-  const {
-    fromAmount,
-    toAmount,
-    isLoading: swapLoading,
-    slippage,
-    canSwap,
-    setFromAmount,
-    handleSwap,
-  } = useSwapContext();
-
-  const {
-    showOnboarding,
-    setShowOnboarding,
-  } = useOnboardingContext();
-
+  // Preload background image (rule: bundle-preload)
   useEffect(() => {
-    // Preload background image and trigger fade-in
     const img = new Image();
-    img.onload = () => {
-      setBackgroundLoaded(true);
-    };
-    img.src = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
+    img.onload = () => setBackgroundLoaded(true);
+    img.src = BACKGROUND_IMAGE_URL;
   }, []);
 
-  const copyToClipboard = async (text: string) => {
+  // Stable clipboard handler (rule: rerender-functional-setstate)
+  const copyToClipboard = useCallback(async (text: string) => {
     try {
       // Try modern clipboard API first
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -94,17 +75,19 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         duration: 8000
       });
     }
-  };
+  }, []);
 
-  // Updated to use the live ARK contract address
-  const contractAddress = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67';
+  // Stable callback for closing onboarding
+  const handleCloseOnboarding = useCallback(() => {
+    setShowOnboarding(false);
+  }, [setShowOnboarding]);
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Onboarding Modal */}
       <OnboardingModal 
         isOpen={showOnboarding} 
-        onClose={() => setShowOnboarding(false)} 
+        onClose={handleCloseOnboarding} 
       />
 
       {/* Premium Background System */}
@@ -121,7 +104,7 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       {/* Hero Section */}
       <HeroSection 
         copyToClipboard={copyToClipboard}
-        contractAddress={contractAddress}
+        contractAddress={CONTRACT_ADDRESS}
         setShowOnboarding={setShowOnboarding}
       />
 
@@ -143,7 +126,6 @@ const PageLayout = ({ children }: PageLayoutProps) => {
         contractLoading={contractLoading}
       />
 
-
       {/* Prophecy Section */}
       <ProphecySection />
 
@@ -154,6 +136,8 @@ const PageLayout = ({ children }: PageLayoutProps) => {
       <Footer />
     </div>
   );
-};
+});
+
+PageLayout.displayName = 'PageLayout';
 
 export default PageLayout;

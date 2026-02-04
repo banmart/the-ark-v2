@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useLockerContractData } from './useLockerContractData';
 import { useWallet } from './useWallet';
 import { 
@@ -46,71 +45,106 @@ export const useLockerData = () => {
   const [currentAllowance, setCurrentAllowance] = useState(0);
   const [realContractConstants, setRealContractConstants] = useState<ContractConstants | null>(null);
 
-  const CONTRACT_CONSTANTS = realContractConstants || DEFAULT_CONSTANTS;
-  const lockTiers = createLockTiers(CONTRACT_CONSTANTS);
+  // Cache contract constants fetch (rule: advanced-init-once)
+  const constantsFetchedRef = useRef(false);
 
+  // Lazy computed constants (rule: rerender-lazy-state-init)
+  const CONTRACT_CONSTANTS = useMemo(() => 
+    realContractConstants || DEFAULT_CONSTANTS, 
+    [realContractConstants]
+  );
+  
+  const lockTiers = useMemo(() => 
+    createLockTiers(CONTRACT_CONSTANTS), 
+    [CONTRACT_CONSTANTS]
+  );
+
+  // Fetch contract constants once (rule: advanced-init-once)
   useEffect(() => {
+    if (constantsFetchedRef.current) return;
+    constantsFetchedRef.current = true;
     fetchContractConstants().then(setRealContractConstants);
   }, []);
 
-  const fetchUserTokenDataWrapper = async () => {
+  // Stable callback for fetching user token data (rule: rerender-functional-setstate)
+  const fetchUserTokenDataWrapper = useCallback(async () => {
     if (!account || !provider) return;
 
     const tokenData = await fetchUserTokenData(account, provider);
     setUserArkBalance(tokenData.balance);
     setCurrentAllowance(tokenData.allowance);
-  };
-
-  useEffect(() => {
-    fetchUserTokenDataWrapper();
   }, [account, provider]);
 
-  // Transform contract data to match UI expectations
-  const protocolStats: ProtocolStats = {
+  // Use primitive dependencies (rule: rerender-dependencies)
+  const hasAccount = !!account;
+  const hasProvider = !!provider;
+  
+  useEffect(() => {
+    if (hasAccount && hasProvider) {
+      fetchUserTokenDataWrapper();
+    }
+  }, [hasAccount, hasProvider, fetchUserTokenDataWrapper]);
+
+  // Memoized protocol stats (rule: rerender-memo)
+  const protocolStats: ProtocolStats = useMemo(() => ({
     totalLockedTokens: contractProtocolStats.totalLockedTokens,
     totalRewardsDistributed: contractProtocolStats.totalRewardsDistributed,
     totalActiveLockers: contractProtocolStats.totalActiveLockers,
     rewardPool: contractProtocolStats.rewardPool,
     averageAPY: 82.5
-  };
+  }), [
+    contractProtocolStats.totalLockedTokens,
+    contractProtocolStats.totalRewardsDistributed,
+    contractProtocolStats.totalActiveLockers,
+    contractProtocolStats.rewardPool
+  ]);
 
-  // Compute ready to unlock and in progress counts
-  const now = Date.now() / 1000;
-  const readyToUnlockCount = contractUserLocks.filter(lock => lock.active && lock.unlockTime <= now).length;
-  const inProgressCount = contractUserLocks.filter(lock => lock.active && lock.unlockTime > now).length;
-
-  const userStats: UserStats = {
-    totalLocked: contractUserStats.totalLocked,
-    totalRewardsEarned: contractUserStats.totalRewardsEarned,
-    pendingRewards: contractUserStats.pendingRewards,
-    activeLocksCount: contractUserStats.activeLocksCount,
-    userWeight: contractUserWeight,
-    readyToUnlockCount,
-    inProgressCount
-  };
-
-  const userLocks: LockedPosition[] = contractUserLocks.map(lock => {
-    const tierIndex = (lock.tier >= 0 && lock.tier < lockTiers.length) ? lock.tier : 0;
-    const tierInfo = lockTiers[tierIndex];
+  // Memoized user stats with derived state (rule: rerender-derived-state-no-effect)
+  const userStats: UserStats = useMemo(() => {
     const now = Date.now() / 1000;
-    const daysRemaining = Math.max(0, Math.ceil((lock.unlockTime - now) / (24 * 60 * 60)));
-    
-    return {
-      id: lock.id,
-      amount: lock.amount,
-      lockTime: lock.lockTime,
-      unlockTime: lock.unlockTime,
-      lockPeriod: lock.lockPeriod,
-      tier: tierIndex,
-      tierName: tierInfo.name,
-      totalRewardsEarned: lock.totalRewardsEarned,
-      active: lock.active,
-      multiplier: `${(tierInfo.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS).toFixed(1)}x`,
-      daysRemaining
-    };
-  });
+    const readyToUnlockCount = contractUserLocks.filter(lock => lock.active && lock.unlockTime <= now).length;
+    const inProgressCount = contractUserLocks.filter(lock => lock.active && lock.unlockTime > now).length;
 
-  const approveTokensWrapper = async (amount: number): Promise<boolean> => {
+    return {
+      totalLocked: contractUserStats.totalLocked,
+      totalRewardsEarned: contractUserStats.totalRewardsEarned,
+      pendingRewards: contractUserStats.pendingRewards,
+      activeLocksCount: contractUserStats.activeLocksCount,
+      userWeight: contractUserWeight,
+      readyToUnlockCount,
+      inProgressCount
+    };
+  }, [contractUserStats, contractUserLocks, contractUserWeight]);
+
+  // Memoized user locks transformation (rule: js-combine-iterations)
+  const userLocks: LockedPosition[] = useMemo(() => {
+    const now = Date.now() / 1000;
+    const tiersLength = lockTiers.length;
+    const basisPoints = CONTRACT_CONSTANTS.BASIS_POINTS;
+    
+    return contractUserLocks.map(lock => {
+      const tierIndex = (lock.tier >= 0 && lock.tier < tiersLength) ? lock.tier : 0;
+      const tierInfo = lockTiers[tierIndex];
+      const daysRemaining = Math.max(0, Math.ceil((lock.unlockTime - now) / (24 * 60 * 60)));
+      
+      return {
+        id: lock.id,
+        amount: lock.amount,
+        lockTime: lock.lockTime,
+        unlockTime: lock.unlockTime,
+        lockPeriod: lock.lockPeriod,
+        tier: tierIndex,
+        tierName: tierInfo.name,
+        totalRewardsEarned: lock.totalRewardsEarned,
+        active: lock.active,
+        multiplier: `${(tierInfo.multiplier / basisPoints).toFixed(1)}x`,
+        daysRemaining
+      };
+    });
+  }, [contractUserLocks, lockTiers, CONTRACT_CONSTANTS.BASIS_POINTS]);
+
+  // Stable callbacks for actions (rule: rerender-functional-setstate)
+  const approveTokensWrapper = useCallback(async (amount: number): Promise<boolean> => {
     if (!signer || !account) {
       throw new Error('Wallet not connected');
     }
@@ -126,9 +160,9 @@ export const useLockerData = () => {
     } finally {
       setIsProcessingApproval(false);
     }
-  };
+  }, [signer, account, fetchUserTokenDataWrapper]);
 
-  const lockTokens = async (amount: number, duration: number): Promise<void> => {
+  const lockTokens = useCallback(async (amount: number, duration: number): Promise<void> => {
     if (!signer || !account) {
       throw new Error('Wallet not connected');
     }
@@ -152,6 +186,7 @@ export const useLockerData = () => {
     setIsProcessingLock(true);
     try {
       await lockTokensOnContract(amount, duration, signer, CONTRACT_CONSTANTS);
+      // Parallel refetch (rule: async-parallel)
       await Promise.all([
         fetchUserTokenDataWrapper(),
         refetch()
@@ -162,9 +197,9 @@ export const useLockerData = () => {
     } finally {
       setIsProcessingLock(false);
     }
-  };
+  }, [signer, account, emergencyMode, contractPaused, CONTRACT_CONSTANTS, currentAllowance, approveTokensWrapper, fetchUserTokenDataWrapper, refetch]);
 
-  const unlockTokens = async (lockId: number): Promise<void> => {
+  const unlockTokens = useCallback(async (lockId: number): Promise<void> => {
     if (!signer || !account) {
       throw new Error('Wallet not connected');
     }
@@ -176,9 +211,9 @@ export const useLockerData = () => {
       console.error('Unlock failed:', error);
       throw error;
     }
-  };
+  }, [signer, account, refetch]);
 
-  const claimRewards = async (): Promise<void> => {
+  const claimRewards = useCallback(async (): Promise<void> => {
     if (!signer || !account) {
       throw new Error('Wallet not connected');
     }
@@ -190,7 +225,33 @@ export const useLockerData = () => {
       console.error('Claim failed:', error);
       throw error;
     }
-  };
+  }, [signer, account, refetch]);
+
+  // Memoized calculation functions (rule: rerender-memo)
+  const determineLockTierFn = useCallback((days: number) => 
+    determineLockTier(days, lockTiers), 
+    [lockTiers]
+  );
+  
+  const calculateEarlyUnlockPenaltyFn = useCallback((lockPosition: LockedPosition) => 
+    calculateEarlyUnlockPenalty(lockPosition, CONTRACT_CONSTANTS), 
+    [CONTRACT_CONSTANTS]
+  );
+  
+  const calculateLockWeightFn = useCallback((lockPosition: LockedPosition) => 
+    calculateLockWeight(lockPosition, lockTiers, CONTRACT_CONSTANTS), 
+    [lockTiers, CONTRACT_CONSTANTS]
+  );
+  
+  const calculateUserWeightFn = useCallback((positions: LockedPosition[]) => 
+    calculateUserWeight(positions, lockTiers, CONTRACT_CONSTANTS), 
+    [lockTiers, CONTRACT_CONSTANTS]
+  );
+  
+  const calculateAPYRangeFn = useCallback(() => 
+    calculateAPYRange(lockTiers, CONTRACT_CONSTANTS), 
+    [lockTiers, CONTRACT_CONSTANTS]
+  );
 
   return {
     // Data
@@ -211,14 +272,11 @@ export const useLockerData = () => {
     CONTRACT_CONSTANTS,
     
     // Functions
-    determineLockTier: (days: number) => determineLockTier(days, lockTiers),
-    calculateEarlyUnlockPenalty: (lockPosition: LockedPosition) => 
-      calculateEarlyUnlockPenalty(lockPosition, CONTRACT_CONSTANTS),
-    calculateLockWeight: (lockPosition: LockedPosition) => 
-      calculateLockWeight(lockPosition, lockTiers, CONTRACT_CONSTANTS),
-    calculateUserWeight: (positions: LockedPosition[]) => 
-      calculateUserWeight(positions, lockTiers, CONTRACT_CONSTANTS),
-    calculateAPYRange: () => calculateAPYRange(lockTiers, CONTRACT_CONSTANTS),
+    determineLockTier: determineLockTierFn,
+    calculateEarlyUnlockPenalty: calculateEarlyUnlockPenaltyFn,
+    calculateLockWeight: calculateLockWeightFn,
+    calculateUserWeight: calculateUserWeightFn,
+    calculateAPYRange: calculateAPYRangeFn,
     
     // Actions
     lockTokens,

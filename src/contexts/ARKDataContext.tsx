@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode, useMemo } from 'react';
 import { ethers } from 'ethers';
 import { CONTRACT_ADDRESSES, ARK_TOKEN_ABI, NETWORKS } from '../utils/constants';
 import { dexPriceService } from '../services/dexPriceService';
@@ -38,7 +38,7 @@ const ARKDataContext = createContext<ARKDataContextValue | undefined>(undefined)
 const MARKET_CACHE_TTL = 60 * 1000; // 1 minute
 const BLOCKCHAIN_CACHE_TTL = 3 * 60 * 1000; // 3 minutes
 
-// Cached data store
+// Cached data store (module-level for cross-request caching - rule: server-cache-lru)
 interface CacheEntry<T> {
   data: T;
   cachedAt: number;
@@ -47,17 +47,27 @@ interface CacheEntry<T> {
 let marketCache: CacheEntry<any> | null = null;
 let blockchainCache: CacheEntry<any> | null = null;
 
+// Lazy provider initialization (rule: rerender-lazy-state-init)
+let providerInstance: ethers.JsonRpcProvider | null = null;
+const getProvider = () => {
+  if (!providerInstance) {
+    providerInstance = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
+  }
+  return providerInstance;
+};
+
 export function ARKDataProvider({ children }: { children: ReactNode }) {
+  // Lazy state initialization (rule: rerender-lazy-state-init)
   const [data, setData] = useState<ARKData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const fetchingRef = useRef(false);
   const initialFetchDone = useRef(false);
 
-  const fetchMarketData = async () => {
+  const fetchMarketData = useCallback(async () => {
     const now = Date.now();
     
-    // Check cache
+    // Check cache (rule: js-cache-function-results)
     if (marketCache && (now - marketCache.cachedAt) < MARKET_CACHE_TTL) {
       console.log('Using cached market data');
       return marketCache.data;
@@ -76,31 +86,25 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
     
     marketCache = { data: result, cachedAt: now };
     return result;
-  };
+  }, []);
 
-  const fetchBlockchainData = async () => {
+  const fetchBlockchainData = useCallback(async () => {
     const now = Date.now();
     
-    // Check cache
+    // Check cache (rule: js-cache-function-results)
     if (blockchainCache && (now - blockchainCache.cachedAt) < BLOCKCHAIN_CACHE_TTL) {
       console.log('Using cached blockchain data');
       return blockchainCache.data;
     }
     
     console.log('Fetching fresh blockchain data...');
-    const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
+    const provider = getProvider();
     const arkToken = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
 
-    // Parallel fetch for maximum speed
-    const [
-      [totalSupply, decimals],
-      burnData,
-      holderCount
-    ] = await Promise.all([
-      Promise.all([
-        arkToken.totalSupply(),
-        arkToken.decimals()
-      ]),
+    // Parallel fetch for maximum speed (rule: async-parallel)
+    const [totalSupply, decimals, burnData, holderCount] = await Promise.all([
+      arkToken.totalSupply(),
+      arkToken.decimals(),
       blockchainDataService.calculateBurnRate(),
       blockchainDataService.calculateHolderCount()
     ]);
@@ -119,7 +123,7 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
 
     blockchainCache = { data: result, cachedAt: now };
     return result;
-  };
+  }, []);
 
   const fetchData = useCallback(async (forceRefresh = false) => {
     if (fetchingRef.current) return;
@@ -128,10 +132,8 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
     try {
       setError(null);
       
-      // For non-initial fetches, show current data while loading
-      if (initialFetchDone.current) {
-        // Don't set loading to true for background refreshes
-      } else {
+      // For non-initial fetches, don't show loading (rule: rerender-transitions)
+      if (!initialFetchDone.current) {
         setLoading(true);
       }
 
@@ -141,7 +143,7 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
         blockchainCache = null;
       }
 
-      // Fetch both in parallel
+      // Fetch both in parallel (rule: async-parallel)
       const [marketData, blockchainData] = await Promise.all([
         fetchMarketData(),
         fetchBlockchainData()
@@ -173,48 +175,41 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
       console.error('Error fetching ARK data:', err);
       setError(err.message || 'Failed to fetch data');
       
-      // Mark data as stale on error if we have existing data
-      if (data) {
-        setData({ ...data, isStale: true });
-      }
+      // Mark data as stale on error if we have existing data (rule: rerender-functional-setstate)
+      setData(prev => prev ? { ...prev, isStale: true } : null);
     } finally {
       setLoading(false);
       fetchingRef.current = false;
     }
-  }, [data]);
+  }, [fetchMarketData, fetchBlockchainData]);
 
-  // Warm up edge functions on mount
+  // Warm up edge functions on mount (rule: bundle-preload)
   useEffect(() => {
-    const warmUp = async () => {
-      try {
-        // Ping the RPC proxy to wake it up
-        fetch('https://xtailgacbmhdtdxnqjdv.supabase.co/functions/v1/rpc-proxy', {
-          method: 'OPTIONS'
-        }).catch(() => {}); // Ignore errors
-      } catch {
-        // Ignore warm-up errors
-      }
-    };
-    warmUp();
+    // Non-blocking warm-up (rule: async-defer-await)
+    fetch('https://xtailgacbmhdtdxnqjdv.supabase.co/functions/v1/rpc-proxy', {
+      method: 'OPTIONS'
+    }).catch(() => {}); // Ignore errors
   }, []);
 
   // Initial fetch
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
-  // Background refresh intervals
+  // Background refresh intervals with primitive dependencies (rule: rerender-dependencies)
   useEffect(() => {
     const marketInterval = setInterval(() => {
       const now = Date.now();
-      if (!marketCache || (now - marketCache.cachedAt) >= MARKET_CACHE_TTL) {
+      const cacheAge = marketCache ? now - marketCache.cachedAt : Infinity;
+      if (cacheAge >= MARKET_CACHE_TTL) {
         fetchData();
       }
     }, MARKET_CACHE_TTL);
 
     const blockchainInterval = setInterval(() => {
       const now = Date.now();
-      if (!blockchainCache || (now - blockchainCache.cachedAt) >= BLOCKCHAIN_CACHE_TTL) {
+      const cacheAge = blockchainCache ? now - blockchainCache.cachedAt : Infinity;
+      if (cacheAge >= BLOCKCHAIN_CACHE_TTL) {
         fetchData();
       }
     }, BLOCKCHAIN_CACHE_TTL);
@@ -225,12 +220,21 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
     };
   }, [fetchData]);
 
+  // Stable callback for refetch (rule: rerender-functional-setstate)
   const refetch = useCallback(async () => {
     await fetchData(true);
   }, [fetchData]);
 
+  // Memoize context value to prevent re-renders (rule: rerender-memo)
+  const contextValue = useMemo<ARKDataContextValue>(() => ({
+    data,
+    loading,
+    error,
+    refetch
+  }), [data, loading, error, refetch]);
+
   return (
-    <ARKDataContext.Provider value={{ data, loading, error, refetch }}>
+    <ARKDataContext.Provider value={contextValue}>
       {children}
     </ARKDataContext.Provider>
   );
