@@ -49,7 +49,7 @@ const EarlyUnlockWarningDialog = ({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-md mx-auto bg-white text-gray-900">
+      <AlertDialogContent className="fixed inset-0 z-50 sm:inset-auto sm:left-[50%] sm:top-[50%] sm:max-w-md sm:translate-x-[-50%] sm:translate-y-[-50%] w-full h-full sm:h-auto sm:max-h-[85vh] overflow-y-auto bg-white text-gray-900 p-6 shadow-lg border rounded-none sm:rounded-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-xl">
             {hasPenalty ? (
