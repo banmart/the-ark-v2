@@ -1,31 +1,20 @@
 
 
-## Fix Onboarding Chat: Edge Function + Full-Screen Mobile
+## Update Fee Structure on Homepage Pillar Cards
 
-### Root Cause
-The edge function response says `"Gemini API error: 400"` — this is from the **old version** that called Gemini directly. The updated code using the Lovable AI Gateway hasn't deployed. We need to force redeployment by touching the file with a minor change.
+The "Four Quantum Pillars" in `FeaturesSection.tsx` show outdated fee percentages and include a "Reflection" fee that no longer exists.
 
-Additionally, the system prompt may be hitting a 400 from the gateway due to formatting. We'll simplify the prompt structure to avoid issues.
+**Current (wrong):** 2% Burn, 2% Reflection, 3% Liquidity, 2% Vault Rewards = 9%
+**Correct:** 1% Burn, 1% DAO, 4% Liquidity, 4% Locker = 10% total
 
-### Changes
+### Changes — `src/components/FeaturesSection.tsx`
 
-**1. `supabase/functions/chat-assistant/index.ts`** — Force redeploy + harden
-- Add a timestamp comment to force Supabase to detect the change and redeploy
-- Simplify the system prompt slightly (remove markdown table formatting which can cause issues with some models)
-- Ensure `temperature` is lowered to 0.7 for more reliable responses
-- Add better error logging to surface the actual gateway response body on failure
+Update the `pillars` array (lines 29–102):
 
-**2. `src/pages/Onboarding.tsx`** — Full-screen chat, no nav on mobile
-- Remove the `Navigation` component entirely from the onboarding page
-- Add a simple back arrow / "The ARK" link at top-left instead
-- Make the header compact: just the icon, title, and trash button
-- Keep `h-[100dvh]` flex column layout
-- Ensure the welcome screen audience buttons are vertically centered
-- On error, show friendly message only (current behavior is already correct: "Sorry, I encountered an error. Please try again.")
-- Add `overscroll-behavior-none` to prevent pull-to-refresh on mobile
-- Remove the onboarding header bar entirely (the chat IS the page)
+1. **Burn** — change `percentage` from `'2%'` to `'1%'`
+2. **Replace Reflection with DAO** — change title to `'DAO TREASURY'`, emoji to `'🏛️'`, icon to `Users`, percentage to `'1%'`, subtitle/description to reference DAO governance fund, status to `'COLLECTING'`
+3. **Liquidity** — change `percentage` from `'3%'` to `'4%'`
+4. **Locker (Vault Rewards)** — change `percentage` from `'2%'` to `'4%'`
 
-### Files to edit
-- `supabase/functions/chat-assistant/index.ts` — force redeploy, improve error handling
-- `src/pages/Onboarding.tsx` — remove Navigation, full-screen chat layout
+No other files need changes.
 
