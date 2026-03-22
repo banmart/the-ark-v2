@@ -33,7 +33,7 @@ const FeaturesSection = () => {
       emoji: '🔥',
       title: 'BURN PROTOCOL',
       subtitle: 'Molecular Disintegration',
-      percentage: '2%',
+      percentage: '1%',
       detail: 'Deflationary Mechanics',
       description: 'Permanent molecular disintegration through quantum incineration to void address plus automated LP token annihilation for maximum deflationary cascade.',
       color: 'red',
