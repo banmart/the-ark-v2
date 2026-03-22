@@ -31,7 +31,7 @@ interface CompactLockPositionProps {
   processingClaim: number | null;
 }
 
-const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPositionProps) => {
+const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, processingClaim }: CompactLockPositionProps) => {
   const { lockTiers, calculateEarlyUnlockPenalty } = useLockerData();
   const [dialogOpen, setDialogOpen] = useState(false);
   
