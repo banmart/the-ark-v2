@@ -1,37 +1,31 @@
 
 
-## Switch Onboarding Chat to Lovable AI Gateway + Fix Layout
+## Fix Onboarding Chat: Edge Function + Full-Screen Mobile
 
-### Problems
-1. Edge function uses `GOOGLE_GEMINI_API_KEY` which isn't configured — only `LOVABLE_API_KEY` exists
-2. Chat area uses `flex-1 overflow-y-auto` but parent doesn't constrain height, so messages expand the page infinitely
-3. CORS headers missing required Supabase client headers
+### Root Cause
+The edge function response says `"Gemini API error: 400"` — this is from the **old version** that called Gemini directly. The updated code using the Lovable AI Gateway hasn't deployed. We need to force redeployment by touching the file with a minor change.
 
-### Plan
+Additionally, the system prompt may be hitting a 400 from the gateway due to formatting. We'll simplify the prompt structure to avoid issues.
 
-**1. Rewrite edge function to use Lovable AI Gateway** — `supabase/functions/chat-assistant/index.ts`
-- Replace Gemini direct call with `https://ai.gateway.lovable.dev/v1/chat/completions` using `LOVABLE_API_KEY`
-- Use OpenAI-compatible format (`messages` array with `role`/`content`)
-- Keep the full onboarding system prompt (updated with skills doc content including Internet Money Wallet, slippage 11-12%, all pain points)
-- Fix CORS headers to include all required Supabase client headers
-- Model: `google/gemini-3-flash-preview`
-- Add `maxOutputTokens` equivalent via `max_tokens: 1200`
-- Handle 429/402 errors with user-friendly messages
+### Changes
 
-**2. Fix Onboarding page layout for mobile** — `src/pages/Onboarding.tsx`
-- Use `h-[calc(100vh)] flex flex-col` with `overflow-hidden` on the outer container so chat area scrolls internally
-- Remove `BaseLayout` wrapper (it adds nav padding + footer which breaks full-screen chat) — use just `Navigation` inline
-- Set chat messages area to `flex-1 overflow-y-auto` with proper height constraint from parent
-- Add `pb-safe` / safe area padding for mobile browsers
-- Ensure input stays pinned at bottom on mobile (no keyboard push issues)
+**1. `supabase/functions/chat-assistant/index.ts`** — Force redeploy + harden
+- Add a timestamp comment to force Supabase to detect the change and redeploy
+- Simplify the system prompt slightly (remove markdown table formatting which can cause issues with some models)
+- Ensure `temperature` is lowered to 0.7 for more reliable responses
+- Add better error logging to surface the actual gateway response body on failure
 
-**3. Update system prompt with full skills** — embedded in edge function
-- Include the complete 5-stage flow with all pain point alerts
-- Add Internet Money Wallet as alternative
-- Emphasize concise step-by-step replies with external links
-- Add instruction: "Keep responses short — 2-4 bullet points per step. Always include clickable links. Never write walls of text."
+**2. `src/pages/Onboarding.tsx`** — Full-screen chat, no nav on mobile
+- Remove the `Navigation` component entirely from the onboarding page
+- Add a simple back arrow / "The ARK" link at top-left instead
+- Make the header compact: just the icon, title, and trash button
+- Keep `h-[100dvh]` flex column layout
+- Ensure the welcome screen audience buttons are vertically centered
+- On error, show friendly message only (current behavior is already correct: "Sorry, I encountered an error. Please try again.")
+- Add `overscroll-behavior-none` to prevent pull-to-refresh on mobile
+- Remove the onboarding header bar entirely (the chat IS the page)
 
 ### Files to edit
-- `supabase/functions/chat-assistant/index.ts` — rewrite to Lovable AI Gateway
-- `src/pages/Onboarding.tsx` — fix layout, remove BaseLayout, constrain height
+- `supabase/functions/chat-assistant/index.ts` — force redeploy, improve error handling
+- `src/pages/Onboarding.tsx` — remove Navigation, full-screen chat layout
 
