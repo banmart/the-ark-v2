@@ -14,9 +14,10 @@ interface EnhancedUserDashboardProps {
 }
 
 const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
-  const { userLocks, unlockTokens } = useLockerData();
+  const { userLocks, unlockTokens, claimRewardsForLocks } = useLockerData();
   const { earlyUnlockSettings } = useLockerContractData();
   const [processingUnlock, setProcessingUnlock] = useState<number | null>(null);
+  const [processingClaim, setProcessingClaim] = useState<number | null>(null);
 
   const [filters, setFilters] = useState<FilterOptions>({
     tier: 'all',
@@ -210,6 +211,27 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
     }
   };
 
+  const handleClaimForLock = async (lockId: number) => {
+    if (!isConnected) return;
+    setProcessingClaim(lockId);
+    try {
+      await claimRewardsForLocks([lockId]);
+      toast({
+        title: "Rewards Claimed!",
+        description: `Successfully claimed rewards for position #${lockId}`
+      });
+    } catch (error: any) {
+      console.error('Claim failed:', error);
+      toast({
+        variant: "destructive",
+        title: "Claim Failed",
+        description: error.message || "Failed to claim rewards"
+      });
+    } finally {
+      setProcessingClaim(null);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Premium Lock Positions Container */}
@@ -330,7 +352,9 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                       <CompactLockPosition 
                         lock={lock} 
                         onUnlock={handleUnlock} 
-                        processingUnlock={processingUnlock} 
+                        onClaim={handleClaimForLock}
+                        processingUnlock={processingUnlock}
+                        processingClaim={processingClaim}
                       />
                       
                       {lock.daysRemaining > 0 && (

@@ -21,8 +21,12 @@ import {
   fetchUserTokenData,
   approveTokens,
   lockTokensOnContract,
+  lockTokensForOthersOnContract,
   unlockTokensOnContract,
-  claimRewardsOnContract
+  claimRewardsOnContract,
+  claimRewardsForLocksOnContract,
+  forceUnlockMaturedOnContract,
+  getCurrentDay
 } from './locker/contractInteractions';
 
 export const useLockerData = () => {
@@ -227,6 +231,71 @@ export const useLockerData = () => {
     }
   }, [signer, account, refetch]);
 
+  const lockTokensForOthers = useCallback(async (amount: number, duration: number, recipientAddress: string): Promise<void> => {
+    if (!signer || !account) {
+      throw new Error('Wallet not connected');
+    }
+
+    if (emergencyMode) {
+      throw new Error('Emergency mode is active - new locks are disabled');
+    }
+
+    if (contractPaused) {
+      throw new Error('Contract is paused - operations temporarily disabled');
+    }
+
+    if (duration < CONTRACT_CONSTANTS.MIN_LOCK_DURATION || duration > CONTRACT_CONSTANTS.MAX_LOCK_DURATION) {
+      throw new Error(`Lock duration must be between ${CONTRACT_CONSTANTS.MIN_LOCK_DURATION} and ${CONTRACT_CONSTANTS.MAX_LOCK_DURATION} days`);
+    }
+
+    if (currentAllowance < amount) {
+      await approveTokensWrapper(amount);
+    }
+
+    setIsProcessingLock(true);
+    try {
+      await lockTokensForOthersOnContract(amount, duration, recipientAddress, signer, CONTRACT_CONSTANTS);
+      await Promise.all([
+        fetchUserTokenDataWrapper(),
+        refetch()
+      ]);
+    } catch (error: any) {
+      console.error('Lock for others failed:', error);
+      throw error;
+    } finally {
+      setIsProcessingLock(false);
+    }
+  }, [signer, account, emergencyMode, contractPaused, CONTRACT_CONSTANTS, currentAllowance, approveTokensWrapper, fetchUserTokenDataWrapper, refetch]);
+
+  const claimRewardsForLocks = useCallback(async (lockIds: number[]): Promise<void> => {
+    if (!signer || !account) {
+      throw new Error('Wallet not connected');
+    }
+
+    try {
+      await claimRewardsForLocksOnContract(lockIds, signer);
+      await refetch();
+    } catch (error: any) {
+      console.error('Selective claim failed:', error);
+      throw error;
+    }
+  }, [signer, account, refetch]);
+
+  const forceUnlockMatured = useCallback(async (maxLocks: number = 50): Promise<void> => {
+    if (!signer) {
+      throw new Error('Wallet not connected');
+    }
+
+    try {
+      const currentDayValue = await getCurrentDay();
+      await forceUnlockMaturedOnContract(currentDayValue, maxLocks, signer);
+      await refetch();
+    } catch (error: any) {
+      console.error('Force unlock matured failed:', error);
+      throw error;
+    }
+  }, [signer, refetch]);
+
   // Memoized calculation functions (rule: rerender-memo)
   const determineLockTierFn = useCallback((days: number) => 
     determineLockTier(days, lockTiers), 
@@ -280,8 +349,11 @@ export const useLockerData = () => {
     
     // Actions
     lockTokens,
+    lockTokensForOthers,
     unlockTokens,
     claimRewards,
+    claimRewardsForLocks,
+    forceUnlockMatured,
     approveTokens: approveTokensWrapper,
     fetchUserTokenData: fetchUserTokenDataWrapper
   };

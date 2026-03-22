@@ -26,10 +26,12 @@ import EarlyUnlockWarningDialog from './EarlyUnlockWarningDialog';
 interface CompactLockPositionProps {
   lock: LockedPosition;
   onUnlock: (lockId: number) => void;
+  onClaim: (lockId: number) => void;
   processingUnlock: number | null;
+  processingClaim: number | null;
 }
 
-const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPositionProps) => {
+const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, processingClaim }: CompactLockPositionProps) => {
   const { lockTiers, calculateEarlyUnlockPenalty } = useLockerData();
   const [dialogOpen, setDialogOpen] = useState(false);
   
@@ -250,38 +252,63 @@ const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPo
               </div>
             )}
 
-            {/* Action Button - Only show for active locks */}
+            {/* Action Buttons - Only show for active locks */}
             {lock.active && (
-              <div className="relative group/btn">
-                <div 
-                  className={`absolute -inset-1 rounded-xl blur opacity-40 group-hover/btn:opacity-60 transition-opacity ${isUnlocked ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-red-500 to-red-600'}`}
-                ></div>
-                <button
-                  onClick={() => setDialogOpen(true)}
-                  disabled={processingUnlock === lock.id}
-                  className={`relative w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 ${
-                    isUnlocked 
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-black' 
-                      : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
-                  }`}
-                >
-                  {processingUnlock === lock.id ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                      Processing...
-                    </>
-                  ) : isUnlocked ? (
-                    <>
-                      <Zap className="w-4 h-4" />
-                      Unlock Tokens
-                    </>
-                  ) : (
-                    <>
-                      <AlertTriangle className="w-4 h-4" />
-                      Early Unlock (-{penalty.penaltyRate.toFixed(1)}%)
-                    </>
-                  )}
-                </button>
+              <div className="flex flex-col sm:flex-row gap-3">
+                {/* Claim Rewards Button */}
+                <div className="relative group/btn flex-1">
+                  <div className="absolute -inset-1 rounded-xl blur opacity-30 group-hover/btn:opacity-50 transition-opacity bg-gradient-to-r from-cyan-500 to-teal-500"></div>
+                  <button
+                    onClick={() => onClaim(lock.id)}
+                    disabled={processingClaim === lock.id}
+                    className="relative w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500/80 to-teal-500/80 text-white border border-cyan-500/30"
+                  >
+                    {processingClaim === lock.id ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                        Claiming...
+                      </>
+                    ) : (
+                      <>
+                        <TrendingUp className="w-4 h-4" />
+                        Claim Rewards
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Unlock Button */}
+                <div className="relative group/btn flex-1">
+                  <div 
+                    className={`absolute -inset-1 rounded-xl blur opacity-40 group-hover/btn:opacity-60 transition-opacity ${isUnlocked ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-red-500 to-red-600'}`}
+                  ></div>
+                  <button
+                    onClick={() => setDialogOpen(true)}
+                    disabled={processingUnlock === lock.id}
+                    className={`relative w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 ${
+                      isUnlocked 
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-black' 
+                        : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
+                    }`}
+                  >
+                    {processingUnlock === lock.id ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                        Processing...
+                      </>
+                    ) : isUnlocked ? (
+                      <>
+                        <Zap className="w-4 h-4" />
+                        Unlock Tokens
+                      </>
+                    ) : (
+                      <>
+                        <AlertTriangle className="w-4 h-4" />
+                        Early Unlock (-{penalty.penaltyRate.toFixed(1)}%)
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             )}
             

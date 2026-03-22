@@ -151,3 +151,56 @@ export const claimRewardsOnContract = async (signer: any): Promise<void> => {
   const receipt = await tx.wait();
   console.log('Claim confirmed:', receipt);
 };
+
+export const claimRewardsForLocksOnContract = async (lockIds: number[], signer: any): Promise<void> => {
+  console.log(`Claiming rewards for locks: ${lockIds.join(', ')}...`);
+  
+  const lockerContract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, signer);
+  const tx = await lockerContract['claimReward(uint256[])'](lockIds);
+  console.log('Selective claim transaction sent:', tx.hash);
+  
+  const receipt = await tx.wait();
+  console.log('Selective claim confirmed:', receipt);
+};
+
+export const lockTokensForOthersOnContract = async (
+  amount: number,
+  duration: number,
+  recipientAddress: string,
+  signer: any,
+  CONTRACT_CONSTANTS: ContractConstants
+): Promise<void> => {
+  console.log(`Locking ${amount} ARK tokens for ${duration} days for ${recipientAddress}...`);
+  
+  const lockerContract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, signer);
+  const amountWei = ethers.parseEther(amount.toString());
+  const durationSeconds = Math.floor(duration * 24 * 60 * 60);
+  
+  const tx = await lockerContract.lockTokenForOthers(amountWei, durationSeconds, recipientAddress);
+  console.log('Lock-for-others transaction sent:', tx.hash);
+  
+  const receipt = await tx.wait();
+  console.log('Lock-for-others confirmed:', receipt);
+};
+
+export const forceUnlockMaturedOnContract = async (
+  dayToProcess: number,
+  maxLocks: number,
+  signer: any
+): Promise<void> => {
+  console.log(`Force unlocking matured locks for day ${dayToProcess}, max ${maxLocks}...`);
+  
+  const lockerContract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, signer);
+  const tx = await lockerContract.forceUnlockMatured(dayToProcess, maxLocks);
+  console.log('Force unlock transaction sent:', tx.hash);
+  
+  const receipt = await tx.wait();
+  console.log('Force unlock confirmed:', receipt);
+};
+
+export const getCurrentDay = async (): Promise<number> => {
+  const rpcProvider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
+  const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, rpcProvider);
+  const day = await contract.currentDay();
+  return parseInt(day.toString());
+};
