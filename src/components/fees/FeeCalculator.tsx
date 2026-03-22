@@ -22,7 +22,7 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
     
     // Calculate theoretical fees based on volume (as percentages)
     const burnFee = volume * (CONTRACT_CONSTANTS.BURN_FEE / CONTRACT_CONSTANTS.DIVIDER);
-    const reflectionFee = volume * (CONTRACT_CONSTANTS.REFLECTION_FEE / CONTRACT_CONSTANTS.DIVIDER);
+    const daoFee = volume * (CONTRACT_CONSTANTS.DAO_FEE / CONTRACT_CONSTANTS.DIVIDER);
     const liquidityFee = volume * (CONTRACT_CONSTANTS.LIQUIDITY_FEE / CONTRACT_CONSTANTS.DIVIDER);
     const lockerFee = volume * (CONTRACT_CONSTANTS.LOCKER_FEE / CONTRACT_CONSTANTS.DIVIDER);
     
