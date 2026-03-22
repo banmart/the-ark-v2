@@ -80,7 +80,7 @@ const InteractiveQuantumPillars = memo(() => {
     
     // Use real fee data when available, fallback to calculations
     const burnDaily = fees?.burn.dailyFees || 0;
-    const reflectionDaily = fees?.reflection.dailyFees || 0;
+    const daoDaily = fees?.dao.dailyFees || 0;
     const liquidityDaily = fees?.liquidity.dailyFees || 0;
     const lockerDaily = fees?.locker.dailyFees || 0;
     
@@ -92,7 +92,7 @@ const InteractiveQuantumPillars = memo(() => {
     
     // Calculate dynamic max values based on real fee collection
     const burnMaxCapacity = Math.max(currentVolume * 0.02, burnDaily * 2); // 2% of volume or 2x current rate
-    const reflectionMaxCapacity = Math.max(currentVolume * 0.02, reflectionDaily * 2);
+    const daoMaxCapacity = Math.max(currentVolume * 0.01, daoDaily * 2);
     const liquidityMaxCapacity = Math.max(currentVolume * 0.03, liquidityDaily * 2);
     const rewardMaxCapacity = Math.max(rewardPool * 0.01, lockerDaily * 2);
 
@@ -144,18 +144,18 @@ const InteractiveQuantumPillars = memo(() => {
       {
         id: 1,
         icon: RefreshCcw,
-        emoji: '🫂',
-        title: 'REFLECTION MATRIX',
-        subtitle: 'Quantum Redistribution',
-        description: 'Autonomous redistribution to holders based on molecular weight with extended holding amplification.',
+        emoji: '🏛️',
+        title: 'DAO TREASURY',
+        subtitle: 'Community Governance',
+        description: 'Autonomous allocation to the DAO treasury for community-driven governance and development.',
         color: 'blue',
         gradient: 'from-blue-500 to-cyan-500',
-        value: reflectionDaily,
-        maxValue: reflectionMaxCapacity,
+        value: daoDaily,
+        maxValue: daoMaxCapacity,
         unit: 'ARK/day',
-        state: getReflectionState(reflectionDaily, reflectionMaxCapacity, efficiency?.reflection || 0),
-        liveData: reflectionDaily > 0 ? `${reflectionDaily > 1000 ? (reflectionDaily / 1000).toFixed(1) + 'K' : reflectionDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
-        actionText: 'VIEW REFLECTIONS'
+        state: getReflectionState(daoDaily, daoMaxCapacity, efficiency?.dao || 0),
+        liveData: daoDaily > 0 ? `${daoDaily > 1000 ? (daoDaily / 1000).toFixed(1) + 'K' : daoDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
+        actionText: 'VIEW DAO'
       },
       {
         id: 2,

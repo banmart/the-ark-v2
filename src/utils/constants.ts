@@ -15,15 +15,16 @@ export const NETWORKS = {
 };
 
 export const CONTRACT_ADDRESSES = {
-  ARK_TOKEN: '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67',
+  ARK_TOKEN: '0xF4a370e64DD4673BAA250C5435100FA98661Db4C',
   LOCKER: '0x3ba44a1de77025b78d7430449569dd1112ac4473',
-  PULSEX_V2_ROUTER: '0x636f6407B90661b73b1C0F7e24F4C79f624d0738', // Updated from contract
-  WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27', // Wrapped PLS
-  DAI: '0xefD766cCb38EaF1dfd701853BFCe31359239F305', // DAI token on PulseChain
-  ARK_DAI_PAIR: '0x03f0bdb4f14e76a35a39ef0ffd87c8bb6d451366', // ARK/DAI pair
-  ARK_PLS_PAIR: '0x5f49421c0f74873bc02d0a912f171a030008f2c9', // ARK/PLS pair (primary)
-  BURN_ADDRESS: '0x0000000000000000000000000000000000000369', // Burn address
-  DEAD_ADDRESS: '0x0000000000000000000000000000000000000369', // Updated from contract
+  PULSEX_V2_ROUTER: '0x165C3410fC91EF562C50559f7d2289fEbed552d9',
+  WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27',
+  USDC: '0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07',
+  DAI: '0xefD766cCb38EaF1dfd701853BFCe31359239F305',
+  ARK_DAI_PAIR: '', // Will be discovered on-chain via PAIR()
+  ARK_PLS_PAIR: '', // Will be discovered on-chain via PAIR()
+  BURN_ADDRESS: '0x0000000000000000000000000000000000000369',
+  DEAD_ADDRESS: '0x0000000000000000000000000000000000000369',
 };
 
 // Complete SimplifiedLockerVault ABI - UPDATED FOR LATEST CONTRACT
@@ -89,7 +90,7 @@ export const LOCKER_VAULT_ABI = [
   'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount)',
 ];
 
-// Locker vault contract address - UPDATED TO LIVE ADDRESS
+// Locker vault contract address
 export const LOCKER_VAULT_ADDRESS = '0x3ba44a1de77025b78d7430449569dd1112ac4473';
 
 // Lock tier enumeration matching the contract
@@ -104,26 +105,25 @@ export const LOCK_TIERS = {
 
 // Locker contract constants matching the smart contract
 export const LOCKER_CONSTANTS = {
-  MIN_LOCK_DURATION_DAYS: 30, // Updated to match contract (30 days)
-  MAX_LOCK_DURATION_DAYS: 1826, // 5 years (1826 days)
+  MIN_LOCK_DURATION_DAYS: 30,
+  MAX_LOCK_DURATION_DAYS: 1826,
   BASIS_POINTS: 10000,
-  EARLY_UNLOCK_PENALTY: 5000, // 50% max penalty
-  MAX_EARLY_PENALTY: 7500, // 75% maximum
-  PENALTY_BURN_SHARE: 5000, // 50% burned
-  PENALTY_REWARD_SHARE: 5000, // 50% to lockers
+  EARLY_UNLOCK_PENALTY: 5000,
+  MAX_EARLY_PENALTY: 7500,
+  PENALTY_BURN_SHARE: 5000,
+  PENALTY_REWARD_SHARE: 5000,
   
-  // Tier multipliers (in basis points) - Updated to match contract
   TIER_MULTIPLIERS: {
-    BRONZE: 10000,   // 1x
-    SILVER: 15000,   // 1.5x
-    GOLD: 20000,     // 2x
-    DIAMOND: 30000,  // 3x
-    PLATINUM: 50000, // 5x
-    LEGENDARY: 80000 // 8x
+    BRONZE: 10000,
+    SILVER: 15000,
+    GOLD: 20000,
+    DIAMOND: 30000,
+    PLATINUM: 50000,
+    LEGENDARY: 80000
   }
 };
 
-// Updated ARK Token ABI matching the actual contract
+// Updated ARK Token ABI matching the new contract
 export const ARK_TOKEN_ABI = [
   // Standard ERC20 functions
   'function name() view returns (string)',
@@ -136,31 +136,35 @@ export const ARK_TOKEN_ABI = [
   'function approve(address spender, uint256 amount) returns (bool)',
   'function transferFrom(address sender, address recipient, uint256 amount) returns (bool)',
   
-  // Reflection functions
-  'function isExcludedFromReward(address account) view returns (bool)',
-  'function tokenFromReflection(uint256 rAmount) view returns (uint256)',
-  
-  // Fee structure (immutable values)
+  // Fee structure (mutable via updateFees)
   'function liquidityFee() view returns (uint256)',
-  'function reflectionFee() view returns (uint256)',
   'function lockerFee() view returns (uint256)',
   'function burnFee() view returns (uint256)',
-  'function divider() view returns (uint256)',
+  'function daoFee() view returns (uint256)',
+  'function DIVIDER() view returns (uint256)',
+  'function MAX_TOTAL_FEE() view returns (uint256)',
+  
+  // Immutable getters
+  'function PAIR() view returns (address)',
+  'function BURN() view returns (address)',
+  'function USDC() view returns (address)',
+  'function ARKDAO() view returns (address)',
+  'function ARKLocker() view returns (address)',
   
   // Contract settings
   'function swapThreshold() view returns (uint256)',
-  'function ARKLocker() view returns (address)',
-  'function pulseXPair() view returns (address)',
   'function pulseXRouter() view returns (address)',
-  'function burnAddress() view returns (address)',
   
   // Admin functions
-  'function excludeFromReward(address account)',
-  'function includeInReward(address account)',
+  'function updateFees(uint256 _liquidityFee, uint256 _lockerFee, uint256 _burnFee, uint256 _daoFee)',
   'function updateSwapThreshold(uint256 amount)',
-  'function excludeWalletFromFee(address wallet, bool status)',
-  'function setLiquidityPair(address pair, bool status)',
+  'function excludedWalletFromFee(address wallet, bool status)',
+  'function updateLiquidityPair(address pair, bool status)',
   'function setARKLocker(address newAddress)',
+  'function distributeLockerRewards()',
+  'function sendDAORewards()',
+  'function recoverPLS()',
+  'function recoverTokens(address tokenAddress, uint256 amount)',
   
   // State variables
   'function isExcludedFromFee(address) view returns (bool)',
@@ -174,8 +178,6 @@ export const ARK_TOKEN_ABI = [
   'event WalletExcludeFromFee(address indexed wallet, bool status)',
   'event LiquidityPairUpdated(address indexed pair, bool status)',
   'event ARKLockerUpdated(address indexed newAddress)',
-  'event ExcludedFromReward(address indexed account)',
-  'event IncludedInReward(address indexed account)',
 ];
 
 // Real PulseX V2 Router ABI
@@ -189,26 +191,25 @@ export const DEX_ROUTER_ABI = [
   'function factory() external pure returns (address)',
 ];
 
-// Contract constants from the Solidity code - UPDATED TO MATCH ACTUAL CONTRACT
+// Contract constants - UPDATED TO MATCH NEW CONTRACT
 export const CONTRACT_CONSTANTS = {
-  // Contract addresses
   TOKEN_ADDRESS: CONTRACT_ADDRESSES.ARK_TOKEN,
   LOCKER_ADDRESS: CONTRACT_ADDRESSES.LOCKER,
   RPC_URL: NETWORKS.PULSECHAIN.rpcUrls[0],
   
-  // Fixed fee structure from contract (immutable values)
-  LIQUIDITY_FEE: 300, // 3%
-  REFLECTION_FEE: 200, // 2%
-  LOCKER_FEE: 200, // 2%
-  BURN_FEE: 200, // 2%
-  TOTAL_FEES: 900, // 9%
-  DIVIDER: 10000, // Basis points
+  // Fee structure from new contract (mutable but defaults)
+  LIQUIDITY_FEE: 400, // 4%
+  LOCKER_FEE: 400,    // 4%
+  BURN_FEE: 100,      // 1%
+  DAO_FEE: 100,        // 1%
+  TOTAL_FEES: 1000,    // 10%
+  DIVIDER: 10000,      // Basis points
   
   // Swap settings
-  DEFAULT_SWAP_THRESHOLD: 50000, // 50,000 tokens
-  MIN_SWAP_THRESHOLD: 1000, // 1,000 tokens minimum
+  DEFAULT_SWAP_THRESHOLD: 50000,
+  MIN_SWAP_THRESHOLD: 1000,
   
   // Token supply
-  TOTAL_SUPPLY: 1000000000, // 1 billion tokens
+  TOTAL_SUPPLY: 1000000000,
   DECIMALS: 18,
 };

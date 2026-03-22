@@ -22,18 +22,18 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
     
     // Calculate theoretical fees based on volume (as percentages)
     const burnFee = volume * (CONTRACT_CONSTANTS.BURN_FEE / CONTRACT_CONSTANTS.DIVIDER);
-    const reflectionFee = volume * (CONTRACT_CONSTANTS.REFLECTION_FEE / CONTRACT_CONSTANTS.DIVIDER);
+    const daoFee = volume * (CONTRACT_CONSTANTS.DAO_FEE / CONTRACT_CONSTANTS.DIVIDER);
     const liquidityFee = volume * (CONTRACT_CONSTANTS.LIQUIDITY_FEE / CONTRACT_CONSTANTS.DIVIDER);
     const lockerFee = volume * (CONTRACT_CONSTANTS.LOCKER_FEE / CONTRACT_CONSTANTS.DIVIDER);
     
-    const totalFees = burnFee + reflectionFee + liquidityFee + lockerFee;
+    const totalFees = burnFee + daoFee + liquidityFee + lockerFee;
     
     return {
       volume,
       volumeChange,
       fees: {
         burn: burnFee,
-        reflection: reflectionFee,
+        dao: daoFee,
         liquidity: liquidityFee,
         locker: lockerFee,
         total: totalFees
@@ -136,8 +136,8 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
                 <p className="font-semibold text-red-400">{formatAmount(calculations.fees.burn)} ARK</p>
               </div>
               <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                <p className="text-xs text-muted-foreground">Reflection</p>
-                <p className="font-semibold text-blue-400">{formatAmount(calculations.fees.reflection)} ARK</p>
+                <p className="text-xs text-muted-foreground">DAO</p>
+                <p className="font-semibold text-blue-400">{formatAmount(calculations.fees.dao)} ARK</p>
               </div>
               <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
                 <p className="text-xs text-muted-foreground">Liquidity</p>
