@@ -14,6 +14,8 @@ interface OnboardingMessage {
 }
 
 const STORAGE_KEY = 'ark-onboarding-chat';
+const CHAT_VERSION = 'v2';
+const VERSION_KEY = 'ark-onboarding-chat-version';
 
 const audienceOptions = [
   { label: "I'm brand new to crypto", value: "A) I'm brand new to crypto — never bought anything" },
