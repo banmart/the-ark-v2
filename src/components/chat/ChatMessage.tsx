@@ -35,7 +35,15 @@ const ChatMessage = ({ role, content, timestamp }: ChatMessageProps) => {
             <div className="whitespace-pre-wrap">{content}</div>
           ) : (
             <div className="prose prose-sm prose-invert max-w-none prose-p:my-1.5 prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-headings:my-2 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-code:text-cyan-300 prose-code:bg-black/30 prose-code:px-1 prose-code:rounded">
-              <ReactMarkdown>{content}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  a: ({ href, children, ...props }) => (
+                    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                      {children}
+                    </a>
+                  ),
+                }}
+              >{content}</ReactMarkdown>
             </div>
           )}
         </div>
