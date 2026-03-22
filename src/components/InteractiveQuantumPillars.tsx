@@ -147,7 +147,7 @@ const InteractiveQuantumPillars = memo(() => {
         emoji: '🏛️',
         title: 'DAO TREASURY',
         subtitle: 'Community Governance',
-        description: 'Autonomous allocation to the DAO treasury for community-driven governance and development.',
+        description: '1% of every transaction funds the DAO treasury for community-driven governance and development.',
         color: 'blue',
         gradient: 'from-blue-500 to-cyan-500',
         value: daoDaily,
