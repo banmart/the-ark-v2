@@ -19,6 +19,7 @@ import Locker from "./pages/Locker";
 import Leaderboard from "./pages/Leaderboard";
 import BurnAnalytics from "./pages/BurnAnalytics";
 import Burn from "./pages/Burn";
+import DAO from "./pages/DAO";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
                         <Route path="/leaderboard" element={<Leaderboard />} />
                         <Route path="/burn-analytics" element={<BurnAnalytics />} />
                         <Route path="/burn" element={<Burn />} />
+                        <Route path="/dao" element={<DAO />} />
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
