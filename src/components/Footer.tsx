@@ -249,7 +249,7 @@ const Footer = () => {
                   </li>
                   <li>
                     <a 
-                      href="https://app.pulsex.com/swap?outputCurrency=0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67" 
+                      href="https://app.pulsex.com/swap?outputCurrency=0xF4a370e64DD4673BAA250C5435100FA98661Db4C" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-white/50 hover:text-teal-400 transition-all duration-300 font-mono flex items-center gap-3 group hover:translate-x-1"
