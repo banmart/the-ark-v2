@@ -26,7 +26,7 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
     const liquidityFee = volume * (CONTRACT_CONSTANTS.LIQUIDITY_FEE / CONTRACT_CONSTANTS.DIVIDER);
     const lockerFee = volume * (CONTRACT_CONSTANTS.LOCKER_FEE / CONTRACT_CONSTANTS.DIVIDER);
     
-    const totalFees = burnFee + reflectionFee + liquidityFee + lockerFee;
+    const totalFees = burnFee + daoFee + liquidityFee + lockerFee;
     
     return {
       volume,
