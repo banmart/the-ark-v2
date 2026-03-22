@@ -349,8 +349,11 @@ export const useLockerData = () => {
     
     // Actions
     lockTokens,
+    lockTokensForOthers,
     unlockTokens,
     claimRewards,
+    claimRewardsForLocks,
+    forceUnlockMatured,
     approveTokens: approveTokensWrapper,
     fetchUserTokenData: fetchUserTokenDataWrapper
   };
