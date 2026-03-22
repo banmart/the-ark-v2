@@ -211,6 +211,27 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
     }
   };
 
+  const handleClaimForLock = async (lockId: number) => {
+    if (!isConnected) return;
+    setProcessingClaim(lockId);
+    try {
+      await claimRewardsForLocks([lockId]);
+      toast({
+        title: "Rewards Claimed!",
+        description: `Successfully claimed rewards for position #${lockId}`
+      });
+    } catch (error: any) {
+      console.error('Claim failed:', error);
+      toast({
+        variant: "destructive",
+        title: "Claim Failed",
+        description: error.message || "Failed to claim rewards"
+      });
+    } finally {
+      setProcessingClaim(null);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Premium Lock Positions Container */}
