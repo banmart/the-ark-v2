@@ -257,7 +257,39 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
                   }`} />
                 </div>
               </button>
-            </div>
+
+              {/* DAO Link Card */}
+              <button 
+                onClick={() => handleInternalLink('/dao')}
+                className={`relative w-full group overflow-hidden rounded-xl transition-all duration-300 ${
+                  isActive('/dao') ? 'scale-[1.02]' : ''
+                }`}
+              >
+                <div className={`absolute -inset-0.5 bg-gradient-to-r from-cyan-500/30 to-teal-500/20 rounded-xl blur-md transition-opacity duration-300 ${
+                  isActive('/dao') ? 'opacity-80' : 'opacity-0 group-hover:opacity-60'
+                }`}></div>
+                <div className={`relative flex items-center justify-between p-4 backdrop-blur-sm border rounded-xl transition-all duration-300 ${
+                  isActive('/dao') 
+                    ? 'bg-cyan-500/15 border-cyan-500/40' 
+                    : 'bg-white/[0.02] border-white/[0.06] group-hover:bg-white/[0.04] group-hover:border-cyan-500/20'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      isActive('/dao') 
+                        ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]' 
+                        : 'bg-white/30 group-hover:bg-cyan-400/60'
+                    }`}></div>
+                    <span className={`font-mono text-sm font-medium transition-colors duration-300 ${
+                      isActive('/dao') ? 'text-cyan-400' : 'text-white/80 group-hover:text-white'
+                    }`}>
+                      DAO
+                    </span>
+                  </div>
+                  <ChevronRight className={`w-4 h-4 transition-all duration-300 ${
+                    isActive('/dao') ? 'text-cyan-400' : 'text-white/30 group-hover:text-white/60 group-hover:translate-x-1'
+                  }`} />
+                </div>
+              </button>
           </div>
 
           {/* ========== PREMIUM WALLET SECTION ========== */}

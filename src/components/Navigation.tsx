@@ -240,7 +240,19 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
                   {/* Gradient Underline */}
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-teal-400 group-hover:w-full transition-all duration-300 rounded-full shadow-[0_0_6px_rgba(34,211,238,0.4)]"></div>
                 </Link>
-                
+
+                {/* DAO Link */}
+                <Link 
+                  to="/dao" 
+                  className="relative group px-4 py-2"
+                >
+                  <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-sm border border-transparent rounded-lg opacity-0 group-hover:opacity-100 group-hover:border-cyan-500/20 transition-all duration-300"></div>
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-cyan-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_0_6px_rgba(34,211,238,0.6)]"></div>
+                  <span className="relative text-white/80 group-hover:text-cyan-400 transition-colors duration-300 font-mono text-sm font-medium">
+                    DAO
+                  </span>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-teal-400 group-hover:w-full transition-all duration-300 rounded-full shadow-[0_0_6px_rgba(34,211,238,0.4)]"></div>
+                </Link>
                 {/* ========== LUXURY CONNECT WALLET BUTTON ========== */}
                 <div className="relative group">
                   {/* Outer Glow Ring */}

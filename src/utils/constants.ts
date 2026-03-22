@@ -200,10 +200,39 @@ export const DEX_ROUTER_ABI = [
   'function factory() external pure returns (address)',
 ];
 
+// ARKDAO ABI
+export const ARKDAO_ABI = [
+  'function totalProposals() view returns (uint256)',
+  'function proposalState(uint256 proposalID) view returns (uint8)',
+  'function getProposals(uint256[] proposalIDs) view returns (tuple(uint256 proposalID, string title, string description, uint256 requestedFund, uint256 claimedFund, uint256 votingStart, uint256 votingEnd, uint256 votesFor, uint256 votesAgainst, uint256 voterCount, bool fundsClaimed, address proposer, uint8 state)[])',
+  'function getVotersForProposals(uint256[] proposalIDs) view returns (tuple(address voter, uint256 support)[][])',
+  'function getVoteReceipt(uint256 proposalID, address voter) view returns (tuple(bool hasVoted, uint256 support))',
+  'function latestProposalID(address) view returns (uint256)',
+  'function USDC() view returns (address)',
+  'function ARKLocker() view returns (address)',
+  'function QUORUM() view returns (uint256)',
+  'function MAX_FUND_REQUEST() view returns (uint256)',
+  'function BASIS_POINTS() view returns (uint256)',
+  'function MIN_PROPOSAL_DURATION() view returns (uint256)',
+  'function MAX_PROPOSAL_DURATION() view returns (uint256)',
+  'function createProposal(string title, string description, uint256 requestedFund, uint256 duration)',
+  'function castVote(uint256 proposalID, uint256 support)',
+  'function claimFund(uint256 proposalID)',
+  'event ProposalCreated(uint256 proposalID, string proposalTitle, string proposalDescription, address indexed proposer, uint256 votingStartTime, uint256 votingEndTime, uint256 requestedFund)',
+  'event VoteCast(address indexed voter, uint256 proposalID, uint256 support)',
+  'event FundsClaimed(uint256 proposalID, address indexed proposer, uint256 claimedFund)',
+];
+
+// IsTopLocker check ABI (on ARKLocker contract)
+export const ARK_LOCKER_TOP_CHECK_ABI = [
+  'function isTopLocker(address locker) view returns (bool)',
+];
+
 // Contract constants - UPDATED TO MATCH NEW CONTRACT
 export const CONTRACT_CONSTANTS = {
   TOKEN_ADDRESS: CONTRACT_ADDRESSES.ARK_TOKEN,
   LOCKER_ADDRESS: CONTRACT_ADDRESSES.LOCKER,
+  DAO_ADDRESS: CONTRACT_ADDRESSES.DAO,
   RPC_URL: NETWORKS.PULSECHAIN.rpcUrls[0],
   
   // Fee structure from new contract (mutable but defaults)

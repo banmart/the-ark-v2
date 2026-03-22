@@ -45,6 +45,7 @@ const App = () => (
                         <Route path="/leaderboard" element={<Leaderboard />} />
                         <Route path="/burn-analytics" element={<BurnAnalytics />} />
                         <Route path="/burn" element={<Burn />} />
+                        <Route path="/dao" element={<DAO />} />
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
