@@ -14,7 +14,7 @@ interface OnboardingMessage {
 }
 
 const STORAGE_KEY = 'ark-onboarding-chat';
-const CHAT_VERSION = 'v2';
+const CHAT_VERSION = 'v3';
 const VERSION_KEY = 'ark-onboarding-chat-version';
 
 const audienceOptions = [

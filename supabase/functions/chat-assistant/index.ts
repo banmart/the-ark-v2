@@ -97,6 +97,8 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  console.log(`[chat-assistant v${VERSION}] incoming request`)
+
   try {
     const { message, chatHistory = [] } = await req.json()
 
