@@ -566,8 +566,8 @@ const Burn = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {[
-                      { title: 'Transaction Burns', desc: '2% of every transaction is automatically burned', color: 'gold', width: '20%' },
-                      { title: 'Liquidity Burns', desc: '3% goes to liquidity, LP tokens burned', color: 'blue', width: '30%' },
+                      { title: 'Transaction Burns', desc: '1% of every transaction is automatically burned', color: 'gold', width: '10%' },
+                      { title: 'Liquidity Burns', desc: '4% goes to liquidity, LP tokens burned', color: 'blue', width: '40%' },
                       { title: 'Early Unlock Penalties', desc: '50% of penalties burned, 50% to lockers', color: 'cyan', width: '50%', icon: AlertTriangle }
                     ].map((mechanic, index) => (
                       <div key={mechanic.title} className="relative group/mechanic">

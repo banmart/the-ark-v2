@@ -175,7 +175,7 @@ const Onboarding = () => {
       }, {
         name: 'Add Liquidity',
         description: 'Provide liquidity to earn fees',
-        url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
+        url: 'https://pulsex.mypinata.cloud/ipfs/bafybeibzu7nje2o2tufb3ifitjrto3n3xcwon7fghq2igtcupulfubnrim/#/add/v2/0xF4a370e64DD4673BAA250C5435100FA98661Db4C/0xefD766cCb38EaF1dfd701853BFCe31359239F305',
         icon: '💧',
         external: true
       }]

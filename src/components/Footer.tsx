@@ -313,7 +313,7 @@ const Footer = () => {
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/10 to-cyan-500/10 rounded-lg blur opacity-30"></div>
                     <div className="relative px-3 py-1.5 bg-white/[0.02] backdrop-blur-sm border border-white/[0.05] rounded-lg">
                       <span className="text-xs font-mono text-white/30 break-all">
-                        0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67
+                        0xF4a370e64DD4673BAA250C5435100FA98661Db4C
                       </span>
                     </div>
                   </div>
