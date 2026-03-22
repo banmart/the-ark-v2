@@ -1,20 +1,25 @@
 
 
-## Fix: Clear Stale Onboarding Chat Cache
+## Fix: Force Edge Function Redeploy
 
 ### Problem
-The onboarding page loads old (broken) messages from `localStorage` key `ark-onboarding-chat`. Since `hasMessages` is `true`, it shows the old error conversation instead of the welcome screen with audience buttons.
+The `LOVABLE_API_KEY` secret is configured, and the edge function code correctly uses the Lovable AI Gateway. However, the **deployed version** of the function is still the old one that called Gemini directly (producing 400 errors). The code change from the previous plan wasn't enough to trigger a redeploy.
 
-### Solution — `src/pages/Onboarding.tsx`
+### Solution — Force redeploy with a meaningful change
 
-Add a **version key** to the storage. When the version changes (like after this fix), stale messages are auto-cleared so users see the fresh welcome screen.
+**`supabase/functions/chat-assistant/index.ts`**:
+- Add a version identifier constant at the top (e.g., `const VERSION = '2.1'`) to ensure Supabase detects a file change and redeploys
+- Add a console.log at the start of each request logging the version, so we can confirm the new version is running
+- No functional changes needed — the gateway integration code is already correct
 
-1. Add a `CHAT_VERSION` constant (e.g., `'v2'`)
-2. In the `useState` initializer, check `localStorage` for `ark-onboarding-chat-version`:
-   - If it doesn't match `CHAT_VERSION`, clear saved messages and update the version key
-   - If it matches, load messages as normal
-3. This ensures all users see the fresh welcome screen after this deploy
+This is a one-line addition to force the deploy pipeline to pick up the updated code.
 
-### File to edit
-- `src/pages/Onboarding.tsx` — add version-gated cache clearing (~5 lines changed in the initializer)
+### Also: Clear stale localStorage on the Onboarding page
+
+**`src/pages/Onboarding.tsx`**:
+- Bump `CHAT_VERSION` from `'v2'` to `'v3'` so any cached error messages from the old broken function are cleared, and users see the fresh welcome screen with audience buttons
+
+### Files to edit
+- `supabase/functions/chat-assistant/index.ts` — add version constant + request log
+- `src/pages/Onboarding.tsx` — bump `CHAT_VERSION` to `'v3'`
 
