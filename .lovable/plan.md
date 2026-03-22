@@ -1,29 +1,24 @@
 
 
-## Fix Tier Legend Layout + Replace Duration Slider with Tier Presets
+## Update Token Address & Burn Page
 
-### 1. Fix CompactTierDisplay grid to show all 7 tiers in one row
+### 1. Replace old token address with new one
 
-**File**: `src/components/locker/CompactTierDisplay.tsx`
+The old address `0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67` appears in 3 files:
 
-- Change grid from `grid-cols-2 sm:grid-cols-3 md:grid-cols-6` to `grid-cols-3 sm:grid-cols-4 md:grid-cols-7`
-- Also fix `activeTier` modulo from `% 6` to `% 7` (now 7 tiers)
-- Add `'MYTHIC': '139, 92, 246'` to the `getTierColorRGB` map (currently missing, falls back to cyan)
+**`src/components/Footer.tsx`** (lines 240, 252, 316)
+- Update contract explorer link, PulseX swap link, and displayed contract address pill to `0xF4a370e64DD4673BAA250C5435100FA98661Db4C`
 
-### 2. Replace LockDurationSlider with tier preset buttons
+**`src/components/layout/PageLayout.tsx`** (line 27)
+- Update `CONTRACT_ADDRESS` constant
 
-**File**: `src/components/locker/LockDurationSlider.tsx`
+**`src/pages/Onboarding.tsx`** (lines 158, 178)
+- Update PulseX buy link and add liquidity link
 
-Replace the days slider with a row of 7 tier buttons showing the tier name, icon, multiplier, and duration range. Clicking a tier sets `lockDuration` to that tier's `minDays`. Each button highlights when the current `lockDuration` falls within its range.
+### 2. Fix Burn page mechanics to match new contract
 
-Tier presets from `lockTiers.ts`:
-- Bronze: 30-89d → "1-3 months"
-- Silver: 90-179d → "3-6 months"  
-- Gold: 180-364d → "6-12 months"
-- Diamond: 365-729d → "1-2 years"
-- Platinum: 730-1094d → "2-3 years"
-- Mythic: 1095-1459d → "3-4 years"
-- Legendary: 1460-1826d → "4-5 years"
-
-Display as a responsive grid of selectable cards (not a slider). Each card shows the tier icon, name, multiplier, and human-readable period. The selected tier gets a highlighted border matching its color.
+**`src/pages/Burn.tsx`** (lines 568-591)
+- "Transaction Burns" description: change "2%" → "1%" (burn fee is now 1%)
+- "Liquidity Burns" description: change "3% goes to liquidity" → "4% goes to liquidity"
+- Update progress bar widths to reflect new proportions (burn 10%, liquidity 40%)
 
