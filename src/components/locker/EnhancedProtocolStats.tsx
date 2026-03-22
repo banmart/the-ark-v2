@@ -1,6 +1,9 @@
-import React from 'react';
-import { TrendingUp, Users, DollarSign, Lock, Activity, AlertTriangle, CheckCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { TrendingUp, Users, DollarSign, Lock, Activity, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
+import { useLockerData } from '../../hooks/useLockerData';
+import { useWallet } from '../../hooks/useWallet';
+import { toast } from "@/components/ui/use-toast";
 
 const EnhancedProtocolStats = () => {
   const {
@@ -10,6 +13,27 @@ const EnhancedProtocolStats = () => {
     earlyUnlockSettings,
     loading
   } = useLockerContractData();
+
+  const { forceUnlockMatured } = useLockerData();
+  const { signer } = useWallet();
+  const [processingMatured, setProcessingMatured] = useState(false);
+
+  const handleForceUnlockMatured = async () => {
+    if (!signer) {
+      toast({ variant: "destructive", title: "Wallet Required", description: "Connect your wallet to process matured locks" });
+      return;
+    }
+    setProcessingMatured(true);
+    try {
+      await forceUnlockMatured(50);
+      toast({ title: "Matured Locks Processed!", description: "Successfully processed up to 50 matured lock positions" });
+    } catch (error: any) {
+      console.error('Force unlock matured failed:', error);
+      toast({ variant: "destructive", title: "Processing Failed", description: error.message || "Failed to process matured locks" });
+    } finally {
+      setProcessingMatured(false);
+    }
+  };
 
   const stats = [
     {
@@ -180,6 +204,40 @@ const EnhancedProtocolStats = () => {
             </div>
           );
         })}
+      </div>
+
+      {/* Process Matured Locks Utility */}
+      <div className="relative">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/10 via-transparent to-orange-500/10 rounded-2xl blur-sm"></div>
+        <div className="relative bg-black/40 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-sm font-semibold text-white mb-1 flex items-center gap-2">
+                ⚙️ Process Matured Locks
+              </h3>
+              <p className="text-xs text-gray-500">
+                Anyone can call this to process up to 50 expired lock positions and return tokens to their owners.
+              </p>
+            </div>
+            <button
+              onClick={handleForceUnlockMatured}
+              disabled={processingMatured || !signer}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-amber-500/80 to-orange-500/80 text-white border border-amber-500/30"
+            >
+              {processingMatured ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Activity className="w-4 h-4" />
+                  Process Matured
+                </>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
       <style>{`
