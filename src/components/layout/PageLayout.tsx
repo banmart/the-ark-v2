@@ -24,7 +24,7 @@ interface PageLayoutProps {
 }
 
 // Hoist static contract address (rule: rendering-hoist-jsx)
-const CONTRACT_ADDRESS = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67';
+const CONTRACT_ADDRESS = '0xF4a370e64DD4673BAA250C5435100FA98661Db4C';
 
 // Hoist static background image URL
 const BACKGROUND_IMAGE_URL = 'https://crypto-genesis-beacon.lovable.app/lovable-uploads/00beb11a-64d8-4ae5-8c77-2846b0ef503c.jpg';
