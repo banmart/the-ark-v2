@@ -1,7 +1,8 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
-// ARK Chat Assistant — Lovable AI Gateway v3.0 (2026-03-22)
-const VERSION = '3.0'
+// ARK Chat Assistant — Lovable AI Gateway v3.1
+const VERSION = '3.1'
+const DEPLOY_MARKER = 'lqdfabahepzaizasrqld-20260322'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
