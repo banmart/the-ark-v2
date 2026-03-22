@@ -80,7 +80,7 @@ const InteractiveQuantumPillars = memo(() => {
     
     // Use real fee data when available, fallback to calculations
     const burnDaily = fees?.burn.dailyFees || 0;
-    const reflectionDaily = fees?.reflection.dailyFees || 0;
+    const daoDaily = fees?.dao.dailyFees || 0;
     const liquidityDaily = fees?.liquidity.dailyFees || 0;
     const lockerDaily = fees?.locker.dailyFees || 0;
     
