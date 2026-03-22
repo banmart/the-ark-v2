@@ -16,7 +16,7 @@ const CompactTierDisplay = () => {
     });
 
     const interval = setInterval(() => {
-      setActiveTier(prev => (prev + 1) % 6);
+      setActiveTier(prev => (prev + 1) % 7);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
