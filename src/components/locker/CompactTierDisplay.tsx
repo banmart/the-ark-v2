@@ -28,6 +28,7 @@ const CompactTierDisplay = () => {
       'Gold': '255, 215, 0',
       'Diamond': '96, 165, 250',
       'Platinum': '167, 139, 250',
+      'Mythic': '139, 92, 246',
       'Legendary': '251, 146, 60'
     };
     return colors[tierName] || '34, 211, 238';
