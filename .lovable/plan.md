@@ -1,25 +1,40 @@
 
+Issue confirmed: the frontend is calling `chat-assistant`, but the deployed Edge Function behind that name is still an old version returning **500** with `{"error":"Gemini API error: 400"}`. That’s why the UI falls into `FunctionsHttpError` and shows “Sorry, I encountered an error.”
 
-## Fix: Force Edge Function Redeploy
+## Plan to set it up correctly
 
-### Problem
-The `LOVABLE_API_KEY` secret is configured, and the edge function code correctly uses the Lovable AI Gateway. However, the **deployed version** of the function is still the old one that called Gemini directly (producing 400 errors). The code change from the previous plan wasn't enough to trigger a redeploy.
+1. **Hard-switch to a fresh function deployment (avoid stale function issue)**
+   - Create a new function name (e.g. `chat-assistant-v2`) using the current Lovable AI Gateway implementation already in repo style.
+   - Keep `verify_jwt = false` in `supabase/config.toml` for the new function.
+   - Add explicit version logging and return standardized JSON `{ response, error? }`.
 
-### Solution — Force redeploy with a meaningful change
+2. **Point all chat entrypoints to the new function**
+   - Update both:
+     - `src/pages/Onboarding.tsx` (Get ARK flow)
+     - `src/components/providers/ChatProvider.tsx` (drawer assistant)
+   - Use a shared constant for function name so both always stay in sync.
 
-**`supabase/functions/chat-assistant/index.ts`**:
-- Add a version identifier constant at the top (e.g., `const VERSION = '2.1'`) to ensure Supabase detects a file change and redeploys
-- Add a console.log at the start of each request logging the version, so we can confirm the new version is running
-- No functional changes needed — the gateway integration code is already correct
+3. **Improve client error handling so failures are visible (not generic)**
+   - Handle `FunctionsHttpError` and parse `await error.context.json()` to surface backend message.
+   - Show a user-friendly fallback only if no structured error body exists.
+   - Keep console logs with context (`status`, `error`, `request id` if available).
 
-This is a one-line addition to force the deploy pipeline to pick up the updated code.
+4. **Reset stale local chat state**
+   - Bump onboarding/chat storage version keys (e.g. `v4`) so old failed conversations do not keep the UI stuck in error history.
 
-### Also: Clear stale localStorage on the Onboarding page
+5. **Deploy + verify end-to-end**
+   - Deploy the new Edge Function.
+   - Verify in Network tab that `/functions/v1/chat-assistant-v2` returns `200` with a `response` field.
+   - Confirm `/onboarding` starts with the audience buttons, clicking one returns assistant content, and manual typed follow-ups also work.
 
-**`src/pages/Onboarding.tsx`**:
-- Bump `CHAT_VERSION` from `'v2'` to `'v3'` so any cached error messages from the old broken function are cleared, and users see the fresh welcome screen with audience buttons
+## Technical details (implementation targets)
 
-### Files to edit
-- `supabase/functions/chat-assistant/index.ts` — add version constant + request log
-- `src/pages/Onboarding.tsx` — bump `CHAT_VERSION` to `'v3'`
+- `supabase/functions/chat-assistant-v2/index.ts` (new)
+- `supabase/config.toml` (new function block)
+- `src/pages/Onboarding.tsx` (invoke target + error parsing + cache version bump)
+- `src/components/providers/ChatProvider.tsx` (invoke target + error parsing)
 
+## Why this approach
+- Re-deploying under the same function name has already failed to replace the stale runtime behavior.
+- Versioned function name guarantees the app hits newly deployed code immediately.
+- Better error parsing prevents future “silent generic” failures and speeds up debugging.
