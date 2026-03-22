@@ -26,7 +26,9 @@ import EarlyUnlockWarningDialog from './EarlyUnlockWarningDialog';
 interface CompactLockPositionProps {
   lock: LockedPosition;
   onUnlock: (lockId: number) => void;
+  onClaim: (lockId: number) => void;
   processingUnlock: number | null;
+  processingClaim: number | null;
 }
 
 const CompactLockPosition = ({ lock, onUnlock, processingUnlock }: CompactLockPositionProps) => {
