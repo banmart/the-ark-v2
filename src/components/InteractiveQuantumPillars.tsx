@@ -92,7 +92,7 @@ const InteractiveQuantumPillars = memo(() => {
     
     // Calculate dynamic max values based on real fee collection
     const burnMaxCapacity = Math.max(currentVolume * 0.02, burnDaily * 2); // 2% of volume or 2x current rate
-    const reflectionMaxCapacity = Math.max(currentVolume * 0.02, reflectionDaily * 2);
+    const daoMaxCapacity = Math.max(currentVolume * 0.01, daoDaily * 2);
     const liquidityMaxCapacity = Math.max(currentVolume * 0.03, liquidityDaily * 2);
     const rewardMaxCapacity = Math.max(rewardPool * 0.01, lockerDaily * 2);
 
