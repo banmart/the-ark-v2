@@ -1,5 +1,5 @@
-
 import React, { createContext, useContext, ReactNode, useState, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ChatMessage {
   id: string;
@@ -34,7 +34,6 @@ interface ChatProviderProps {
 
 export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    // Load chat history from localStorage
     const saved = localStorage.getItem('ark-chat-history');
     if (saved) {
       try {
@@ -63,7 +62,6 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     
     setMessages(prev => {
       const updated = [...prev, newMessage];
-      // Save to localStorage
       localStorage.setItem('ark-chat-history', JSON.stringify(updated));
       return updated;
     });
@@ -72,20 +70,27 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || isLoading) return;
 
-    // Add user message
     addMessage(content, 'user');
     setIsLoading(true);
 
     try {
-      // Chat functionality temporarily disabled for decentralization
-      addMessage('Chat functionality is temporarily unavailable as we transition to a fully decentralized system.', 'assistant');
+      const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
+      
+      const { data, error } = await supabase.functions.invoke('chat-assistant', {
+        body: { message: content, chatHistory }
+      });
+
+      if (error) throw error;
+
+      const reply = data?.response || 'Sorry, I couldn\'t generate a response. Please try again.';
+      addMessage(reply, 'assistant');
     } catch (error) {
       console.error('Chat error:', error);
       addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
     } finally {
       setIsLoading(false);
     }
-  }, [addMessage, isLoading]);
+  }, [addMessage, isLoading, messages]);
 
   const clearChat = useCallback(() => {
     setMessages([]);
