@@ -155,7 +155,7 @@ const CompactTierDisplay = () => {
       <div className="relative z-10">
         {/* Tier Grid */}
         <div className={`
-          grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-4
+          grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3 md:gap-4
           transition-all duration-700 delay-300 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
         `}>
           {tiers.map((tier, index) => (
