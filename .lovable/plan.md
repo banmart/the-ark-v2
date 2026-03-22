@@ -1,20 +1,20 @@
 
 
-## Update Fee Structure on Homepage Pillar Cards
+## Fix: Clear Stale Onboarding Chat Cache
 
-The "Four Quantum Pillars" in `FeaturesSection.tsx` show outdated fee percentages and include a "Reflection" fee that no longer exists.
+### Problem
+The onboarding page loads old (broken) messages from `localStorage` key `ark-onboarding-chat`. Since `hasMessages` is `true`, it shows the old error conversation instead of the welcome screen with audience buttons.
 
-**Current (wrong):** 2% Burn, 2% Reflection, 3% Liquidity, 2% Vault Rewards = 9%
-**Correct:** 1% Burn, 1% DAO, 4% Liquidity, 4% Locker = 10% total
+### Solution — `src/pages/Onboarding.tsx`
 
-### Changes — `src/components/FeaturesSection.tsx`
+Add a **version key** to the storage. When the version changes (like after this fix), stale messages are auto-cleared so users see the fresh welcome screen.
 
-Update the `pillars` array (lines 29–102):
+1. Add a `CHAT_VERSION` constant (e.g., `'v2'`)
+2. In the `useState` initializer, check `localStorage` for `ark-onboarding-chat-version`:
+   - If it doesn't match `CHAT_VERSION`, clear saved messages and update the version key
+   - If it matches, load messages as normal
+3. This ensures all users see the fresh welcome screen after this deploy
 
-1. **Burn** — change `percentage` from `'2%'` to `'1%'`
-2. **Replace Reflection with DAO** — change title to `'DAO TREASURY'`, emoji to `'🏛️'`, icon to `Users`, percentage to `'1%'`, subtitle/description to reference DAO governance fund, status to `'COLLECTING'`
-3. **Liquidity** — change `percentage` from `'3%'` to `'4%'`
-4. **Locker (Vault Rewards)** — change `percentage` from `'2%'` to `'4%'`
-
-No other files need changes.
+### File to edit
+- `src/pages/Onboarding.tsx` — add version-gated cache clearing (~5 lines changed in the initializer)
 
