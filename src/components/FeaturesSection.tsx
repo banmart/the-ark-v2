@@ -48,20 +48,20 @@ const FeaturesSection = () => {
     {
       id: 1,
       icon: Users,
-      emoji: '🫂',
-      title: 'REFLECTION MATRIX',
-      subtitle: 'Quantum Redistribution',
-      percentage: '2%',
-      detail: 'Holder Rewards',
-      description: 'Autonomous quantum redistribution to all vessel holders based on molecular weight. Extended holding periods amplify reflection coefficients.',
+      emoji: '🏛️',
+      title: 'DAO TREASURY',
+      subtitle: 'Community Governance',
+      percentage: '1%',
+      detail: 'Governance Fund',
+      description: 'Every transaction contributes 1% to the DAO treasury, funding community-driven governance, development proposals, and ecosystem growth initiatives.',
       color: 'blue',
-      status: 'DISTRIBUTING',
+      status: 'COLLECTING',
       gradient: 'from-blue-500 to-cyan-500',
       glowColor: 'rgba(59, 130, 246, 0.4)',
       borderColor: 'border-blue-500/30',
       borderHover: 'hover:border-blue-500/60',
       textColor: 'text-blue-400',
-      liveMetric: 'Active redistribution'
+      liveMetric: 'Treasury accumulation'
     },
     {
       id: 2,
