@@ -65,7 +65,7 @@ export const tiers: Tier[] = [
     icon: '💎',
     color: 'cyan-400',
     multiplier: '3x',
-    duration: '1-3y',
+    duration: '1-2y',
     description: 'VIP community access',
     details: {
       rewards: '3x vault multiplier',
@@ -78,26 +78,41 @@ export const tiers: Tier[] = [
     name: 'PLATINUM',
     icon: '⭐',
     color: 'purple-400',
-    multiplier: '5x',
-    duration: '3-4y',
-    description: 'Development influence',
+    multiplier: '4x',
+    duration: '2-3y',
+    description: 'Elite vault status',
     details: {
-      rewards: '5x vault multiplier',
+      rewards: '4x vault multiplier',
       community: 'Platinum elite status',
       features: 'Development influence',
       governance: 'Strategic decision input'
     }
   },
   {
+    name: 'MYTHIC',
+    icon: '🔮',
+    color: 'violet-400',
+    multiplier: '5x',
+    duration: '3-4y',
+    description: 'Mythic realm access',
+    special: true,
+    details: {
+      rewards: '5x vault multiplier',
+      community: 'Mythic inner circle',
+      features: 'Exclusive protocol insights',
+      governance: 'Core governance member'
+    }
+  },
+  {
     name: 'LEGENDARY',
     icon: '⚡',
     color: 'yellow-300',
-    multiplier: '8x',
+    multiplier: '7x',
     duration: '4-5y',
     description: 'True Noah privileges',
     special: true,
     details: {
-      rewards: '8x vault multiplier',
+      rewards: '7x vault multiplier',
       community: 'Legendary ARK status',
       features: 'Ultimate vault rewards',
       governance: 'Noah council member'

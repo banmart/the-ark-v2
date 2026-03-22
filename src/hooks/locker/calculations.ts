@@ -56,7 +56,7 @@ export const calculateAPYRange = (
 ): { min: number; max: number } => {
   const baseAPY = 15;
   const minAPY = baseAPY * (lockTiers[0].multiplier / CONTRACT_CONSTANTS.BASIS_POINTS);
-  const maxAPY = baseAPY * (lockTiers[5].multiplier / CONTRACT_CONSTANTS.BASIS_POINTS);
+  const maxAPY = baseAPY * (lockTiers[lockTiers.length - 1].multiplier / CONTRACT_CONSTANTS.BASIS_POINTS);
   
   return { min: minAPY, max: maxAPY };
 };

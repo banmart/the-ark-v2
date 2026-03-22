@@ -105,7 +105,8 @@ export const LOCK_TIERS = {
   GOLD: 2,
   DIAMOND: 3,
   PLATINUM: 4,
-  LEGENDARY: 5
+  MYTHIC: 5,
+  LEGENDARY: 6
 };
 
 // Locker contract constants matching the smart contract
@@ -117,14 +118,16 @@ export const LOCKER_CONSTANTS = {
   MAX_EARLY_PENALTY: 7500,
   PENALTY_BURN_SHARE: 5000,
   PENALTY_REWARD_SHARE: 5000,
+  MIN_LOCK_AMOUNT: 10000,
   
   TIER_MULTIPLIERS: {
     BRONZE: 10000,
     SILVER: 15000,
     GOLD: 20000,
     DIAMOND: 30000,
-    PLATINUM: 50000,
-    LEGENDARY: 80000
+    PLATINUM: 40000,
+    MYTHIC: 50000,
+    LEGENDARY: 70000
   }
 };
 

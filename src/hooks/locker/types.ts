@@ -5,7 +5,8 @@ export enum LockTier {
   GOLD = 2,
   DIAMOND = 3,
   PLATINUM = 4,
-  LEGENDARY = 5
+  MYTHIC = 5,
+  LEGENDARY = 6
 }
 
 export interface LockedPosition {
