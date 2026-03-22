@@ -136,8 +136,8 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
                 <p className="font-semibold text-red-400">{formatAmount(calculations.fees.burn)} ARK</p>
               </div>
               <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                <p className="text-xs text-muted-foreground">Reflection</p>
-                <p className="font-semibold text-blue-400">{formatAmount(calculations.fees.reflection)} ARK</p>
+                <p className="text-xs text-muted-foreground">DAO</p>
+                <p className="font-semibold text-blue-400">{formatAmount(calculations.fees.dao)} ARK</p>
               </div>
               <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
                 <p className="text-xs text-muted-foreground">Liquidity</p>

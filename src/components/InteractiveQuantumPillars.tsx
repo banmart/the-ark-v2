@@ -144,18 +144,18 @@ const InteractiveQuantumPillars = memo(() => {
       {
         id: 1,
         icon: RefreshCcw,
-        emoji: '🫂',
-        title: 'REFLECTION MATRIX',
-        subtitle: 'Quantum Redistribution',
-        description: 'Autonomous redistribution to holders based on molecular weight with extended holding amplification.',
+        emoji: '🏛️',
+        title: 'DAO TREASURY',
+        subtitle: 'Community Governance',
+        description: 'Autonomous allocation to the DAO treasury for community-driven governance and development.',
         color: 'blue',
         gradient: 'from-blue-500 to-cyan-500',
-        value: reflectionDaily,
-        maxValue: reflectionMaxCapacity,
+        value: daoDaily,
+        maxValue: daoMaxCapacity,
         unit: 'ARK/day',
-        state: getReflectionState(reflectionDaily, reflectionMaxCapacity, efficiency?.reflection || 0),
-        liveData: reflectionDaily > 0 ? `${reflectionDaily > 1000 ? (reflectionDaily / 1000).toFixed(1) + 'K' : reflectionDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
-        actionText: 'VIEW REFLECTIONS'
+        state: getReflectionState(daoDaily, daoMaxCapacity, efficiency?.dao || 0),
+        liveData: daoDaily > 0 ? `${daoDaily > 1000 ? (daoDaily / 1000).toFixed(1) + 'K' : daoDaily.toFixed(0)} ARK/DAY` : 'LOADING...',
+        actionText: 'VIEW DAO'
       },
       {
         id: 2,
