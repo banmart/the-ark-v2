@@ -1,7 +1,7 @@
-// ARK Onboarding Chat Assistant — Lovable AI Gateway v2.1 (2026-03-22)
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
-const VERSION = '2.1'
+// ARK Chat Assistant — Lovable AI Gateway v3.0 (2026-03-22)
+const VERSION = '3.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -92,6 +92,13 @@ COMMON ISSUES:
 
 SAFETY: If anyone mentions sharing seed phrase, private key, or sending crypto to "verify" — STOP and warn: "This is a scam. No legitimate platform asks for your seed phrase or private key."`;
 
+const jsonResponse = (body: Record<string, unknown>, status = 200) => {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  })
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -102,13 +109,13 @@ serve(async (req) => {
   try {
     const { message, chatHistory = [] } = await req.json()
 
-    if (!message) {
-      throw new Error('Message is required')
+    if (!message || typeof message !== 'string') {
+      return jsonResponse({ error: 'Message is required' }, 400)
     }
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')
     if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured')
+      return jsonResponse({ error: 'LOVABLE_API_KEY is not configured' }, 500)
     }
 
     const messages = [
@@ -139,39 +146,24 @@ serve(async (req) => {
       console.error('AI Gateway error:', response.status, errorBody)
 
       if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ response: 'Too many requests — please wait a moment and try again. ⏳' }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
+        return jsonResponse({ error: 'Too many requests — please wait a moment and try again. ⏳' }, 429)
       }
       if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ response: 'The assistant is temporarily unavailable. Please try again later. ⚓' }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
+        return jsonResponse({ error: 'The assistant is temporarily unavailable. Please try again later. ⚓' }, 402)
       }
-      throw new Error(`Gateway returned ${response.status}`)
+      return jsonResponse({ error: `Gateway returned ${response.status}` }, 500)
     }
 
     const data = await response.json()
     const aiResponse = data.choices?.[0]?.message?.content
 
     if (!aiResponse) {
-      throw new Error('No response from AI')
+      return jsonResponse({ error: 'No response from AI' }, 500)
     }
 
-    return new Response(
-      JSON.stringify({ response: aiResponse }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return jsonResponse({ response: aiResponse })
   } catch (error) {
     console.error('Chat assistant error:', error)
-
-    return new Response(
-      JSON.stringify({
-        response: 'Hit some rough seas ⚓ — please try again in a moment!',
-      }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return jsonResponse({ error: 'Hit some rough seas ⚓ — please try again in a moment!' }, 500)
   }
 })
