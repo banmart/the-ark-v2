@@ -5,6 +5,8 @@ import PremiumBackground from '../components/layout/PremiumBackground';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatInput from '../components/chat/ChatInput';
 import { supabase } from '@/integrations/supabase/client';
+import { CHAT_ASSISTANT_FUNCTION_NAME } from '@/lib/chat/constants';
+import { getFunctionErrorMessage } from '@/lib/chat/errors';
 
 interface OnboardingMessage {
   id: string;
@@ -14,7 +16,7 @@ interface OnboardingMessage {
 }
 
 const STORAGE_KEY = 'ark-onboarding-chat';
-const CHAT_VERSION = 'v3';
+const CHAT_VERSION = 'v4';
 const VERSION_KEY = 'ark-onboarding-chat-version';
 
 const audienceOptions = [
@@ -69,14 +71,16 @@ const Onboarding = () => {
 
     try {
       const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
-      const { data, error } = await supabase.functions.invoke('chat-assistant', {
+      const { data, error } = await supabase.functions.invoke(CHAT_ASSISTANT_FUNCTION_NAME, {
         body: { message: content, chatHistory }
       });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       addMessage(data?.response || 'Sorry, please try again.', 'assistant');
     } catch (err) {
       console.error('Onboarding chat error:', err);
-      addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+      const errorMessage = await getFunctionErrorMessage(err, 'Sorry, I encountered an error. Please try again.');
+      addMessage(errorMessage, 'assistant');
     } finally {
       setIsLoading(false);
     }
