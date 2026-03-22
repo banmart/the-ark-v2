@@ -25,7 +25,7 @@ const LockerTiersSection = ({
     });
 
     const interval = setInterval(() => {
-      setActiveTier(prev => (prev + 1) % 6);
+      setActiveTier(prev => (prev + 1) % 7);
     }, 4000);
     return () => clearInterval(interval);
   }, []);
