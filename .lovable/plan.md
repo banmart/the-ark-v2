@@ -1,24 +1,31 @@
 
 
-## Update Token Address & Burn Page
+## Adapt Quantum Pillars & Locker Tiers to New ARK Token
 
-### 1. Replace old token address with new one
+### 1. InteractiveQuantumPillars — Update fee percentages
 
-The old address `0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67` appears in 3 files:
+**File**: `src/components/InteractiveQuantumPillars.tsx`
 
-**`src/components/Footer.tsx`** (lines 240, 252, 316)
-- Update contract explorer link, PulseX swap link, and displayed contract address pill to `0xF4a370e64DD4673BAA250C5435100FA98661Db4C`
+Update max capacity calculations to match new fee structure (1% burn, 1% dao, 4% liquidity, 4% locker):
+- Line 94: `currentVolume * 0.02` → `currentVolume * 0.01` (burn is 1%)
+- Line 95: `currentVolume * 0.01` → `currentVolume * 0.01` (dao stays 1%)
+- Line 96: `currentVolume * 0.03` → `currentVolume * 0.04` (liquidity is 4%)
+- Line 97: `rewardPool * 0.01` → `rewardPool * 0.04` (locker is 4%)
 
-**`src/components/layout/PageLayout.tsx`** (line 27)
-- Update `CONTRACT_ADDRESS` constant
+Update descriptions to remove "quantum" language and reflect actual mechanics:
+- Burn: "1% of every transaction is permanently burned, reducing total supply over time."
+- DAO: "1% of every transaction funds the DAO treasury for community governance."
+- Liquidity: "4% of every transaction is auto-added to the liquidity pool with threshold-based swaps."
+- Vault Rewards: "4% of every transaction flows to the locker vault, rewarding long-term holders with up to 7x multipliers."
 
-**`src/pages/Onboarding.tsx`** (lines 158, 178)
-- Update PulseX buy link and add liquidity link
+### 2. LockerTiersSection — Add MYTHIC tier + fix multipliers
 
-### 2. Fix Burn page mechanics to match new contract
+**File**: `src/components/LockerTiersSection.tsx`
 
-**`src/pages/Burn.tsx`** (lines 568-591)
-- "Transaction Burns" description: change "2%" → "1%" (burn fee is now 1%)
-- "Liquidity Burns" description: change "3% goes to liquidity" → "4% goes to liquidity"
-- Update progress bar widths to reflect new proportions (burn 10%, liquidity 40%)
+- Add **MYTHIC** tier (index 5) between Platinum and Legendary with: icon 🔮, color violet-400, duration "3-4 Years", multiplier "5x"
+- Fix **Platinum**: multiplier `5x` → `4x`, duration `3-4 Years` → `2-3 Years`
+- Fix **Diamond**: duration `1-3 Years` → `1-2 Years`
+- Fix **Legendary**: multiplier `8x` → `7x`
+- Update `activeTier` modulo from `% 6` to `% 7`
+- Update grid to `lg:grid-cols-3` stays (7 cards across 3 cols works), but could also add a particle for Mythic color
 
