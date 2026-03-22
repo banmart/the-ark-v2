@@ -91,10 +91,10 @@ const InteractiveQuantumPillars = memo(() => {
     const rewardPool = typeof protocolStats?.rewardPool === 'number' ? protocolStats.rewardPool : 0;
     
     // Calculate dynamic max values based on real fee collection
-    const burnMaxCapacity = Math.max(currentVolume * 0.02, burnDaily * 2); // 2% of volume or 2x current rate
-    const daoMaxCapacity = Math.max(currentVolume * 0.01, daoDaily * 2);
-    const liquidityMaxCapacity = Math.max(currentVolume * 0.03, liquidityDaily * 2);
-    const rewardMaxCapacity = Math.max(rewardPool * 0.01, lockerDaily * 2);
+    const burnMaxCapacity = Math.max(currentVolume * 0.01, burnDaily * 2); // 1% of volume or 2x current rate
+    const daoMaxCapacity = Math.max(currentVolume * 0.01, daoDaily * 2); // 1% dao
+    const liquidityMaxCapacity = Math.max(currentVolume * 0.04, liquidityDaily * 2); // 4% liquidity
+    const rewardMaxCapacity = Math.max(rewardPool * 0.04, lockerDaily * 2); // 4% locker
 
     // Enhanced state calculation functions using real fee efficiency
     const getBurnState = (rate: number, capacity: number, eff: number = 0): PillarState => {
