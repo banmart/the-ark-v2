@@ -1,31 +1,51 @@
 
 
-## Adapt Quantum Pillars & Locker Tiers to New ARK Token
+## Implement Contract-Supported Features Missing from UI
 
-### 1. InteractiveQuantumPillars — Update fee percentages
+Three user-callable contract functions exist in the ABI but aren't exposed in the UI:
 
-**File**: `src/components/InteractiveQuantumPillars.tsx`
+### 1. "Lock for Others" (Gift Lock) — `lockTokenForOthers(amount, duration, address)`
 
-Update max capacity calculations to match new fee structure (1% burn, 1% dao, 4% liquidity, 4% locker):
-- Line 94: `currentVolume * 0.02` → `currentVolume * 0.01` (burn is 1%)
-- Line 95: `currentVolume * 0.01` → `currentVolume * 0.01` (dao stays 1%)
-- Line 96: `currentVolume * 0.03` → `currentVolume * 0.04` (liquidity is 4%)
-- Line 97: `rewardPool * 0.01` → `rewardPool * 0.04` (locker is 4%)
+**File**: `src/components/locker/EnhancedLockInterface.tsx`
+- Add a toggle/switch below the amount input: "Lock for another wallet"
+- When enabled, show a recipient address input field with validation (valid Ethereum address, not zero address, not own address)
+- Pass the recipient address through to a new contract interaction
 
-Update descriptions to remove "quantum" language and reflect actual mechanics:
-- Burn: "1% of every transaction is permanently burned, reducing total supply over time."
-- DAO: "1% of every transaction funds the DAO treasury for community governance."
-- Liquidity: "4% of every transaction is auto-added to the liquidity pool with threshold-based swaps."
-- Vault Rewards: "4% of every transaction flows to the locker vault, rewarding long-term holders with up to 7x multipliers."
+**File**: `src/hooks/locker/contractInteractions.ts`
+- Add `lockTokensForOthers(amount, duration, recipientAddress, signer, CONTRACT_CONSTANTS)` function calling `lockerContract.lockTokenForOthers(amountWei, durationSeconds, recipientAddress)`
 
-### 2. LockerTiersSection — Add MYTHIC tier + fix multipliers
+**File**: `src/hooks/useLockerData.ts`
+- Add `lockTokensForOthers` action that wraps the new contract interaction, handles approval check, and triggers refetch
 
-**File**: `src/components/LockerTiersSection.tsx`
+### 2. Selective Claim — `claimReward(uint256[] lockIds)`
 
-- Add **MYTHIC** tier (index 5) between Platinum and Legendary with: icon 🔮, color violet-400, duration "3-4 Years", multiplier "5x"
-- Fix **Platinum**: multiplier `5x` → `4x`, duration `3-4 Years` → `2-3 Years`
-- Fix **Diamond**: duration `1-3 Years` → `1-2 Years`
-- Fix **Legendary**: multiplier `8x` → `7x`
-- Update `activeTier` modulo from `% 6` to `% 7`
-- Update grid to `lg:grid-cols-3` stays (7 cards across 3 cols works), but could also add a particle for Mythic color
+**File**: `src/components/locker/EnhancedUserDashboard.tsx`
+- Add per-position "Claim" button on each active lock card (alongside existing unlock button)
+- Calls `claimRewardForLocks([lockId])` instead of claiming all
+
+**File**: `src/hooks/locker/contractInteractions.ts`
+- Add `claimRewardsForLocks(lockIds, signer)` calling `lockerContract['claimReward(uint256[])'](lockIds)`
+
+**File**: `src/hooks/useLockerData.ts`
+- Expose `claimRewardsForLocks` action
+
+### 3. Force Unlock Matured — `forceUnlockMatured(day, maxLocks)`
+
+This is a public utility anyone can call to process expired locks. Add a small utility button in the protocol stats or a dedicated section.
+
+**File**: `src/hooks/locker/contractInteractions.ts`
+- Add `forceUnlockMatured(dayToProcess, maxLocks, signer)` function
+
+**File**: `src/components/locker/EnhancedProtocolStats.tsx`
+- Add a "Process Matured Locks" button that calls the current day from the contract and processes up to 50 locks
+
+**File**: `src/hooks/useLockerData.ts`
+- Expose the function
+
+### Summary of files to edit:
+- `src/hooks/locker/contractInteractions.ts` — 3 new functions
+- `src/hooks/useLockerData.ts` — expose 3 new actions
+- `src/components/locker/EnhancedLockInterface.tsx` — gift lock toggle + address input
+- `src/components/locker/EnhancedUserDashboard.tsx` — per-position claim button
+- `src/components/locker/EnhancedProtocolStats.tsx` — process matured locks button
 
