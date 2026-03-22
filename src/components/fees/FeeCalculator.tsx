@@ -33,7 +33,7 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
       volumeChange,
       fees: {
         burn: burnFee,
-        reflection: reflectionFee,
+        dao: daoFee,
         liquidity: liquidityFee,
         locker: lockerFee,
         total: totalFees
