@@ -69,7 +69,7 @@ const FeaturesSection = () => {
       emoji: '💧',
       title: 'LIQUIDITY ENGINE',
       subtitle: 'Fluid Dynamics Control',
-      percentage: '3%',
+      percentage: '4%',
       detail: 'Market Stability',
       description: 'Automated liquidity synthesis with quantum slippage protection. Threshold: 0.1% supply, Max: 0.2% supply for optimal market equilibrium.',
       color: 'purple',
