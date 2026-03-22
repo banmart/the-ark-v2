@@ -1,5 +1,7 @@
-// ARK Onboarding Chat Assistant — Lovable AI Gateway v2 (2026-03-22)
+// ARK Onboarding Chat Assistant — Lovable AI Gateway v2.1 (2026-03-22)
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+
+const VERSION = '2.1'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
