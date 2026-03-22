@@ -141,6 +141,7 @@ const LockerTiersSection = ({
     { size: 2, x: 85, y: 80, delay: 3, color: 'rgba(34, 211, 238, 0.6)' },
     { size: 3, x: 25, y: 40, delay: 0.5, color: 'rgba(192, 132, 252, 0.5)' },
     { size: 4, x: 75, y: 55, delay: 2.5, color: 'rgba(251, 146, 60, 0.6)' },
+    { size: 3, x: 50, y: 45, delay: 1.2, color: 'rgba(139, 92, 246, 0.5)' },
     { size: 2, x: 45, y: 20, delay: 1.5, color: 'rgba(34, 211, 238, 0.4)' },
     { size: 3, x: 55, y: 85, delay: 3.5, color: 'rgba(250, 204, 21, 0.5)' },
     { size: 2, x: 35, y: 60, delay: 0.8, color: 'rgba(192, 132, 252, 0.4)' },
