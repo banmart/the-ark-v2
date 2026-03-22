@@ -26,6 +26,12 @@ const audienceOptions = [
 
 const Onboarding = () => {
   const [messages, setMessages] = useState<OnboardingMessage[]>(() => {
+    const savedVersion = localStorage.getItem(VERSION_KEY);
+    if (savedVersion !== CHAT_VERSION) {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(VERSION_KEY, CHAT_VERSION);
+      return [];
+    }
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
