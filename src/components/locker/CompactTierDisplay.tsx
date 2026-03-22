@@ -16,7 +16,7 @@ const CompactTierDisplay = () => {
     });
 
     const interval = setInterval(() => {
-      setActiveTier(prev => (prev + 1) % 6);
+      setActiveTier(prev => (prev + 1) % 7);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -28,6 +28,7 @@ const CompactTierDisplay = () => {
       'Gold': '255, 215, 0',
       'Diamond': '96, 165, 250',
       'Platinum': '167, 139, 250',
+      'Mythic': '139, 92, 246',
       'Legendary': '251, 146, 60'
     };
     return colors[tierName] || '34, 211, 238';
@@ -154,7 +155,7 @@ const CompactTierDisplay = () => {
       <div className="relative z-10">
         {/* Tier Grid */}
         <div className={`
-          grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-4
+          grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3 md:gap-4
           transition-all duration-700 delay-300 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
         `}>
           {tiers.map((tier, index) => (
