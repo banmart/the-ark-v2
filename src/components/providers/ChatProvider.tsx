@@ -1,5 +1,7 @@
 import React, { createContext, useContext, ReactNode, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { CHAT_ASSISTANT_FUNCTION_NAME } from '@/lib/chat/constants';
+import { getFunctionErrorMessage } from '@/lib/chat/errors';
 
 interface ChatMessage {
   id: string;
@@ -32,9 +34,20 @@ interface ChatProviderProps {
   children: ReactNode;
 }
 
+const CHAT_STORAGE_KEY = 'ark-chat-history';
+const CHAT_VERSION_KEY = 'ark-chat-history-version';
+const CHAT_VERSION = 'v4';
+
 export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    const saved = localStorage.getItem('ark-chat-history');
+    const savedVersion = localStorage.getItem(CHAT_VERSION_KEY);
+    if (savedVersion !== CHAT_VERSION) {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+      localStorage.setItem(CHAT_VERSION_KEY, CHAT_VERSION);
+      return [];
+    }
+
+    const saved = localStorage.getItem(CHAT_STORAGE_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -62,7 +75,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     
     setMessages(prev => {
       const updated = [...prev, newMessage];
-      localStorage.setItem('ark-chat-history', JSON.stringify(updated));
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(updated));
       return updated;
     });
   }, []);
@@ -76,17 +89,19 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     try {
       const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
       
-      const { data, error } = await supabase.functions.invoke('chat-assistant', {
+      const { data, error } = await supabase.functions.invoke(CHAT_ASSISTANT_FUNCTION_NAME, {
         body: { message: content, chatHistory }
       });
 
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
       const reply = data?.response || 'Sorry, I couldn\'t generate a response. Please try again.';
       addMessage(reply, 'assistant');
     } catch (error) {
       console.error('Chat error:', error);
-      addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+      const errorMessage = await getFunctionErrorMessage(error, 'Sorry, I encountered an error. Please try again.');
+      addMessage(errorMessage, 'assistant');
     } finally {
       setIsLoading(false);
     }
@@ -94,7 +109,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
   const clearChat = useCallback(() => {
     setMessages([]);
-    localStorage.removeItem('ark-chat-history');
+    localStorage.removeItem(CHAT_STORAGE_KEY);
   }, []);
 
   const value = {
