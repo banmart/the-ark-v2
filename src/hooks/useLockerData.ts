@@ -21,8 +21,12 @@ import {
   fetchUserTokenData,
   approveTokens,
   lockTokensOnContract,
+  lockTokensForOthersOnContract,
   unlockTokensOnContract,
-  claimRewardsOnContract
+  claimRewardsOnContract,
+  claimRewardsForLocksOnContract,
+  forceUnlockMaturedOnContract,
+  getCurrentDay
 } from './locker/contractInteractions';
 
 export const useLockerData = () => {
