@@ -14,9 +14,10 @@ interface EnhancedUserDashboardProps {
 }
 
 const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
-  const { userLocks, unlockTokens } = useLockerData();
+  const { userLocks, unlockTokens, claimRewardsForLocks } = useLockerData();
   const { earlyUnlockSettings } = useLockerContractData();
   const [processingUnlock, setProcessingUnlock] = useState<number | null>(null);
+  const [processingClaim, setProcessingClaim] = useState<number | null>(null);
 
   const [filters, setFilters] = useState<FilterOptions>({
     tier: 'all',
