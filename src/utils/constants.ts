@@ -16,7 +16,7 @@ export const NETWORKS = {
 
 export const CONTRACT_ADDRESSES = {
   ARK_TOKEN: '0xF4a370e64DD4673BAA250C5435100FA98661Db4C',
-  LOCKER: '0x3ba44a1de77025b78d7430449569dd1112ac4473',
+  LOCKER: '0x6cA6624aEdCF03F16b29DD217447c478feC2C096',
   PULSEX_V2_ROUTER: '0x165C3410fC91EF562C50559f7d2289fEbed552d9',
   WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27',
   USDC: '0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07',
@@ -29,69 +29,74 @@ export const CONTRACT_ADDRESSES = {
 
 // Complete SimplifiedLockerVault ABI - UPDATED FOR LATEST CONTRACT
 export const LOCKER_VAULT_ABI = [
-  // View functions
-  'function totalLockedTokens() view returns (uint256)',
-  'function totalRewardsDistributed() view returns (uint256)',
-  'function totalActiveLockers() view returns (uint256)',
-  'function rewardPool() view returns (uint256)',
-  'function getUserLocks(address user) view returns (tuple(uint256 amount, uint256 lockTime, uint256 unlockTime, uint256 lockPeriod, uint8 tier, uint256 totalRewardsEarned, bool active)[])',
-  'function getUserActiveLocks(address user) view returns (tuple(uint256 amount, uint256 lockTime, uint256 unlockTime, uint256 lockPeriod, uint8 tier, uint256 totalRewardsEarned, bool active)[])',
-  'function calculateUserWeight(address user) view returns (uint256)',
-  'function calculateEarlyUnlockPenalty(address user, uint256 lockId) view returns (uint256 penaltyAmount, uint256 userReceives)',
-  'function getProtocolStats() view returns (uint256 _totalLockedTokens, uint256 _totalRewardsDistributed, uint256 _totalActiveLockers, uint256 _rewardPool)',
-  'function getLockTierInfo(uint8 tier) view returns (tuple(uint256 minDuration, uint256 multiplier, string name))',
-  'function pendingRewards(address user) view returns (uint256)',
-  'function userStats(address user) view returns (tuple(uint256 totalLocked, uint256 totalRewardsEarned, uint256 pendingRewards, uint256 activeLocksCount))',
-  'function getActiveLockers() view returns (address[])',
+  // Dashboard view functions
+  'function getProtocolDashboard() view returns (tuple(uint256 minLockDuration, uint256 maxLockDuration, uint256 minLockAmount, uint256 earlyUnlockPenalty, uint256 maxEarlyPenalty, bool earlyUnlockEnabled, bool paused, bool emergencyMode, uint256 emergencyUnlockTime, uint256 penaltyBurnShare, uint256 penaltyRewardShare) _config, uint256 _totalLockedTokens, uint256 _totalRewardsDistributed, uint256 _totalActiveLockers, uint256 _rewardPool)',
+  'function getUserDashboard(address locker) view returns (tuple(uint256 totalLocked, uint256 totalRewardEarned, uint256 activeLocksCount) _stats, tuple(address lockOwner, uint256 amount, uint256 lockTime, uint256 unlockTime, uint256 lockPeriod, uint8 tier, uint256 rewardDebt, uint256 amountWeight, uint256 rewardEarned, bool active)[] _locks)',
+  'function getUserSummary(address locker) view returns (uint256 _totalLocked, uint256 _pendingRewards, uint256 _totalRewardsEarned, uint256 _activeLocksCount)',
+  'function getActiveLocks(address locker) view returns (tuple(address lockOwner, uint256 amount, uint256 lockTime, uint256 unlockTime, uint256 lockPeriod, uint8 tier, uint256 rewardDebt, uint256 amountWeight, uint256 rewardEarned, bool active)[])',
+  'function getAllLockTiersInfo() view returns (tuple(uint256 minDuration, uint256 multiplier, string name)[])',
+  'function getTopLockers() view returns (tuple(uint256 locked, address locker)[])',
+  
+  // Individual view functions
+  'function pendingReward(address locker, uint256 lockID) view returns (uint256)',
+  'function pendingRewardsAll(address locker) view returns (uint256)',
+  'function calculateEarlyUnlockPenalty(address locker, uint256 lockID) view returns (uint256 penaltyAmount, uint256 userReceives)',
+  'function currentDay() view returns (uint256)',
   
   // State variables
-  'function emergencyMode() view returns (bool)',
-  'function paused() view returns (bool)',
-  'function earlyUnlockEnabled() view returns (bool)',
+  'function lockedTokens() view returns (uint256)',
+  'function lockedWeight() view returns (uint256)',
+  'function rewardsDistributed() view returns (uint256)',
+  'function activeLockers() view returns (uint256)',
+  'function undistributedRewards() view returns (uint256)',
+  'function rewardPerWeight() view returns (uint256)',
   'function earlyUnlockPenalty() view returns (uint256)',
   'function penaltyBurnShare() view returns (uint256)',
   'function penaltyRewardShare() view returns (uint256)',
   'function emergencyUnlockTime() view returns (uint256)',
-  'function authorizedDistributor() view returns (address)',
-  'function isActiveLocker(address) view returns (bool)',
-  'function token() view returns (address)',
+  'function minLockAmount() view returns (uint256)',
+  'function emergencyMode() view returns (bool)',
+  'function earlyUnlockEnabled() view returns (bool)',
+  'function ARK() view returns (address)',
+  'function BURN() view returns (address)',
   
   // Constants
   'function MIN_LOCK_DURATION() view returns (uint256)',
   'function MAX_LOCK_DURATION() view returns (uint256)',
   'function BASIS_POINTS() view returns (uint256)',
   'function MAX_EARLY_PENALTY() view returns (uint256)',
-  'function DEAD_ADDRESS() view returns (address)',
+  'function PRECISION_FACTOR() view returns (uint256)',
+  'function TOP_LOCKER() view returns (uint256)',
   
   // User functions
   'function lockTokens(uint256 amount, uint256 lockDuration)',
-  'function unlockTokens(uint256 lockId)',
-  'function claimRewards()',
+  'function lockTokenForOthers(uint256 amount, uint256 lockDuration, address lockOwner)',
+  'function unlockTokens(uint256 lockID)',
+  'function claimReward()',
+  'function claimReward(uint256[] calldata lockIds)',
+  'function forceUnlockMatured(uint256 dayToProcess, uint256 maxLocks)',
   
   // Admin functions
-  'function receiveRewards(uint256 amount)',
   'function distributeRewards(uint256 amount)',
-  'function updateEarlyUnlockSettings(uint256 _penalty, bool _enabled)',
-  'function updatePenaltyDistribution(uint256 _burnShare, uint256 _rewardShare)',
-  'function cleanupActiveLockers()',
+  'function updateEarlyUnlockSettings(uint256 penalty, bool enabled)',
+  'function updatePenaltyDistribution(uint256 burnShare, uint256 rewardShare)',
+  'function updateMinLockAmount(uint256 newMinLockAmount)',
   'function enableEmergencyMode()',
   'function disableEmergencyMode()',
-  'function setAuthorizedDistributor(address _distributor)',
   'function pause()',
   'function unpause()',
-  'function recoverTokens(address tokenAddress, uint256 amount)',
+  'function recoverTokens(address token)',
   
   // Events
   'event TokensLocked(address indexed user, uint256 amount, uint256 lockPeriod, uint256 unlockTime)',
-  'event TokensUnlocked(address indexed user, uint256 amount)',
+  'event TokensUnlocked(address indexed user, uint256 amount, uint256 penalty)',
   'event RewardsDistributed(uint256 totalRewards, uint256 totalRecipients)',
-  'event RewardsClaimed(address indexed user, uint256 amount)',
-  'event LockExtended(address indexed user, uint256 lockId, uint256 newUnlockTime)',
-  'event EarlyUnlockPenalty(address indexed user, uint256 lockId, uint256 penaltyAmount)',
+  'event RewardClaimed(address indexed user, uint256 amount)',
+  'event ForceUnlockDayProcessed(uint256 indexed day, uint256 locksProcessed, uint256 newCursor, uint256 totalLocks)',
 ];
 
 // Locker vault contract address
-export const LOCKER_VAULT_ADDRESS = '0x3ba44a1de77025b78d7430449569dd1112ac4473';
+export const LOCKER_VAULT_ADDRESS = '0x6cA6624aEdCF03F16b29DD217447c478feC2C096';
 
 // Lock tier enumeration matching the contract
 export const LOCK_TIERS = {
@@ -100,7 +105,8 @@ export const LOCK_TIERS = {
   GOLD: 2,
   DIAMOND: 3,
   PLATINUM: 4,
-  LEGENDARY: 5
+  MYTHIC: 5,
+  LEGENDARY: 6
 };
 
 // Locker contract constants matching the smart contract
@@ -112,14 +118,16 @@ export const LOCKER_CONSTANTS = {
   MAX_EARLY_PENALTY: 7500,
   PENALTY_BURN_SHARE: 5000,
   PENALTY_REWARD_SHARE: 5000,
+  MIN_LOCK_AMOUNT: 10000,
   
   TIER_MULTIPLIERS: {
     BRONZE: 10000,
     SILVER: 15000,
     GOLD: 20000,
     DIAMOND: 30000,
-    PLATINUM: 50000,
-    LEGENDARY: 80000
+    PLATINUM: 40000,
+    MYTHIC: 50000,
+    LEGENDARY: 70000
   }
 };
 

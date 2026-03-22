@@ -145,7 +145,7 @@ export const claimRewardsOnContract = async (signer: any): Promise<void> => {
   console.log('Claiming rewards...');
   
   const lockerContract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, signer);
-  const tx = await lockerContract.claimRewards();
+  const tx = await lockerContract['claimReward()']();
   console.log('Claim transaction sent:', tx.hash);
   
   const receipt = await tx.wait();

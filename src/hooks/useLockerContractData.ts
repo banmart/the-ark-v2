@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { CONTRACT_ADDRESSES, LOCKER_VAULT_ABI, LOCKER_VAULT_ADDRESS, NETWORKS } from '../utils/constants';
+import { LOCKER_VAULT_ABI, LOCKER_VAULT_ADDRESS, NETWORKS } from '../utils/constants';
 
 interface ProtocolStats {
   totalLockedTokens: number;
@@ -76,25 +76,16 @@ export const useLockerContractData = (userAddress?: string) => {
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
       const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
       
-      console.log('Fetching enhanced protocol stats from SimplifiedLockerVault contract...');
+      console.log('Fetching protocol dashboard from ARKLocker contract...');
 
-      // Use new getProtocolStats function that returns reward pool and total weight
-      const [totalLocked, totalRewards, totalLockers, rewardPool, totalWeight, emergency, paused, earlyUnlockEnabled, earlyPenalty, burnShare, rewardShare, emergencyTime] = await Promise.all([
-        contract.totalLockedTokens(),
-        contract.totalRewardsDistributed(),
-        contract.totalActiveLockers(),
-        contract.rewardPool(),
-        contract.calculateTotalProtocolWeight ? contract.calculateTotalProtocolWeight() : ethers.parseEther("0"),
-        contract.emergencyMode(),
-        contract.paused(),
-        contract.earlyUnlockEnabled(),
-        contract.earlyUnlockPenalty(),
-        contract.penaltyBurnShare(),
-        contract.penaltyRewardShare(),
-        contract.emergencyUnlockTime()
+      // Use getProtocolDashboard() - single call for all protocol data
+      const [dashboard, protocolWeight] = await Promise.all([
+        contract.getProtocolDashboard(),
+        contract.lockedWeight()
       ]);
 
-      // Convert from wei to tokens (18 decimals)
+      const [config, totalLocked, totalRewards, totalLockers, rewardPool] = dashboard;
+
       const totalLockedTokens = parseFloat(ethers.formatEther(totalLocked));
       const totalRewardsDistributed = parseFloat(ethers.formatEther(totalRewards));
       const totalActiveLockers = parseInt(totalLockers.toString());
@@ -107,30 +98,22 @@ export const useLockerContractData = (userAddress?: string) => {
         rewardPool: rewardPoolAmount
       });
 
-      setTotalProtocolWeight(parseFloat(ethers.formatEther(totalWeight)));
-      setEmergencyMode(emergency);
-      setContractPaused(paused);
-      setEmergencyUnlockTime(parseInt(emergencyTime.toString()));
+      setTotalProtocolWeight(parseFloat(ethers.formatEther(protocolWeight)));
+      setEmergencyMode(config.emergencyMode);
+      setContractPaused(config.paused);
+      setEmergencyUnlockTime(parseInt(config.emergencyUnlockTime.toString()));
       setEarlyUnlockSettings({
-        enabled: earlyUnlockEnabled,
-        penaltyRate: parseInt(earlyPenalty.toString()),
-        burnShare: parseInt(burnShare.toString()),
-        rewardShare: parseInt(rewardShare.toString())
+        enabled: config.earlyUnlockEnabled,
+        penaltyRate: parseInt(config.earlyUnlockPenalty.toString()),
+        burnShare: parseInt(config.penaltyBurnShare.toString()),
+        rewardShare: parseInt(config.penaltyRewardShare.toString())
       });
 
-      console.log('Enhanced protocol stats fetched successfully:', {
+      console.log('Protocol dashboard fetched:', {
         totalLockedTokens,
         totalRewardsDistributed,
         totalActiveLockers,
-        rewardPool: rewardPoolAmount,
-        emergency,
-        paused,
-        earlyUnlockSettings: {
-          enabled: earlyUnlockEnabled,
-          penaltyRate: parseInt(earlyPenalty.toString()),
-          burnShare: parseInt(burnShare.toString()),
-          rewardShare: parseInt(rewardShare.toString())
-        }
+        rewardPool: rewardPoolAmount
       });
     } catch (err: any) {
       console.error('Error fetching protocol stats:', err);
@@ -140,53 +123,62 @@ export const useLockerContractData = (userAddress?: string) => {
 
   const fetchUserData = async (address: string) => {
     try {
-      console.log('Fetching enhanced user data for address:', address);
+      console.log('Fetching user dashboard for:', address);
       
       const provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
       const contract = new ethers.Contract(LOCKER_VAULT_ADDRESS, LOCKER_VAULT_ABI, provider);
 
-      // Use getUserLocks to fetch ALL locks (both active and inactive/withdrawn)
-      const [userStatsData, userLocksData, weight] = await Promise.all([
-        contract.userStats(address),
-        contract.getUserLocks(address), // Get ALL locks, not just active ones
-        contract.calculateUserWeight(address)
+      // Use getUserDashboard + pendingRewardsAll in parallel
+      const [dashboardData, pendingRewards] = await Promise.all([
+        contract.getUserDashboard(address),
+        contract.pendingRewardsAll(address)
       ]);
 
+      const [statsData, locksData] = dashboardData;
+
       // Parse user stats
-      const totalLocked = parseFloat(ethers.formatEther(userStatsData.totalLocked));
-      const totalRewardsEarned = parseFloat(ethers.formatEther(userStatsData.totalRewardsEarned));
-      const pendingRewards = parseFloat(ethers.formatEther(userStatsData.pendingRewards));
-      const activeLocksCount = parseInt(userStatsData.activeLocksCount.toString());
+      const totalLocked = parseFloat(ethers.formatEther(statsData.totalLocked));
+      const totalRewardsEarned = parseFloat(ethers.formatEther(statsData.totalRewardEarned));
+      const pending = parseFloat(ethers.formatEther(pendingRewards));
+      const activeLocksCount = parseInt(statsData.activeLocksCount.toString());
 
       setUserStats({
         totalLocked,
         totalRewardsEarned,
-        pendingRewards,
+        pendingRewards: pending,
         activeLocksCount
       });
 
       // Parse user locks
-      const locks: LockPosition[] = userLocksData.map((lock: any, index: number) => ({
+      const locks: LockPosition[] = locksData.map((lock: any, index: number) => ({
         id: index,
         amount: parseFloat(ethers.formatEther(lock.amount)),
         lockTime: parseInt(lock.lockTime.toString()),
         unlockTime: parseInt(lock.unlockTime.toString()),
         lockPeriod: parseInt(lock.lockPeriod.toString()),
         tier: parseInt(lock.tier.toString()),
-        totalRewardsEarned: parseFloat(ethers.formatEther(lock.totalRewardsEarned)),
+        totalRewardsEarned: parseFloat(ethers.formatEther(lock.rewardEarned)),
         active: lock.active
       }));
 
       setUserLocks(locks);
-      setUserWeight(parseFloat(ethers.formatEther(weight)));
+      
+      // Calculate user weight from lock amountWeights
+      const weight = locksData.reduce((total: number, lock: any) => {
+        if (lock.active) {
+          return total + parseFloat(ethers.formatEther(lock.amountWeight));
+        }
+        return total;
+      }, 0);
+      setUserWeight(weight);
 
-      console.log('Enhanced user data fetched successfully:', {
+      console.log('User dashboard fetched:', {
         totalLocked,
         totalRewardsEarned,
-        pendingRewards,
+        pendingRewards: pending,
         activeLocksCount,
         locks: locks.length,
-        userWeight: parseFloat(ethers.formatEther(weight))
+        userWeight: weight
       });
     } catch (err: any) {
       console.error('Error fetching user data:', err);
@@ -238,7 +230,6 @@ export const useLockerContractData = (userAddress?: string) => {
   useEffect(() => {
     fetchContractData();
     
-    // Auto-refresh every 30 seconds
     const interval = setInterval(fetchContractData, 30000);
     
     return () => clearInterval(interval);

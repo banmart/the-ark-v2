@@ -46,21 +46,30 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#B9F2FF',
     icon: '💎',
     minDays: 365,
-    maxDays: 1094
+    maxDays: 729
   },
   {
     name: 'Platinum',
-    minDuration: 1095,
-    multiplier: 50000,
+    minDuration: 730,
+    multiplier: 40000,
     color: '#E5E4E2',
     icon: '⭐',
+    minDays: 730,
+    maxDays: 1094
+  },
+  {
+    name: 'Mythic',
+    minDuration: 1095,
+    multiplier: 50000,
+    color: '#9B59B6',
+    icon: '🔮',
     minDays: 1095,
     maxDays: 1459
   },
   {
     name: 'Legendary',
     minDuration: 1460,
-    multiplier: 80000,
+    multiplier: 70000,
     color: '#FF6B35',
     icon: '⚡',
     minDays: 1460,
