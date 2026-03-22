@@ -1,51 +1,47 @@
 
 
-## Implement Contract-Supported Features Missing from UI
+## Add DAO Governance Page
 
-Three user-callable contract functions exist in the ABI but aren't exposed in the UI:
+### Overview
+Create a new `/dao` page that reads from the ARKDAO contract at `0x52433bc0bbAd24ba29c1Efc299C4F1A86BDE2582`. Add a "DAO" link in both desktop and mobile navigation.
 
-### 1. "Lock for Others" (Gift Lock) — `lockTokenForOthers(amount, duration, address)`
+### Contract Summary
+- **Only top lockers** (from ARKLocker) can create proposals and vote
+- Proposals have a title, description, optional USDC fund request, and 7-30 day voting duration
+- Fund requests capped at 20% of contract's USDC balance
+- Quorum: 15 voters; passes if votesFor > votesAgainst
+- Proposers can claim USDC from succeeded proposals
+- Key read functions: `totalProposals`, `getProposals(uint256[])`, `getVotersForProposals(uint256[])`, `getVoteReceipt(proposalID, voter)`, `proposalState(proposalID)`
+- Key write functions: `createProposal(title, description, requestedFund, duration)`, `castVote(proposalID, support)`, `claimFund(proposalID)`
 
-**File**: `src/components/locker/EnhancedLockInterface.tsx`
-- Add a toggle/switch below the amount input: "Lock for another wallet"
-- When enabled, show a recipient address input field with validation (valid Ethereum address, not zero address, not own address)
-- Pass the recipient address through to a new contract interaction
+### Files to create/edit
 
-**File**: `src/hooks/locker/contractInteractions.ts`
-- Add `lockTokensForOthers(amount, duration, recipientAddress, signer, CONTRACT_CONSTANTS)` function calling `lockerContract.lockTokenForOthers(amountWei, durationSeconds, recipientAddress)`
+**1. `src/utils/constants.ts`** — Add DAO contract address and ABI
+- Add `DAO_ADDRESS = '0x52433bc0bbAd24ba29c1Efc299C4F1A86BDE2582'` to `CONTRACT_ADDRESSES`
+- Add `ARKDAO_ABI` covering all view/write functions and events
 
-**File**: `src/hooks/useLockerData.ts`
-- Add `lockTokensForOthers` action that wraps the new contract interaction, handles approval check, and triggers refetch
+**2. `src/hooks/useDAOData.ts`** — New hook
+- Read `totalProposals`, then batch-fetch proposals via `getProposals([1..n])`
+- Read USDC balance of DAO contract for available treasury
+- Check `isTopLocker(account)` via ARKLocker to determine if user can propose/vote
+- `getVoteReceipt` for connected user on each proposal
+- Expose `createProposal`, `castVote`, `claimFund` write actions
+- Return: proposals list, treasury balance, isTopLocker flag, loading state
 
-### 2. Selective Claim — `claimReward(uint256[] lockIds)`
+**3. `src/pages/DAO.tsx`** — New page
+- Use `BaseLayout` wrapper (same as Locker page pattern)
+- **Header**: DAO title, treasury balance (USDC), contract address display
+- **Proposal list**: Cards showing title, description, status (Active/Succeeded/Defeated), vote counts, time remaining, requested funds
+- **Create proposal form** (visible only to top lockers): title, description, fund amount, duration slider (7-30 days)
+- **Vote UI** on active proposals (for top lockers): For/Against buttons, show user's existing vote
+- **Claim button** on succeeded proposals for the proposer
 
-**File**: `src/components/locker/EnhancedUserDashboard.tsx`
-- Add per-position "Claim" button on each active lock card (alongside existing unlock button)
-- Calls `claimRewardForLocks([lockId])` instead of claiming all
+**4. `src/App.tsx`** — Add route
+- Import DAO page, add `<Route path="/dao" element={<DAO />} />`
 
-**File**: `src/hooks/locker/contractInteractions.ts`
-- Add `claimRewardsForLocks(lockIds, signer)` calling `lockerContract['claimReward(uint256[])'](lockIds)`
+**5. `src/components/Navigation.tsx`** — Add "DAO" link
+- Add a "DAO" nav link between "Locker" and the Connect Wallet button (line ~243), matching existing link styling
 
-**File**: `src/hooks/useLockerData.ts`
-- Expose `claimRewardsForLocks` action
-
-### 3. Force Unlock Matured — `forceUnlockMatured(day, maxLocks)`
-
-This is a public utility anyone can call to process expired locks. Add a small utility button in the protocol stats or a dedicated section.
-
-**File**: `src/hooks/locker/contractInteractions.ts`
-- Add `forceUnlockMatured(dayToProcess, maxLocks, signer)` function
-
-**File**: `src/components/locker/EnhancedProtocolStats.tsx`
-- Add a "Process Matured Locks" button that calls the current day from the contract and processes up to 50 locks
-
-**File**: `src/hooks/useLockerData.ts`
-- Expose the function
-
-### Summary of files to edit:
-- `src/hooks/locker/contractInteractions.ts` — 3 new functions
-- `src/hooks/useLockerData.ts` — expose 3 new actions
-- `src/components/locker/EnhancedLockInterface.tsx` — gift lock toggle + address input
-- `src/components/locker/EnhancedUserDashboard.tsx` — per-position claim button
-- `src/components/locker/EnhancedProtocolStats.tsx` — process matured locks button
+**6. `src/components/MobileMenu.tsx`** — Add "DAO" link card
+- Add a DAO card after the Locker card (line ~259), matching existing card pattern
 
