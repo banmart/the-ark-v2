@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Trash2, Sparkles, MessageCircle } from 'lucide-react';
+import { Trash2, Sparkles, MessageCircle, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import PremiumBackground from '../components/layout/PremiumBackground';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatInput from '../components/chat/ChatInput';
-import Navigation from '../components/Navigation';
-import { useWalletContext } from '../components/providers/WalletProvider';
 import { supabase } from '@/integrations/supabase/client';
 
 interface OnboardingMessage {
@@ -24,8 +23,6 @@ const audienceOptions = [
 ];
 
 const Onboarding = () => {
-  const { isConnected, account, isConnecting, handleConnectWallet } = useWalletContext();
-
   const [messages, setMessages] = useState<OnboardingMessage[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -36,7 +33,6 @@ const Onboarding = () => {
     return [];
   });
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatAreaRef = useRef<HTMLDivElement>(null);
 
   const persist = useCallback((msgs: OnboardingMessage[]) => {
@@ -86,35 +82,28 @@ const Onboarding = () => {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-black text-white relative overflow-hidden">
+    <div className="h-[100dvh] flex flex-col bg-black text-white relative overflow-hidden overscroll-none">
       <PremiumBackground variant="onboarding" particleCount={12} />
 
-      {/* Navigation */}
-      <div className="relative z-20 flex-shrink-0">
-        <Navigation
-          handleConnectWallet={handleConnectWallet}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          account={account}
-        />
-      </div>
-
-      {/* Compact Header */}
-      <div className="relative z-10 border-b border-white/[0.06] flex-shrink-0">
+      {/* Compact top bar */}
+      <div className="relative z-20 flex-shrink-0 border-b border-white/[0.06]">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
+            <Link to="/" className="p-1.5 -ml-1.5 text-white/40 hover:text-white/70 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
             <div className="relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/30 to-teal-500/30 rounded-full blur-sm" />
-              <div className="relative w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center">
-                <MessageCircle className="w-4 h-4 text-cyan-400" />
+              <div className="relative w-7 h-7 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center">
+                <MessageCircle className="w-3.5 h-3.5 text-cyan-400" />
               </div>
             </div>
             <div>
-              <h1 className="text-xs font-bold font-mono tracking-wide bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-                ARK ONBOARDING GUIDE
+              <h1 className="text-[11px] font-bold font-mono tracking-wide bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
+                ARK ONBOARDING
               </h1>
               <p className="text-[10px] text-white/40 font-mono">
-                {isLoading ? 'Thinking...' : 'Your step-by-step crypto coach'}
+                {isLoading ? 'Thinking...' : 'Step-by-step crypto coach'}
               </p>
             </div>
           </div>
@@ -131,12 +120,11 @@ const Onboarding = () => {
         </div>
       </div>
 
-      {/* Chat Area — scrollable, fills remaining space */}
+      {/* Chat area */}
       <div ref={chatAreaRef} className="relative z-10 flex-1 overflow-y-auto min-h-0">
         <div className="max-w-3xl mx-auto px-4 py-4">
           {!hasMessages ? (
-            /* Welcome + Audience Detection */
-            <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] border border-white/[0.08] rounded-xl mb-4">
                   <Sparkles className="w-3 h-3 text-cyan-400" />
@@ -167,7 +155,6 @@ const Onboarding = () => {
               </div>
             </div>
           ) : (
-            /* Message List */
             <>
               {messages.map((msg) => (
                 <ChatMessage
@@ -188,13 +175,12 @@ const Onboarding = () => {
                   <span>Thinking...</span>
                 </div>
               )}
-              <div ref={messagesEndRef} />
             </>
           )}
         </div>
       </div>
 
-      {/* Chat Input — pinned at bottom */}
+      {/* Input pinned at bottom */}
       {hasMessages && (
         <div className="relative z-10 flex-shrink-0 border-t border-white/[0.06] bg-black/80 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
           <div className="max-w-3xl mx-auto">
