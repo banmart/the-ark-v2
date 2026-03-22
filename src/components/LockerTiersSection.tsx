@@ -25,7 +25,7 @@ const LockerTiersSection = ({
     });
 
     const interval = setInterval(() => {
-      setActiveTier(prev => (prev + 1) % 6);
+      setActiveTier(prev => (prev + 1) % 7);
     }, 4000);
     return () => clearInterval(interval);
   }, []);
@@ -80,7 +80,7 @@ const LockerTiersSection = ({
       accentClass: 'text-cyan-300',
       glowColor: 'rgba(34, 211, 238, 0.4)',
       borderGlow: 'rgba(34, 211, 238, 0.3)',
-      duration: '1-3 Years',
+      duration: '1-2 Years',
       multiplier: '3x',
       features: ['3x rewards multiplier', 'Diamond hand status', 'VIP community access', 'Special event invites'],
       gradient: 'from-cyan-400/20 via-cyan-500/10 to-transparent',
@@ -94,12 +94,27 @@ const LockerTiersSection = ({
       accentClass: 'text-purple-300',
       glowColor: 'rgba(192, 132, 252, 0.4)',
       borderGlow: 'rgba(192, 132, 252, 0.3)',
-      duration: '3-4 Years',
-      multiplier: '5x',
-      features: ['5x rewards multiplier', 'Platinum elite status', 'Development influence', 'Maximum benefits tier'],
+      duration: '2-3 Years',
+      multiplier: '4x',
+      features: ['4x rewards multiplier', 'Platinum elite status', 'Development influence', 'Strategic decision input'],
       gradient: 'from-purple-400/20 via-purple-500/10 to-transparent',
       buttonGradient: 'from-purple-400 to-purple-300',
       status: 'ELITE_TIER'
+    },
+    {
+      name: 'MYTHIC',
+      icon: '🔮',
+      colorClass: 'text-violet-400',
+      accentClass: 'text-violet-300',
+      glowColor: 'rgba(139, 92, 246, 0.4)',
+      borderGlow: 'rgba(139, 92, 246, 0.3)',
+      duration: '3-4 Years',
+      multiplier: '5x',
+      features: ['5x rewards multiplier', 'Mythic inner circle', 'Exclusive protocol insights', 'Core governance member'],
+      gradient: 'from-violet-400/20 via-violet-500/10 to-transparent',
+      buttonGradient: 'from-violet-400 to-violet-300',
+      special: true,
+      status: 'MYTHIC_REALM'
     },
     {
       name: 'LEGENDARY',
@@ -109,8 +124,8 @@ const LockerTiersSection = ({
       glowColor: 'rgba(251, 146, 60, 0.5)',
       borderGlow: 'rgba(251, 146, 60, 0.4)',
       duration: '4-5 Years',
-      multiplier: '8x',
-      features: ['8x rewards multiplier', 'Legendary ARK status', 'Ultimate vault rewards', 'True Noah privileges', 'Lead the new world'],
+      multiplier: '7x',
+      features: ['7x rewards multiplier', 'Legendary ARK status', 'Ultimate vault rewards', 'True Noah privileges', 'Lead the new world'],
       gradient: 'from-orange-500/20 via-red-500/10 to-transparent',
       buttonGradient: 'from-orange-500 to-red-500',
       special: true,
@@ -126,6 +141,7 @@ const LockerTiersSection = ({
     { size: 2, x: 85, y: 80, delay: 3, color: 'rgba(34, 211, 238, 0.6)' },
     { size: 3, x: 25, y: 40, delay: 0.5, color: 'rgba(192, 132, 252, 0.5)' },
     { size: 4, x: 75, y: 55, delay: 2.5, color: 'rgba(251, 146, 60, 0.6)' },
+    { size: 3, x: 50, y: 45, delay: 1.2, color: 'rgba(139, 92, 246, 0.5)' },
     { size: 2, x: 45, y: 20, delay: 1.5, color: 'rgba(34, 211, 238, 0.4)' },
     { size: 3, x: 55, y: 85, delay: 3.5, color: 'rgba(250, 204, 21, 0.5)' },
     { size: 2, x: 35, y: 60, delay: 0.8, color: 'rgba(192, 132, 252, 0.4)' },

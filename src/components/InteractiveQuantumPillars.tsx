@@ -91,10 +91,10 @@ const InteractiveQuantumPillars = memo(() => {
     const rewardPool = typeof protocolStats?.rewardPool === 'number' ? protocolStats.rewardPool : 0;
     
     // Calculate dynamic max values based on real fee collection
-    const burnMaxCapacity = Math.max(currentVolume * 0.02, burnDaily * 2); // 2% of volume or 2x current rate
-    const daoMaxCapacity = Math.max(currentVolume * 0.01, daoDaily * 2);
-    const liquidityMaxCapacity = Math.max(currentVolume * 0.03, liquidityDaily * 2);
-    const rewardMaxCapacity = Math.max(rewardPool * 0.01, lockerDaily * 2);
+    const burnMaxCapacity = Math.max(currentVolume * 0.01, burnDaily * 2); // 1% of volume or 2x current rate
+    const daoMaxCapacity = Math.max(currentVolume * 0.01, daoDaily * 2); // 1% dao
+    const liquidityMaxCapacity = Math.max(currentVolume * 0.04, liquidityDaily * 2); // 4% liquidity
+    const rewardMaxCapacity = Math.max(rewardPool * 0.04, lockerDaily * 2); // 4% locker
 
     // Enhanced state calculation functions using real fee efficiency
     const getBurnState = (rate: number, capacity: number, eff: number = 0): PillarState => {
@@ -129,8 +129,8 @@ const InteractiveQuantumPillars = memo(() => {
         icon: Flame,
         emoji: '🔥',
         title: 'BURN PROTOCOL',
-        subtitle: 'Molecular Disintegration',
-        description: 'Real-time token burning with quantum incineration to void address plus automated LP destruction.',
+        subtitle: 'Deflationary Mechanism',
+        description: '1% of every transaction is permanently burned, reducing total supply over time.',
         color: 'red',
         gradient: 'from-red-500 to-orange-500',
         value: burnDaily,
@@ -147,7 +147,7 @@ const InteractiveQuantumPillars = memo(() => {
         emoji: '🏛️',
         title: 'DAO TREASURY',
         subtitle: 'Community Governance',
-        description: 'Autonomous allocation to the DAO treasury for community-driven governance and development.',
+        description: '1% of every transaction funds the DAO treasury for community-driven governance and development.',
         color: 'blue',
         gradient: 'from-blue-500 to-cyan-500',
         value: daoDaily,
@@ -162,8 +162,8 @@ const InteractiveQuantumPillars = memo(() => {
         icon: Droplets,
         emoji: '💧',
         title: 'LIQUIDITY ENGINE',
-        subtitle: 'Fluid Dynamics Control',
-        description: 'Automated liquidity synthesis with quantum slippage protection and threshold management.',
+        subtitle: 'Auto-LP Engine',
+        description: '4% of every transaction is auto-added to the liquidity pool with threshold-based swaps.',
         color: 'purple',
         gradient: 'from-purple-500 to-pink-500',
         value: currentLiquidity,
@@ -178,8 +178,8 @@ const InteractiveQuantumPillars = memo(() => {
         icon: Lock,
         emoji: '🔒',
         title: 'VAULT REWARDS',
-        subtitle: 'Temporal Amplification',
-        description: 'Dedicated quantum vault rewards for temporal commitment with up to 8x multipliers.',
+        subtitle: 'Locker Rewards',
+        description: '4% of every transaction flows to the locker vault, rewarding long-term holders with up to 7x multipliers.',
         color: 'green',
         gradient: 'from-green-500 to-teal-500',
         value: lockerDaily,
