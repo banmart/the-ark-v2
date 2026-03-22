@@ -5,7 +5,6 @@ import { CONTRACT_ADDRESSES, ARK_TOKEN_ABI, NETWORKS, CONTRACT_CONSTANTS } from 
 import { liquidityTrackingService, LiquidityAccumulation } from '../services/liquidityTrackingService';
 
 interface ContractData {
-  // Token basics (from live data and contract)
   totalSupply: string;
   marketCap: string;
   holders: string;
@@ -14,32 +13,28 @@ interface ContractData {
   circulatingSupply: string;
   burnedTokens: string;
   
-  // Fixed fees from contract (immutable)
   currentFees: {
     burn: number;
-    reflection: number;
+    dao: number;
     liquidity: number;
     locker: number;
     total: number;
   };
   
-  // Same structure for consistency (but values are fixed)
   maxFees: {
     burn: number;
-    reflection: number;
+    dao: number;
     liquidity: number;
     locker: number;
     total: number;
   };
   
-  // Locker integration
   lockerRewards: {
     vaultAddress: string;
     pending: string;
     distributed: string;
   };
   
-  // Swap settings from contract
   swapSettings: {
     threshold: string;
     maxAmount: string;
@@ -47,7 +42,6 @@ interface ContractData {
     slippageTolerance: number;
   };
   
-  // Security features
   security: {
     isPaused: boolean;
     ownerAddress: string;
@@ -55,7 +49,6 @@ interface ContractData {
     hasPauseFunction: boolean;
   };
   
-  // LP and liquidity data
   liquidityData: {
     tokensForLiquidity: string;
     totalFeesCollected: string;
@@ -68,28 +61,25 @@ interface ContractData {
     estimatedNextSwap: number | null;
   };
   
-  // Additional contract data
   contractAddresses: {
     arkLocker: string;
+    arkDao: string;
     pulseXPair: string;
     pulseXRouter: string;
     burnAddress: string;
   };
   
-  // Meta data
   lastUpdated: Date;
 }
 
-// Hoist static fee calculations (rule: rendering-hoist-jsx)
 const STATIC_FEES = {
   burn: CONTRACT_CONSTANTS.BURN_FEE / CONTRACT_CONSTANTS.DIVIDER * 100,
-  reflection: CONTRACT_CONSTANTS.REFLECTION_FEE / CONTRACT_CONSTANTS.DIVIDER * 100,
+  dao: CONTRACT_CONSTANTS.DAO_FEE / CONTRACT_CONSTANTS.DIVIDER * 100,
   liquidity: CONTRACT_CONSTANTS.LIQUIDITY_FEE / CONTRACT_CONSTANTS.DIVIDER * 100,
   locker: CONTRACT_CONSTANTS.LOCKER_FEE / CONTRACT_CONSTANTS.DIVIDER * 100,
   total: CONTRACT_CONSTANTS.TOTAL_FEES / CONTRACT_CONSTANTS.DIVIDER * 100
 };
 
-// Lazy provider initialization (rule: rerender-lazy-state-init)
 let providerInstance: ethers.JsonRpcProvider | null = null;
 const getProvider = () => {
   if (!providerInstance) {
@@ -98,7 +88,6 @@ const getProvider = () => {
   return providerInstance;
 };
 
-// Lazy initial state function (rule: rerender-lazy-state-init)
 const createInitialState = (): ContractData => ({
   totalSupply: '0',
   marketCap: '0',
@@ -139,6 +128,7 @@ const createInitialState = (): ContractData => ({
   },
   contractAddresses: {
     arkLocker: '0x0000000000000000000000000000000000000000',
+    arkDao: '0x0000000000000000000000000000000000000000',
     pulseXPair: '0x0000000000000000000000000000000000000000',
     pulseXRouter: CONTRACT_ADDRESSES.PULSEX_V2_ROUTER,
     burnAddress: CONTRACT_ADDRESSES.DEAD_ADDRESS
@@ -147,19 +137,15 @@ const createInitialState = (): ContractData => ({
 });
 
 export const useContractData = () => {
-  // Use centralized context instead of redundant useARKTokenData (rule: client-swr-dedup)
   const { data: arkData, loading: arkLoading, error: arkError } = useARKData();
   
-  // Lazy state initialization (rule: rerender-lazy-state-init)
   const [data, setData] = useState<ContractData>(createInitialState);
   const [loading, setLoading] = useState(false);
   
-  // Prevent duplicate fetches (rule: advanced-init-once)
   const fetchingRef = useRef(false);
   const lastFetchRef = useRef(0);
 
   const fetchContractData = useCallback(async () => {
-    // Debounce: don't fetch more than once per 10 seconds
     const now = Date.now();
     if (now - lastFetchRef.current < 10000) return;
     if (fetchingRef.current) return;
@@ -175,21 +161,22 @@ export const useContractData = () => {
 
       console.log('Fetching ARK contract data...');
 
-      // Fetch contract data and liquidity accumulation in parallel (rule: async-parallel)
       const [
         owner,
         swapThreshold,
         arkLockerAddress,
         pulseXPair,
         burnAddress,
+        arkDaoAddress,
         burnedBalance,
         liquidityAccumulation
       ] = await Promise.all([
         arkToken.owner().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.swapThreshold().catch(() => ethers.parseEther(CONTRACT_CONSTANTS.DEFAULT_SWAP_THRESHOLD.toString())),
         arkToken.ARKLocker().catch(() => '0x0000000000000000000000000000000000000000'),
-        arkToken.pulseXPair().catch(() => '0x0000000000000000000000000000000000000000'),
-        arkToken.burnAddress().catch(() => CONTRACT_ADDRESSES.DEAD_ADDRESS),
+        arkToken.PAIR().catch(() => '0x0000000000000000000000000000000000000000'),
+        arkToken.BURN().catch(() => CONTRACT_ADDRESSES.DEAD_ADDRESS),
+        arkToken.ARKDAO().catch(() => '0x0000000000000000000000000000000000000000'),
         arkToken.balanceOf(CONTRACT_ADDRESSES.DEAD_ADDRESS).catch(() => ethers.parseEther('0')),
         liquidityTrackingService.getCurrentAccumulation().catch(() => ({
           currentAccumulation: '0',
@@ -209,10 +196,10 @@ export const useContractData = () => {
         owner,
         swapThreshold: formattedThreshold,
         arkLockerAddress,
-        pulseXPair
+        pulseXPair,
+        arkDaoAddress
       });
 
-      // Update with real contract data (rule: rerender-functional-setstate)
       setData(prev => ({
         ...prev,
         swapSettings: {
@@ -239,6 +226,7 @@ export const useContractData = () => {
         },
         contractAddresses: {
           arkLocker: arkLockerAddress,
+          arkDao: arkDaoAddress,
           pulseXPair: pulseXPair,
           pulseXRouter: CONTRACT_ADDRESSES.PULSEX_V2_ROUTER,
           burnAddress: burnAddress
@@ -260,7 +248,6 @@ export const useContractData = () => {
     }
   }, []);
 
-  // Update contract data when ARK data changes - use primitive dependencies (rule: rerender-dependencies)
   const hasArkData = arkData !== null;
   const arkPrice = arkData?.price ?? 0;
   const arkMarketCap = arkData?.marketCap ?? 0;
@@ -286,13 +273,9 @@ export const useContractData = () => {
     }
   }, [arkLoading, hasArkData, arkPrice, arkMarketCap, arkTotalSupply, arkCirculating, arkBurned, arkHolders, arkPriceChange]);
 
-  // Initial fetch and interval (rule: advanced-init-once)
   useEffect(() => {
     fetchContractData();
-    
-    // Auto-refresh every 15 seconds for liquidity tracking
     const interval = setInterval(fetchContractData, 15000);
-    
     return () => clearInterval(interval);
   }, [fetchContractData]);
 

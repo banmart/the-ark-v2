@@ -6,9 +6,9 @@ export interface FeesCollected {
   burn: {
     dailyFees: number;
     totalCollected: number;
-    rate: number; // percentage of daily volume
+    rate: number;
   };
-  reflection: {
+  dao: {
     dailyFees: number;
     totalCollected: number;
     rate: number;
@@ -34,8 +34,8 @@ export interface FeeMetrics {
   volume24h: number;
   feesCollected: FeesCollected;
   efficiency: {
-    burn: number; // percentage of theoretical maximum
-    reflection: number;
+    burn: number;
+    dao: number;
     liquidity: number;
     locker: number;
     overall: number;
@@ -57,14 +57,12 @@ class FeeCalculatorService {
   constructor() {
     this.provider = new ethers.JsonRpcProvider(NETWORKS.PULSECHAIN.rpcUrls[0]);
     
-    // Define a minimal ERC20 ABI for Transfer events
     const erc20ABI = [
       "event Transfer(address indexed from, address indexed to, uint256 value)",
       "function totalSupply() view returns (uint256)",
       "function balanceOf(address account) view returns (uint256)"
     ];
     
-    // Define a minimal Locker ABI for burn events
     const lockerABI = [
       "event EarlyUnlockPenalty(address indexed user, uint256 amount, uint256 penalty)",
       "event TokensLocked(address indexed user, uint256 amount, uint256 duration)",
@@ -77,14 +75,12 @@ class FeeCalculatorService {
 
   async calculateDailyFees(volume24h: number): Promise<FeesCollected> {
     try {
-      // Calculate theoretical daily fees based on volume and fixed rates
       const burnDaily = volume24h * (CONTRACT_CONSTANTS.BURN_FEE / CONTRACT_CONSTANTS.DIVIDER);
-      const reflectionDaily = volume24h * (CONTRACT_CONSTANTS.REFLECTION_FEE / CONTRACT_CONSTANTS.DIVIDER);
+      const daoDaily = volume24h * (CONTRACT_CONSTANTS.DAO_FEE / CONTRACT_CONSTANTS.DIVIDER);
       const liquidityDaily = volume24h * (CONTRACT_CONSTANTS.LIQUIDITY_FEE / CONTRACT_CONSTANTS.DIVIDER);
       const lockerDaily = volume24h * (CONTRACT_CONSTANTS.LOCKER_FEE / CONTRACT_CONSTANTS.DIVIDER);
-      const totalDaily = burnDaily + reflectionDaily + liquidityDaily + lockerDaily;
+      const totalDaily = burnDaily + daoDaily + liquidityDaily + lockerDaily;
 
-      // Get actual fee collection data from blockchain events
       const actualBurnFees = await this.getActualBurnFees();
       const actualLiquidityFees = await this.getActualLiquidityFees();
       
@@ -94,10 +90,10 @@ class FeeCalculatorService {
           totalCollected: actualBurnFees.total,
           rate: (CONTRACT_CONSTANTS.BURN_FEE / CONTRACT_CONSTANTS.DIVIDER) * 100
         },
-        reflection: {
-          dailyFees: reflectionDaily,
-          totalCollected: reflectionDaily * 30, // Estimate monthly
-          rate: (CONTRACT_CONSTANTS.REFLECTION_FEE / CONTRACT_CONSTANTS.DIVIDER) * 100
+        dao: {
+          dailyFees: daoDaily,
+          totalCollected: daoDaily * 30,
+          rate: (CONTRACT_CONSTANTS.DAO_FEE / CONTRACT_CONSTANTS.DIVIDER) * 100
         },
         liquidity: {
           dailyFees: liquidityDaily,
@@ -106,12 +102,12 @@ class FeeCalculatorService {
         },
         locker: {
           dailyFees: lockerDaily,
-          totalCollected: lockerDaily * 30, // Estimate monthly
+          totalCollected: lockerDaily * 30,
           rate: (CONTRACT_CONSTANTS.LOCKER_FEE / CONTRACT_CONSTANTS.DIVIDER) * 100
         },
         total: {
           dailyFees: totalDaily,
-          totalCollected: actualBurnFees.total + actualLiquidityFees.total + (reflectionDaily * 30) + (lockerDaily * 30),
+          totalCollected: actualBurnFees.total + actualLiquidityFees.total + (daoDaily * 30) + (lockerDaily * 30),
           rate: (CONTRACT_CONSTANTS.TOTAL_FEES / CONTRACT_CONSTANTS.DIVIDER) * 100
         }
       };
@@ -123,11 +119,7 @@ class FeeCalculatorService {
 
   async getActualBurnFees(): Promise<{ daily: number; total: number }> {
     try {
-      // Get burn events from the last 24 hours
-      const oneDayAgo = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000);
       const currentBlock = await this.provider.getBlockNumber();
-      
-      // Estimate blocks in last 24 hours (assuming ~3 second block time)
       const blocksPerDay = Math.floor(24 * 60 * 60 / 3);
       const startBlock = Math.max(0, currentBlock - blocksPerDay);
       
@@ -143,14 +135,10 @@ class FeeCalculatorService {
         }
       }
       
-      // Get total burned amount
       const totalBurned = await this.arkContract.balanceOf(DEAD_ADDRESS);
       const totalBurnedAmount = parseFloat(ethers.formatEther(totalBurned));
       
-      return {
-        daily: dailyBurnAmount,
-        total: totalBurnedAmount
-      };
+      return { daily: dailyBurnAmount, total: totalBurnedAmount };
     } catch (error) {
       console.error('Error getting actual burn fees:', error);
       return { daily: 0, total: 0 };
@@ -159,17 +147,10 @@ class FeeCalculatorService {
 
   async getActualLiquidityFees(): Promise<{ daily: number; total: number }> {
     try {
-      // Get liquidity accumulation data
       const currentAccumulation = await this.arkContract.balanceOf(CONTRACT_ADDRESSES.ARK_TOKEN);
       const liquidityAmount = parseFloat(ethers.formatEther(currentAccumulation));
-      
-      // Estimate daily liquidity fees based on current accumulation
-      const dailyEstimate = liquidityAmount * 0.1; // Rough estimate
-      
-      return {
-        daily: dailyEstimate,
-        total: liquidityAmount
-      };
+      const dailyEstimate = liquidityAmount * 0.1;
+      return { daily: dailyEstimate, total: liquidityAmount };
     } catch (error) {
       console.error('Error getting actual liquidity fees:', error);
       return { daily: 0, total: 0 };
@@ -184,7 +165,7 @@ class FeeCalculatorService {
 
     return {
       burn: calcEfficiency(actual.burn.totalCollected, theoretical.burn.totalCollected),
-      reflection: calcEfficiency(actual.reflection.totalCollected, theoretical.reflection.totalCollected),
+      dao: calcEfficiency(actual.dao.totalCollected, theoretical.dao.totalCollected),
       liquidity: calcEfficiency(actual.liquidity.totalCollected, theoretical.liquidity.totalCollected),
       locker: calcEfficiency(actual.locker.totalCollected, theoretical.locker.totalCollected),
       overall: calcEfficiency(actual.total.totalCollected, theoretical.total.totalCollected)
@@ -197,11 +178,10 @@ class FeeCalculatorService {
       const theoreticalFees = await this.calculateDailyFees(volume24h);
       const efficiency = this.calculateFeeEfficiency(theoreticalFees, feesCollected);
       
-      // Calculate trends (placeholder for now)
       const trends = {
-        hourlyChange: Math.random() * 10 - 5, // -5% to +5%
-        dailyChange: Math.random() * 20 - 10, // -10% to +10%
-        weeklyChange: Math.random() * 50 - 25 // -25% to +25%
+        hourlyChange: Math.random() * 10 - 5,
+        dailyChange: Math.random() * 20 - 10,
+        weeklyChange: Math.random() * 50 - 25
       };
 
       const metrics: FeeMetrics = {
@@ -212,7 +192,6 @@ class FeeCalculatorService {
         lastUpdated: new Date()
       };
 
-      // Store in history
       this.feeHistory.push(metrics);
       if (this.feeHistory.length > 100) {
         this.feeHistory = this.feeHistory.slice(-100);
@@ -227,11 +206,11 @@ class FeeCalculatorService {
 
   private getDefaultFees(): FeesCollected {
     return {
-      burn: { dailyFees: 0, totalCollected: 0, rate: 2 },
-      reflection: { dailyFees: 0, totalCollected: 0, rate: 2 },
-      liquidity: { dailyFees: 0, totalCollected: 0, rate: 3 },
-      locker: { dailyFees: 0, totalCollected: 0, rate: 2 },
-      total: { dailyFees: 0, totalCollected: 0, rate: 9 }
+      burn: { dailyFees: 0, totalCollected: 0, rate: 1 },
+      dao: { dailyFees: 0, totalCollected: 0, rate: 1 },
+      liquidity: { dailyFees: 0, totalCollected: 0, rate: 4 },
+      locker: { dailyFees: 0, totalCollected: 0, rate: 4 },
+      total: { dailyFees: 0, totalCollected: 0, rate: 10 }
     };
   }
 
@@ -241,7 +220,7 @@ class FeeCalculatorService {
       feesCollected: this.getDefaultFees(),
       efficiency: {
         burn: 0,
-        reflection: 0,
+        dao: 0,
         liquidity: 0,
         locker: 0,
         overall: 0
@@ -264,20 +243,17 @@ class FeeCalculatorService {
       const currentBlock = await this.provider.getBlockNumber();
       console.log('Current block:', currentBlock);
       
-      // Go back 20,000 blocks (roughly 48-72 hours on PulseChain)
       const fromBlock = Math.max(currentBlock - 20000, 0);
       console.log('Querying from block:', fromBlock, 'to latest');
       
-      // Query Transfer events to DEAD_ADDRESS from Token contract (using the address directly)
       const DEAD_ADDRESS = '0x0000000000000000000000000000000000000369';
       const tokenFilter = this.arkContract.filters.Transfer(null, DEAD_ADDRESS);
       const tokenEvents = await this.arkContract.queryFilter(tokenFilter, fromBlock, 'latest');
       console.log('Found', tokenEvents.length, 'token burn events');
       
-      // Also monitor Locker contract for penalty burns (using the address directly)
       let lockerEvents: any[] = [];
       try {
-        const LOCKER_ADDRESS = '0x3ba44a1de77025b78d7430449569dd1112ac4473';
+        const LOCKER_ADDRESS = CONTRACT_ADDRESSES.LOCKER;
         const lockerContract = new ethers.Contract(
           LOCKER_ADDRESS, 
           ['event PenaltyBurn(address indexed user, uint256 amount, uint256 timestamp)'],
@@ -290,10 +266,7 @@ class FeeCalculatorService {
         console.log('Locker penalty events not available or no events found');
       }
       
-      // Combine all burn events
       const allEvents = [...tokenEvents, ...lockerEvents];
-      
-      // Process events and get block details with better error handling
       const transactions = [];
       
       for (const event of allEvents.slice(-100)) {
@@ -302,26 +275,23 @@ class FeeCalculatorService {
             const block = await this.provider.getBlock(event.blockNumber);
             const amount = parseFloat(ethers.formatEther(event.args?.value || event.args?.amount || '0'));
             
-            // Extract the real wallet address
             let walletAddress = '';
             let burnType = 'transaction';
             
             if (event.args?.user) {
-              // This is a penalty burn from locker
               walletAddress = event.args.user;
               burnType = 'penalty';
             } else if (event.args?.from) {
-              // This is a regular transfer burn
               walletAddress = event.args.from;
               burnType = 'transaction';
             }
             
             if (amount > 0 && block && walletAddress) {
               transactions.push({
-                timestamp: block.timestamp * 1000, // Convert to milliseconds
+                timestamp: block.timestamp * 1000,
                 amount,
                 txHash: event.transactionHash,
-                volume24h: amount * 10, // Rough estimate based on burn amount
+                volume24h: amount * 10,
                 wallet: walletAddress,
                 type: burnType
               });
@@ -332,7 +302,6 @@ class FeeCalculatorService {
         }
       }
       
-      // Sort by timestamp (newest first)
       const sortedTransactions = transactions.sort((a, b) => b.timestamp - a.timestamp);
       console.log('Processed', sortedTransactions.length, 'valid burn transactions');
       

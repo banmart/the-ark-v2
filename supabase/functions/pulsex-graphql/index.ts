@@ -6,16 +6,15 @@ const corsHeaders = {
 };
 
 const PULSEX_SUBGRAPH_URL = 'https://graph.pulsechain.com/subgraphs/name/pulsechain/pulsex';
-const ARK_TOKEN_ADDRESS = '0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67'.toLowerCase();
+const ARK_TOKEN_ADDRESS = '0xF4a370e64DD4673BAA250C5435100FA98661Db4C'.toLowerCase();
 const WPLS_ADDRESS = '0xA1077a294dDE1B09bB078844df40758a5D0f9a27'.toLowerCase();
 
-// Known pair addresses (lowercase for comparison)
-const ARK_PLS_PAIR = '0x5f49421c0f74873bc02d0a912f171a030008f2c9'.toLowerCase();
+// WPLS/DAI pair for PLS price reference
 const WPLS_DAI_PAIR = '0xe56043671df55de5cdf8459710433c10324de0ae'.toLowerCase();
 
 // Extended cache
 let cache: { data: any; timestamp: number } | null = null;
-const CACHE_TTL_MS = 60000; // 60 seconds
+const CACHE_TTL_MS = 60000;
 
 interface PairData {
   id: string;
@@ -31,7 +30,6 @@ interface PairData {
 
 // Fetch pairs by token address as primary method
 async function fetchByTokenAddress(): Promise<{ arkPair: PairData | null; plsPrice: number }> {
-  // Query pairs that contain the ARK token
   const query = `{
     pairs0: pairs(first: 5, where: { token0: "${ARK_TOKEN_ADDRESS}" }, orderBy: reserveUSD, orderDirection: desc) {
       id
@@ -87,7 +85,6 @@ async function fetchByTokenAddress(): Promise<{ arkPair: PairData | null; plsPri
       hasPLSPair: !!result.data?.plsPair
     }));
 
-    // Extract PLS price from DAI pair
     let plsPrice = 0.00003;
     if (result.data?.plsPair) {
       const pair = result.data.plsPair;
@@ -99,7 +96,6 @@ async function fetchByTokenAddress(): Promise<{ arkPair: PairData | null; plsPri
       console.log('PLS price:', plsPrice);
     }
 
-    // Combine pairs from both queries
     const allPairs: PairData[] = [
       ...(result.data?.pairs0 || []),
       ...(result.data?.pairs1 || [])
@@ -107,7 +103,6 @@ async function fetchByTokenAddress(): Promise<{ arkPair: PairData | null; plsPri
 
     console.log('Found ARK pairs:', allPairs.map(p => ({ id: p.id, reserveUSD: p.reserveUSD })));
 
-    // Pick the pair with highest liquidity
     let arkPair: PairData | null = null;
     if (allPairs.length > 0) {
       arkPair = allPairs.reduce((best, current) => {
@@ -125,64 +120,6 @@ async function fetchByTokenAddress(): Promise<{ arkPair: PairData | null; plsPri
   }
 }
 
-// Fallback: fetch by known pair ID
-async function fetchByPairId(): Promise<{ arkPair: PairData | null; plsPrice: number }> {
-  const query = `{
-    arkPair: pair(id: "${ARK_PLS_PAIR}") {
-      id
-      reserve0
-      reserve1
-      reserveUSD
-      volumeUSD
-      token0 { id symbol name }
-      token1 { id symbol name }
-      token0Price
-      token1Price
-    }
-    plsPair: pair(id: "${WPLS_DAI_PAIR}") {
-      token0 { id symbol }
-      token1 { id symbol }
-      token0Price
-      token1Price
-    }
-  }`;
-
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-    const response = await fetch(PULSEX_SUBGRAPH_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query }),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-    const result = await response.json();
-
-    let plsPrice = 0.00003;
-    if (result.data?.plsPair) {
-      const pair = result.data.plsPair;
-      const isToken0DAI = pair.token0.symbol === 'DAI';
-      plsPrice = isToken0DAI 
-        ? parseFloat(pair.token0Price)
-        : parseFloat(pair.token1Price);
-      if (plsPrice <= 0) plsPrice = 0.00003;
-    }
-
-    const arkPair = result.data?.arkPair || null;
-    if (arkPair) {
-      console.log('Found pair by ID:', arkPair.id);
-    }
-
-    return { arkPair, plsPrice };
-  } catch (error) {
-    console.error('Error fetching by pair ID:', error);
-    return { arkPair: null, plsPrice: 0.00003 };
-  }
-}
-
 function processGraphQLData(pair: PairData, plsUsdPrice: number) {
   const isToken0ARK = pair.token0.id.toLowerCase() === ARK_TOKEN_ADDRESS;
 
@@ -191,8 +128,6 @@ function processGraphQLData(pair: PairData, plsUsdPrice: number) {
   const counterSymbol = isToken0ARK ? token1Symbol : token0Symbol;
   const counterIsStable = ['DAI', 'USDC', 'USDT'].includes(counterSymbol);
 
-  // token0Price = how much token1 per token0
-  // token1Price = how much token0 per token1
   const arkPriceInCounter = isToken0ARK
     ? parseFloat(pair.token0Price)
     : parseFloat(pair.token1Price);
@@ -206,7 +141,6 @@ function processGraphQLData(pair: PairData, plsUsdPrice: number) {
   } else if (counterSymbol === 'WPLS' || counterSymbol === 'PLS') {
     arkPriceUSD = arkPriceInCounter * plsUsdPrice;
   } else {
-    // Unknown counter token - estimate from reserveUSD
     const totalLiquidityUSD = parseFloat(pair.reserveUSD) || 0;
     arkPriceUSD = arkReserve > 0 ? (totalLiquidityUSD / 2) / arkReserve : 0;
   }
@@ -249,7 +183,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Check cache first
     if (cache && (Date.now() - cache.timestamp) < CACHE_TTL_MS) {
       return new Response(JSON.stringify({ ...cache.data, cached: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -258,16 +191,7 @@ Deno.serve(async (req) => {
 
     console.log('Fetching ARK data from PulseX subgraph...');
 
-    // Try fetching by token address first (more reliable)
-    let { arkPair, plsPrice } = await fetchByTokenAddress();
-
-    // Fallback to known pair ID if token search fails
-    if (!arkPair) {
-      console.log('Token search failed, trying by pair ID...');
-      const fallback = await fetchByPairId();
-      arkPair = fallback.arkPair;
-      if (fallback.plsPrice > 0) plsPrice = fallback.plsPrice;
-    }
+    const { arkPair, plsPrice } = await fetchByTokenAddress();
     
     if (!arkPair) {
       console.warn('No ARK pair found in subgraph');

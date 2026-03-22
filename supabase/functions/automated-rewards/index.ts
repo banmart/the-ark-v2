@@ -10,17 +10,14 @@ const corsHeaders = {
 // ARK Token Contract ABI (relevant functions only)
 const ARK_TOKEN_ABI = [
   "function distributeLockerRewards() external",
-  "function manualSwapAndLiquify() external", 
-  "function manualBurnLP() external",
+  "function sendDAORewards() external",
   "function balanceOf(address) view returns (uint256)",
-  "function getTokensForLiquidity() view returns (uint256)",
   "function totalSupply() view returns (uint256)",
-  "function lpTokenBalance() view returns (uint256)",
   "function owner() view returns (address)",
-  "function paused() view returns (bool)"
+  "function swapThreshold() view returns (uint256)"
 ];
 
-const CONTRACT_ADDRESS = "0x4d547181427Ee90342b4781E0eF2cd46F189cb2C";
+const CONTRACT_ADDRESS = "0xF4a370e64DD4673BAA250C5435100FA98661Db4C";
 const PULSECHAIN_RPC = "https://api.speedynodes.net/http/pulsechain-http?apikey=17666dccac3cdb9d244b413bab8cf3204a25461f";
 
 // Network conditions and retry configuration

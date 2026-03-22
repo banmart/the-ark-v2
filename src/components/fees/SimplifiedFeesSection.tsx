@@ -42,16 +42,16 @@ const SimplifiedFeesSection = () => {
       icon: '🔥'
     },
     {
-      type: 'reflection',
-      title: 'Reflection',
+      type: 'dao',
+      title: 'DAO',
       data: {
-        daily: feeMetrics.feesCollected.reflection.dailyFees,
-        total: feeMetrics.feesCollected.reflection.totalCollected,
-        rate: feeMetrics.feesCollected.reflection.rate
+        daily: feeMetrics.feesCollected.dao.dailyFees,
+        total: feeMetrics.feesCollected.dao.totalCollected,
+        rate: feeMetrics.feesCollected.dao.rate
       },
       color: 'from-blue-500/20 to-blue-600/20',
       borderColor: 'border-blue-500/30',
-      icon: '💎'
+      icon: '🏛️'
     },
     {
       type: 'liquidity',
