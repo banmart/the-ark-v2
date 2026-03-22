@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLockerData } from '../../hooks/useLockerData';
-import { AlertTriangle, Lock, Zap, Sparkles } from 'lucide-react';
+import { AlertTriangle, Lock, Zap, Sparkles, Gift, Users } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
+import { ethers } from 'ethers';
 import EmergencyModeAlert from './EmergencyModeAlert';
 import LockAmountInput from './LockAmountInput';
 import LockDurationSlider from './LockDurationSlider';
@@ -9,6 +10,9 @@ import TierDisplay from './TierDisplay';
 import ApprovalStatus from './ApprovalStatus';
 import SecurityInfoPanel from './SecurityInfoPanel';
 import LockButton from './LockButton';
+import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface EnhancedLockInterfaceProps {
   isConnected: boolean;
@@ -22,6 +26,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
     determineLockTier,
     CONTRACT_CONSTANTS,
     lockTokens,
+    lockTokensForOthers,
     approveTokens,
     emergencyMode,
     contractPaused,
@@ -35,6 +40,9 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   const [lockAmount, setLockAmount] = useState('');
   const [lockDuration, setLockDuration] = useState(30);
   const [currentStep, setCurrentStep] = useState(1);
+  const [isGiftLock, setIsGiftLock] = useState(false);
+  const [recipientAddress, setRecipientAddress] = useState('');
+  const [recipientError, setRecipientError] = useState('');
   
   const currentTier = determineLockTier(lockDuration);
   const amount = parseFloat(lockAmount || '0');
@@ -43,6 +51,26 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   const isBelowMinimum = amount > 0 && amount < MINIMUM_LOCK_AMOUNT;
   const isProcessing = isProcessingApproval || isProcessingLock;
   const isValidDuration = lockDuration >= CONTRACT_CONSTANTS.MIN_LOCK_DURATION && lockDuration <= CONTRACT_CONSTANTS.MAX_LOCK_DURATION;
+
+  // Validate recipient address
+  const validateRecipient = (address: string) => {
+    if (!address) {
+      setRecipientError('');
+      return false;
+    }
+    if (!ethers.isAddress(address)) {
+      setRecipientError('Invalid Ethereum address');
+      return false;
+    }
+    if (address === ethers.ZeroAddress || address === '0x0000000000000000000000000000000000000000') {
+      setRecipientError('Cannot send to zero address');
+      return false;
+    }
+    setRecipientError('');
+    return true;
+  };
+
+  const isRecipientValid = !isGiftLock || (recipientAddress && validateRecipient(recipientAddress) && recipientError === '');
 
   useEffect(() => {
     if (!needsApproval) {
@@ -78,15 +106,27 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
 
   const handleLock = async () => {
     if (!lockAmount || !isConnected || hasInsufficientBalance || isBelowMinimum) return;
+    if (isGiftLock && !isRecipientValid) return;
+
     try {
-      await lockTokens(amount, lockDuration);
-      toast({
-        title: "Success!",
-        description: `Successfully locked ${amount} ARK tokens for ${lockDuration} days`
-      });
+      if (isGiftLock) {
+        await lockTokensForOthers(amount, lockDuration, recipientAddress);
+        toast({
+          title: "Gift Lock Successful! 🎁",
+          description: `Locked ${amount} ARK for ${lockDuration} days for ${recipientAddress.slice(0, 6)}...${recipientAddress.slice(-4)}`
+        });
+      } else {
+        await lockTokens(amount, lockDuration);
+        toast({
+          title: "Success!",
+          description: `Successfully locked ${amount} ARK tokens for ${lockDuration} days`
+        });
+      }
       setLockAmount('');
       setLockDuration(30);
       setCurrentStep(1);
+      setIsGiftLock(false);
+      setRecipientAddress('');
     } catch (error: any) {
       console.error('Lock failed:', error);
       toast({
@@ -165,6 +205,68 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
               isProcessing={isProcessing} 
             />
 
+            {/* Gift Lock Toggle */}
+            <div className="relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-500/10 via-transparent to-purple-500/10 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className={`relative bg-black/30 backdrop-blur-sm border rounded-xl p-4 transition-all duration-300 ${
+                isGiftLock ? 'border-pink-500/40 bg-pink-500/5' : 'border-white/[0.08]'
+              }`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg transition-colors ${isGiftLock ? 'bg-pink-500/20' : 'bg-white/5'}`}>
+                      <Gift className={`w-4 h-4 transition-colors ${isGiftLock ? 'text-pink-400' : 'text-gray-500'}`} />
+                    </div>
+                    <div>
+                      <Label className="text-sm font-semibold text-white cursor-pointer">Lock for Another Wallet</Label>
+                      <p className="text-xs text-gray-500">Send a gift lock to any address</p>
+                    </div>
+                  </div>
+                  <Switch
+                    checked={isGiftLock}
+                    onCheckedChange={(checked) => {
+                      setIsGiftLock(checked);
+                      if (!checked) {
+                        setRecipientAddress('');
+                        setRecipientError('');
+                      }
+                    }}
+                    disabled={emergencyMode || contractPaused || isProcessing}
+                  />
+                </div>
+                
+                {isGiftLock && (
+                  <div className="space-y-2 animate-in slide-in-from-top-2 duration-200">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-pink-400" />
+                      <Label className="text-xs text-gray-400">Recipient Address</Label>
+                    </div>
+                    <Input
+                      placeholder="0x..."
+                      value={recipientAddress}
+                      onChange={(e) => {
+                        setRecipientAddress(e.target.value);
+                        if (e.target.value) validateRecipient(e.target.value);
+                        else setRecipientError('');
+                      }}
+                      className={`bg-black/40 border-white/[0.1] text-white font-mono text-sm placeholder:text-gray-600 ${
+                        recipientError ? 'border-red-500/60 focus-visible:ring-red-500' : 
+                        recipientAddress && !recipientError ? 'border-green-500/40 focus-visible:ring-green-500' : ''
+                      }`}
+                    />
+                    {recipientError && (
+                      <p className="text-xs text-red-400 flex items-center gap-1">
+                        <AlertTriangle className="w-3 h-3" />
+                        {recipientError}
+                      </p>
+                    )}
+                    {recipientAddress && !recipientError && ethers.isAddress(recipientAddress) && (
+                      <p className="text-xs text-green-400/80">✓ Valid address</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
             <LockDurationSlider 
               lockDuration={lockDuration} 
               setLockDuration={setLockDuration} 
@@ -215,7 +317,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
               emergencyMode={emergencyMode} 
               contractPaused={contractPaused} 
               isProcessing={isProcessing} 
-              hasInsufficientBalance={hasInsufficientBalance || isBelowMinimum} 
+              hasInsufficientBalance={hasInsufficientBalance || isBelowMinimum || (isGiftLock && !isRecipientValid)} 
               needsApproval={needsApproval}
               currentStep={currentStep}
               onApprove={handleApproval}

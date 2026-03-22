@@ -352,7 +352,9 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                       <CompactLockPosition 
                         lock={lock} 
                         onUnlock={handleUnlock} 
-                        processingUnlock={processingUnlock} 
+                        onClaim={handleClaimForLock}
+                        processingUnlock={processingUnlock}
+                        processingClaim={processingClaim}
                       />
                       
                       {lock.daysRemaining > 0 && (
