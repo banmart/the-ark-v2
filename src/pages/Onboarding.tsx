@@ -155,7 +155,7 @@ const Onboarding = () => {
       actions: [{
         name: 'Buy ARK',
         description: 'Purchase ARK tokens on PulseX',
-        url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0x403e7D1F5AaD720f56a49B82e4914D7Fd3AaaE67',
+        url: 'https://ipfs.app.pulsex.com/?inputCurrency=0xefD766cCb38EaF1dfd701853BFCe31359239F305&outputCurrency=0xF4a370e64DD4673BAA250C5435100FA98661Db4C',
         icon: '💰',
         external: true
       }]
