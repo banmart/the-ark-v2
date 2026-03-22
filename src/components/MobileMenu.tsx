@@ -290,6 +290,7 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
                   }`} />
                 </div>
               </button>
+            </div>
           </div>
 
           {/* ========== PREMIUM WALLET SECTION ========== */}
