@@ -35,23 +35,26 @@ const LockButton = ({
   // Single-step flow (no approval needed)
   if (!needsApproval) {
     const getButtonText = () => {
-      if (!isConnected) return 'Connect Wallet First';
-      if (isProcessing) return 'Processing...';
-      if (emergencyMode) return 'Emergency Mode - Locked';
-      if (contractPaused) return 'Contract Paused';
-      if (!isValidDuration) return 'Invalid Duration';
-      if (hasInsufficientBalance) return 'Insufficient ARK Balance';
-      return `Lock ${amount} ARK Tokens`;
+      if (!isConnected) return 'AWAKEN SOUL';
+      if (isProcessing) return 'BINDING...';
+      if (emergencyMode) return 'STATION_LOCKED';
+      if (contractPaused) return 'COVENANT_PAUSED';
+      if (!isValidDuration) return 'INVALID_MATURITY';
+      if (hasInsufficientBalance) return 'TREASURY_EXHAUSTED';
+      return `BIND ${amount.toLocaleString()} ARK`;
     };
 
     return (
       <button
         onClick={onLock}
         disabled={!isConnected || !lockAmount || !isValidDuration || emergencyMode || contractPaused || isProcessing || hasInsufficientBalance}
-        className="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform flex items-center justify-center gap-2"
+        className="w-full bg-white text-black font-black font-mono text-[10px] tracking-[0.3em] py-5 rounded-2xl disabled:opacity-10 hover:scale-[1.05] transition-all duration-300 flex items-center justify-center gap-3 uppercase"
       >
-        {isProcessing && <Loader2 className="w-5 h-5 animate-spin" />}
-        <Shield className="w-5 h-5" />
+        {isProcessing ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <Shield className="w-4 h-4" />
+        )}
         {getButtonText()}
       </button>
     );
@@ -61,33 +64,30 @@ const LockButton = ({
   const isDisabled = !isConnected || !lockAmount || !isValidDuration || emergencyMode || contractPaused || hasInsufficientBalance;
 
   return (
-    <div className="space-y-4">
-      {/* Step Indicator */}
-      <StepIndicator currentStep={currentStep} totalSteps={2} />
-      
-      <div className="space-y-3">
+    <div className="space-y-6">
+      <div className="space-y-4">
         {/* Step 1: Approval Button */}
         <button
           onClick={onApprove}
           disabled={isDisabled || isProcessing || currentStep > 1}
-          className={`w-full font-bold py-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+          className={`w-full font-black font-mono text-[10px] tracking-[0.3em] py-5 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 uppercase ${
             currentStep === 1 
-              ? 'bg-cyan-500 text-black hover:scale-105' 
+              ? 'bg-white text-black hover:scale-[1.05]' 
               : currentStep > 1 
-                ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                : 'bg-gray-600/20 text-gray-400'
-          } ${isDisabled || isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                ? 'bg-white/5 border border-white/20 text-white/40' 
+                : 'bg-white/5 text-white/10'
+          } ${isDisabled || isProcessing ? 'opacity-10 cursor-not-allowed' : ''}`}
         >
           {currentStep > 1 ? (
             <>
-              <CheckCircle className="w-5 h-5" />
-              Approved {amount} ARK
+              <CheckCircle className="w-4 h-4" />
+              AUTHORIZED
             </>
           ) : (
             <>
-              {isProcessing && <Loader2 className="w-5 h-5 animate-spin" />}
-              <Shield className="w-5 h-5" />
-              Step 1: Approve {amount} ARK
+              {isProcessing && <Loader2 className="w-3 h-3 animate-spin" />}
+              <Shield className="w-4 h-4" />
+              AUTHORIZE TITHE
             </>
           )}
         </button>
@@ -96,16 +96,22 @@ const LockButton = ({
         <button
           onClick={onLock}
           disabled={isDisabled || isProcessing || currentStep < 2}
-          className={`w-full font-bold py-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+          className={`w-full font-black font-mono text-[10px] tracking-[0.3em] py-5 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 uppercase ${
             currentStep === 2 
-              ? 'bg-cyan-500 text-black hover:scale-105' 
-              : 'bg-gray-600/20 text-gray-400'
-          } ${isDisabled || isProcessing || currentStep < 2 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              ? 'bg-white text-black hover:scale-[1.05]' 
+              : 'bg-white/5 text-white/10'
+          } ${isDisabled || isProcessing || currentStep < 2 ? 'opacity-10 cursor-not-allowed' : ''}`}
         >
-          {isProcessing && currentStep === 2 && <Loader2 className="w-5 h-5 animate-spin" />}
-          <Shield className="w-5 h-5" />
-          Step 2: Lock {amount} ARK Tokens
+          {isProcessing && currentStep === 2 && <Loader2 className="w-3 h-3 animate-spin" />}
+          <Shield className="w-4 h-4" />
+          BIND TO THE ARK
         </button>
+      </div>
+
+      {/* Simplified Progress indicator */}
+      <div className="flex gap-2">
+        <div className={`h-1 flex-1 rounded-full transition-all duration-500 ${currentStep >= 1 ? 'bg-white' : 'bg-white/10'}`} />
+        <div className={`h-1 flex-1 rounded-full transition-all duration-500 ${currentStep >= 2 ? 'bg-white' : 'bg-white/10'}`} />
       </div>
     </div>
   );

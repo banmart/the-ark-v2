@@ -82,54 +82,59 @@ const DAO = () => {
     <BaseLayout>
       <div className="max-w-5xl mx-auto px-4 pb-20 space-y-8">
         {/* Header */}
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-5xl michroma-regular text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.3)]">
-            ARK DAO
+        <div className="text-center md:text-left space-y-4 mb-16 px-4">
+          <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
+            <Shield className="w-4 h-4 text-white/40" />
+            <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">Executive Governance</span>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+            THE COUNCIL CHAMBER
           </h1>
-          <p className="text-white/60 font-mono text-sm max-w-2xl">
-            Governance by the top lockers. Create proposals, vote on community direction, and request treasury funding.
+          <div className="w-32 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto md:mx-0 mb-8" />
+          <p className="text-white/50 text-base md:text-lg max-w-3xl font-mono leading-relaxed uppercase tracking-tighter">
+            Governance by the high Keepers of the Statutes. Deliberate on the evolution of the Covenant and administer the Ark Treasury.
           </p>
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-sm">
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-green-500/10 border border-green-500/20">
-                <DollarSign className="w-5 h-5 text-green-400" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10">
+                <Banknote className="w-5 h-5 text-white/60" />
               </div>
               <div>
-                <p className="text-xs font-mono text-white/40 uppercase tracking-wider">Treasury</p>
-                <p className="text-xl font-bold text-white">${treasuryBalance} <span className="text-xs text-white/40">USDC</span></p>
+                <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Treasury</p>
+                <p className="text-xl font-black text-white font-mono">${treasuryBalance} <span className="text-[10px] text-white/20">USDC</span></p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-sm">
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
-                <Vote className="w-5 h-5 text-cyan-400" />
+          <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10">
+                <Vote className="w-5 h-5 text-white/60" />
               </div>
               <div>
-                <p className="text-xs font-mono text-white/40 uppercase tracking-wider">Proposals</p>
-                <p className="text-xl font-bold text-white">{totalProposals}</p>
+                <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Decrees</p>
+                <p className="text-xl font-black text-white font-mono">{totalProposals}</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-sm">
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
-                <Shield className="w-5 h-5 text-purple-400" />
+          <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10">
+                <Users className="w-5 h-5 text-white/60" />
               </div>
               <div>
-                <p className="text-xs font-mono text-white/40 uppercase tracking-wider">Your Status</p>
-                <p className="text-sm font-bold text-white">
-                  {!isConnected ? 'Not Connected' : isTopLocker ? '✓ Top Locker' : 'Not Eligible'}
+                <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Your Status</p>
+                <p className="text-[10px] font-black text-white font-mono uppercase tracking-widest">
+                  {!isConnected ? 'Disconnected' : isTopLocker ? 'Council Member' : 'Initiate'}
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Contract Address */}
@@ -271,51 +276,54 @@ const ProposalCard = ({ proposal, userVote, isTopLocker, isConnected, account, a
   const canClaim = p.state === 2 && isProposer && !p.fundsClaimed && p.requestedFund > 0n;
 
   return (
-    <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-sm hover:border-white/[0.12] transition-all duration-300">
-      <CardContent className="p-6 space-y-4">
+    <div className="relative liquid-glass rounded-2xl border border-white/10 overflow-hidden hover:border-white/20 transition-all duration-300">
+      <div className="p-8 space-y-6">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-6">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-2 flex-wrap">
-              <span className="text-xs font-mono text-white/30">#{p.proposalID}</span>
-              <Badge variant="outline" className={`text-[10px] font-mono border ${stateColors[p.state]}`}>
-                {stateLabels[p.state]}
-              </Badge>
+            <div className="flex items-center gap-4 mb-3 flex-wrap">
+              <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">DECREE #{p.proposalID}</span>
+              <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                p.state === 0 ? 'border-white/30 text-white/80' : 
+                p.state === 1 ? 'border-red-500/20 text-red-400' : 'border-green-500/20 text-green-400'
+              }`}>
+                {stateLabels[p.state].toUpperCase()}
+              </span>
               {p.state === 0 && (
-                <span className="text-[10px] font-mono text-white/30 flex items-center gap-1">
+                <span className="text-[10px] font-mono text-white/30 flex items-center gap-1 uppercase tracking-widest">
                   <Clock className="w-3 h-3" /> {timeRemaining(p.votingEnd)}
                 </span>
               )}
             </div>
-            <h3 className="text-lg font-bold text-white leading-tight">{p.title}</h3>
+            <h3 className="text-xl font-black text-white leading-tight uppercase tracking-tighter font-sans">{p.title}</h3>
           </div>
           {p.requestedFund > 0n && (
             <div className="text-right shrink-0">
-              <p className="text-xs font-mono text-white/30">Requested</p>
-              <p className="text-sm font-bold text-green-400">${formatUSDC(p.requestedFund)}</p>
+              <p className="text-[10px] font-mono text-white/30 uppercase tracking-widest">Contribution</p>
+              <p className="text-sm font-black text-white font-mono">${formatUSDC(p.requestedFund)}</p>
             </div>
           )}
         </div>
 
         {/* Description */}
-        <p className="text-sm text-white/50 leading-relaxed">{p.description}</p>
+        <p className="text-sm text-white/50 leading-relaxed font-mono">{p.description}</p>
 
         {/* Proposer */}
-        <p className="text-[10px] font-mono text-white/20">
-          by {p.proposer.slice(0, 6)}...{p.proposer.slice(-4)}
+        <p className="text-[9px] font-mono text-white/20 uppercase tracking-[0.2em]">
+          Origin: {p.proposer.slice(0, 6)}...{p.proposer.slice(-4)}
         </p>
 
         {/* Vote Bar */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs font-mono">
-            <span className="text-green-400 flex items-center gap-1"><ThumbsUp className="w-3 h-3" /> {p.votesFor} For</span>
-            <span className="text-white/30 flex items-center gap-1"><Users className="w-3 h-3" /> {p.voterCount}/15 quorum</span>
-            <span className="text-red-400 flex items-center gap-1">{p.votesAgainst} Against <ThumbsDown className="w-3 h-3" /></span>
+        <div className="space-y-3">
+          <div className="flex justify-between text-[10px] font-mono uppercase tracking-widest">
+            <span className="text-white/60 flex items-center gap-1"><ThumbsUp className="w-3 h-3" /> {p.votesFor} In Favor</span>
+            <span className="text-white/20 flex items-center gap-1"><Users className="w-3 h-3" /> {p.voterCount}/15 Quorum</span>
+            <span className="text-white/30 flex items-center gap-1">{p.votesAgainst} Opposition <ThumbsDown className="w-3 h-3" /></span>
           </div>
-          <div className="h-2 bg-white/[0.05] rounded-full overflow-hidden">
+          <div className="h-px bg-white/5 rounded-full overflow-hidden">
             {totalVotes > 0 && (
               <div
-                className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all duration-500"
+                className="h-full bg-white transition-all duration-700"
                 style={{ width: `${forPct}%` }}
               />
             )}
@@ -323,45 +331,42 @@ const ProposalCard = ({ proposal, userVote, isTopLocker, isConnected, account, a
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3 pt-1">
+        <div className="flex items-center gap-4 pt-2">
           {p.state === 0 && isConnected && isTopLocker && !userVote?.hasVoted && (
             <>
-              <Button
-                size="sm"
+              <button
                 onClick={() => onVote(p.proposalID, 1)}
                 disabled={actionLoading}
-                className="bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30 font-mono text-xs"
+                className="px-6 py-2 bg-white text-black font-black font-mono text-[10px] uppercase hover:bg-white/90 transition-all"
               >
-                <ThumbsUp className="w-3 h-3 mr-1" /> Vote For
-              </Button>
-              <Button
-                size="sm"
+                In Favor
+              </button>
+              <button
                 onClick={() => onVote(p.proposalID, 0)}
                 disabled={actionLoading}
-                className="bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 font-mono text-xs"
+                className="px-6 py-2 bg-white/5 border border-white/10 text-white font-black font-mono text-[10px] uppercase hover:bg-white/10 transition-all"
               >
-                <ThumbsDown className="w-3 h-3 mr-1" /> Vote Against
-              </Button>
+                Opposition
+              </button>
             </>
           )}
           {userVote?.hasVoted && (
-            <Badge variant="outline" className="text-[10px] font-mono border-white/[0.1] text-white/40">
-              {userVote.support === 1 ? '✓ Voted For' : '✓ Voted Against'}
-            </Badge>
+            <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
+              {userVote.support === 1 ? '✓ Aligned' : '✓ Opposed'}
+            </span>
           )}
           {canClaim && (
-            <Button
-              size="sm"
+            <button
               onClick={() => onClaim(p.proposalID)}
               disabled={actionLoading}
-              className="bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-mono text-xs font-bold"
+              className="px-6 py-2 bg-ark-gold-400 text-black font-black font-mono text-[10px] uppercase hover:bg-ark-gold-500 transition-all"
             >
-              <Banknote className="w-3 h-3 mr-1" /> Claim Funds
-            </Button>
+              Exert Claim
+            </button>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

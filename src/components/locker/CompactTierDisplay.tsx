@@ -22,16 +22,7 @@ const CompactTierDisplay = () => {
   }, []);
 
   const getTierColorRGB = (tierName: string) => {
-    const colors: Record<string, string> = {
-      'Bronze': '205, 127, 50',
-      'Silver': '192, 192, 192',
-      'Gold': '255, 215, 0',
-      'Diamond': '96, 165, 250',
-      'Platinum': '167, 139, 250',
-      'Mythic': '139, 92, 246',
-      'Legendary': '251, 146, 60'
-    };
-    return colors[tierName] || '34, 211, 238';
+    return '255, 255, 255';
   };
 
   const TierCard = ({ tier, index }: { tier: any; index: number }) => {
@@ -40,99 +31,25 @@ const CompactTierDisplay = () => {
 
     return (
       <div 
-        className={`
-          relative group overflow-hidden rounded-xl transition-all duration-500
-          ${isActive ? 'scale-105 z-10' : 'hover:scale-102'}
-        `}
-        style={{
-          animationDelay: `${index * 100}ms`
-        }}
+        className={`relative group overflow-hidden rounded-2xl transition-all duration-500 pb-12 ${isActive ? 'scale-105 z-10' : 'hover:scale-102 opacity-60'}`}
       >
-        {/* Outer glow ring */}
-        <div 
-          className={`absolute -inset-0.5 rounded-xl blur-sm transition-opacity duration-500 ${isActive ? 'opacity-60' : 'opacity-0 group-hover:opacity-40'}`}
-          style={{ background: `rgba(${colorRGB}, 0.5)` }}
-        ></div>
-        
-        {/* Card container */}
-        <div 
-          className={`
-            relative bg-black/50 backdrop-blur-xl border rounded-xl p-4 
-            transition-all duration-500
-            ${tier.special ? 'border-orange-400/50' : 'border-white/[0.08]'}
-            ${isActive ? 'border-opacity-100' : 'group-hover:border-opacity-50'}
-          `}
-          style={{
-            borderColor: isActive ? `rgba(${colorRGB}, 0.6)` : undefined
-          }}
-        >
-          {/* Inner glow */}
-          <div 
-            className={`absolute inset-0 rounded-xl transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'}`}
-            style={{ 
-              background: `radial-gradient(ellipse at center, rgba(${colorRGB}, 0.1) 0%, transparent 70%)`
-            }}
-          ></div>
-          
-          {/* Status Indicator */}
-          <div className="absolute top-2 right-2">
-            <div className="relative">
-              <div 
-                className={`absolute inset-0 rounded-full blur-sm ${isActive ? 'animate-ping' : ''}`}
-                style={{ background: `rgba(${colorRGB}, 0.5)` }}
-              ></div>
-              <div 
-                className="relative w-2 h-2 rounded-full"
-                style={{ background: `rgb(${colorRGB})` }}
-              ></div>
-            </div>
-          </div>
-
-          {/* Special Badge for Legendary */}
-          {tier.special && (
-            <div className="absolute top-1 left-1 bg-orange-400/20 border border-orange-400/50 text-orange-400 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold tracking-wider">
-              LEG
-            </div>
-          )}
-
-          <div className="relative z-10 text-center">
-            {/* Tier Icon with glow */}
-            <div className="relative mb-3">
-              <div 
-                className={`absolute inset-0 flex items-center justify-center blur-lg transition-opacity duration-500 ${isActive ? 'opacity-60' : 'opacity-0'}`}
-              >
-                <span className="text-3xl">{tier.icon}</span>
-              </div>
-              <div className={`text-2xl md:text-3xl ${tier.special ? 'animate-pulse' : ''} ${isActive ? 'animate-bounce' : ''}`}>
-                {tier.icon}
-              </div>
+        <div className={`relative liquid-glass rounded-2xl p-6 transition-all duration-500 border border-white/10 ${isActive ? 'bg-white/5 border-white/20' : 'bg-transparent border-white/5'}`}>
+          <div className="relative z-10 text-center space-y-4">
+            <div className="text-3xl filter grayscale brightness-200">
+              {tier.icon}
             </div>
 
-            {/* Tier Title */}
-            <h4 
-              className="text-sm font-bold font-mono mb-1 transition-all duration-300"
-              style={{ color: `rgb(${colorRGB})` }}
-            >
+            <h4 className="text-[10px] font-black font-mono tracking-[0.2em] text-white uppercase opacity-40">
               {tier.name}
             </h4>
             
-            {/* Multiplier with gradient */}
-            <div className="text-lg md:text-xl font-black font-mono mb-1 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
+            <div className="text-3xl font-black font-mono tracking-tighter text-white">
               {tier.multiplier}
             </div>
             
-            {/* Duration */}
-            <div className="text-xs text-gray-400 font-mono">
+            <div className="text-[9px] text-white/20 font-mono font-bold tracking-widest uppercase truncate px-2">
               {tier.duration}
             </div>
-          </div>
-
-          {/* Scan Effect on hover */}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden rounded-xl">
-            <div 
-              className="absolute top-0 left-0 w-full h-0.5 animate-[tierScan_2s_ease-in-out_infinite]"
-              style={{ background: `linear-gradient(to right, transparent, rgba(${colorRGB}, 0.8), transparent)` }}
-            ></div>
           </div>
         </div>
       </div>
@@ -145,8 +62,8 @@ const CompactTierDisplay = () => {
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
           backgroundImage: `
-            radial-gradient(circle at 25% 25%, rgba(34, 211, 238, 0.3) 1px, transparent 1px),
-            radial-gradient(circle at 75% 75%, rgba(34, 211, 238, 0.15) 1px, transparent 1px)
+            radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+            radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.15) 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px'
         }}></div>

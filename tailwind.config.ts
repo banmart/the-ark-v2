@@ -25,7 +25,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Inter', 'system-ui', 'sans-serif'],
+				sans: ['General Sans', 'Inter', 'system-ui', 'sans-serif'],
 				megrim: ['Megrim', 'system-ui', 'sans-serif'],
 				michroma: ['Michroma', 'system-ui', 'sans-serif'],
 				mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
@@ -240,11 +240,11 @@ export default {
 	},
 	plugins: [
 		require("tailwindcss-animate"),
-		// Plugin to apply Michroma font to all headings
-		function({ addBase }) {
+		// Plugin to apply General Sans font to all headings
+		function({ addBase }: any) {
 			addBase({
 				'h1, h2, h3, h4, h5, h6': {
-					fontFamily: 'Michroma, system-ui, sans-serif',
+					fontFamily: 'General Sans, system-ui, sans-serif',
 				},
 			})
 		}

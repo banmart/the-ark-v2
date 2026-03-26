@@ -95,46 +95,46 @@ const Leaderboard = () => {
   };
   const getArkTier = (totalWeight: number) => {
     if (totalWeight >= 800000) return {
-      name: 'NOAH COUNCIL',
-      icon: '⚡',
-      color: 'orange-400',
-      glow: 'orange-500',
-      description: 'Divine Authority'
+      name: 'ARCH-KEEPER',
+      icon: '⚜️',
+      color: 'white',
+      glow: 'white',
+      description: 'Supreme Custodian'
     };
     if (totalWeight >= 500000) return {
-      name: 'ADMIRAL',
-      icon: '⭐',
-      color: 'purple-400',
-      glow: 'purple-500',
-      description: 'Fleet Command'
+      name: 'HIGH SENTINEL',
+      icon: '⚔️',
+      color: 'white',
+      glow: 'white',
+      description: 'The Inner Circle'
     };
     if (totalWeight >= 300000) return {
-      name: 'CAPTAIN',
-      icon: '💎',
-      color: 'cyan-400',
-      glow: 'cyan-500',
-      description: 'Ark Command'
+      name: 'WARDEN',
+      icon: '🛡️',
+      color: 'white',
+      glow: 'white',
+      description: 'Statute Defender'
     };
     if (totalWeight >= 150000) return {
-      name: 'NAVIGATOR',
-      icon: '👑',
-      color: 'yellow-400',
-      glow: 'yellow-500',
-      description: 'Storm Guide'
+      name: 'ACOLYTE',
+      icon: '🕯️',
+      color: 'white',
+      glow: 'white',
+      description: 'Vow Follower'
     };
     if (totalWeight >= 15000) return {
-      name: 'SURVIVOR',
-      icon: '🛡️',
-      color: 'gray-400',
-      glow: 'gray-500',
-      description: 'Flood Protected'
+      name: 'INITIATE',
+      icon: '📜',
+      color: 'white',
+      glow: 'white',
+      description: 'Newly Bound'
     };
     return {
-      name: 'LOST',
-      icon: '⛵',
-      color: 'red-400',
-      glow: 'red-500',
-      description: 'Seeking Ark'
+      name: 'OUTCAST',
+      icon: '🌑',
+      color: 'white',
+      glow: 'white',
+      description: 'Unbound Soul'
     };
   };
   const getRankIcon = (rank: number, totalWeight: number) => {
@@ -154,13 +154,13 @@ const Leaderboard = () => {
     const arkTier = getArkTier(totalWeight);
     if (rank <= 3) {
       const colors = {
-        1: `bg-gradient-to-r from-yellow-500 to-yellow-600 text-black shadow-lg shadow-yellow-500/50`,
-        2: `bg-gradient-to-r from-gray-400 to-gray-500 text-black shadow-lg shadow-gray-500/50`,
-        3: `bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-lg shadow-amber-500/50`
+        1: `bg-white text-black font-black`,
+        2: `bg-white/80 text-black font-black`,
+        3: `bg-white/60 text-black font-black`
       };
       return colors[rank as keyof typeof colors];
     }
-    return `bg-gradient-to-r from-${arkTier.color} to-${arkTier.color} text-black shadow-lg shadow-${arkTier.glow}/50 border border-${arkTier.glow}/30`;
+    return `bg-white/5 text-white/60 border border-white/10 font-mono`;
   };
   const getAchievementBadges = (user: any) => {
     const badges = [];
@@ -219,134 +219,91 @@ const Leaderboard = () => {
       <div className="min-h-screen bg-black text-white">
         {/* Quantum ARK Header */}
         <div className="relative">
-          {/* Quantum field background */}
-          <div className="absolute inset-0 -top-20 -bottom-20">
-            <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent blur-3xl"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-conic from-cyan-500/20 via-teal-500/20 to-cyan-500/20 rounded-full blur-3xl animate-[spin_20s_linear_infinite]"></div>
-          </div>
-
-          <div className="relative z-10 text-center py-12 px-6">
-            {/* System Status Indicator */}
-            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-xs font-mono text-green-400 tracking-wider">ARK LEADERBOARD ONLINE</span>
+          <div className="relative z-10 text-center py-24 px-6">
+            <div className="inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
+              <div className="w-1.5 h-1.5 bg-white/40 rounded-full animate-pulse"></div>
+              <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">[HIERARCHY STATUS]</span>
             </div>
 
-            {/* Main Title with Diagnostic Styling */}
-            <div className="mb-6">
-              <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
-                [DIVINE ASCENSION PROTOCOL]
-              </div>
-              <h1 className="mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">ARK LEADERBOARD</h1>
-              <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
-                [NOAH COUNCIL RANKINGS]
-              </div>
+            <div className="mb-12">
+              <h1 className="text-5xl md:text-8xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+                THE ASCENSION
+              </h1>
+              <div className="w-48 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto" />
             </div>
 
-            {/* System Description */}
-            <div className="max-w-2xl mx-auto mb-8">
-              <div className="bg-black/30 backdrop-blur-xl border border-teal-500/30 rounded-xl p-6">
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <div className="w-1 h-1 bg-teal-400 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-mono text-teal-400 tracking-wider">DIVINE HIERARCHY</span>
-                  <div className="w-1 h-1 bg-teal-400 rounded-full animate-pulse"></div>
-                </div>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  Ascend through divine tiers of the ARK protocol. From lost souls to Noah's Council.
-                  <br />
-                  <span className="text-teal-400 font-mono text-sm">Only the most committed shall inherit the flood's protection.</span>
-                </p>
-              </div>
+            <div className="max-w-2xl mx-auto mb-16">
+              <p className="text-white/40 text-lg md:text-xl font-mono leading-relaxed uppercase tracking-tighter italic">
+                Descend the hierarchy of the Keepers. Only the most consecrated shall inherit the protection of the Ark.
+              </p>
             </div>
-
-            {/* Scanning Effect */}
-            
           </div>
         </div>
 
         {/* Stats Overview */}
         <div className="px-6 -mt-8">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <Card className="bg-black/50 border-cyan-500/30">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-cyan-400" />
-                    <div>
-                      <p className="text-sm text-gray-400">Ark Survivors</p>
-                      <p className="text-xl font-bold text-cyan-400">{totalUsers}</p>
-                    </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+              <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <Users className="w-5 h-5 text-white/40" />
+                  <div>
+                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Keepers</p>
+                    <p className="text-xl font-black text-white font-mono">{totalUsers}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
               
-              <Card className="bg-black/50 border-cyan-500/30">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    <div>
-                      <p className="text-sm text-gray-400">Council Members</p>
-                      <p className="text-xl font-bold text-yellow-500">{Math.min(users.length, 50)}</p>
-                    </div>
+              <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <Star className="w-5 h-5 text-white/40" />
+                  <div>
+                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">The Consecrated</p>
+                    <p className="text-xl font-black text-white font-mono">{Math.min(users.length, 50)}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
-              <Card className="bg-black/50 border-cyan-500/30">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-purple-400" />
-                    <div>
-                      <p className="text-sm text-gray-400">Ranking By</p>
-                      <p className="text-sm font-bold text-purple-400">{getSortLabel(sortBy)}</p>
-                    </div>
+              <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <Zap className="w-5 h-5 text-white/40" />
+                  <div>
+                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Metric</p>
+                    <p className="text-[10px] font-black text-white font-mono uppercase truncate">{getSortLabel(sortBy)}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
-              <Card className="bg-black/50 border-cyan-500/30 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 animate-pulse"></div>
-                <div className="absolute inset-0 border-2 border-cyan-400/30 rounded-lg animate-[pulse_2s_ease-in-out_infinite]"></div>
-                <CardContent className="p-4 relative z-10">
-                  <div className="flex items-center gap-2">
-                    <Lock className="w-5 h-5 text-cyan-400" />
-                    <div>
-                      <p className="text-sm text-gray-400">Total Ark Vault</p>
-                      <p className="text-lg font-bold text-cyan-400">{formatNumber(protocolStats.totalLockedTokens)} ARK</p>
-                    </div>
+              <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <Lock className="w-5 h-5 text-white/40" />
+                  <div>
+                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Sanctified Vault</p>
+                    <p className="text-xl font-black text-white font-mono">{formatNumber(protocolStats.totalLockedTokens)}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Divine Ascension Controls */}
-        <div className="px-6">
+        <div className="px-6 mb-16">
           <div className="max-w-6xl mx-auto">
-            <div className="relative mb-12">
-              <div className="text-center mb-6">
-                <h3 className="text-lg font-semibold text-cyan-400 mb-2 font-mono tracking-wider">[DIVINE RANKING PROTOCOL]</h3>
-                <p className="text-sm text-gray-400">Choose your divine ascension metric</p>
-              </div>
-              
-              <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 md:gap-3 justify-center max-w-2xl mx-auto">
-                {(['weight', 'locked', 'rewards', 'activeLocks'] as const).map(criteria => <Button key={criteria} variant={sortBy === criteria ? "default" : "outline"} onClick={() => setSortBy(criteria)} className={`relative px-3 md:px-6 py-2 md:py-3 rounded-xl font-medium transition-all duration-300 border-2 hover:scale-105 ${sortBy === criteria ? 'bg-gradient-to-r from-cyan-500 to-teal-600 text-black border-transparent shadow-lg shadow-cyan-500/50 scale-105 animate-pulse' : 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-500/20'}`}>
-                    <span className="relative z-10 font-mono tracking-wide text-xs md:text-sm">
-                      <span className="md:hidden">{getSortLabelMobile(criteria)}</span>
-                      <span className="hidden md:inline">{getSortLabel(criteria)}</span>
-                    </span>
-                    {sortBy === criteria && <>
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-teal-500/20 rounded-xl blur-sm"></div>
-                        <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-xl opacity-30 animate-[ping_2s_ease-in-out_infinite]"></div>
-                      </>}
-                  </Button>)}
-              </div>
-              
-              {/* Decorative quantum field */}
-              <div className="flex justify-center mt-6">
-                <div className="w-48 h-0.5 bg-gradient-to-r from-transparent via-cyan-500 to-transparent animate-pulse"></div>
-              </div>
+            <div className="grid grid-cols-2 md:flex md:flex-wrap gap-4 justify-center">
+              {(['weight', 'locked', 'rewards', 'activeLocks'] as const).map(criteria => (
+                <button 
+                  key={criteria} 
+                  onClick={() => setSortBy(criteria)} 
+                  className={`px-8 py-3 rounded-xl font-black font-mono text-[10px] tracking-widest uppercase transition-all duration-300 border ${
+                    sortBy === criteria 
+                      ? 'bg-white text-black border-white' 
+                      : 'bg-white/[0.03] text-white/40 border-white/10 hover:border-white/20 hover:text-white'
+                  }`}
+                >
+                  {getSortLabel(criteria)}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -420,80 +377,62 @@ const Leaderboard = () => {
                   </Button>
                 </CardContent>
               </Card> : <div className="space-y-4">
-                {users.map((user, index) => {
-              const arkTier = getArkTier(user.totalWeight);
-              const achievements = getAchievementBadges(user);
-              return <Card key={user.address} className={`relative bg-black/50 hover:bg-black/70 transition-all duration-500 hover:scale-[1.02] overflow-hidden group ${user.rank <= 3 ? `ring-2 ring-${arkTier.glow}/50 shadow-lg shadow-${arkTier.glow}/20` : `border-${arkTier.glow}/30 hover:border-${arkTier.glow}/50`}`}>
-                      {/* Animated background for top ranks */}
-                      {user.rank <= 3 && <div className={`absolute inset-0 bg-gradient-to-r from-${arkTier.glow}/5 via-transparent to-${arkTier.glow}/5 animate-pulse`}></div>}
-                      
-                      {/* Scanning effect for hover */}
-                      <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>
-                      
-                      <CardContent className="p-4 md:p-6 relative z-10">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                          {/* Top Section: Rank and User Info */}
-                          <div className="flex items-center gap-3 md:gap-4">
-                            <div className="flex items-center gap-2 md:gap-3">
-                              <Badge className={`px-2 md:px-3 py-1 md:py-2 font-bold text-xs md:text-sm relative overflow-hidden ${getRankBadge(user.rank, user.totalWeight)}`}>
-                                <span className="relative z-10">#{user.rank}</span>
-                                {user.rank <= 3 && <div className="absolute inset-0 animate-pulse bg-white/10"></div>}
-                              </Badge>
-                              <div className="relative">
-                                {getRankIcon(user.rank, user.totalWeight)}
-                              </div>
+                {users.map((user) => {
+                  const arkTier = getArkTier(user.totalWeight);
+                  return (
+                    <div 
+                      key={user.address} 
+                      className="relative liquid-glass rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden group"
+                    >
+                      <div className="p-6 md:p-8">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                          {/* Rank & User */}
+                          <div className="flex items-center gap-6">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-black font-mono tracking-tighter ${getRankBadge(user.rank, user.totalWeight)}`}>
+                              #{user.rank}
                             </div>
                             
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1 md:mb-2">
-                                <p className="font-mono text-sm md:text-lg text-cyan-400 truncate">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-3">
+                                <p className="text-lg font-black text-white tracking-tighter uppercase font-sans">
                                   {formatAddress(user.address)}
                                 </p>
-                                <Button size="sm" variant="ghost" onClick={() => copyAddress(user.address)} className="h-8 w-8 md:h-6 md:w-6 p-0 hover:bg-cyan-500/20 flex-shrink-0">
-                                  {copiedAddress === user.address ? <CheckCircle className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-gray-400" />}
-                                </Button>
+                                <button onClick={() => copyAddress(user.address)} className="text-white/20 hover:text-white transition-colors">
+                                  {copiedAddress === user.address ? <CheckCircle className="w-3 h-3 text-white" /> : <Copy className="w-3 h-3" />}
+                                </button>
                               </div>
-                              
-                              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1 md:mb-2">
-                                <Badge className={`text-xs px-2 py-1 bg-${arkTier.color}/20 text-${arkTier.color} border border-${arkTier.color}/30 w-fit`}>
-                                  {arkTier.name}
-                                </Badge>
-                                <span className="text-xs text-gray-500 font-mono hidden sm:inline">{arkTier.description}</span>
-                              </div>
-                              
-                              <div className="flex items-center gap-1 flex-wrap">
-                                <p className="text-xs md:text-sm text-gray-400">Top {user.percentile}%</p>
-                                <span className="hidden md:inline text-gray-400">•</span>
-                                {achievements.slice(0, 1).map((achievement, i) => <Badge key={i} className={`text-xs px-1 py-0.5 bg-${achievement.color}-500/20 text-${achievement.color}-400 border border-${achievement.color}-500/30`}>
-                                    {achievement.icon}
-                                  </Badge>)}
+                              <div className="flex items-center gap-3">
+                                <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">
+                                  {arkTier.name} • {arkTier.description}
+                                </span>
                               </div>
                             </div>
                           </div>
 
-                          {/* Bottom Section: Divine Stats - 2x2 grid on mobile */}
-                          <div className="grid grid-cols-2 gap-3 md:gap-4 text-left md:text-right min-w-0 md:min-w-[300px]">
+                          {/* Stats Grid */}
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
                             <div>
-                              <p className="text-xs text-gray-400 font-mono">AUTH</p>
-                              <p className={`font-bold text-${arkTier.color} text-sm md:text-lg truncate`}>{formatNumber(user.totalWeight)}</p>
+                              <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Authority</p>
+                              <p className="text-sm font-black text-white font-mono tracking-tighter">{formatNumber(user.totalWeight)}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-gray-400 font-mono">VAULT</p>
-                              <p className="font-bold text-green-400 text-sm md:text-base truncate">{formatNumber(user.totalLocked)}</p>
+                              <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Vault</p>
+                              <p className="text-sm font-black text-white font-mono tracking-tighter">{formatNumber(user.totalLocked)}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-gray-400 font-mono">REWARDS</p>
-                              <p className="font-bold text-purple-400 text-sm md:text-base truncate">{formatNumber(user.totalRewardsEarned)}</p>
+                              <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Rewards</p>
+                              <p className="text-sm font-black text-white font-mono tracking-tighter">{formatNumber(user.totalRewardsEarned)}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-gray-400 font-mono">LOCKS</p>
-                              <p className="font-bold text-yellow-400 text-sm md:text-base">{user.activeLocksCount}</p>
+                              <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Covenants</p>
+                              <p className="text-sm font-black text-white font-mono tracking-tighter">{user.activeLocksCount}</p>
                             </div>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>;
-            })}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>}
           </div>
         </div>

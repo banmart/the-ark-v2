@@ -1,290 +1,123 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX, Copy, Check } from 'lucide-react';
-import { useChatContext } from './providers/ChatProvider';
-import { useBrowserPopup } from './providers/BrowserPopupProvider';
-import { TextGenerateEffect } from './ui/text-generate-effect';
-import { mediaUrls } from '@/lib/media-urls';
+import React from 'react';
+import { ChevronDown, ArrowRight, Copy, Check } from 'lucide-react';
 
 interface HeroSectionProps {
+  handleConnectWallet: () => void;
+  isConnecting: boolean;
+  isConnected: boolean;
+  account: string | null;
   copyToClipboard: (text: string) => void;
   contractAddress: string;
-  setShowOnboarding: (show: boolean) => void;
 }
 
-const HeroSection = ({
+const HeroSection = ({ 
+  handleConnectWallet, 
+  isConnecting, 
+  isConnected, 
+  account,
   copyToClipboard,
-  contractAddress,
-  setShowOnboarding
+  contractAddress 
 }: HeroSectionProps) => {
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoPlaying, setVideoPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [showIntro, setShowIntro] = useState(true);
-  const [copied, setCopied] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const { setIsOpen } = useChatContext();
-  const { openPopup } = useBrowserPopup();
-  
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      const handleCanPlay = () => {
-        setVideoLoaded(true);
-        setTimeout(() => {
-          setShowIntro(false);
-        }, 800);
-      };
-      
-      const handlePlaying = () => {
-        setTimeout(() => {
-          setVideoPlaying(true);
-        }, 1000);
-      };
-      
-      video.addEventListener('canplay', handleCanPlay);
-      video.addEventListener('playing', handlePlaying);
-      return () => {
-        video.removeEventListener('canplay', handleCanPlay);
-        video.removeEventListener('playing', handlePlaying);
-      };
-    }
-  }, []);
-  
-  const handleBoardTheArk = () => {
-    openPopup('https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeicevoztyv3vaavekencbqvdo3g6ujfm7gkx2osc6yaim4nap7ckkq', 'Buy ARK');
-  };
-  
-  const handleDecodeProtocol = () => {
-    setIsOpen(true);
-  };
-  
-  const toggleAudio = () => {
-    const video = videoRef.current;
-    if (video) {
-      video.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
+  const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
     copyToClipboard(contractAddress);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-  
+
   return (
-    <section className="relative z-10 pt-32 md:pt-40 pb-4 px-6 min-h-screen flex flex-col items-center overflow-hidden">
-      {/* Black Intro Overlay */}
-      <div 
-        className={`absolute inset-0 bg-black z-30 transition-opacity duration-[4000ms] ease-in-out ${
-          showIntro ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-      />
-      
-      {/* Video Background */}
+    <section className="relative w-full min-h-screen bg-black overflow-hidden flex flex-col font-sans">
+      {/* Fullscreen Video Background - Swapped back to IPFS version */}
       <div className="absolute inset-0 z-0">
-        <video 
-          ref={videoRef} 
-          autoPlay 
-          muted 
-          loop 
-          playsInline 
-          className={`w-full h-full object-cover transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
         >
-          <source src={mediaUrls.heroVideo} type="video/mp4" />
+          <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeiewttwnlicyeeq57wwx6gipbxwmzbtuv6vieh7seqoq7imojxmgcm" type="video/mp4" />
         </video>
+        {/* 50% Black Overlay for readability */}
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+
+      {/* Hero Content - Adapted to Original Context */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-[200px] md:pt-[280px] pb-[102px] flex flex-col items-center text-center flex-grow">
         
-        {/* Fallback Image */}
-        <div 
-          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[3000ms] ease-out ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} 
-          style={{ backgroundImage: `url('${mediaUrls.heroBackground}')` }} 
-        />
-      </div>
 
-      {/* Film Grain Overlay */}
-      <div className="absolute inset-0 z-[5] pointer-events-none opacity-[0.03] mix-blend-overlay">
-        <div className="absolute inset-0 film-grain" />
-      </div>
 
-      {/* Vignette Overlay */}
-      <div 
-        className="absolute inset-0 z-[6] pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.8) 100%)'
-        }}
-      />
+        {/* Heading with Gradient Fill - The Covenant Branding */}
+        <div className="mb-14 space-y-2 text-center">
 
-      {/* Premium Gradient Layers */}
-      <div className="absolute inset-0 z-[7] pointer-events-none">
-        {/* Top gradient - deeper */}
-        <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-black/90 via-black/50 to-transparent" />
-        {/* Bottom gradient - richer */}
-        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black via-black/70 to-transparent" />
-        {/* Side gradients */}
-        <div className="absolute top-0 bottom-0 left-0 w-48 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
-        <div className="absolute top-0 bottom-0 right-0 w-48 bg-gradient-to-l from-black/70 via-black/30 to-transparent" />
-        
-        {/* Golden accent glow - center bottom */}
-        <div 
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] opacity-20"
-          style={{
-            background: 'radial-gradient(ellipse at center bottom, rgba(251,191,36,0.3) 0%, transparent 70%)'
-          }}
-        />
-        
-        {/* Cyan accent glow - center */}
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] opacity-10"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.4) 0%, transparent 60%)'
-          }}
-        />
-      </div>
-
-      {/* Ambient Light Rays */}
-      <div className="absolute inset-0 z-[8] pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full light-rays opacity-[0.08]" />
-      </div>
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0 z-[9] pointer-events-none overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 rounded-full bg-cyan-400/30 particle-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 10}s`,
-              animationDuration: `${15 + Math.random() * 20}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Letterbox Bars - Cinematic */}
-      <div className="absolute top-0 left-0 right-0 h-[4vh] bg-black z-[10] hidden md:block" />
-      <div className="absolute bottom-0 left-0 right-0 h-[4vh] bg-black z-[10] hidden md:block" />
-
-      {/* Subtle Scan Line */}
-      <div className="absolute inset-0 z-[11] pointer-events-none opacity-[0.02]">
-        <div className="absolute inset-0 scan-lines" />
-      </div>
-
-      {/* Premium Audio Control Button */}
-      <button
-        onClick={toggleAudio}
-        aria-label={isMuted ? "Unmute background audio" : "Mute background audio"}
-        className="absolute top-6 right-6 z-[60] group"
-      >
-        <div className="relative p-3 rounded-full bg-black/20 backdrop-blur-xl border border-white/10 
-          hover:border-amber-500/30 hover:bg-black/40 transition-all duration-500 
-          shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.15)]">
-          {/* Glow ring */}
-          <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(251,191,36,0.1) 0%, transparent 70%)'
-            }}
-          />
-          {isMuted ? (
-            <VolumeX size={20} className="text-white/70 group-hover:text-amber-400/90 transition-colors duration-300" />
-          ) : (
-            <Volume2 size={20} className="text-amber-400/90 transition-colors duration-300" />
-          )}
-        </div>
-      </button>
-
-      {/* Content */}
-      <div className="flex-grow" />
-      
-      {/* Bottom Section - Logo and Contract Address */}
-      <div className="max-w-7xl mx-auto w-full relative z-20">
-        {/* Logo Section - The ARK */}
-        <div 
-          className={`relative z-20 pb-8 transition-all duration-1000 ease-out ${
-            videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
-        >
-          <div className="text-center">
-            {/* Premium Title with Glow */}
-            <h1 className="relative">
-              <TextGenerateEffect
-                words="The ARK"
-                className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold 
-                  text-cyan-400
-                  drop-shadow-[0_0_30px_rgba(34,211,238,0.4)]"
-                duration={0.5}
-              />
-              {/* Subtle glow behind text */}
-              <div 
-                className="absolute inset-0 -z-10 blur-3xl opacity-40"
-                style={{
-                  background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.6) 0%, transparent 70%)'
-                }}
-              />
-            </h1>
-            
-            {/* Premium Tagline */}
-            <p 
-              className={`mt-4 text-sm md:text-base tracking-[0.3em] uppercase text-white/40 font-light
-                transition-all duration-1000 delay-500 ${videoPlaying ? 'opacity-100' : 'opacity-0'}`}
+          <div className="flex flex-col items-center">
+            <h1 
+              className="text-[64px] md:text-[120px] font-black leading-[0.85] tracking-tighter"
+              style={{
+                background: 'linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.4) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                color: 'transparent'
+              }}
             >
-              Decentralized Protocol
-            </p>
+              THE ARK
+            </h1>
+            <h1 className="text-[54px] md:text-[96px] font-black leading-[0.85] tracking-tighter text-white uppercase italic">
+              COVENANT
+            </h1>
           </div>
         </div>
-        
-        {/* Premium Contract Address Card */}
-        <div 
-          className={`flex justify-center pb-8 transition-all duration-1000 delay-300 ${
-            videoPlaying ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
+
+        {/* Subtitle - Covenant Context */}
+        <p className="max-w-[720px] text-[16px] md:text-[18px] font-normal text-white/70 leading-relaxed mb-12">
+          An unbreakable digital contract inscribed upon the PulseChain. The Covenant of The Ark safeguards your wealth through sacred deflationary laws, perpetual reflections, and the immutable protection of the Vault.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row items-center gap-6 mb-16">
+          {/* Main CTA - Wallet Connect style */}
           <div className="relative group">
-            {/* Glassmorphism Card */}
-            <div className="relative px-6 py-4 rounded-2xl bg-white/[0.03] backdrop-blur-xl 
-              border border-white/[0.08] hover:border-cyan-500/20 
-              transition-all duration-500 hover:bg-white/[0.05]
-              shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_40px_rgba(34,211,238,0.1)]">
-              
-              {/* Inner glow */}
-              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{
-                  background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.05) 0%, transparent 70%)'
-                }}
-              />
-              
-              <p className="text-xs text-white/30 mb-2 tracking-widest uppercase font-light">
-                Contract Address
-              </p>
-              
-              <button
-                type="button"
-                onClick={handleCopy}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  handleCopy();
-                }}
-                className="flex items-center gap-2 sm:gap-3 group/btn cursor-pointer touch-manipulation min-h-[44px] px-2 -mx-2"
-              >
-                {/* Truncated on mobile, full on desktop */}
-                <span className="font-mono text-[10px] sm:text-sm md:text-base text-cyan-400/80 group-hover/btn:text-cyan-300 
-                  transition-colors duration-300 tracking-wide pointer-events-none">
-                  <span className="sm:hidden">{contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</span>
-                  <span className="hidden sm:inline">{contractAddress}</span>
-                </span>
-                
-                <div className={`p-2 sm:p-1.5 rounded-lg transition-all duration-300 pointer-events-none
-                  ${copied 
-                    ? 'bg-emerald-500/20 text-emerald-400' 
-                    : 'bg-white/5 text-white/40 group-hover/btn:text-cyan-400 group-hover/btn:bg-cyan-500/10'
-                  }`}>
-                  {copied ? <Check size={16} /> : <Copy size={16} />}
-                </div>
-              </button>
-            </div>
+            <div className="absolute -inset-[0.6px] bg-white rounded-full pointer-events-none opacity-100" />
+            <button 
+              onClick={handleConnectWallet}
+              disabled={isConnecting}
+              className="relative px-[36px] py-[14px] bg-white rounded-full flex items-center justify-center transition-all hover:bg-neutral-100 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+            >
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-radial from-white to-transparent blur-[2px]" />
+              <span className="text-[15px] font-bold text-black uppercase tracking-wide">
+                {isConnected ? (account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connected') : (isConnecting ? 'Connecting...' : 'Connect Wallet')}
+              </span>
+            </button>
+          </div>
+
+          {/* Contract Address Pill */}
+          <div className="relative group">
+            <div className="absolute -inset-[0.6px] bg-white/20 rounded-full pointer-events-none opacity-100 border border-white/10" />
+            <button 
+              onClick={handleCopy}
+              className="relative px-[24px] py-[14px] bg-black/40 backdrop-blur-xl rounded-full flex items-center gap-3 transition-all hover:bg-white/5 active:scale-95"
+            >
+              <div className="flex flex-col items-start">
+                <span className="text-white/30 text-[9px] uppercase font-mono tracking-widest">Contract</span>
+                <span className="text-white/80 font-mono text-xs">{contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</span>
+              </div>
+              <div className="p-1.5 rounded-lg bg-white/5">
+                {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} className="text-white/40" />}
+              </div>
+            </button>
           </div>
         </div>
+      </div>
+
+      {/* Alpha Transition - Fading out the video bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-[5]" />
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-30 z-10">
+        <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">Protocol Metrics</span>
+        <ChevronDown size={16} className="text-white/60" />
       </div>
     </section>
   );

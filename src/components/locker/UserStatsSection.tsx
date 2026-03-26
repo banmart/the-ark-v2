@@ -6,7 +6,8 @@ import {
   BarChart3,
   Coins,
   Gift,
-  Sparkles
+  Sparkles,
+  Loader2
 } from 'lucide-react';
 import { useLockerData } from '../../hooks/useLockerData';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
@@ -59,40 +60,40 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
   const statCards = [
     {
       icon: Lock,
-      label: 'System Total',
+      label: 'Covenant Total',
       value: protocolStats.totalLockedTokens.toLocaleString(),
       unit: 'ARK',
-      colorRGB: '96, 165, 250',
+      colorRGB: '255, 255, 255',
     },
     {
       icon: Lock,
-      label: 'Your Locked',
+      label: 'Your Bound Amount',
       value: displayStats.totalLocked.toLocaleString(),
       unit: 'ARK',
-      colorRGB: '74, 222, 128',
+      colorRGB: '255, 255, 255',
       extra: (
-        <div className="text-xs text-gray-500 mt-1">
-          <span className="text-cyan-400">{displayStats.readyToUnlockCount}</span> ready • 
-          <span className="text-blue-400 ml-1">{displayStats.inProgressCount}</span> in progress
+        <div className="text-[10px] font-mono font-bold tracking-widest text-white/20 mt-2 uppercase">
+          <span className="text-white/60">{displayStats.readyToUnlockCount}</span> RELEASED • 
+          <span className="text-white/60 ml-1">{displayStats.inProgressCount}</span> BINDING
         </div>
       )
     },
     {
       icon: TrendingUp,
-      label: 'Total Earned',
+      label: 'Total Tithes',
       value: displayStats.totalRewardsEarned.toLocaleString(),
       unit: 'ARK',
-      colorRGB: '250, 204, 21',
+      colorRGB: '255, 255, 255',
     },
     {
       icon: BarChart3,
-      label: 'Pool Share',
+      label: 'Covenant Share',
       value: protocolStats?.totalLockedTokens ? formatTokenPoolShare(displayStats.totalLocked, protocolStats.totalLockedTokens) : '0.00%',
-      unit: 'of tokens',
-      colorRGB: '167, 139, 250',
+      unit: 'OF TOTAL',
+      colorRGB: '255, 255, 255',
       extra: (
-        <div className="text-xs text-gray-500 mt-1">
-          Weight: {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00%'}
+        <div className="text-[10px] font-mono font-bold tracking-widest text-white/20 mt-2 uppercase">
+          STRENGTH: {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00%'}
         </div>
       )
     }
@@ -101,17 +102,24 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
   return (
     <div className="space-y-8">
       {/* Premium Demo Mode Banner */}
+      {/* Premium Demo Mode Banner */}
       {!isConnected && (
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500/30 via-amber-500/30 to-orange-500/30 rounded-2xl blur-sm"></div>
-          <div className="relative bg-black/50 backdrop-blur-xl border border-orange-500/40 rounded-2xl p-6">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <Wallet className="w-7 h-7 text-orange-400" />
-              <h3 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">Demo Mode</h3>
+          <div className="relative liquid-glass border border-white/10 rounded-2xl p-8 backdrop-blur-3xl overflow-hidden">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <Wallet className="w-6 h-6 text-white/40" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">TEMPORARY REVELATION</h3>
+                  <p className="text-[10px] text-white/20 font-mono tracking-[0.2em] uppercase">VIEWING PROTOCOL METRICS IN OBSERVER MODE</p>
+                </div>
+              </div>
+              <p className="text-[10px] text-white/40 font-mono uppercase tracking-widest text-center md:text-right max-w-xs leading-relaxed">
+                Connect your soul to the Ark to view your actual standing and claim your deserved tithes.
+              </p>
             </div>
-            <p className="text-center text-gray-300 text-sm">
-              Connect your wallet to view your actual positions and claim real rewards
-            </p>
           </div>
         </div>
       )}
@@ -175,64 +183,51 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
 
       {/* Premium Rewards Section */}
       <div className="relative group">
-        {/* Outer glow */}
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-green-500/30 via-emerald-500/30 to-green-500/30 rounded-2xl blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
-        
-        {/* Card */}
-        <div className="relative bg-black/50 backdrop-blur-xl border border-green-500/40 rounded-2xl p-6 md:p-8 overflow-hidden">
-          {/* Inner gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-emerald-500/5"></div>
-          
-          <div className="relative z-10 flex flex-col md:flex-row md:justify-between md:items-center gap-6">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="absolute inset-0 bg-green-400/30 rounded-xl blur-lg animate-pulse"></div>
-                <div className="relative p-4 bg-green-500/10 border border-green-500/40 rounded-xl">
-                  <Gift className="w-8 h-8 text-green-400" />
-                </div>
+        <div className="relative liquid-glass border border-white/10 rounded-22xl p-8 md:p-12 overflow-hidden">
+          <div className="relative z-10 flex flex-col md:flex-row md:justify-between md:items-center gap-8">
+            <div className="flex items-center gap-6">
+              <div className="relative p-6 bg-white/[0.03] border border-white/10 rounded-2xl">
+                <Gift className="w-10 h-10 text-white/60" />
               </div>
-              <div>
-                <h2 className="text-xl md:text-2xl font-bold text-green-400 flex items-center gap-2">
-                  Pending Rewards
-                  <Sparkles className="w-5 h-5 text-green-400/60" />
+              <div className="space-y-2">
+                <h2 className="text-3xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
+                  UNCLAIMED TITHES
+                  <Sparkles className="w-4 h-4 text-white/20" />
                 </h2>
-                <p className="text-sm text-gray-400">
-                  From protocol fees • Pool: {protocolStats.rewardPool.toLocaleString()} ARK
+                <p className="text-[10px] font-mono text-white/20 tracking-[0.2em] uppercase">
+                  FROM PROTOCOL FEES • ARK POOL: {protocolStats.rewardPool.toLocaleString()}
                 </p>
               </div>
             </div>
             
             {/* Claim Button */}
-            <div className="relative group/btn">
-              <div className="absolute -inset-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl blur opacity-40 group-hover/btn:opacity-60 transition-opacity"></div>
-              <button
-                disabled={!isConnected || displayRewards === 0 || claimingRewards}
-                onClick={handleClaimRewards}
-                className="relative bg-gradient-to-r from-green-500 to-emerald-600 text-black font-bold px-8 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300 flex items-center gap-2 w-full md:w-auto justify-center"
-              >
-                {claimingRewards ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
-                    Claiming...
-                  </>
-                ) : (
-                  <>
-                    <Coins className="w-5 h-5" />
-                    Claim Rewards
-                  </>
-                )}
-              </button>
-            </div>
+            <button
+              disabled={!isConnected || displayRewards === 0 || claimingRewards}
+              onClick={handleClaimRewards}
+              className="relative bg-white text-black font-black font-mono text-[10px] tracking-[0.3em] uppercase px-12 py-4 rounded-xl disabled:opacity-20 hover:scale-[1.05] transition-all duration-300 flex items-center gap-3 w-full md:w-auto justify-center"
+            >
+              {claimingRewards ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  CLAIMING...
+                </>
+              ) : (
+                <>
+                  <Coins className="w-3 h-3" />
+                  CLAIM TITHES
+                </>
+              )}
+            </button>
           </div>
           
           {/* Reward Amount */}
-          <div className="relative z-10 flex items-center gap-4 mt-6">
-            <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-              {displayRewards.toLocaleString()} ARK
+          <div className="relative z-10 flex items-center gap-6 mt-12 bg-white/[0.03] border border-white/5 rounded-2xl p-8">
+            <div className="text-5xl md:text-7xl font-black text-white tracking-tighter">
+              {displayRewards.toLocaleString()} <span className="text-xl md:text-2xl text-white/20 font-mono tracking-widest ml-4">ARK</span>
             </div>
             {!isConnected && (
-              <div className="bg-orange-500/20 border border-orange-500/50 rounded-lg px-3 py-1.5">
-                <span className="text-xs text-orange-300 font-bold tracking-wider">DEMO</span>
+              <div className="bg-white/10 border border-white/20 rounded-md px-3 py-1">
+                <span className="text-[8px] text-white/40 font-black font-mono tracking-widest">OBSERVER</span>
               </div>
             )}
           </div>

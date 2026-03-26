@@ -3,6 +3,7 @@ import { useFeeMetrics } from '../../hooks/useFeeMetrics';
 import { useARKTokenData } from '../../hooks/useARKTokenData';
 import FeeCard from './FeeCard';
 import FeeCalculator from './FeeCalculator';
+import { Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const SimplifiedFeesSection = () => {
@@ -88,13 +89,23 @@ const SimplifiedFeesSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
-            Live Fee Analytics
+          <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-white/[0.03] border border-white/10">
+            <Activity className="w-3 h-3 text-ark-gold-400 animate-pulse" />
+            <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">Blockchain Oracles</span>
+          </div>
+
+          <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+            COVENANT REVELATIONS
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Real-time fee collection and distribution powered by blockchain data
+          
+          <div className="flex justify-center mb-8">
+            <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          </div>
+
+          <p className="text-white/50 text-base md:text-lg max-w-2xl mx-auto font-mono leading-relaxed">
+            The immutable ledger of the Ark. Real-time collection and distribution of sacred fees across the four pillars of the Covenant.
           </p>
         </motion.div>
 

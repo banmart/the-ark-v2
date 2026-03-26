@@ -91,7 +91,7 @@ const PageLayout = memo(({ children }: PageLayoutProps) => {
       />
 
       {/* Premium Background System */}
-      <PremiumBackground variant="default" />
+      <PremiumBackground />
 
       {/* Navigation */}
       <Navigation 
@@ -103,15 +103,32 @@ const PageLayout = memo(({ children }: PageLayoutProps) => {
 
       {/* Hero Section */}
       <HeroSection 
+        handleConnectWallet={handleConnectWallet}
+        isConnecting={isConnecting}
+        isConnected={isConnected}
+        account={account}
         copyToClipboard={copyToClipboard}
         contractAddress={CONTRACT_ADDRESS}
-        setShowOnboarding={setShowOnboarding}
       />
 
       {/* Stats Section */}
       <StatsSection 
         contractData={contractData}
         contractLoading={contractLoading}
+      />
+
+      {/* Swap Interface - Restoration */}
+      <SwapSection 
+        fromAmount={fromAmount}
+        toAmount={toAmount}
+        plsBalance={plsBalance}
+        arkBalance={arkBalance}
+        swapLoading={swapLoading}
+        slippage={slippage}
+        canSwap={canSwap}
+        isConnected={isConnected}
+        setFromAmount={setFromAmount}
+        handleSwap={handleSwap}
       />
 
       {/* Simplified Fees Section */}

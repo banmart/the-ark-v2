@@ -15,23 +15,25 @@ const ApprovalStatus = ({ lockAmount, isConnected, needsApproval, currentAllowan
   if (!lockAmount || amount <= 0 || !isConnected) return null;
 
   return (
-    <div className={`rounded-lg p-4 border ${needsApproval ? 'bg-yellow-900/20 border-yellow-500/30' : 'bg-green-900/20 border-green-500/30'}`}>
-      <div className="flex items-center gap-2">
-        {needsApproval ? (
-          <>
-            <Info className="w-4 h-4 text-yellow-400" />
-            <span className="text-yellow-300 text-sm">
-              Token approval required: {amount.toLocaleString()} ARK
-            </span>
-          </>
-        ) : (
-          <>
-            <CheckCircle className="w-4 h-4 text-green-400" />
-            <span className="text-green-300 text-sm">
-              Sufficient allowance: {currentAllowance.toLocaleString()} ARK approved
-            </span>
-          </>
-        )}
+    <div className={`liquid-glass rounded-2xl p-6 border transition-all duration-500 backdrop-blur-3xl ${needsApproval ? 'border-white/20 bg-white/5' : 'border-white/10 bg-white/5 opacity-40'}`}>
+      <div className="flex items-center gap-4">
+        <div className={`p-3 rounded-xl ${needsApproval ? 'bg-white/10' : 'bg-white/5'}`}>
+          {needsApproval ? (
+            <Info className="w-5 h-5 text-white" />
+          ) : (
+            <CheckCircle className="w-5 h-5 text-white/40" />
+          )}
+        </div>
+        <div className="space-y-1">
+          <div className="text-[10px] font-black font-mono tracking-[0.2em] text-white/40 uppercase">PROTOCOL AUTHORIZATION</div>
+          <div className={`text-[10px] font-black font-mono tracking-widest uppercase ${needsApproval ? 'text-white' : 'text-white/40'}`}>
+            {needsApproval ? (
+              `REQUIRED: ${amount.toLocaleString()} ARK`
+            ) : (
+              `AUTHORIZED: ${currentAllowance.toLocaleString()} ARK`
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

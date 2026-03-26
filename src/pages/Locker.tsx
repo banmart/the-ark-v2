@@ -38,7 +38,7 @@ const LockerContent = () => {
     <>
       <div className="min-h-screen bg-black text-white relative overflow-hidden">
         {/* Premium Background */}
-        <PremiumBackground variant="locker" particleCount={16} />
+        <PremiumBackground />
 
         {/* Navigation */}
         <div className="relative z-20">
@@ -71,30 +71,21 @@ const LockerContent = () => {
 
           {/* Contract Address Section */}
           <div className="relative max-w-6xl mx-auto px-6 py-16">
-            {/* Premium background */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `
-                  radial-gradient(circle at 25% 25%, rgba(34, 211, 238, 0.3) 1px, transparent 1px),
-                  radial-gradient(circle at 75% 75%, rgba(34, 211, 238, 0.15) 1px, transparent 1px)
-                `,
-                backgroundSize: '50px 50px'
-              }}></div>
-            </div>
-
             <div className="relative">
               {/* Premium header */}
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-full">
-                  <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                  <span className="text-xs font-mono text-cyan-400 tracking-[0.15em]">[CONTRACT INFORMATION]</span>
+              <div className="text-center mb-12 animate-fade-up">
+                <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
+                  <div className="w-1.5 h-1.5 bg-white/40 rounded-full animate-pulse"></div>
+                  <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">[STATION LOGS]</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent mb-3">
-                  Smart Contract Address
+                
+                <h3 className="text-4xl md:text-5xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+                  The Immutable Ledger
                 </h3>
-                <div className="flex items-center justify-center gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-mono text-green-400 tracking-wider">VERIFIED ON PULSECHAIN</span>
+                
+                <div className="flex items-center justify-center gap-3 px-4 py-2 bg-white/[0.02] border border-white/5 rounded-xl inline-flex mx-auto">
+                  <div className="w-1.5 h-1.5 bg-green-500/50 rounded-full"></div>
+                  <span className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Verified via PulseChain Covenant</span>
                 </div>
               </div>
               

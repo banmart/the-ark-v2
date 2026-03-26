@@ -11,42 +11,37 @@ const EmergencyStatus = ({ emergencyMode, contractPaused }: EmergencyStatusProps
   if (!emergencyMode && !contractPaused) return null;
 
   return (
-    <div className="flex justify-center mt-6 mb-8 animate-fade-in">
-      <div className="relative">
-        {/* Quantum field background */}
-        <div className="absolute inset-0 -inset-4">
-          <div className="absolute inset-0 bg-gradient-radial from-red-500/20 via-transparent to-transparent blur-2xl animate-pulse"></div>
-        </div>
-
-        <div className="relative z-10 bg-black/40 backdrop-blur-xl border-2 border-red-500/50 rounded-xl px-8 py-4">
-          {/* System Alert Header */}
-          <div className="flex items-center gap-3 mb-3">
-            <div className="flex items-center gap-2 px-3 py-1 bg-red-500/20 border border-red-500/40 rounded-lg">
-              <Shield className="w-4 h-4 text-red-400" />
-              <span className="text-xs font-mono text-red-400 tracking-wider">SYSTEM_ALERT</span>
+    <div className="flex justify-center -mt-8 mb-16 animate-fade-in px-6">
+      <div className="relative w-full max-w-4xl">
+        <div className="relative z-10 liquid-glass border-2 border-red-500/20 rounded-2xl p-8 backdrop-blur-3xl overflow-hidden group">
+          {/* Animated red pulse for critical state */}
+          <div className="absolute inset-0 bg-red-500/[0.02] animate-pulse pointer-events-none" />
+          
+          <div className="flex flex-col md:flex-row items-center gap-8 relative z-20">
+            <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-8 h-8 text-red-500 animate-pulse" />
             </div>
-            <div className="flex-1 h-px bg-gradient-to-r from-red-500/50 to-transparent"></div>
+            
+            <div className="flex-1 text-center md:text-left">
+              <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20">
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
+                <span className="text-red-500 font-mono text-[10px] font-black tracking-[0.3em] uppercase">CRITICAL STATUTE</span>
+              </div>
+              
+              <h4 className="text-2xl font-black text-white tracking-tighter uppercase mb-2 font-sans">
+                {emergencyMode ? 'COVENANT EXCLUSION ACTIVE' : 'STATUTES SUSPENDED'}
+              </h4>
+              
+              <p className="text-white/40 font-mono text-xs uppercase tracking-widest leading-relaxed">
+                {emergencyMode 
+                  ? 'Protocol-wide emergency protocols engaged. All new seals disabled by decree.' 
+                  : 'Covenant operations temporarily suspended for administrative validation.'}
+              </p>
+            </div>
           </div>
 
-          {/* Alert Content */}
-          <div className="flex items-center gap-4">
-            <AlertTriangle className="w-6 h-6 text-red-400 animate-pulse" />
-            <div>
-              <div className="text-sm font-mono text-red-400/60 mb-1 tracking-[0.1em]">
-                [PROTOCOL_STATUS]
-              </div>
-              <span className="text-red-400 font-bold text-lg">
-                {emergencyMode ? 'EMERGENCY_MODE_ACTIVE' : 'CONTRACT_PAUSED'}
-              </span>
-              <div className="text-xs font-mono text-red-300 mt-1">
-                {emergencyMode ? 'Emergency protocols engaged. New locks disabled.' : 'Contract operations temporarily suspended.'}
-              </div>
-            </div>
-            <AlertTriangle className="w-6 h-6 text-red-400 animate-pulse" />
-          </div>
-
-          {/* Scanning Effect */}
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/80 to-transparent animate-scan"></div>
+          {/* Scanning effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
         </div>
       </div>
     </div>

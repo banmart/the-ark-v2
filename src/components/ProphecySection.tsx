@@ -18,39 +18,39 @@ const ProphecySection = () => {
   const prophecies = [
     {
       id: 'flood',
-      title: 'FLOOD PROTOCOL',
-      emoji: '🌊',
+      title: 'THE SACRED STATUTES',
+      emoji: '📜',
       icon: Waves,
-      description: 'System analysis indicates catastrophic market liquidation event imminent. Only ARK protocol holders maintain operational integrity during crypto matrix purge sequence.',
+      description: 'The Covenant is inscribed in immutable code. While the markets face the great liquidation flood, the Statutes ensure the Ark remains buoyant, preserving value through unbreakable logic.',
       color: 'cyan',
       glowColor: 'rgba(6, 182, 212, 0.4)',
       gradientFrom: 'from-cyan-400',
       gradientTo: 'to-teal-400',
-      statusCode: 'FLOOD SIM ACTIVE'
+      statusCode: 'STATUTES ACTIVE'
     },
     {
       id: 'chosen',
-      title: 'CHOSEN ALGORITHM',
-      emoji: '⚡',
+      title: 'COVENANT LAW',
+      emoji: '⚖️',
       icon: Zap,
-      description: 'ARK token holders identified as prime candidates for survival protocol. Divine tokenomics engine provides navigation through market storm matrices.',
+      description: 'The Law of the Ark is absolute. Every transaction nourishes the holders, as the Covenant mandates the redistribution of reflections to the faithful who guard the sanctuary.',
       color: 'yellow',
       glowColor: 'rgba(251, 191, 36, 0.4)',
       gradientFrom: 'from-yellow-400',
       gradientTo: 'to-orange-400',
-      statusCode: 'SELECTION PROTOCOL'
+      statusCode: 'COVENANT ENGAGED'
     },
     {
       id: 'newworld',
-      title: 'GENESIS REBUILD',
-      emoji: '🕊️',
+      title: 'THE RESTORATION',
+      emoji: '🏛️',
       icon: Bird,
-      description: 'Post-flood reconstruction algorithms engage. ARK passengers designated as foundational nodes for next-generation crypto ecosystem architecture.',
+      description: 'Through the Ark, the true value of decentralized finance is restored. The Covenant marks the beginning of a new era, where the tablets of code govern a prospering digital kingdom.',
       color: 'emerald',
       glowColor: 'rgba(16, 185, 129, 0.4)',
       gradientFrom: 'from-emerald-400',
       gradientTo: 'to-teal-400',
-      statusCode: 'REBUILD SEQUENCE'
+      statusCode: 'RESTORATION INITIATED'
     }
   ];
 
@@ -170,68 +170,7 @@ const ProphecySection = () => {
   };
 
   return (
-    <section className="relative z-30 py-24 px-6 overflow-hidden">
-      {/* === PREMIUM MULTI-LAYER BACKGROUND === */}
-      
-      {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
-      
-      {/* Deep vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.6)_70%,rgba(0,0,0,0.9)_100%)]" />
-      
-      {/* Animated gradient orbs */}
-      <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
-      <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-cyan-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
-      <div className="absolute top-1/2 left-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
-      <div className="absolute bottom-1/3 right-10 w-72 h-72 bg-yellow-500/10 rounded-full blur-[90px] animate-pulse" style={{ animationDuration: '9s', animationDelay: '3s' }} />
-      
-      {/* Film grain texture */}
-      <div 
-        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat'
-        }}
-      />
-      
-      {/* Tech grid overlay */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px'
-        }}
-      />
-      
-      {/* Floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {particles.map((particle) => (
-          <div
-            key={particle.id}
-            className={`absolute rounded-full bg-${particle.color}-400/60`}
-            style={{
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              left: `${particle.left}%`,
-              top: `${particle.top}%`,
-              animation: `prophecyFloat ${particle.duration}s ease-in-out infinite`,
-              animationDelay: `${particle.delay}s`,
-              boxShadow: `0 0 ${particle.size * 2}px currentColor`
-            }}
-          />
-        ))}
-      </div>
-      
-      {/* Corner glow accents */}
-      {cornerGlows.map((glow, i) => (
-        <div
-          key={i}
-          className={`absolute ${glow.position} w-64 h-64 bg-${glow.color}-500/10 rounded-full blur-[80px] pointer-events-none`}
-        />
-      ))}
+    <section className="relative z-30 py-24 px-6 bg-black">
 
       {/* === CONTENT === */}
       <div className="max-w-7xl mx-auto relative z-10">
@@ -243,13 +182,13 @@ const ProphecySection = () => {
             <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
               <BookOpen className="w-5 h-5 text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
             </div>
-            <span className="text-white/60 font-mono text-sm tracking-widest">ANCIENT PROTOCOLS</span>
+            <span className="text-white/60 font-mono text-sm tracking-widest">THE COVENANT ARK</span>
           </div>
           
           {/* Gradient title */}
           <h2 className="text-white mb-6 tracking-tight">
             <span className="bg-gradient-to-r from-purple-400 via-cyan-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
-              PROPHECY MODULES
+              SACRED REVELATIONS
             </span>
           </h2>
           
@@ -260,7 +199,7 @@ const ProphecySection = () => {
           
           {/* Subtitle */}
           <p className="text-white/70 text-lg max-w-3xl mx-auto font-mono leading-relaxed">
-            Ancient protocols foretell the great crypto flood. Only ARK holders survive the purge.
+            The Covenant is the ultimate law. Those who abide by the statutes of The Ark shall prosper amidst the chaos of the digital world.
           </p>
         </div>
 
@@ -288,7 +227,7 @@ const ProphecySection = () => {
                   <Sparkles className="w-5 h-5 text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
                 </div>
                 <span className="text-2xl font-black bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent tracking-wider">
-                  PROPHECY STATUS: ACTIVE
+                  COVENANT STATUS: ACTIVE
                 </span>
               </div>
               
@@ -304,8 +243,7 @@ const ProphecySection = () => {
               
               {/* Message */}
               <p className="text-white/60 font-mono text-sm text-center leading-relaxed">
-                All prophecy modules operational. ARK survival protocol initialized. 
-                Flood simulation running in background matrix.
+                The Sacred Covenant is upheld. Immutable laws active. The Ark of the Covenant preserves the legacy of true wealth.
               </p>
             </div>
           </div>

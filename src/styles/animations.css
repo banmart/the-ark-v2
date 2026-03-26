@@ -23,46 +23,7 @@
     animation: float 15s ease-in-out infinite;
   }
 
-  .video-blue-orb {
-    background: radial-gradient(circle, hsl(var(--video-blue) / 0.15), transparent);
-  }
-
-  .video-cyan-orb {
-    background: radial-gradient(circle, hsl(var(--video-cyan) / 0.15), transparent);
-  }
-
-  .video-gold-orb {
-    background: radial-gradient(circle, hsl(var(--video-gold) / 0.15), transparent);
-  }
-
-  .video-brown-orb {
-    background: radial-gradient(circle, hsl(var(--video-brown) / 0.15), transparent);
-  }
-
-  /* Breathing Gradient Bursts with video color variants */
-  .gradient-burst {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(50px);
-    animation: breathe ease-in-out infinite;
-  }
-
-  .video-blue-burst {
-    background: radial-gradient(circle, hsl(var(--video-blue) / 0.3), transparent);
-  }
-
-  .video-cyan-burst {
-    background: radial-gradient(circle, hsl(var(--video-cyan) / 0.3), transparent);
-  }
-
-  .video-gold-burst {
-    background: radial-gradient(circle, hsl(var(--video-gold) / 0.3), transparent);
-  }
-
-  .video-brown-burst {
-    background: radial-gradient(circle, hsl(var(--video-brown) / 0.3), transparent);
-  }
-
+  /* Burst Positions */
   .burst1 {
     width: 300px;
     height: 300px;

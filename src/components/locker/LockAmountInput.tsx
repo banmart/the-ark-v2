@@ -48,10 +48,10 @@ const LockAmountInput = ({
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-        <label className="block text-sm font-medium text-white/90">Amount to Lock (ARK)</label>
-        <div className="text-sm sm:text-base lg:text-lg font-bold text-green-400 animate-pulse drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]">
-          Balance: {isConnected ? userArkBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '--'} ARK
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <label className="text-[10px] font-black font-mono tracking-[0.2em] text-white/40 uppercase">BINDING AMOUNT (ARK)</label>
+        <div className="text-[10px] font-black font-mono tracking-[0.2em] text-white uppercase">
+          TREASURY: {isConnected ? userArkBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '--'}
         </div>
       </div>
       <div className="relative">
@@ -59,43 +59,25 @@ const LockAmountInput = ({
           type="number"
           value={lockAmount}
           onChange={(e) => handleAmountChange(e.target.value)}
-          placeholder="0.0"
+          placeholder="0.00"
           step="0.000001"
           disabled={emergencyMode || contractPaused || isProcessing}
-          className="w-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] rounded-lg px-4 py-3 text-white placeholder:text-white/40 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 focus:outline-none disabled:opacity-50 transition-all duration-300"
+          className="w-full bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-xl px-6 py-4 text-xl font-black text-white placeholder:text-white/10 focus:border-white/40 focus:ring-0 focus:outline-none disabled:opacity-20 transition-all duration-300 tracking-tighter"
         />
       </div>
       
       {/* Percentage selector buttons */}
-      <div className="flex flex-wrap gap-2 mt-3">
-        <button
-          onClick={() => handlePercentageClick(0.25)}
-          disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
-          className="flex-1 min-w-[64px] bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50 min-h-[44px]"
-        >
-          25%
-        </button>
-        <button
-          onClick={() => handlePercentageClick(0.5)}
-          disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
-          className="flex-1 min-w-[64px] bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50 min-h-[44px]"
-        >
-          50%
-        </button>
-        <button
-          onClick={() => handlePercentageClick(0.75)}
-          disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
-          className="flex-1 min-w-[64px] bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50 min-h-[44px]"
-        >
-          75%
-        </button>
-        <button
-          onClick={() => handlePercentageClick(1.0)}
-          disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
-          className="flex-1 min-w-[64px] bg-cyan-500/20 text-cyan-400 px-3 py-2 rounded text-sm font-semibold hover:bg-cyan-500/30 transition-colors disabled:opacity-50 min-h-[44px]"
-        >
-          MAX
-        </button>
+      <div className="grid grid-cols-4 gap-3 mt-4">
+        {[25, 50, 75, 100].map((pct) => (
+          <button
+            key={pct}
+            onClick={() => handlePercentageClick(pct / 100)}
+            disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
+            className="bg-white/5 border border-white/10 text-white font-black font-mono text-[10px] tracking-widest py-3 rounded-xl hover:bg-white hover:text-black transition-all duration-300 disabled:opacity-10 uppercase"
+          >
+            {pct === 100 ? 'MAX' : `${pct}%`}
+          </button>
+        ))}
       </div>
       
       {!validation.isValid && lockAmount && (

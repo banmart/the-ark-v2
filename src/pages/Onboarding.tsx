@@ -95,7 +95,7 @@ const Onboarding = () => {
 
   return (
     <div className="h-[100dvh] flex flex-col bg-black text-white relative overflow-hidden overscroll-none">
-      <PremiumBackground variant="onboarding" particleCount={12} />
+      <PremiumBackground />
 
       {/* Compact top bar */}
       <div className="relative z-20 flex-shrink-0 border-b border-white/[0.06]">

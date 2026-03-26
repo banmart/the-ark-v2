@@ -40,10 +40,10 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       unlockTime: Date.now() / 1000 - 86400 * 2, // FINISHED - ready to unlock
       lockPeriod: 86400 * 90,
       tier: 0,
-      tierName: 'Bronze',
+      tierName: 'Initiate',
       totalRewardsEarned: 2500,
       active: true,
-      multiplier: '1.0x',
+      multiplier: '1.2x',
       daysRemaining: 0
     },
     {
@@ -53,10 +53,10 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       unlockTime: Date.now() / 1000 + 86400 * 60,
       lockPeriod: 86400 * 180,
       tier: 1,
-      tierName: 'Silver',
+      tierName: 'Acolyte',
       totalRewardsEarned: 8750,
       active: true,
-      multiplier: '1.5x',
+      multiplier: '2.0x',
       daysRemaining: 60
     },
     {
@@ -66,10 +66,10 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       unlockTime: Date.now() / 1000 + 86400 * 3,
       lockPeriod: 86400 * 90,
       tier: 0,
-      tierName: 'Bronze',
+      tierName: 'Initiate',
       totalRewardsEarned: 4200,
       active: true,
-      multiplier: '1.0x',
+      multiplier: '1.2x',
       daysRemaining: 3
     }
   ];
@@ -89,12 +89,11 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       // Tier filter
       if (filters.tier !== 'all') {
         const tierNames: Record<string, string> = {
-          'bronze': 'Bronze',
-          'silver': 'Silver',
-          'gold': 'Gold',
-          'diamond': 'Diamond',
-          'platinum': 'Platinum',
-          'legendary': 'Legendary'
+          'initiate': 'Initiate',
+          'acolyte': 'Acolyte',
+          'warden': 'Warden',
+          'sentinel': 'Sentinel',
+          'arch-keeper': 'Arch-Keeper'
         };
         if (lock.tierName !== tierNames[filters.tier]) return false;
       }
@@ -236,54 +235,35 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
     <div className="space-y-8">
       {/* Premium Lock Positions Container */}
       <div className="relative group">
-        {/* Outer glow */}
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/20 via-teal-500/20 to-cyan-500/20 rounded-2xl blur-sm opacity-60"></div>
-        
-        {/* Card */}
-        <div className="relative bg-black/40 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6 md:p-8 overflow-hidden">
-          {/* Inner gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-teal-500/5"></div>
+        <div className="relative liquid-glass border border-white/10 rounded-2xl p-8 md:p-12 transition-all duration-500 overflow-hidden backdrop-blur-3xl">
+          {/* Inner ambient light */}
+          <div className="absolute inset-0 bg-white/[0.02] pointer-events-none" />
           
           <div className="relative z-10">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-cyan-400/30 rounded-xl blur-lg"></div>
-                  <div className="relative p-3 bg-cyan-500/10 border border-cyan-500/40 rounded-xl">
-                    <Lock className="w-6 h-6 text-cyan-400" />
-                  </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8 mb-12">
+              <div className="flex items-center gap-6">
+                <div className="relative p-4 bg-white/[0.03] border border-white/10 rounded-2xl">
+                  <Lock className="w-6 h-6 text-white/40" />
                 </div>
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                    Lock Positions
-                    <Sparkles className="w-5 h-5 text-cyan-400/60" />
-                  </h2>
-                  <p className="text-sm text-gray-400">
-                    Real-time penalty calculations
-                  </p>
+                <div className="space-y-1">
+                  <h2 className="text-2xl font-black text-white uppercase tracking-tighter">COVENANT SEALS</h2>
+                  <p className="text-[10px] text-white/20 font-mono tracking-[0.2em] uppercase">[MANAGEMENT HUB]</p>
                 </div>
               </div>
               
               {/* Status Badges */}
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-4">
                 {readyToUnlockCount > 0 && (
-                  <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/40 rounded-xl">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span className="text-sm font-semibold text-green-400">
-                      {readyToUnlockCount} Ready to Unlock
+                  <div className="flex items-center gap-2 px-6 py-2 bg-white/5 border border-white/20 rounded-xl">
+                    <CheckCircle className="w-3 h-3 text-white/60" />
+                    <span className="text-[10px] font-black font-mono text-white/60 tracking-widest uppercase">
+                      {readyToUnlockCount} SEALS READY
                     </span>
                   </div>
                 )}
-                <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${
-                  earlyUnlockSettings.enabled 
-                    ? 'bg-yellow-500/10 border-yellow-500/40 text-yellow-400' 
-                    : 'bg-gray-500/10 border-gray-500/40 text-gray-400'
-                }`}>
-                  {earlyUnlockSettings.enabled ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-                  <span className="text-sm font-semibold">
-                    Early Unlock {earlyUnlockSettings.enabled ? 'On' : 'Off'}
-                  </span>
+                <div className={`flex items-center gap-2 px-6 py-2 rounded-xl border font-mono text-[10px] font-black tracking-widest uppercase bg-white/5 border-white/10 text-white/20`}>
+                  EARLY_BREAK: {earlyUnlockSettings.enabled ? 'PERMITTED' : 'FORBIDDEN'}
                 </div>
               </div>
             </div>

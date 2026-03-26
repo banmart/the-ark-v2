@@ -19,103 +19,88 @@ export interface Tier {
 
 export const tiers: Tier[] = [
   {
-    name: 'BRONZE',
-    icon: '⛵',
-    color: 'yellow-600',
+    name: 'OUTCAST',
+    icon: '🌑',
+    color: 'white',
     multiplier: '1x',
-    duration: '30-89d',
-    description: 'Entry level blessing',
+    duration: '< 30d',
+    description: 'Unbound and unshielded',
     details: {
-      rewards: 'Base vault rewards',
-      community: 'Bronze community role',
-      features: 'Protected from the flood',
+      rewards: 'Base ritual share',
+      community: 'Unverified status',
+      features: 'No flood protection',
+      governance: 'No voice'
+    }
+  },
+  {
+    name: 'INITIATE',
+    icon: '📜',
+    color: 'white',
+    multiplier: '1.2x',
+    duration: '30-89d',
+    description: 'First seal bound',
+    details: {
+      rewards: '1.2x ritual multiplier',
+      community: 'Initial covenant role',
+      features: 'First-layer protection',
       governance: 'Observer status'
     }
   },
   {
-    name: 'SILVER',
-    icon: '🛡️',
-    color: 'gray-400',
-    multiplier: '1.5x',
-    duration: '90-179d',
-    description: 'Enhanced vault share',
+    name: 'ACOLYTE',
+    icon: '🕯️',
+    color: 'white',
+    multiplier: '2x',
+    duration: '90-364d',
+    description: 'Devoted to the creed',
     details: {
-      rewards: '1.5x vault multiplier',
-      community: 'Silver privileges',
-      features: 'Priority support',
+      rewards: '2x ritual multiplier',
+      community: 'Acolyte privileges',
+      features: 'Standard vault access',
       governance: 'Limited voting rights'
     }
   },
   {
-    name: 'GOLD',
-    icon: '👑',
-    color: 'yellow-400',
-    multiplier: '2x',
-    duration: '180-364d',
-    description: 'Governance participation',
+    name: 'WARDEN',
+    icon: '🛡️',
+    color: 'white',
+    multiplier: '3.5x',
+    duration: '1-2y',
+    description: 'Statute defender',
     details: {
-      rewards: '2x vault multiplier',
-      community: 'Gold tier status',
-      features: 'Exclusive access',
+      rewards: '3.5x ritual multiplier',
+      community: 'Warden status',
+      features: 'Exclusive vault access',
       governance: 'Full voting rights'
     }
   },
   {
-    name: 'DIAMOND',
-    icon: '💎',
-    color: 'cyan-400',
-    multiplier: '3x',
-    duration: '1-2y',
-    description: 'VIP community access',
+    name: 'SENTINEL',
+    icon: '⚔️',
+    color: 'white',
+    multiplier: '5.5x',
+    duration: '2-4y',
+    description: 'Inner circle protector',
     details: {
-      rewards: '3x vault multiplier',
-      community: 'VIP community access',
-      features: 'Special event invites',
-      governance: 'Proposal creation rights'
+      rewards: '5.5x ritual multiplier',
+      community: 'Sentinel elite status',
+      features: 'Council communication',
+      governance: 'Proposal creation'
     }
   },
   {
-    name: 'PLATINUM',
-    icon: '⭐',
-    color: 'purple-400',
-    multiplier: '4x',
-    duration: '2-3y',
-    description: 'Elite vault status',
-    details: {
-      rewards: '4x vault multiplier',
-      community: 'Platinum elite status',
-      features: 'Development influence',
-      governance: 'Strategic decision input'
-    }
-  },
-  {
-    name: 'MYTHIC',
-    icon: '🔮',
-    color: 'violet-400',
-    multiplier: '5x',
-    duration: '3-4y',
-    description: 'Mythic realm access',
+    name: 'ARCH-KEEPER',
+    icon: '⚜️',
+    color: 'white',
+    multiplier: '10x',
+    duration: '5y+',
+    description: 'Supreme custodian',
     special: true,
     details: {
-      rewards: '5x vault multiplier',
-      community: 'Mythic inner circle',
-      features: 'Exclusive protocol insights',
-      governance: 'Core governance member'
-    }
-  },
-  {
-    name: 'LEGENDARY',
-    icon: '⚡',
-    color: 'yellow-300',
-    multiplier: '7x',
-    duration: '4-5y',
-    description: 'True Noah privileges',
-    special: true,
-    details: {
-      rewards: '7x vault multiplier',
-      community: 'Legendary ARK status',
-      features: 'Ultimate vault rewards',
-      governance: 'Noah council member'
+      rewards: '10x ritual multiplier',
+      community: 'Supreme inner circle',
+      features: 'Ultimate vault protection',
+      governance: 'Council leadership'
     }
   }
 ];

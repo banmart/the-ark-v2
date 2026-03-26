@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Calculator, Info, Flame, TrendingDown } from 'lucide-react';
+import { AlertTriangle, Calculator, CheckCircle } from 'lucide-react';
 import { useLockerContractData } from '../../hooks/useLockerContractData';
+
 interface PenaltyCalculatorCardProps {
   userAddress?: string;
   lockId?: number;
@@ -8,6 +9,7 @@ interface PenaltyCalculatorCardProps {
   lockTimeRemaining?: number;
   totalLockDuration?: number;
 }
+
 const PenaltyCalculatorCard = ({
   userAddress,
   lockId,
@@ -17,7 +19,6 @@ const PenaltyCalculatorCard = ({
 }: PenaltyCalculatorCardProps) => {
   const {
     calculatePenaltyPreview,
-    earlyUnlockSettings
   } = useLockerContractData();
   const [penaltyInfo, setPenaltyInfo] = useState<{
     penaltyAmount: number;
@@ -25,6 +26,7 @@ const PenaltyCalculatorCard = ({
     penaltyRate: number;
   } | null>(null);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchPenalty = async () => {
       if (!userAddress || lockId === undefined) return;
@@ -40,19 +42,53 @@ const PenaltyCalculatorCard = ({
     };
     fetchPenalty();
   }, [userAddress, lockId, calculatePenaltyPreview]);
+
   const isEarlyUnlock = lockTimeRemaining > 0;
-  const progressPercentage = totalLockDuration > 0 ? (totalLockDuration - lockTimeRemaining) / totalLockDuration * 100 : 0;
+
   if (!isEarlyUnlock) {
-    return <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-        <div className="flex items-center gap-2 text-green-400">
-          <Calculator className="w-5 h-5" />
-          <span className="font-semibold">No Penalty</span>
+    return (
+      <div className="bg-white/5 border border-white/20 rounded-2xl p-6 backdrop-blur-3xl">
+        <div className="flex items-center gap-4 text-white/40">
+          <CheckCircle className="w-4 h-4" />
+          <span className="text-[10px] font-black font-mono tracking-widest uppercase">STABILITY SECURED</span>
         </div>
-        <p className="text-sm text-green-300 mt-2">
-          This lock can be unlocked without any penalty.
+        <p className="text-[10px] text-white/20 font-mono mt-2 uppercase tracking-widest">
+          This bond has matured. Releasing it now incurs zero penalties.
         </p>
-      </div>;
+      </div>
+    );
   }
-  return;
+
+  return (
+    <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-6 backdrop-blur-3xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4 text-white/60">
+          <div className="p-2 bg-white/5 rounded-lg">
+            <Calculator className="w-4 h-4" />
+          </div>
+          <div className="space-y-0.5">
+            <span className="text-[10px] font-black font-mono tracking-widest uppercase block">SEVERANCE PROJECTION</span>
+            <p className="text-[8px] text-white/20 font-mono uppercase tracking-[0.2em]">Based on current protocol statutes</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-6">
+          <div className="text-right">
+            <div className="text-[10px] font-black font-mono tracking-widest text-white/20 uppercase mb-1">PROMINENT LOSS</div>
+            <div className="text-lg font-black text-white tracking-tighter">
+              {penaltyInfo ? `-${penaltyInfo.penaltyAmount.toFixed(0)}` : '--'} <span className="text-[10px] text-white/40">ARK</span>
+            </div>
+          </div>
+          <div className="text-right border-l border-white/5 pl-6">
+            <div className="text-[10px] font-black font-mono tracking-widest text-white/20 uppercase mb-1">RECOVERABLE</div>
+            <div className="text-lg font-black text-white tracking-tighter">
+              {penaltyInfo ? penaltyInfo.userReceives.toFixed(0) : '--'} <span className="text-[10px] text-white/40">ARK</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
+
 export default PenaltyCalculatorCard;

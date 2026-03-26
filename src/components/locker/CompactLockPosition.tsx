@@ -43,12 +43,11 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
   
   const getTierIconComponent = (tierName: string) => {
     switch (tierName.toLowerCase()) {
-      case 'bronze': return Shield;
-      case 'silver': return Award;
-      case 'gold': return Crown;
-      case 'diamond': return Star;
-      case 'platinum': return Sparkles;
-      case 'legendary': return Zap;
+      case 'initiate': return Shield;
+      case 'acolyte': return Award;
+      case 'warden': return Crown;
+      case 'sentinel': return Star;
+      case 'arch-keeper': return Zap;
       default: return Shield;
     }
   };
@@ -59,29 +58,29 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
     // Handle withdrawn/inactive locks first
     if (!lock.active) {
       return { 
-        label: 'Withdrawn', 
-        colorRGB: '156, 163, 175',
-        bgClass: 'bg-gray-500/20 border-gray-500/40'
+        label: 'SEVERED', 
+        colorRGB: '255, 255, 255',
+        bgClass: 'bg-white/5 border-white/10 opacity-20'
       };
     }
     if (isUnlocked) {
       return { 
-        label: 'Ready to Unlock', 
-        colorRGB: '74, 222, 128',
-        bgClass: 'bg-green-500/20 border-green-500/40'
+        label: 'MATURED', 
+        colorRGB: '255, 255, 255',
+        bgClass: 'bg-white/10 border-white/40 text-white'
       };
     }
     if (lock.daysRemaining <= 7) {
       return { 
-        label: 'Unlocking Soon', 
-        colorRGB: '250, 204, 21',
-        bgClass: 'bg-yellow-500/20 border-yellow-500/40'
+        label: 'MATURING SOON', 
+        colorRGB: '255, 255, 255',
+        bgClass: 'bg-white/5 border-white/20 text-white/60'
       };
     }
     return { 
-      label: 'Active', 
-      colorRGB: '96, 165, 250',
-      bgClass: 'bg-blue-500/20 border-blue-500/40'
+      label: 'BINDING', 
+      colorRGB: '255, 255, 255',
+      bgClass: 'bg-white/5 border-white/10 text-white/40'
     };
   };
 
@@ -89,92 +88,51 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
 
   // Get tier color RGB
   const getTierColorRGB = () => {
-    const colors: Record<string, string> = {
-      'Bronze': '205, 127, 50',
-      'Silver': '192, 192, 192',
-      'Gold': '255, 215, 0',
-      'Diamond': '96, 165, 250',
-      'Platinum': '167, 139, 250',
-      'Legendary': '251, 146, 60'
-    };
-    return colors[tierInfo.name] || '34, 211, 238';
+    return '255, 255, 255';
   };
 
   const tierColorRGB = getTierColorRGB();
 
   return (
     <div className="relative group">
-      {/* Outer glow based on tier color */}
-      <div 
-        className={`absolute -inset-0.5 rounded-xl blur-sm transition-opacity duration-500 ${isUnlocked ? 'opacity-60' : 'opacity-30 group-hover:opacity-50'}`}
-        style={{ background: `rgba(${isUnlocked ? '74, 222, 128' : tierColorRGB}, 0.4)` }}
-      ></div>
-      
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem 
           value={`lock-${lock.id}`}
-          className="relative border-0 rounded-xl overflow-hidden"
+          className="relative border-0 rounded-2xl overflow-hidden mb-4"
         >
           {/* Card background */}
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-xl border rounded-xl transition-all duration-500"
-            style={{ borderColor: `rgba(${tierColorRGB}, 0.4)` }}
+            className="absolute inset-0 bg-white/[0.03] backdrop-blur-3xl border rounded-2xl transition-all duration-500 border-white/5 group-hover:border-white/20"
           ></div>
           
-          {/* Inner gradient */}
-          <div 
-            className="absolute inset-0 rounded-xl opacity-30"
-            style={{ 
-              background: `radial-gradient(ellipse at top left, rgba(${tierColorRGB}, 0.15) 0%, transparent 50%)`
-            }}
-          ></div>
-          
-          <AccordionTrigger className="relative z-10 px-4 sm:px-6 py-4 hover:no-underline">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3 sm:gap-4 pr-4">
+          <AccordionTrigger className="relative z-10 px-8 py-8 hover:no-underline">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-6 pr-4">
               {/* Left side - Tier and Amount */}
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="relative">
-                  {/* Icon glow */}
-                  <div 
-                    className="absolute inset-0 blur-lg opacity-50"
-                    style={{ background: `rgba(${tierColorRGB}, 0.5)` }}
-                  ></div>
-                  <div className="relative flex items-center gap-2">
-                    <span className="text-2xl sm:text-3xl">{tierInfo.icon}</span>
-                    <TierIconComponent 
-                      className="w-4 h-4 sm:w-5 sm:h-5" 
-                      style={{ color: `rgb(${tierColorRGB})` }} 
-                    />
-                  </div>
+              <div className="flex items-center gap-6">
+                <div className="relative w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <span className="text-3xl filter grayscale brightness-200">{tierInfo.icon}</span>
                 </div>
-                <div className="text-left">
-                  <div className="text-base sm:text-lg font-bold text-white">
-                    {lock.amount.toLocaleString()} ARK
+                <div className="text-left space-y-1">
+                  <div className="text-2xl font-black text-white uppercase tracking-tighter">
+                    {lock.amount.toLocaleString()} <span className="text-xs text-white/20 ml-1">ARK</span>
                   </div>
-                  <div 
-                    className="text-xs sm:text-sm font-medium"
-                    style={{ color: `rgb(${tierColorRGB})` }}
-                  >
-                    {tierInfo.name} Tier • {lock.multiplier}
+                  <div className="text-[10px] font-black font-mono tracking-[0.2em] text-white/40 uppercase">
+                    {tierInfo.name} SEAL • {lock.multiplier}
                   </div>
                 </div>
               </div>
 
               {/* Right side - Status and Time */}
-              <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 w-full sm:w-auto">
-                <Badge className={`${statusInfo.bgClass} border text-xs font-semibold`}>
-                  <div 
-                    className="w-1.5 h-1.5 rounded-full mr-1.5 animate-pulse"
-                    style={{ background: `rgb(${statusInfo.colorRGB})` }}
-                  ></div>
+              <div className="flex items-center justify-between sm:justify-end gap-8 w-full sm:w-auto">
+                <Badge className={`${statusInfo.bgClass} border text-[10px] font-black font-mono tracking-widest uppercase px-4 py-1.5 rounded-xl`}>
                   {statusInfo.label}
                 </Badge>
-                <div className="text-right">
-                  <div className={`text-sm font-bold ${isUnlocked ? 'text-green-400' : 'text-white'}`}>
-                    {isUnlocked ? 'Ready!' : `${lock.daysRemaining}d left`}
+                <div className="text-right space-y-1">
+                  <div className={`text-lg font-black uppercase tracking-tighter ${isUnlocked ? 'text-white' : 'text-white/40'}`}>
+                    {isUnlocked ? 'MATURED' : `${lock.daysRemaining} CYCLES`}
                   </div>
-                  <div className="text-xs text-gray-400">
-                    +{lock.totalRewardsEarned.toLocaleString()} earned
+                  <div className="text-[9px] font-black font-mono tracking-widest text-white/20 uppercase">
+                    +{lock.totalRewardsEarned.toLocaleString()} TITHED
                   </div>
                 </div>
               </div>
@@ -183,26 +141,15 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
 
           <AccordionContent className="relative z-10 px-4 sm:px-6 pb-6">
             {/* Progress Bar */}
-            <div className="mb-6">
-              <div className="flex justify-between text-sm text-gray-400 mb-2">
-                <span>Lock Progress</span>
+            <div className="mb-12 px-2">
+              <div className="flex justify-between text-[10px] font-black font-mono tracking-widest text-white/20 mb-3 uppercase">
+                <span>BINDING COMPLETION</span>
                 <span>{progress.toFixed(1)}%</span>
               </div>
-              <div className="relative w-full bg-gray-800/50 rounded-full h-2 overflow-hidden">
+              <div className="relative w-full bg-white/5 rounded-full h-1 overflow-hidden">
                 <div 
-                  className="absolute inset-0 h-2 rounded-full transition-all duration-500"
-                  style={{ 
-                    width: `${progress}%`,
-                    background: `linear-gradient(to right, rgb(${tierColorRGB}), rgba(${tierColorRGB}, 0.6))`
-                  }}
-                ></div>
-                {/* Glow effect on progress bar */}
-                <div 
-                  className="absolute h-2 rounded-full blur-sm"
-                  style={{ 
-                    width: `${progress}%`,
-                    background: `rgba(${tierColorRGB}, 0.5)`
-                  }}
+                  className="absolute inset-0 h-1 rounded-full transition-all duration-700 bg-white"
+                  style={{ width: `${progress}%` }}
                 ></div>
               </div>
             </div>
@@ -228,23 +175,26 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
             </div>
 
             {/* Early Unlock Warning */}
+            {/* Early Unlock Warning */}
             {!isUnlocked && penalty.penalty > 0 && (
-              <div className="relative mb-4 group/warn">
-                <div className="absolute -inset-0.5 bg-red-500/20 rounded-xl blur-sm opacity-50"></div>
-                <div className="relative bg-red-900/30 border border-red-500/40 rounded-xl p-4">
+              <div className="relative mb-8 group/warn">
+                <div className="relative bg-red-500/10 border border-red-500/20 rounded-2xl p-6">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-500/10 rounded-lg">
-                        <AlertTriangle className="w-4 h-4 text-red-400" />
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-red-500/10 rounded-xl">
+                        <AlertTriangle className="w-5 h-5 text-red-500" />
                       </div>
-                      <span className="text-red-400 text-sm font-semibold">Early Unlock Penalty</span>
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-black font-mono tracking-widest text-red-500 uppercase">SEVERANCE PENALTY</span>
+                        <p className="text-[10px] text-white/40 font-mono uppercase">Protocol statutes apply</p>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-red-400 text-sm font-bold">
-                        -{penalty.penalty.toFixed(0)} ARK ({penalty.penaltyRate.toFixed(1)}%)
+                      <div className="text-xl font-black text-red-500 tracking-tighter">
+                        -{penalty.penalty.toFixed(0)} <span className="text-xs">ARK</span>
                       </div>
-                      <div className="text-xs text-red-300/70">
-                        You'd receive: {penalty.userReceives.toFixed(0)} ARK
+                      <div className="text-[10px] font-mono text-red-500/40 uppercase">
+                        LOSS RATE: {penalty.penaltyRate.toFixed(1)}%
                       </div>
                     </div>
                   </div>
@@ -253,62 +203,55 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
             )}
 
             {/* Action Buttons - Only show for active locks */}
+            {/* Action Buttons - Only show for active locks */}
             {lock.active && (
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-6">
                 {/* Claim Rewards Button */}
-                <div className="relative group/btn flex-1">
-                  <div className="absolute -inset-1 rounded-xl blur opacity-30 group-hover/btn:opacity-50 transition-opacity bg-gradient-to-r from-cyan-500 to-teal-500"></div>
-                  <button
-                    onClick={() => onClaim(lock.id)}
-                    disabled={processingClaim === lock.id}
-                    className="relative w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500/80 to-teal-500/80 text-white border border-cyan-500/30"
-                  >
-                    {processingClaim === lock.id ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                        Claiming...
-                      </>
-                    ) : (
-                      <>
-                        <TrendingUp className="w-4 h-4" />
-                        Claim Rewards
-                      </>
-                    )}
-                  </button>
-                </div>
+                <button
+                  onClick={() => onClaim(lock.id)}
+                  disabled={processingClaim === lock.id}
+                  className="flex-1 py-4 rounded-xl font-black font-mono text-[10px] tracking-[0.3em] uppercase transition-all duration-300 hover:scale-[1.05] disabled:opacity-20 flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white"
+                >
+                  {processingClaim === lock.id ? (
+                    <>
+                      <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                      INITIATING...
+                    </>
+                  ) : (
+                    <>
+                      <TrendingUp className="w-4 h-4" />
+                      COLLECT TITHES
+                    </>
+                  )}
+                </button>
 
                 {/* Unlock Button */}
-                <div className="relative group/btn flex-1">
-                  <div 
-                    className={`absolute -inset-1 rounded-xl blur opacity-40 group-hover/btn:opacity-60 transition-opacity ${isUnlocked ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-red-500 to-red-600'}`}
-                  ></div>
-                  <button
-                    onClick={() => setDialogOpen(true)}
-                    disabled={processingUnlock === lock.id}
-                    className={`relative w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 ${
-                      isUnlocked 
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-black' 
-                        : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
-                    }`}
-                  >
-                    {processingUnlock === lock.id ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                        Processing...
-                      </>
-                    ) : isUnlocked ? (
-                      <>
-                        <Zap className="w-4 h-4" />
-                        Unlock Tokens
-                      </>
-                    ) : (
-                      <>
-                        <AlertTriangle className="w-4 h-4" />
-                        Early Unlock (-{penalty.penaltyRate.toFixed(1)}%)
-                      </>
-                    )}
-                  </button>
-                </div>
+                <button
+                  onClick={() => setDialogOpen(true)}
+                  disabled={processingUnlock === lock.id}
+                  className={`flex-1 py-4 rounded-xl font-black font-mono text-[10px] tracking-[0.3em] uppercase transition-all duration-300 hover:scale-[1.05] disabled:opacity-20 flex items-center justify-center gap-3 ${
+                    isUnlocked 
+                      ? 'bg-white text-black' 
+                      : 'bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 text-white'
+                  }`}
+                >
+                  {processingUnlock === lock.id ? (
+                    <>
+                      <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                      SEALING...
+                    </>
+                  ) : isUnlocked ? (
+                    <>
+                      <Zap className="w-4 h-4" />
+                      RELEASE TO ORIGIN
+                    </>
+                  ) : (
+                    <>
+                      <AlertTriangle className="w-4 h-4" />
+                      SEVER BOND (-{penalty.penaltyRate.toFixed(1)}%)
+                    </>
+                  )}
+                </button>
               </div>
             )}
             

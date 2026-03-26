@@ -141,9 +141,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
     <div className="relative">
       {/* Premium multi-layer background */}
       <div className="absolute inset-0 -inset-4">
-        <div className="absolute inset-0 bg-gradient-radial from-cyan-500/8 via-transparent to-transparent blur-3xl"></div>
-        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-conic from-teal-500/10 via-cyan-500/10 to-teal-500/10 rounded-full blur-3xl animate-[spin_40s_linear_infinite]"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-radial from-purple-500/8 to-transparent rounded-full blur-3xl animate-[float_20s_ease-in-out_infinite]"></div>
+        <div className="absolute inset-0 bg-white/[0.02] blur-3xl rounded-full"></div>
       </div>
 
       {/* Main card with premium styling */}
@@ -152,43 +150,38 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
         <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/30 via-teal-500/30 to-cyan-500/30 rounded-2xl blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
         
         {/* Card container */}
-        <div className="relative z-10 bg-black/50 backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-6 md:p-8 hover:border-white/[0.12] transition-all duration-500 overflow-hidden">
-          {/* Inner gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-teal-500/5"></div>
+        <div className="relative z-10 liquid-glass border border-white/10 rounded-2xl p-8 md:p-12 transition-all duration-500 overflow-hidden backdrop-blur-3xl">
+          {/* Inner ambient light */}
+          <div className="absolute inset-0 bg-white/[0.02] pointer-events-none" />
           
           {/* Premium System Header */}
-          <div className="relative z-10 flex items-center justify-between gap-3 mb-8">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="absolute inset-0 bg-cyan-400/30 rounded-xl blur-lg"></div>
-                <div className="relative flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/40 rounded-xl">
-                  <Lock className="w-4 h-4 text-cyan-400" />
-                  <span className="text-xs font-mono text-cyan-400 tracking-wider font-semibold">LOCK_PROTOCOL</span>
-                </div>
+          <div className="relative z-10 flex items-center justify-between gap-8 mb-12">
+            <div className="flex items-center gap-6">
+              <div className="relative p-4 bg-white/[0.03] border border-white/10 rounded-2xl">
+                <Lock className="w-5 h-5 text-white/60" />
               </div>
-              <div className="hidden md:block flex-1 h-px bg-gradient-to-r from-cyan-500/50 via-cyan-500/20 to-transparent max-w-32"></div>
+              <div className="space-y-1">
+                <h3 className="text-xl font-black text-white uppercase tracking-tighter">STATION-01 INTERFACE</h3>
+                <p className="text-[10px] text-white/20 font-mono tracking-[0.2em] uppercase">[ACCESS GRANTED]</p>
+              </div>
             </div>
             
             {(emergencyMode || contractPaused) && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-red-500/10 border border-red-500/40 rounded-xl">
-                <AlertTriangle className="w-4 h-4 text-red-400 animate-pulse" />
-                <span className="text-xs font-mono text-red-400 tracking-wider font-semibold">ALERT</span>
+              <div className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-xl">
+                <AlertTriangle className="w-3 h-3 text-red-500 animate-pulse" />
+                <span className="text-[10px] font-mono text-red-500 tracking-widest font-black uppercase">STATUTE_VIOLATION</span>
               </div>
             )}
           </div>
 
           {/* Main Title */}
-          <div className="relative z-10 mb-8">
-            <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-full">
-              <span className="text-xs font-mono text-cyan-400/80 tracking-[0.15em]">[LOCK_PROTOCOL_INTERFACE]</span>
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent flex items-center gap-3">
-              Quantum Token Lock
-              <Sparkles className="w-5 h-5 text-cyan-400/60" />
+          <div className="relative z-10 mb-12">
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase mb-2 font-sans">
+              THE COVENANT SEAL
             </h2>
-            <div className="flex items-center gap-2 mt-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm font-mono text-green-400">READY_FOR_OPERATIONS</span>
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 bg-white/40 rounded-full animate-pulse"></div>
+              <span className="text-[10px] font-mono text-white/40 tracking-[0.3em] font-black uppercase">BINDING RITUAL INITIALIZED</span>
             </div>
           </div>
 
@@ -208,17 +201,17 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
             {/* Gift Lock Toggle */}
             <div className="relative">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-500/10 via-transparent to-purple-500/10 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className={`relative bg-black/30 backdrop-blur-sm border rounded-xl p-4 transition-all duration-300 ${
-                isGiftLock ? 'border-pink-500/40 bg-pink-500/5' : 'border-white/[0.08]'
+              <div className={`relative bg-white/[0.03] backdrop-blur-sm border rounded-xl p-6 transition-all duration-300 ${
+                isGiftLock ? 'border-white/40 bg-white/5' : 'border-white/5'
               }`}>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg transition-colors ${isGiftLock ? 'bg-pink-500/20' : 'bg-white/5'}`}>
-                      <Gift className={`w-4 h-4 transition-colors ${isGiftLock ? 'text-pink-400' : 'text-gray-500'}`} />
+                  <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-lg transition-colors ${isGiftLock ? 'bg-white/10' : 'bg-white/5'}`}>
+                      <Gift className={`w-4 h-4 transition-colors ${isGiftLock ? 'text-white' : 'text-white/20'}`} />
                     </div>
                     <div>
-                      <Label className="text-sm font-semibold text-white cursor-pointer">Lock for Another Wallet</Label>
-                      <p className="text-xs text-gray-500">Send a gift lock to any address</p>
+                      <Label className="text-sm font-black text-white uppercase tracking-widest cursor-pointer">PROXY BINDING</Label>
+                      <p className="text-[10px] font-mono text-white/20 uppercase tracking-widest">Bind tokens to another soul</p>
                     </div>
                   </div>
                   <Switch
@@ -292,16 +285,15 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
 
             {/* Premium 30-Day Minimum Lock Warning */}
             <div className="relative group/warn">
-              <div className="absolute -inset-0.5 bg-yellow-500/20 rounded-xl blur-sm opacity-50"></div>
-              <div className="relative bg-yellow-500/10 border border-yellow-500/40 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-yellow-500/10 rounded-lg">
-                    <AlertTriangle className="w-5 h-5 text-yellow-400" />
+              <div className="relative bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-3xl">
+                <div className="flex items-start gap-6">
+                  <div className="p-4 bg-white/10 rounded-xl">
+                    <AlertTriangle className="w-6 h-6 text-white/60" />
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-yellow-400 mb-1">Important Lock Notice</p>
-                    <p className="text-sm text-yellow-400/80">
-                      Lock durations start at a minimum of 30 days. Early unlock penalties apply based on time remaining.
+                  <div className="space-y-2">
+                    <h4 className="text-[10px] font-black font-mono tracking-[0.2em] text-white uppercase">IMPORTANT COVENANT NOTICE</h4>
+                    <p className="text-[10px] text-white/20 font-mono uppercase tracking-[0.1em] leading-relaxed">
+                      Binding rituals require a minimum maturity of 30 cycles. Severing the bond before maturity incurs severe administrative penalties as per the statutes.
                     </p>
                   </div>
                 </div>

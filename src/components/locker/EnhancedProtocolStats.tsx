@@ -37,40 +37,40 @@ const EnhancedProtocolStats = () => {
 
   const stats = [
     {
-      title: 'Total Value Locked',
+      title: 'Sanctified Tokens',
       value: protocolStats.totalLockedTokens,
       unit: 'ARK',
       emoji: '🏛️',
       icon: Lock,
-      colorRGB: '34, 211, 238',
-      description: 'Total tokens locked across all tiers',
+      colorRGB: '255, 255, 255',
+      description: 'Total tokens bound to the Covenant',
     },
     {
-      title: 'Active Lockers',
+      title: 'Current Keepers',
       value: protocolStats.totalActiveLockers,
       unit: 'Users',
       emoji: '👥',
       icon: Users,
-      colorRGB: '74, 222, 128',
-      description: 'Unique addresses with active locks',
+      colorRGB: '255, 255, 255',
+      description: 'Unique souls with active seals',
     },
     {
-      title: 'Reward Pool',
+      title: 'Ritual Pool',
       value: protocolStats.rewardPool,
       unit: 'ARK',
       emoji: '💰',
       icon: DollarSign,
-      colorRGB: '250, 204, 21',
-      description: 'Available rewards for distribution',
+      colorRGB: '255, 255, 255',
+      description: 'Tokens available for the consecrated',
     },
     {
-      title: 'Total Distributed',
+      title: 'Total Consecrated',
       value: protocolStats.totalRewardsDistributed,
       unit: 'ARK',
       emoji: '📈',
       icon: TrendingUp,
-      colorRGB: '167, 139, 250',
-      description: 'Lifetime rewards distributed',
+      colorRGB: '255, 255, 255',
+      description: 'Lifetime rewards distributed to Keepers',
     }
   ];
 
@@ -90,41 +90,31 @@ const EnhancedProtocolStats = () => {
     <div className="space-y-8">
       {/* Premium System Status Header */}
       <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-teal-500/5 rounded-2xl blur-xl"></div>
-        <div className="relative bg-black/40 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="absolute inset-0 bg-cyan-400/20 rounded-xl blur-lg"></div>
-                <div className="relative p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-xl">
-                  <Activity className="w-6 h-6 text-cyan-400" />
-                </div>
+        <div className="relative liquid-glass rounded-2xl border border-white/10 p-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            <div className="flex items-center gap-6">
+              <div className="relative p-4 bg-white/[0.03] border border-white/10 rounded-2xl">
+                <Activity className="w-6 h-6 text-white/60" />
               </div>
-              <div>
-                <h2 className="text-xl md:text-2xl font-bold text-white">Protocol Statistics</h2>
-                <p className="text-sm text-gray-400">Real-time metrics from the blockchain</p>
+              <div className="space-y-1">
+                <h2 className="text-2xl font-black text-white uppercase tracking-tighter">PROTOCOL METRICS</h2>
+                <p className="text-[10px] text-white/20 font-mono tracking-[0.2em] uppercase">[STATION-01 LIVE FEED]</p>
               </div>
             </div>
             
             {/* Status Badges */}
-            <div className="flex flex-wrap gap-3">
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${
+            <div className="flex flex-wrap gap-4">
+              <div className={`flex items-center gap-2 px-6 py-2 rounded-xl border font-mono text-[10px] font-black tracking-widest uppercase transition-colors ${
                 emergencyMode 
-                  ? 'bg-red-500/10 border-red-500/40 text-red-400' 
-                  : 'bg-green-500/10 border-green-500/40 text-green-400'
+                  ? 'bg-red-500/10 border-red-500/40 text-red-500' 
+                  : 'bg-white/5 border-white/10 text-white/40'
               }`}>
-                {emergencyMode ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-                <span className="text-sm font-semibold">{emergencyMode ? 'Emergency' : 'Normal'}</span>
+                {emergencyMode ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
+                {emergencyMode ? 'EXCLUSION_ACTIVE' : 'COVENANT_STABLE'}
               </div>
               
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${
-                earlyUnlockSettings.enabled 
-                  ? 'bg-yellow-500/10 border-yellow-500/40 text-yellow-400' 
-                  : 'bg-gray-500/10 border-gray-500/40 text-gray-400'
-              }`}>
-                <span className="text-sm font-semibold">
-                  Early Unlock: {earlyUnlockSettings.enabled ? 'On' : 'Off'}
-                </span>
+              <div className={`flex items-center gap-2 px-6 py-2 rounded-xl border font-mono text-[10px] font-black tracking-widest uppercase bg-white/5 border-white/10 text-white/40`}>
+                EARLY_UNSEAL: {earlyUnlockSettings.enabled ? 'PERMITTED' : 'FORBIDDEN'}
               </div>
             </div>
           </div>
@@ -208,31 +198,30 @@ const EnhancedProtocolStats = () => {
 
       {/* Process Matured Locks Utility */}
       <div className="relative">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/10 via-transparent to-orange-500/10 rounded-2xl blur-sm"></div>
-        <div className="relative bg-black/40 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-5">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-sm font-semibold text-white mb-1 flex items-center gap-2">
-                ⚙️ Process Matured Locks
+        <div className="relative liquid-glass rounded-2xl border border-white/10 p-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+            <div className="space-y-2">
+              <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] font-mono">
+                [STATUTE MAINTENANCE]
               </h3>
-              <p className="text-xs text-gray-500">
-                Anyone can call this to process up to 50 expired lock positions and return tokens to their owners.
+              <p className="text-[10px] text-white/20 font-mono uppercase tracking-widest leading-relaxed max-w-xl">
+                Administrate the return of matured tokens to their origin. This ritual processes up to 50 expired seals in the current cycle.
               </p>
             </div>
             <button
               onClick={handleForceUnlockMatured}
               disabled={processingMatured || !signer}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-amber-500/80 to-orange-500/80 text-white border border-amber-500/30"
+              className="flex items-center gap-3 px-8 py-3 rounded-xl text-[10px] font-black font-mono tracking-[0.3em] uppercase transition-all duration-300 hover:scale-[1.05] disabled:opacity-20 bg-white text-black"
             >
               {processingMatured ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Processing...
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  INITIATING...
                 </>
               ) : (
                 <>
-                  <Activity className="w-4 h-4" />
-                  Process Matured
+                  <Activity className="w-3 h-3" />
+                  EXECUTE MAINTENANCE
                 </>
               )}
             </button>

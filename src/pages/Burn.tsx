@@ -54,36 +54,35 @@ const CircularProgress = ({
   return (
     <div className="relative inline-flex items-center justify-center group">
       {/* Outer glow ring */}
-      <div className="absolute inset-[-8px] rounded-full bg-gradient-to-r from-cyan-500/20 via-teal-500/20 to-cyan-500/20 blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+      <div className="absolute inset-[-8px] rounded-full bg-white/5 blur-md opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-pulse" />
       
       <svg width={size} height={size} className="transform -rotate-90 relative z-10">
-        {/* Background circle with glass effect */}
+        {/* Background circle */}
         <circle 
           cx={size / 2} 
           cy={size / 2} 
           r={radius} 
-          stroke="hsl(var(--border))" 
+          stroke="rgba(255,255,255,0.05)" 
           strokeWidth={strokeWidth} 
           fill="transparent" 
-          className="opacity-30" 
         />
-        {/* Progress arc with glow */}
+        {/* Progress arc */}
         <circle 
           cx={size / 2} 
           cy={size / 2} 
           r={radius} 
-          stroke={color} 
+          stroke="white" 
           strokeWidth={strokeWidth} 
           fill="transparent" 
           strokeDasharray={strokeDasharray} 
           strokeDashoffset={strokeDashoffset} 
-          className="transition-all duration-1000 ease-out drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" 
+          className="transition-all duration-1000 ease-out" 
           strokeLinecap="round" 
         />
       </svg>
       
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-sm md:text-lg font-bold bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
+        <span className="text-sm md:text-lg font-black text-white font-mono uppercase tracking-tighter">
           {percentage.toFixed(3)}%
         </span>
       </div>
@@ -99,9 +98,9 @@ const BurnMeter = ({
 }) => {
   const percentage = Math.min(value / max * 100, 100);
   return (
-    <Card className="relative group overflow-hidden backdrop-blur-2xl bg-white/[0.02] border-white/[0.08]">
-      {/* Outer glow ring */}
-      <div className="absolute inset-[-1px] rounded-lg bg-gradient-to-r from-cyan-500/20 via-transparent to-teal-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+    <Card className="relative group overflow-hidden liquid-glass rounded-2xl">
+      {/* Outer glow ring on hover */}
+      <div className="absolute inset-[-1px] rounded-lg bg-gradient-to-r from-ark-gold-500/20 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
       
       <CardContent className="p-3 md:p-4 relative z-10">
         <div className="flex justify-between items-center mb-2">
@@ -134,9 +133,9 @@ const LineChart = ({ data }: { data: BurnTransaction[] }) => {
   }).join(' ');
   
   return (
-    <Card className="relative group overflow-hidden backdrop-blur-2xl bg-white/[0.02] border-white/[0.08]">
-      {/* Outer glow ring */}
-      <div className="absolute inset-[-1px] rounded-lg bg-gradient-to-r from-cyan-500/20 via-transparent to-teal-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+    <Card className="relative group overflow-hidden liquid-glass rounded-2xl">
+      {/* Outer glow ring on hover */}
+      <div className="absolute inset-[-1px] rounded-lg bg-gradient-to-r from-ark-gold-500/20 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
       
       <CardHeader className="relative z-10">
         <CardTitle className="text-lg font-semibold bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
@@ -248,7 +247,7 @@ const Burn = () => {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Premium Background */}
-      <PremiumBackground variant="burn" particleCount={20} />
+      <PremiumBackground />
 
       {/* Navigation */}
       <div className="relative z-20">
@@ -259,28 +258,22 @@ const Burn = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           {/* Premium Hero Header */}
           <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 mb-6 md:mb-8">
-            <div className="text-center lg:text-left">
-              {/* Status badge with glow */}
-              <div className="inline-flex items-center mb-4">
-                <div className="relative group">
-                  <div className="absolute inset-[-2px] rounded-full bg-gradient-to-r from-orange-500/40 via-cyan-500/40 to-orange-500/40 blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
-                  <div className="relative px-4 py-2 rounded-full backdrop-blur-xl bg-white/[0.03] border border-white/[0.08]">
-                    <div className="flex items-center space-x-2">
-                      <Flame className="w-4 h-4 text-orange-400 animate-pulse" />
-                      <span className="text-sm text-white/80 font-medium">[BURN PROTOCOL ACTIVE]</span>
-                      <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse shadow-[0_0_8px_rgba(251,146,60,0.8)]" />
-                    </div>
-                  </div>
-                </div>
+              <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
+                <Flame className="w-4 h-4 text-ark-gold-400 animate-pulse" />
+                <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">Sacred Combustion</span>
               </div>
               
-              <h1 className="mb-2">
-                <span className="bg-gradient-to-r from-cyan-400 via-orange-400 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(251,146,60,0.4)]">
-                  🔥 ARK Burn Tracker
-                </span>
+              <h1 className="text-5xl md:text-7xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+                STATUTE OF COMBUSTION
               </h1>
-              <p className="text-white/60 mt-2 text-sm md:text-base">[REAL-TIME TOKEN BURN MONITORING VIA PULSECHAIN]</p>
-            </div>
+              
+              <div className="flex justify-center lg:justify-start mb-10">
+                <div className="w-32 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              </div>
+
+              <p className="text-white/50 text-base md:text-lg max-w-2xl mx-auto lg:mx-0 font-mono leading-relaxed uppercase tracking-tighter">
+                The immutable deflationary engine. Every transaction feeds the sacrificial pyre, securing the sanctity of the Covenant.
+              </p>
             
             <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
               {/* Premium Timeframe Selector */}
@@ -314,149 +307,122 @@ const Burn = () => {
           </div>
 
           {/* Premium Timeframe Stats Banner */}
-          <div className="relative group mb-4 md:mb-6">
-            <div className="absolute inset-[-1px] rounded-xl bg-gradient-to-r from-cyan-500/20 via-orange-500/10 to-teal-500/20 opacity-60 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
-            <Card className="relative backdrop-blur-2xl bg-white/[0.02] border-white/[0.08]">
-              <CardContent className="p-4 md:p-6">
-                <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
-                  <div className="text-center lg:text-left">
-                    <h3 className="text-base md:text-lg font-semibold text-white mb-1">
-                      {timeframes.find(t => t.value === selectedTimeframe)?.label} Overview
-                    </h3>
-                    <p className="text-xs md:text-sm text-white/50">
-                      Showing data for the selected timeframe
-                    </p>
+          <div className="relative group mb-8">
+            <div className="absolute inset-0 bg-white/[0.02] rounded-2xl blur-xl opacity-50" />
+            <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 md:p-8">
+              <div className="flex flex-col space-y-8 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+                <div className="text-center lg:text-left">
+                  <h3 className="text-xl font-black text-white uppercase tracking-tighter mb-2 font-sans">
+                    {timeframes.find(t => t.value === selectedTimeframe)?.label} REVELATIONS
+                  </h3>
+                  <div className="w-12 h-px bg-white/20 mx-auto lg:mx-0" />
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Burns</p>
+                    <p className="text-xl font-black text-white font-mono">{timeframeStats.totalBurns}</p>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 text-center">
-                    <div className="p-3 rounded-lg backdrop-blur-xl bg-white/[0.02] border border-white/[0.05]">
-                      <p className="text-xs text-white/50">Total Burns</p>
-                      <p className="text-sm md:text-lg font-bold bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">{timeframeStats.totalBurns}</p>
-                    </div>
-                    <div className="p-3 rounded-lg backdrop-blur-xl bg-white/[0.02] border border-white/[0.05]">
-                      <p className="text-xs text-white/50">Amount Burned</p>
-                      <p className="text-sm md:text-lg font-bold bg-gradient-to-r from-gold-400 to-amber-300 bg-clip-text text-transparent">{formatNumber(timeframeStats.totalAmount)} ARK</p>
-                    </div>
-                    <div className="p-3 rounded-lg backdrop-blur-xl bg-white/[0.02] border border-white/[0.05]">
-                      <p className="text-xs text-white/50">Unique Wallets</p>
-                      <p className="text-sm md:text-lg font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">{timeframeStats.uniqueWallets}</p>
-                    </div>
-                    <div className="p-3 rounded-lg backdrop-blur-xl bg-white/[0.02] border border-white/[0.05]">
-                      <p className="text-xs text-white/50">Avg Burn Size</p>
-                      <p className="text-sm md:text-lg font-bold bg-gradient-to-r from-teal-400 to-teal-300 bg-clip-text text-transparent">{formatNumber(timeframeStats.avgBurnSize)} ARK</p>
-                    </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Purified</p>
+                    <p className="text-xl font-black text-white font-mono">{formatNumber(timeframeStats.totalAmount)}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Keepers</p>
+                    <p className="text-xl font-black text-white font-mono">{timeframeStats.uniqueWallets}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Avg Pulse</p>
+                    <p className="text-xl font-black text-white font-mono">{formatNumber(timeframeStats.avgBurnSize)}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
           {/* Premium Early Unlock and LP Burned Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* Early Unlock Card */}
-            <div className="relative group">
-              <div className="absolute inset-[-1px] rounded-xl bg-gradient-to-r from-red-500/30 via-red-500/10 to-red-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
-              <Card className="relative backdrop-blur-2xl bg-white/[0.02] border-white/[0.08] hover:border-red-500/20 transition-all duration-300">
-                <CardContent className="p-4 md:p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="relative group/icon">
-                      <div className="absolute inset-[-4px] rounded-lg bg-red-500/20 blur-md opacity-60" />
-                      <div className="relative p-2 backdrop-blur-xl bg-red-500/10 rounded-lg border border-red-500/20">
-                        <AlertTriangle className="w-4 h-4 md:w-5 md:h-5 text-red-400" />
-                      </div>
-                    </div>
-                    <TrendingUp className="w-4 h-4 text-red-400" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-xs md:text-sm text-white/50">Early Unlock</p>
-                    <p className="text-lg md:text-xl font-bold bg-gradient-to-r from-red-400 to-red-300 bg-clip-text text-transparent">
-                      {burnHistory?.filter(b => b.type === 'penalty').reduce((sum, b) => sum + b.amount, 0) ? 
-                        formatNumber(burnHistory.filter(b => b.type === 'penalty').reduce((sum, b) => sum + b.amount, 0)) : '0'} ARK
-                    </p>
-                    <p className="text-xs text-white/40">Penalty Burns</p>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Early Unlock Card */}
+            <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300 hover:border-white/20">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/10">
+                  <AlertTriangle className="w-4 h-4 text-white/60" />
+                </div>
+                <div className="w-1.5 h-1.5 bg-red-500/50 rounded-full animate-pulse" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Early Excision</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-xl font-black text-white font-mono">
+                    {burnHistory?.filter(b => b.type === 'penalty').reduce((sum, b) => sum + b.amount, 0) ? 
+                      formatNumber(burnHistory.filter(b => b.type === 'penalty').reduce((sum, b) => sum + b.amount, 0)) : '0'}
+                  </p>
+                  <span className="text-[10px] text-white/20 font-mono">ARK</span>
+                </div>
+                <p className="text-[9px] text-white/20 font-mono">Penalty Extraction</p>
+              </div>
             </div>
 
             {/* LP Burned Card */}
-            <div className="relative group">
-              <div className="absolute inset-[-1px] rounded-xl bg-gradient-to-r from-blue-500/30 via-blue-500/10 to-blue-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
-              <Card className="relative backdrop-blur-2xl bg-white/[0.02] border-white/[0.08] hover:border-blue-500/20 transition-all duration-300">
-                <CardContent className="p-4 md:p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="relative group/icon">
-                      <div className="absolute inset-[-4px] rounded-lg bg-blue-500/20 blur-md opacity-60" />
-                      <div className="relative p-2 backdrop-blur-xl bg-blue-500/10 rounded-lg border border-blue-500/20">
-                        <Droplets className="w-4 h-4 md:w-5 md:h-5 text-blue-400" />
-                      </div>
-                    </div>
-                    <TrendingUp className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-xs md:text-sm text-white/50">LP Burned</p>
-                    <p className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
-                      {contractData?.liquidityData?.lpTokensBurned ? formatNumber(Number(contractData.liquidityData.lpTokensBurned)) : '0'} LP
-                    </p>
-                    <p className="text-xs text-white/40">Liquidity Removed</p>
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300 hover:border-white/20">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/10">
+                  <Droplets className="w-4 h-4 text-white/60" />
+                </div>
+                <div className="w-1.5 h-1.5 bg-white/20 rounded-full" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Sealed Liquidity</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-xl font-black text-white font-mono">
+                    {contractData?.liquidityData?.lpTokensBurned ? formatNumber(Number(contractData.liquidityData.lpTokensBurned)) : '0'}
+                  </p>
+                  <span className="text-[10px] text-white/20 font-mono">LP</span>
+                </div>
+                <p className="text-[9px] text-white/20 font-mono">Permanent Sanctity</p>
+              </div>
             </div>
           </div>
 
           {/* Premium Main Burn Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-6 md:mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-8">
             {[
-              { label: 'Total Burned', value: burnMetrics ? formatNumber(burnMetrics.totalBurned) + ' ARK' : '0 ARK', icon: Flame, color: 'cyan' },
-              { label: 'Burn Rate', value: burnMetrics ? burnMetrics.burnRate.toFixed(1) + '/hr' : '0/hr', icon: Activity, color: 'gold' },
-              { label: 'Burn Efficiency', value: burnMetrics ? burnMetrics.efficiency.toFixed(1) + '%' : '0%', icon: TrendingUp, color: 'blue' },
-              { label: 'Active Burners', value: timeframeStats.uniqueWallets.toString(), icon: Users, color: 'teal' },
-              { label: 'Supply Burned', value: burnPercentage.toFixed(3) + '%', icon: Zap, color: 'orange' }
+              { label: 'Total Sacrificed', value: burnMetrics ? formatNumber(burnMetrics.totalBurned) : '0', unit: 'ARK' },
+              { label: 'Combustion Rate', value: burnMetrics ? burnMetrics.burnRate.toFixed(1) : '0', unit: '/hr' },
+              { label: 'Pyre Efficiency', value: burnMetrics ? burnMetrics.efficiency.toFixed(1) : '0', unit: '%' },
+              { label: 'Active Spirits', value: timeframeStats.uniqueWallets.toString(), unit: 'KEEPERS' },
+              { label: 'Covenant Purity', value: burnPercentage.toFixed(3), unit: '%' }
             ].map((stat, index) => (
-              <div key={stat.label} className="relative group" style={{ animationDelay: `${index * 100}ms` }}>
-                <div className={`absolute inset-[-1px] rounded-xl bg-gradient-to-r from-${stat.color}-500/20 via-transparent to-${stat.color}-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm`} />
-                <Card className="relative backdrop-blur-2xl bg-white/[0.02] border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 hover:translate-y-[-2px]">
-                  <CardContent className="p-4 md:p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-white/50 text-xs md:text-sm">{stat.label}</p>
-                        <p className={`text-lg md:text-2xl font-bold bg-gradient-to-r from-${stat.color === 'gold' ? 'amber' : stat.color}-400 to-${stat.color === 'gold' ? 'amber' : stat.color}-300 bg-clip-text text-transparent`}>
-                          {stat.value}
-                        </p>
-                      </div>
-                      <div className="relative">
-                        <div className={`absolute inset-[-4px] rounded-lg bg-${stat.color === 'gold' ? 'amber' : stat.color}-500/20 blur-md opacity-60`} />
-                        <stat.icon className={`relative w-6 h-6 md:w-8 md:h-8 text-${stat.color === 'gold' ? 'amber' : stat.color}-400 ${stat.label === 'Burn Rate' ? 'animate-pulse' : ''}`} />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              <div key={stat.label} className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300 hover:border-white/20">
+                <div className="space-y-1">
+                  <p className="text-[10px] text-white/40 font-mono uppercase tracking-widest">{stat.label}</p>
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-xl font-black text-white font-mono tracking-tighter">
+                      {stat.value}
+                    </p>
+                    <span className="text-[10px] text-white/20 font-mono">{stat.unit}</span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
 
           {/* Main Dashboard */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Burn Progress Circle */}
-            <div className="relative group">
-              <div className="absolute inset-[-1px] rounded-xl bg-gradient-to-r from-cyan-500/20 via-transparent to-teal-500/20 opacity-60 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
-              <Card className="relative backdrop-blur-2xl bg-white/[0.02] border-white/[0.08]">
-                <CardHeader>
-                  <CardTitle className="text-base md:text-lg font-semibold bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-                    Supply Reduction
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-center">
-                    <CircularProgress percentage={burnPercentage} size={typeof window !== 'undefined' && window.innerWidth < 768 ? 100 : 140} color="hsl(var(--video-cyan))" />
-                  </div>
-                  <div className="text-center mt-4">
-                    <p className="text-sm text-white/50">
-                      {arkData ? formatNumber(Number(arkData.totalSupply) - (burnMetrics?.totalBurned || 0)) : 'Loading...'} ARK remaining
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 md:p-8">
+              <h3 className="text-lg font-black text-white uppercase tracking-tighter mb-8 font-sans">
+                SUPPLY REDUCTION
+              </h3>
+              <div className="flex justify-center mb-8">
+                <CircularProgress percentage={burnPercentage} size={140} color="white" />
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-px bg-white/10 mx-auto mb-4" />
+                <p className="text-[10px] text-white/40 font-mono uppercase tracking-widest">
+                  {arkData ? formatNumber(Number(arkData.totalSupply) - (burnMetrics?.totalBurned || 0)) : '---'} ARK REMAINING
+                </p>
+              </div>
             </div>
 
             {/* Recent Burns Chart */}
@@ -466,132 +432,96 @@ const Burn = () => {
           </div>
 
           {/* Recent Activity and Burn Mechanics */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Premium Live Updates */}
-            <div className="relative group">
-              <div className="absolute inset-[-1px] rounded-xl bg-gradient-to-r from-gold-500/20 via-orange-500/10 to-gold-500/20 opacity-60 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
-              <Card className="relative backdrop-blur-2xl bg-white/[0.02] border-white/[0.08]">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                    <div className="relative">
-                      <div className="absolute inset-[-2px] rounded bg-gold-500/30 blur-sm animate-pulse" />
-                      <Activity className="relative w-5 h-5 text-amber-400" />
-                    </div>
-                    <span className="bg-gradient-to-r from-amber-400 to-gold-400 bg-clip-text text-transparent">Live Updates</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="backdrop-blur-xl bg-white/[0.01] rounded-lg p-3 md:p-4 max-h-96 overflow-y-auto border border-white/[0.05] scrollbar-thin scrollbar-thumb-cyan-500/30 scrollbar-track-transparent">
-                    <div className="space-y-3">
-                      {recentNotifications.slice(0, 10).map((notification, index) => (
-                        <div 
-                          key={notification.id} 
-                          className="relative group/item p-3 backdrop-blur-xl bg-white/[0.02] rounded-lg border border-white/[0.05] hover:border-white/[0.1] hover:bg-white/[0.04] transition-all duration-300"
-                          style={{ animationDelay: `${index * 50}ms` }}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Burn Revelations Section */}
+            <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 md:p-8">
+              <h3 className="text-lg font-black text-white uppercase tracking-tighter mb-8 flex items-center gap-3 font-sans">
+                <Activity className="w-5 h-5 text-white/40" />
+                LIVE REVELATIONS
+              </h3>
+              <div className="backdrop-blur-xl bg-white/[0.01] rounded-2xl p-4 max-h-[500px] overflow-y-auto border border-white/[0.05] scrollbar-none">
+                <div className="space-y-4">
+                  {recentNotifications.length > 0 ? (
+                    recentNotifications.slice(0, 10).map((notification) => (
+                      <div 
+                        key={notification.id} 
+                        className="relative liquid-glass rounded-xl p-4 border border-white/[0.05] transition-all duration-300"
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                            notification.type === 'penalty' 
+                              ? 'border-red-500/30 text-red-400 bg-red-500/5' 
+                              : 'border-white/20 text-white/60 bg-white/5'
+                          }`}>
+                            {notification.type === 'penalty' ? 'EXCISION' : 'COMBUSTION'}
+                          </span>
+                          <span className="text-[10px] text-white/20 font-mono">
+                            {notification.timestamp.toLocaleTimeString()}
+                          </span>
+                        </div>
+                        
+                        <div className="text-sm font-mono tracking-tight mb-3">
+                          <span className="text-white font-black">
+                            {formatNumber(notification.amount)} ARK
+                          </span>
+                          <span className="text-white/40"> consumed by </span>
+                          <button 
+                            onClick={() => {
+                              const originalBurn = burnHistory.find(b => b.txHash === notification.txHash);
+                              const fullAddress = originalBurn?.wallet || notification.txHash;
+                              window.open(`https://otter.pulsechain.com/address/${fullAddress}`, '_blank');
+                            }}
+                            className="text-white/60 hover:text-white transition-colors underline decoration-white/20"
+                          >
+                            {notification.wallet}
+                          </button>
+                        </div>
+                        
+                        <button 
+                          onClick={() => window.open(`https://otter.pulsechain.com/tx/${notification.txHash}`, '_blank')}
+                          className="text-[9px] text-white/20 hover:text-white/40 transition-colors flex items-center gap-1 uppercase tracking-widest"
                         >
-                          <div className="flex items-start justify-between gap-2 mb-2">
-                            <div className="flex items-center gap-2 min-w-0 flex-1">
-                              <span className={`relative text-xs px-2 py-1 rounded-full font-medium ${
-                                notification.type === 'penalty' 
-                                  ? 'bg-red-500/20 text-red-300 border border-red-500/30' 
-                                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                              }`}>
-                                {notification.type === 'penalty' ? '⚠️ PENALTY' : '🔥 BURN'}
-                              </span>
-                              <span className="text-xs text-white/40 flex-shrink-0">
-                                {notification.timestamp.toLocaleTimeString()}
-                              </span>
-                            </div>
-                          </div>
-                          
-                          <div className="text-sm text-white mb-2">
-                            <span className="font-medium bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-                              {formatNumber(notification.amount)} ARK
-                            </span>
-                            <span className="text-white/50"> burned by </span>
-                            <button 
-                              onClick={() => {
-                                const originalBurn = burnHistory.find(b => b.txHash === notification.txHash);
-                                const fullAddress = originalBurn?.wallet || notification.txHash;
-                                window.open(`https://otter.pulsechain.com/address/${fullAddress}`, '_blank');
-                              }}
-                              className="text-amber-400 hover:text-amber-300 transition-colors underline decoration-dotted"
-                              title="View wallet on PulseChain explorer"
-                            >
-                              {notification.wallet}
-                            </button>
-                          </div>
-                          
-                          <div className="flex items-center gap-2 text-xs">
-                            <button 
-                              onClick={() => window.open(`https://otter.pulsechain.com/tx/${notification.txHash}`, '_blank')}
-                              className="text-white/40 hover:text-cyan-400 transition-colors flex items-center gap-1"
-                              title="View transaction on PulseChain explorer"
-                            >
-                              <ExternalLink className="w-3 h-3" />
-                              View Transaction
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                      {recentNotifications.length === 0 && (
-                        <div className="text-center py-8">
-                          <div className="relative inline-block mb-2">
-                            <div className="absolute inset-[-4px] rounded-lg bg-white/5 blur-md" />
-                            <Activity className="relative w-8 h-8 text-white/20" />
-                          </div>
-                          <p className="text-white/40 text-sm">No recent burn activity</p>
-                          <p className="text-white/20 text-xs mt-1">Live transactions will appear here</p>
-                        </div>
-                      )}
+                          <ExternalLink className="w-3 h-3" />
+                          Verify on Ledger
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-20 opacity-20">
+                      <Activity className="w-8 h-8 mx-auto mb-4" />
+                      <p className="text-[10px] font-mono tracking-widest uppercase">Waiting for Revelations...</p>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Premium Burn Mechanics Info */}
-            <div className="relative group">
-              <div className="absolute inset-[-1px] rounded-xl bg-gradient-to-r from-cyan-500/20 via-transparent to-teal-500/20 opacity-60 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
-              <Card className="relative backdrop-blur-2xl bg-white/[0.02] border-white/[0.08]">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                    <div className="relative">
-                      <div className="absolute inset-[-2px] rounded bg-cyan-500/30 blur-sm" />
-                      <Info className="relative w-5 h-5 text-cyan-400" />
-                    </div>
-                    <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">Burn Mechanics</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      { title: 'Transaction Burns', desc: '1% of every transaction is automatically burned', color: 'gold', width: '10%' },
-                      { title: 'Liquidity Burns', desc: '4% goes to liquidity, LP tokens burned', color: 'blue', width: '40%' },
-                      { title: 'Early Unlock Penalties', desc: '50% of penalties burned, 50% to lockers', color: 'cyan', width: '50%', icon: AlertTriangle }
-                    ].map((mechanic, index) => (
-                      <div key={mechanic.title} className="relative group/mechanic">
-                        <div className={`absolute inset-[-1px] rounded-lg bg-${mechanic.color === 'gold' ? 'amber' : mechanic.color}-500/10 opacity-0 group-hover/mechanic:opacity-100 transition-opacity duration-300 blur-sm`} />
-                        <Card className="relative backdrop-blur-xl bg-white/[0.02] border-white/[0.05] hover:border-white/[0.1] transition-all duration-300">
-                          <CardContent className="p-4">
-                            <h4 className={`font-semibold mb-2 flex items-center gap-2 bg-gradient-to-r from-${mechanic.color === 'gold' ? 'amber' : mechanic.color}-400 to-${mechanic.color === 'gold' ? 'amber' : mechanic.color}-300 bg-clip-text text-transparent`}>
-                              {mechanic.icon && <mechanic.icon className="w-4 h-4 text-cyan-400" />}
-                              {mechanic.title}
-                            </h4>
-                            <p className="text-sm text-white/50 mb-2">{mechanic.desc}</p>
-                            <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                              <div 
-                                className={`h-2 rounded-full animate-pulse bg-${mechanic.color === 'gold' ? 'amber' : mechanic.color}-500 shadow-[0_0_8px_rgba(34,211,238,0.5)]`}
-                                style={{ width: mechanic.width, animationDelay: `${index * 0.5}s` }} 
-                              />
-                            </div>
-                          </CardContent>
-                        </Card>
+            <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 md:p-8">
+              <h3 className="text-lg font-black text-white uppercase tracking-tighter mb-8 flex items-center gap-3 font-sans">
+                <Info className="w-5 h-5 text-white/40" />
+                THE STATUTES
+              </h3>
+              <div className="space-y-6">
+                {[
+                  { title: 'Combustion Protocol', desc: '1% of every transaction is purified by fire', val: '1%' },
+                  { title: 'Liquidity Covenant', desc: '4% is sealed within the Eternal Pool', val: '4%' },
+                  { title: 'Sacrificial Penalties', desc: '50% of breach penalties are consumed', val: '50%' }
+                ].map((mechanic) => (
+                  <div key={mechanic.title} className="group/statute">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="text-sm font-black text-white uppercase tracking-tighter group-hover/statute:text-white transition-colors">
+                          {mechanic.title}
+                        </h4>
+                        <p className="text-xs text-white/40 font-mono italic">{mechanic.desc}</p>
                       </div>
-                    ))}
+                      <span className="text-xs font-black text-white/60 font-mono">{mechanic.val}</span>
+                    </div>
+                    <div className="w-full h-px bg-white/10 group-hover/statute:bg-white/20 transition-colors" />
                   </div>
-                </CardContent>
-              </Card>
+                ))}
+              </div>
             </div>
           </div>
         </div>

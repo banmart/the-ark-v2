@@ -13,30 +13,32 @@ const TierDisplay = ({ currentTier, lockAmount, lockDuration, CONTRACT_CONSTANTS
   const estimatedWeight = lockAmount ? parseFloat(lockAmount) * lockDuration * (currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS) : 0;
 
   return (
-    <div className="bg-black/30 rounded-lg p-4 border" style={{ borderColor: currentTier.color }}>
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <div className="text-lg font-bold" style={{ color: currentTier.color }}>
-            {currentTier.name} Tier
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-3xl overflow-hidden relative">
+      <div className="absolute top-0 right-0 p-8 opacity-5 text-6xl font-black font-mono select-none">
+        {currentTier.name.toUpperCase()}
+      </div>
+      
+      <div className="relative z-10 flex items-center justify-between mb-8">
+        <div className="space-y-1">
+          <div className="text-[10px] font-black font-mono tracking-[0.2em] text-white/40 uppercase">COVENANT STANDING</div>
+          <div className="text-2xl font-black text-white uppercase tracking-tighter">
+            {currentTier.name}
           </div>
-          <div className="text-sm text-gray-400">
-            {(currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS).toFixed(1)}x reward multiplier
+          <div className="text-[10px] font-black font-mono tracking-widest text-white/40 uppercase">
+            {(currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS).toFixed(1)}X TITHING FACTOR
           </div>
-        </div>
-        <div className="text-3xl">
-          {currentTier.icon}
         </div>
       </div>
       
       {lockAmount && (
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-400">Estimated Weight:</span>
-            <span className="text-white font-medium">{estimatedWeight.toFixed(0)}</span>
+        <div className="relative z-10 space-y-4 pt-8 border-t border-white/5">
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] font-black font-mono tracking-widest text-white/20 uppercase">BINDING STRENGTH</span>
+            <span className="text-2xl font-black text-white tracking-tighter">{estimatedWeight.toFixed(0)}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Duration Range:</span>
-            <span className="text-white">{currentTier.minDays}-{currentTier.maxDays} days</span>
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] font-black font-mono tracking-widest text-white/20 uppercase">STABILITY PERIOD</span>
+            <span className="text-[10px] font-black font-mono tracking-widest text-white uppercase">{currentTier.minDays}-{currentTier.maxDays} CYCLES</span>
           </div>
         </div>
       )}

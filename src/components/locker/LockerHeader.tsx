@@ -1,40 +1,30 @@
 import React from 'react';
 const LockerHeader = () => {
-  return <div className="relative">
-      {/* Quantum field background */}
-      <div className="absolute inset-0 -top-20 -bottom-20">
-        <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-conic from-cyan-500/20 via-teal-500/20 to-cyan-500/20 rounded-full blur-3xl animate-[spin_20s_linear_infinite]"></div>
-      </div>
-
-      <div className="relative z-10 text-center py-12 px-6">
+  return (
+    <div className="relative">
+      <div className="relative z-10 text-center py-24 px-6">
         {/* System Status Indicator */}
-        <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-black/40 backdrop-blur-xl border border-cyan-500/30 rounded-lg">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-xs font-mono text-green-400 tracking-wider">SYSTEM ONLINE</span>
+        <div className="inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
+          <div className="w-1.5 h-1.5 bg-white/40 rounded-full animate-pulse"></div>
+          <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">[VAULT STATUS: ACTIVE]</span>
         </div>
 
-        {/* Main Title with Diagnostic Styling */}
-        <div className="mb-6">
-          <div className="text-sm font-mono text-cyan-400/60 mb-2 tracking-[0.2em]">
-            [TOKEN LOCKER SYSTEM]
-          </div>
-          <h1 className="mb-4 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent animate-fade-in">
-            QUANTUM VAULT
+        {/* Main Title */}
+        <div className="mb-12">
+          <h1 className="text-5xl md:text-8xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+            THE OUTER SANCTUARIES
           </h1>
-          <div className="text-sm font-mono text-cyan-400/60 tracking-[0.2em]">
-            [PROTOCOL INITIALIZED]
-          </div>
+          <div className="w-48 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto mb-12" />
         </div>
 
         {/* System Description */}
-        <div className="max-w-2xl mx-auto">
-          
+        <div className="max-w-2xl mx-auto mb-16 px-6">
+          <p className="text-white/40 text-lg md:text-xl font-mono leading-relaxed uppercase tracking-tighter italic">
+            Bind your tokens to the Covenant of the Ark. The strength of your seal determines your standing in the hierarchy.
+          </p>
         </div>
-
-        {/* Scanning Effect */}
-        
       </div>
-    </div>;
+    </div>
+  );
 };
 export default LockerHeader;

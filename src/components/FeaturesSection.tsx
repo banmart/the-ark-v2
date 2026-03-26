@@ -31,73 +31,73 @@ const FeaturesSection = () => {
       id: 0,
       icon: Flame,
       emoji: '🔥',
-      title: 'BURN PROTOCOL',
-      subtitle: 'Molecular Disintegration',
+      title: 'SACRED BURN',
+      subtitle: 'Statute of Sacrifice',
       percentage: '1%',
-      detail: 'Deflationary Mechanics',
-      description: 'Permanent molecular disintegration through quantum incineration to void address plus automated LP token annihilation for maximum deflationary cascade.',
+      detail: 'Eternal Deflation',
+      description: 'The Covenant mandates the perpetual sacrifice of tokens. 1% of every transaction is cast into the void, ensuring the scarcity and sanctity of the remaining supply.',
       color: 'red',
-      status: 'ACTIVE BURN',
+      status: 'STATUTE ACTIVE',
       gradient: 'from-red-500 to-orange-500',
       glowColor: 'rgba(239, 68, 68, 0.4)',
       borderColor: 'border-red-500/30',
       borderHover: 'hover:border-red-500/60',
       textColor: 'text-red-400',
-      liveMetric: 'Continuous burn rate'
+      liveMetric: 'Sacrifice rate engaged'
     },
     {
       id: 1,
       icon: Users,
       emoji: '🏛️',
-      title: 'DAO TREASURY',
-      subtitle: 'Community Governance',
+      title: 'ARK TREASURY',
+      subtitle: 'Covenant Governance',
       percentage: '1%',
-      detail: 'Governance Fund',
-      description: 'Every transaction contributes 1% to the DAO treasury, funding community-driven governance, development proposals, and ecosystem growth initiatives.',
+      detail: 'Sacred Fund',
+      description: '1% flows into the Ark Treasury, a sovereign fund governed by the Keepers of the Covenant to expand the reach of the statutes and protect the sanctuary.',
       color: 'blue',
-      status: 'COLLECTING',
+      status: 'ADMINISTERING',
       gradient: 'from-blue-500 to-cyan-500',
       glowColor: 'rgba(59, 130, 246, 0.4)',
       borderColor: 'border-blue-500/30',
       borderHover: 'hover:border-blue-500/60',
       textColor: 'text-blue-400',
-      liveMetric: 'Treasury accumulation'
+      liveMetric: 'Treasury stewardship'
     },
     {
       id: 2,
       icon: Droplets,
       emoji: '💧',
-      title: 'LIQUIDITY ENGINE',
-      subtitle: 'Fluid Dynamics Control',
+      title: 'ETERNAL LIQUIDITY',
+      subtitle: 'Fluid Equilibrium',
       percentage: '4%',
-      detail: 'Market Stability',
-      description: 'Automated liquidity synthesis with quantum slippage protection. Threshold: 0.1% supply, Max: 0.2% supply for optimal market equilibrium.',
+      detail: 'Sacred Balance',
+      description: 'The Covenant ensures the Ark remains buoyant in any storm. 4% of each transaction is forged into liquidity, maintaining the unbreakable balance of the ecosystem.',
       color: 'purple',
-      status: 'ACCUMULATING',
+      status: 'STABILIZING',
       gradient: 'from-purple-500 to-pink-500',
       glowColor: 'rgba(168, 85, 247, 0.4)',
       borderColor: 'border-purple-500/30',
       borderHover: 'hover:border-purple-500/60',
       textColor: 'text-purple-400',
-      liveMetric: 'Pool enhancement'
+      liveMetric: 'Equilibrium control'
     },
     {
       id: 3,
       icon: Lock,
-      emoji: '🔒',
-      title: 'VAULT REWARDS',
-      subtitle: 'Temporal Amplification',
+      emoji: '📜',
+      title: 'VAULT COVENANT',
+      subtitle: 'Sacred Rewards',
       percentage: '4%',
-      detail: 'Lock Incentives',
-      description: 'Dedicated vault rewards for long-term commitment. Earn amplified rewards through time-lock mechanics with up to 7x multipliers.',
+      detail: 'Keeper Incentives',
+      description: 'The most faithful Keepers who lock their assets within the Vault are rewarded through the Covenant. Experience multiplied favor as your commitment grows.',
       color: 'green',
-      status: 'REWARDS ACTIVE',
+      status: 'KEEPERS REWARDED',
       gradient: 'from-green-500 to-teal-500',
       glowColor: 'rgba(34, 197, 94, 0.4)',
       borderColor: 'border-green-500/30',
       borderHover: 'hover:border-green-500/60',
       textColor: 'text-green-400',
-      liveMetric: 'Vault allocation'
+      liveMetric: 'Covenant rewards active'
     }
   ];
 
@@ -123,67 +123,7 @@ const FeaturesSection = () => {
   };
 
   return (
-    <section id="features" className="relative z-30 py-24 px-6 overflow-hidden">
-      {/* ===== PREMIUM BACKGROUND LAYERS ===== */}
-      
-      {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
-      
-      {/* Deep vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.4)_50%,rgba(0,0,0,0.8)_100%)]" />
-      
-      {/* Animated gradient orbs */}
-      {!isMobile && (
-        <>
-          <div className="absolute top-20 left-[10%] w-[500px] h-[500px] bg-red-500/8 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
-          <div className="absolute bottom-20 right-[10%] w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '-3s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '-6s' }} />
-          <div className="absolute bottom-40 left-[20%] w-[300px] h-[300px] bg-green-500/6 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '9s', animationDelay: '-2s' }} />
-        </>
-      )}
-      
-      {/* Film grain texture */}
-      <div 
-        className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-        }}
-      />
-      
-      {/* Premium grid overlay */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px'
-        }}
-      />
-      
-      {/* Floating particles */}
-      {particles.map((particle) => (
-        <div
-          key={particle.id}
-          className={`absolute rounded-full ${getParticleColor(particle.color)} pointer-events-none`}
-          style={{
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            animation: `particle-drift ${particle.duration}s ease-in-out infinite`,
-            animationDelay: `${particle.delay}s`,
-          }}
-        />
-      ))}
-      
-      {/* Corner color accents */}
-      {!isMobile && (
-        <>
-          <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-red-500/10 to-transparent blur-3xl" />
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-blue-500/10 to-transparent blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-purple-500/10 to-transparent blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-green-500/10 to-transparent blur-3xl" />
-        </>
-      )}
+    <section id="features" className="relative z-30 py-24 px-6 bg-black">
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ===== PREMIUM HEADER ===== */}
@@ -191,13 +131,13 @@ const FeaturesSection = () => {
           {/* Glassmorphism badge */}
           <div className="inline-flex items-center justify-center gap-2 px-4 py-2 mb-6 rounded-full bg-white/[0.03] backdrop-blur-md border border-white/[0.08] shadow-lg">
             <Database className="w-3 h-3 text-cyan-400 animate-pulse" />
-            <span className="text-cyan-400/80 font-mono text-xs tracking-[0.2em]">[QUANTUM ARCHITECTURE SCAN]</span>
+            <span className="text-cyan-400/80 font-mono text-xs tracking-[0.2em]">[COVENANT LOGIC SCAN]</span>
             <Database className="w-3 h-3 text-cyan-400 animate-pulse" />
           </div>
           
           {/* Premium gradient title */}
           <h2 className="mb-4 bg-gradient-to-r from-cyan-300 via-teal-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(34,211,238,0.3)]">
-            THE FOUR QUANTUM PILLARS
+            THE FOUR COVENANT PILLARS
           </h2>
           
           {/* Accent line */}
@@ -336,7 +276,7 @@ const FeaturesSection = () => {
                         style={{ filter: `drop-shadow(0 0 4px ${pillar.glowColor})` }}
                       />
                       <span className={`${pillar.textColor} font-mono text-[10px] tracking-wider`}>
-                        QUANTUM FIELD ACTIVE
+                        COVENANT LAW ACTIVE
                       </span>
                     </div>
                   </div>
