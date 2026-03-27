@@ -28,8 +28,8 @@ const HeroSection = ({
 
   return (
     <section className="relative w-full min-h-screen bg-black overflow-hidden flex flex-col font-sans">
-      {/* Fullscreen Video Background - Swapped back to IPFS version */}
-      <div className="absolute inset-0 z-0">
+      {/* Hero Video Container - Relative on mobile (above content), Absolute on desktop (background) */}
+      <div className="relative md:absolute inset-0 z-0 w-full h-[50vh] md:h-full overflow-hidden">
         <video
           autoPlay
           muted
@@ -39,12 +39,15 @@ const HeroSection = ({
         >
           <source src="https://emerald-quickest-swallow-922.mypinata.cloud/ipfs/bafybeiewttwnlicyeeq57wwx6gipbxwmzbtuv6vieh7seqoq7imojxmgcm" type="video/mp4" />
         </video>
-        {/* 50% Black Overlay for readability */}
-        <div className="absolute inset-0 bg-black/50" />
+        {/* Black Overlay - Only on desktop for text readability */}
+        <div className="absolute inset-0 bg-black/50 hidden md:block" />
+        
+        {/* Alpha Transition - Fading out the video bottom, now part of the video container */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 md:h-64 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none z-[5]" />
       </div>
 
-      {/* Hero Content - Adapted to Original Context */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-[200px] md:pt-[280px] pb-[102px] flex flex-col items-center text-center flex-grow">
+      {/* Hero Content - Adjusted padding for mobile/desktop layout switch */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-12 md:pt-[280px] pb-[102px] flex flex-col items-center text-center flex-grow">
         
 
 
@@ -111,8 +114,7 @@ const HeroSection = ({
         </div>
       </div>
 
-      {/* Alpha Transition - Fading out the video bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-[5]" />
+
 
       {/* Scroll indicator */}
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-30 z-10">

@@ -9,7 +9,12 @@ interface NavigationProps {
   account: string | null;
 }
 
-const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }: NavigationProps) => {
+const Navigation = ({ 
+  handleConnectWallet, 
+  isConnecting, 
+  isConnected, 
+  account,
+}: NavigationProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
@@ -25,6 +30,7 @@ const Navigation = ({ handleConnectWallet, isConnecting, isConnected, account }:
   }, []);
 
   const menuItems = [
+    { label: 'Get Started', href: '/onboarding' },
     { label: 'Locker', href: '/locker' },
     { label: 'Burn', href: '/burn' },
     { label: 'DAO', href: '/dao' },
