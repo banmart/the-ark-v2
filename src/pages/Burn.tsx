@@ -245,7 +245,7 @@ const Burn = () => {
   const loading = arkLoading || burnLoading;
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
       {/* Premium Background */}
       <PremiumBackground />
 
@@ -257,23 +257,23 @@ const Burn = () => {
       <div className="relative z-10 pt-24">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           {/* Premium Hero Header */}
-          <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 mb-6 md:mb-8">
-              <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
-                <Flame className="w-4 h-4 text-ark-gold-400 animate-pulse" />
-                <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">Sacred Combustion</span>
-              </div>
-              
-              <h1 className="text-5xl md:text-7xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
-                STATUTE OF COMBUSTION
-              </h1>
-              
-              <div className="flex justify-center lg:justify-start mb-10">
-                <div className="w-32 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-              </div>
+          <div className="flex flex-col items-center text-center space-y-4 mb-16">
+            <div className="inline-flex items-center gap-2 mb-2 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
+              <Flame className="w-4 h-4 text-ark-gold-400 animate-pulse" />
+              <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">Sacred Combustion</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-8xl font-black mb-4 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+              STATUTE OF COMBUSTION
+            </h1>
+            
+            <div className="w-48 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8" />
 
-              <p className="text-white/50 text-base md:text-lg max-w-2xl mx-auto lg:mx-0 font-mono leading-relaxed uppercase tracking-tighter">
+            <div className="max-w-2xl mx-auto mb-10">
+              <p className="text-white/50 text-base md:text-xl font-mono leading-relaxed uppercase tracking-tighter italic">
                 The immutable deflationary engine. Every transaction feeds the sacrificial pyre, securing the sanctity of the Covenant.
               </p>
+            </div>
             
             <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
               {/* Premium Timeframe Selector */}

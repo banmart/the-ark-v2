@@ -36,7 +36,7 @@ const LockerContent = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
         {/* Premium Background */}
         <PremiumBackground />
 

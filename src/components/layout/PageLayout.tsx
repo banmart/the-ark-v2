@@ -84,7 +84,7 @@ const PageLayout = memo(({ children }: PageLayoutProps) => {
   }, [setShowOnboarding]);
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
       {/* Onboarding Modal */}
       <OnboardingModal 
         isOpen={showOnboarding} 

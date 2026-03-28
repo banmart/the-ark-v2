@@ -82,16 +82,16 @@ const DAO = () => {
     <BaseLayout>
       <div className="max-w-5xl mx-auto px-4 pb-20 space-y-8">
         {/* Header */}
-        <div className="text-center md:text-left space-y-4 mb-16 px-4">
+        <div className="text-center space-y-4 mb-16 px-4">
           <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
             <Shield className="w-4 h-4 text-white/40" />
             <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">Executive Governance</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+          <h1 className="text-5xl md:text-8xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
             THE COUNCIL CHAMBER
           </h1>
-          <div className="w-32 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto md:mx-0 mb-8" />
-          <p className="text-white/50 text-base md:text-lg max-w-3xl font-mono leading-relaxed uppercase tracking-tighter">
+          <div className="w-48 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto mb-8" />
+          <p className="text-white/50 text-base md:text-xl max-w-3xl mx-auto font-mono leading-relaxed uppercase tracking-tighter italic">
             Governance by the high Keepers of the Statutes. Deliberate on the evolution of the Covenant and administer the Ark Treasury.
           </p>
         </div>
@@ -158,7 +158,7 @@ const DAO = () => {
                 <Plus className="w-4 h-4 mr-2" /> New Proposal
               </Button>
             ) : (
-              <Card className="bg-white/[0.03] border-cyan-500/20 backdrop-blur-sm">
+              <Card className="liquid-glass border-cyan-500/20">
                 <CardHeader>
                   <CardTitle className="text-lg font-mono text-cyan-400">Create Proposal</CardTitle>
                 </CardHeader>
@@ -229,7 +229,7 @@ const DAO = () => {
             <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
           </div>
         ) : proposals.length === 0 ? (
-          <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-sm">
+          <Card className="liquid-glass border-white/[0.08]">
             <CardContent className="p-12 text-center">
               <Vote className="w-12 h-12 text-white/20 mx-auto mb-4" />
               <p className="text-white/40 font-mono">No proposals yet</p>

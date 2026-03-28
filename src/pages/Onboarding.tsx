@@ -94,80 +94,96 @@ const Onboarding = () => {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-black text-white relative overflow-hidden overscroll-none">
+    <div className="h-[100dvh] flex flex-col bg-black text-white relative overflow-hidden overscroll-none font-sans">
       <PremiumBackground />
 
-      {/* Compact top bar */}
-      <div className="relative z-20 flex-shrink-0 border-b border-white/[0.06]">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="p-1.5 -ml-1.5 text-white/40 hover:text-white/70 transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+      {/* Premium Top Navigation Bar */}
+      <div className="relative z-20 flex-shrink-0 bg-black/40 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/" className="p-2 -ml-2 text-white/40 hover:text-white transition-all hover:scale-110 active:scale-95">
+              <ArrowLeft className="w-5 h-5" />
             </Link>
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/30 to-teal-500/30 rounded-full blur-sm" />
-              <div className="relative w-7 h-7 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center">
-                <MessageCircle className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="h-8 w-px bg-white/10 hidden sm:block" />
+            <div className="flex items-center gap-3">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/30 to-teal-500/30 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative w-9 h-9 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center transition-transform group-hover:rotate-12">
+                  <MessageCircle className="w-4 h-4 text-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+                </div>
               </div>
-            </div>
-            <div>
-              <h1 className="text-[11px] font-bold font-mono tracking-wide bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-                ARK ONBOARDING
-              </h1>
-              <p className="text-[10px] text-white/40 font-mono">
-                {isLoading ? 'Thinking...' : 'Step-by-step crypto coach'}
-              </p>
+              <div className="hidden sm:block">
+                <h1 className="text-[10px] font-black font-mono tracking-[0.3em] text-white/40 uppercase">
+                  [SYSTEM.RECRUITMENT]
+                </h1>
+                <p className="text-xs font-bold text-white tracking-tight">Onboarding Protocol</p>
+              </div>
             </div>
           </div>
 
-          {hasMessages && (
-            <button
-              onClick={clearChat}
-              className="p-2 text-white/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-              title="Start over"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          )}
+          <div className="flex items-center gap-4">
+            {isLoading && (
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+                <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
+                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">Oracle Thinking</span>
+              </div>
+            )}
+            {hasMessages && (
+              <button
+                onClick={clearChat}
+                className="p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-white/30 hover:text-red-400 hover:border-red-400/30 hover:bg-red-500/5 transition-all active:scale-90"
+                title="Start over"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Chat area */}
-      <div ref={chatAreaRef} className="relative z-10 flex-1 overflow-y-auto min-h-0">
-        <div className="max-w-3xl mx-auto px-4 py-4">
+      {/* Chat Area */}
+      <div ref={chatAreaRef} className="relative z-10 flex-1 overflow-y-auto min-h-0 scrollbar-none">
+        <div className="max-w-3xl mx-auto px-6 py-12">
           {!hasMessages ? (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-              <div className="mb-5">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] border border-white/[0.08] rounded-xl mb-4">
-                  <Sparkles className="w-3 h-3 text-cyan-400" />
-                  <span className="text-[10px] font-mono text-white/60 tracking-widest">AI-POWERED ONBOARDING</span>
+            <div className="flex flex-col items-center justify-center min-h-[70vh] text-center animate-fade-up">
+              <div className="mb-12">
+                <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10 mb-8 backdrop-blur-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                  <span className="text-[10px] font-mono text-white/40 tracking-[0.3em] uppercase">Initiation Sequence</span>
                 </div>
 
-                <h2 className="text-xl md:text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-400 via-teal-300 to-green-400 bg-clip-text text-transparent">
-                  Let's get you onboard ⚓
+                <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase leading-[0.9]">
+                  Welcome to <br />
+                  <span className="text-white">The Sanctuary ⚓</span>
                 </h2>
-                <p className="text-white/50 text-sm max-w-sm mx-auto leading-relaxed">
-                  I'll walk you through every step — from zero to holding ARK. Where are you starting?
+                
+                <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto mb-8" />
+                
+                <p className="text-white/50 text-base md:text-lg max-w-lg mx-auto leading-relaxed font-mono uppercase tracking-tighter italic">
+                  Complete these sacred steps to hold the Ark. Where does your journey begin?
                 </p>
               </div>
 
-              <div className="w-full max-w-sm space-y-2">
+              <div className="w-full max-w-md grid grid-cols-1 gap-3">
                 {audienceOptions.map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => sendMessage(opt.value)}
                     disabled={isLoading}
-                    className="w-full text-left px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-xl hover:border-cyan-500/40 hover:bg-cyan-500/5 transition-all duration-200 group disabled:opacity-50"
+                    className="relative group overflow-hidden"
                   >
-                    <span className="text-sm text-white/80 group-hover:text-cyan-300 transition-colors font-mono">
-                      {opt.label}
-                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative w-full text-center px-6 py-4 liquid-glass rounded-2xl border border-white/10 hover:border-cyan-500/40 transition-all duration-300 group-active:scale-98">
+                      <span className="text-sm text-white font-mono uppercase tracking-wider group-hover:text-cyan-400 transition-colors">
+                        {opt.label}
+                      </span>
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
           ) : (
-            <>
+            <div className="space-y-6">
               {messages.map((msg) => (
                 <ChatMessage
                   key={msg.id}
@@ -178,24 +194,24 @@ const Onboarding = () => {
               ))}
 
               {isLoading && (
-                <div className="flex items-center gap-2 text-white/40 font-mono text-sm p-3 bg-white/[0.02] border border-white/[0.06] rounded-xl">
-                  <div className="flex gap-1">
-                    <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
-                    <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                    <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+                <div className="flex items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                  <div className="w-9 h-9 rounded-xl bg-white/[0.03] border border-cyan-500/20 flex items-center justify-center shrink-0">
+                    <div className="w-4 h-4 text-cyan-400 animate-spin border-2 border-cyan-400 border-t-transparent rounded-full" />
                   </div>
-                  <span>Thinking...</span>
+                  <div className="p-4 bg-white/[0.02] border border-white/[0.06] rounded-2xl backdrop-blur-sm">
+                    <span className="text-xs font-mono text-cyan-400/80 uppercase tracking-[0.2em] animate-pulse">Consulting the Protocol...</span>
+                  </div>
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Input pinned at bottom */}
+      {/* Input Pinned at Bottom */}
       {hasMessages && (
-        <div className="relative z-10 flex-shrink-0 border-t border-white/[0.06] bg-black/80 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
-          <div className="max-w-3xl mx-auto">
+        <div className="relative z-10 flex-shrink-0 border-t border-white/5 bg-black/60 backdrop-blur-3xl pb-[env(safe-area-inset-bottom)]">
+          <div className="max-w-3xl mx-auto px-4 py-6">
             <ChatInput onSendMessage={sendMessage} isLoading={isLoading} />
           </div>
         </div>

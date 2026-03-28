@@ -78,27 +78,27 @@ const BurnProtocolAnalytics = () => {
       <div className="relative group">
         <div className="absolute inset-[-1px] rounded-xl bg-gradient-to-r from-orange-500/20 via-cyan-500/10 to-orange-500/20 opacity-60 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
         <div className="relative backdrop-blur-2xl bg-white/[0.02] border border-white/[0.08] rounded-xl p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <div className="absolute inset-[-4px] rounded-lg bg-orange-500/30 blur-md opacity-60 animate-pulse" />
-                <div className="relative p-2 rounded-lg backdrop-blur-xl bg-orange-500/10 border border-orange-500/20">
-                  <Flame className="h-6 w-6 text-orange-400" />
-                </div>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-400 via-amber-400 to-gold-400 bg-clip-text text-transparent">
-                  Burn Protocol Analytics
-                </h2>
-                <p className="text-white/50">Real-time burn mechanism analysis and projections</p>
+          <div className="flex flex-col items-center text-center space-y-6">
+            <div className="relative">
+              <div className="absolute inset-[-4px] rounded-lg bg-orange-500/30 blur-md opacity-60 animate-pulse" />
+              <div className="relative p-2 rounded-lg backdrop-blur-xl bg-orange-500/10 border border-orange-500/20">
+                <Flame className="h-8 w-8 text-orange-400" />
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            
+            <div>
+              <h2 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-400 via-amber-400 to-gold-400 bg-clip-text text-transparent tracking-tighter uppercase font-sans mb-2">
+                Burn Protocol Analytics
+              </h2>
+              <p className="text-white/40 font-mono text-sm md:text-base uppercase tracking-widest italic">Real-time burn mechanism analysis and projections</p>
+            </div>
+
+            <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="absolute inset-[-2px] rounded-full bg-green-500/30 blur-sm animate-pulse" />
-                <Badge variant="secondary" className="relative flex items-center space-x-1 backdrop-blur-xl bg-green-500/10 border border-green-500/20 text-green-400">
+                <Badge variant="secondary" className="relative flex items-center space-x-1 backdrop-blur-xl bg-green-500/10 border border-green-500/20 text-green-400 uppercase font-mono tracking-widest text-[10px]">
                   <Activity className="h-3 w-3" />
-                  <span>Live</span>
+                  <span>Protocol: Live</span>
                 </Badge>
               </div>
               <Button 
@@ -106,7 +106,7 @@ const BurnProtocolAnalytics = () => {
                 size="sm" 
                 onClick={refetch}
                 disabled={loading}
-                className="hover:bg-white/[0.05] border border-transparent hover:border-white/[0.1]"
+                className="hover:bg-white/[0.05] border border-white/[0.1] rounded-full h-8 w-8 p-0"
               >
                 <RefreshCw className={`h-4 w-4 text-white/60 ${loading ? 'animate-spin' : ''}`} />
               </Button>

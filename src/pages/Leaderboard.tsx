@@ -216,7 +216,7 @@ const Leaderboard = () => {
     }
   };
   return <BaseLayout>
-      <div className="min-h-screen bg-black text-white">
+      <div className="min-h-screen bg-transparent text-white">
         {/* Quantum ARK Header */}
         <div className="relative">
           <div className="relative z-10 text-center py-24 px-6">
@@ -298,7 +298,7 @@ const Leaderboard = () => {
                   className={`px-8 py-3 rounded-xl font-black font-mono text-[10px] tracking-widest uppercase transition-all duration-300 border ${
                     sortBy === criteria 
                       ? 'bg-white text-black border-white' 
-                      : 'bg-white/[0.03] text-white/40 border-white/10 hover:border-white/20 hover:text-white'
+                      : 'bg-white/[0.03] text-white/40 border-white/10 hover:border-white/20 hover:text-white backdrop-blur-md'
                   }`}
                 >
                   {getSortLabel(criteria)}
@@ -311,7 +311,7 @@ const Leaderboard = () => {
         {/* Divine Search Portal */}
         <div className="px-6">
           <div className="max-w-6xl mx-auto">
-            <Card className="bg-black/50 border-cyan-500/30 mb-8 relative overflow-hidden">
+            <Card className="liquid-glass border-cyan-500/30 mb-8 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-teal-500/5 to-purple-500/5"></div>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-cyan-400 font-mono tracking-wider">
