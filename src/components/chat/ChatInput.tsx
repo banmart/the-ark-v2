@@ -12,10 +12,8 @@ const ChatInput = ({ onSendMessage, isLoading }: ChatInputProps) => {
 
   const handleSend = () => {
     if (!message.trim() || isLoading) return;
-    
-    const messageToSend = message.trim();
+    onSendMessage(message.trim());
     setMessage('');
-    onSendMessage(messageToSend);
   };
 
   const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -26,17 +24,20 @@ const ChatInput = ({ onSendMessage, isLoading }: ChatInputProps) => {
   };
 
   return (
-    <div className="border-t border-cyan-500/20 bg-black/40 backdrop-blur-sm p-4">
-      <div className="flex gap-2 items-end">
-        <div className="flex-1 relative">
+    <div className="p-4 px-6">
+      <div className="flex gap-4 items-end">
+        <div className="flex-1 relative group">
+          {/* Input Glow */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 rounded-2xl blur-md opacity-0 group-focus-within:opacity-100 transition-opacity" />
+          
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Ask me about ARK, bridges, or Coinbase..."
-            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground font-mono text-sm resize-none focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 placeholder:text-muted-foreground"
+            onKeyDown={handleKeyPress}
+            placeholder="Interrogate the Oracle of the Ark..."
+            className="relative w-full bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-white font-mono text-sm resize-none focus:border-cyan-500/50 focus:outline-none transition-all placeholder:text-white/20 scrollbar-none"
             rows={1}
-            style={{ minHeight: '38px', maxHeight: '120px' }}
+            style={{ minHeight: '56px', maxHeight: '160px' }}
             disabled={isLoading}
           />
         </div>
@@ -44,13 +45,10 @@ const ChatInput = ({ onSendMessage, isLoading }: ChatInputProps) => {
         <button
           onClick={handleSend}
           disabled={!message.trim() || isLoading}
-          className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-cyan-500 to-teal-600 text-black rounded-lg flex items-center justify-center hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="relative group flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center transition-all active:scale-90 disabled:opacity-20 disabled:grayscale"
         >
-          {isLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Send className="w-4 h-4" />
-          )}
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.3)] group-hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-shadow" />
+          <Send className="relative w-6 h-6 text-black" />
         </button>
       </div>
     </div>

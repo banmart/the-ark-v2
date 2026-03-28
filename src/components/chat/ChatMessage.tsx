@@ -25,20 +25,28 @@ const ChatMessage = ({ role, content, timestamp }: ChatMessageProps) => {
         )}
       </div>
       
-      <div className={`flex-1 max-w-[80%] ${isUser ? 'text-right' : 'text-left'}`}>
-        <div className={`inline-block p-3 rounded-xl text-sm ${
+      <div className={`flex-1 max-w-[85%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
+        <div className={`relative p-5 rounded-2xl text-sm leading-relaxed ${
           isUser
-            ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-100 font-mono'
-            : 'bg-gray-800/50 border border-gray-700/50 text-gray-200'
+            ? 'bg-cyan-500/10 border border-cyan-500/20 text-cyan-50 font-mono text-[13px] tracking-tight'
+            : 'liquid-glass border-white/10 text-white/90 shadow-2xl backdrop-blur-3xl'
         }`}>
           {isUser ? (
             <div className="whitespace-pre-wrap">{content}</div>
           ) : (
-            <div className="prose prose-sm prose-invert max-w-none prose-p:my-1.5 prose-ul:my-1.5 prose-ol:my-1.5 prose-li:my-0.5 prose-headings:my-2 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-code:text-cyan-300 prose-code:bg-black/30 prose-code:px-1 prose-code:rounded">
+            <div className="prose prose-sm prose-invert max-w-none 
+              prose-p:mb-5 prose-p:leading-[1.8] 
+              prose-ul:my-6 prose-ol:my-6 
+              prose-li:my-3 
+              prose-headings:mt-8 prose-headings:mb-4 
+              prose-a:text-cyan-400 prose-a:font-bold prose-a:no-underline hover:prose-a:underline 
+              prose-strong:text-white prose-strong:font-black
+              prose-code:text-cyan-300 prose-code:bg-black/40 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+              prose-blockquote:border-cyan-500/50 prose-blockquote:bg-cyan-500/5 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg">
               <ReactMarkdown
                 components={{
                   a: ({ href, children, ...props }) => (
-                    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1" {...props}>
                       {children}
                     </a>
                   ),
