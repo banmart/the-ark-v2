@@ -156,6 +156,9 @@ const PageLayout = memo(({ children }: PageLayoutProps) => {
       {/* Render children if provided */}
       {children}
 
+      {/* Market Surveillance Chart */}
+      <ChartSection />
+
       {/* Footer */}
       <Footer />
     </div>
