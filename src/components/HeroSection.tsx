@@ -20,6 +20,8 @@ const HeroSection = ({
 }: HeroSectionProps) => {
   const [copied, setCopied] = React.useState(false);
 
+  const [videoLoaded, setVideoLoaded] = React.useState(false);
+
   const handleCopy = () => {
     copyToClipboard(contractAddress);
     setCopied(true);
@@ -29,13 +31,21 @@ const HeroSection = ({
   return (
     <section className="relative w-full min-h-screen bg-black overflow-hidden flex flex-col font-sans">
       {/* Hero Video Container - Relative on mobile (above content), Absolute on desktop (background) */}
-      <div className="relative md:absolute inset-0 z-0 w-full h-[50vh] md:h-full overflow-hidden">
+      <div className="relative md:absolute inset-0 z-0 w-full h-[50vh] md:h-full overflow-hidden bg-black">
+        {/* Cinematic Placeholder / Fallback Image */}
+        <img 
+          src="/assets/images/the-ark-ship.jpg" 
+          alt="The Ark Sanctuary"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 pointer-events-none z-[1] ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
+        />
+
         <video
           autoPlay
           muted
           loop
           playsInline
-          className="w-full h-full object-cover"
+          onCanPlayThrough={() => setVideoLoaded(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoadedMetadata={(e) => (e.currentTarget.playbackRate = 0.5)}
         >
           <source src="/assets/videos/ark------final-----01.mp4" type="video/mp4" />
