@@ -38,7 +38,7 @@ const HeroSection = ({
           className="w-full h-full object-cover"
           onLoadedMetadata={(e) => (e.currentTarget.playbackRate = 0.5)}
         >
-          <source src="/assets/videos/behind-ship.mp4" type="video/mp4" />
+          <source src="/assets/videos/ark------final-----01.mp4" type="video/mp4" />
         </video>
         {/* Black Overlay - Only on desktop for text readability */}
         <div className="absolute inset-0 bg-black/50 hidden md:block" />
