@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Database } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 interface LockerTiersSectionProps {
   contractData: any;
@@ -368,17 +369,68 @@ const LockerTiersSection = ({
           </p>
         </div>
 
-        {/* Tiers Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-1000 delay-500 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {tiers.map((tier, index) => (
-            <div 
-              key={tier.name} 
-              className={`transition-all duration-700 ${systemPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} 
-              style={{ transitionDelay: `${index * 150}ms` }}
-            >
-              <TierCard tier={tier} index={index} />
-            </div>
-          ))}
+        {/* Tiers Grid/Accordion - Mobile First Compactness */}
+        <div className={`transition-all duration-1000 delay-500 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="md:hidden">
+            <Accordion type="single" collapsible className="space-y-4">
+              {tiers.map((tier, index) => (
+                <AccordionItem 
+                  key={tier.name} 
+                  value={tier.name}
+                  className="relative liquid-glass rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden group border-b-0"
+                >
+                  <AccordionTrigger className="hover:no-underline p-5 w-full">
+                    <div className="flex items-center justify-between w-full pr-4">
+                      <div className="flex items-center gap-5">
+                        <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-2xl shrink-0">
+                          {tier.icon}
+                        </div>
+                        <div className="text-left">
+                          <p className="text-sm font-black text-white uppercase tracking-tighter">[{tier.name}]</p>
+                          <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">{tier.duration}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-black text-white font-mono tracking-tighter">{tier.multiplier}</p>
+                        <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Favored</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-5 pb-6">
+                    <div className="pt-4 border-t border-white/5 space-y-6">
+                      <ul className="space-y-3">
+                        {tier.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start font-mono text-[11px] leading-tight">
+                            <span className="mr-2 text-white/40">▸</span>
+                            <span className="text-white/60">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <Link 
+                        to="/locker" 
+                        className={`block w-full py-4 rounded-xl text-center font-mono text-xs font-black tracking-widest uppercase transition-all
+                          ${tier.special ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white' : 'bg-white text-black'}`}
+                      >
+                        {tier.special ? '⚡ ASCEND NOW' : `ENTER ${tier.name}`}
+                      </Link>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {tiers.map((tier, index) => (
+              <div 
+                key={tier.name} 
+                className={`transition-all duration-700 ${systemPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} 
+                style={{ transitionDelay: `${index * 150}ms` }}
+              >
+                <TierCard tier={tier} index={index} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

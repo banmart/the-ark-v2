@@ -11,6 +11,7 @@ import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
 import { useToast } from '../hooks/use-toast';
 import { tiers } from '../components/locker/tier-legend/tierData';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../components/ui/accordion';
 const Leaderboard = () => {
   const {
     isConnected,
@@ -377,62 +378,104 @@ const Leaderboard = () => {
                   </Button>
                 </CardContent>
               </Card> : <div className="space-y-4">
-                {users.map((user) => {
-                  const arkTier = getArkTier(user.totalWeight);
-                  return (
-                    <div 
-                      key={user.address} 
-                      className="relative liquid-glass rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden group"
-                    >
-                      <div className="p-6 md:p-8">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-                          {/* Rank & User */}
-                          <div className="flex items-center gap-6">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-black font-mono tracking-tighter ${getRankBadge(user.rank, user.totalWeight)}`}>
-                              #{user.rank}
-                            </div>
-                            
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-3">
-                                <p className="text-lg font-black text-white tracking-tighter uppercase font-sans">
+                <Accordion type="single" collapsible className="space-y-4">
+                  {users.map((user) => {
+                    const arkTier = getArkTier(user.totalWeight);
+                    return (
+                      <AccordionItem 
+                        key={user.address} 
+                        value={user.address}
+                        className="relative liquid-glass rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden group border-b-0"
+                      >
+                        <AccordionTrigger className="hover:no-underline p-4 md:p-6 w-full">
+                          <div className="flex items-center justify-between w-full gap-4 pr-2">
+                            {/* Rank & User Info (Always Visible) */}
+                            <div className="flex items-center gap-4">
+                              <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-xs md:text-sm font-black font-mono tracking-tighter shrink-0 ${getRankBadge(user.rank, user.totalWeight)}`}>
+                                #{user.rank}
+                              </div>
+                              
+                              <div className="text-left">
+                                <p className="text-sm md:text-lg font-black text-white tracking-tighter uppercase font-sans truncate max-w-[120px] md:max-w-none">
                                   {formatAddress(user.address)}
                                 </p>
-                                <button onClick={() => copyAddress(user.address)} className="text-white/20 hover:text-white transition-colors">
-                                  {copiedAddress === user.address ? <CheckCircle className="w-3 h-3 text-white" /> : <Copy className="w-3 h-3" />}
-                                </button>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">
-                                  {arkTier.name} • {arkTier.description}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[8px] md:text-[10px] font-mono text-white/40 uppercase tracking-[0.2em] whitespace-nowrap">
+                                    {arkTier.name}
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          {/* Stats Grid */}
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-                            <div>
-                              <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Authority</p>
-                              <p className="text-sm font-black text-white font-mono tracking-tighter">{formatNumber(user.totalWeight)}</p>
-                            </div>
-                            <div>
-                              <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Vault</p>
-                              <p className="text-sm font-black text-white font-mono tracking-tighter">{formatNumber(user.totalLocked)}</p>
-                            </div>
-                            <div>
-                              <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Rewards</p>
-                              <p className="text-sm font-black text-white font-mono tracking-tighter">{formatNumber(user.totalRewardsEarned)}</p>
-                            </div>
-                            <div>
-                              <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Covenants</p>
-                              <p className="text-sm font-black text-white font-mono tracking-tighter">{user.activeLocksCount}</p>
+                            {/* Main Stat (Visible on Mobile) */}
+                            <div className="text-right">
+                              <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest md:hidden mb-0.5">Authority</p>
+                              <p className="text-sm md:text-xl font-black text-white font-mono tracking-tighter">
+                                {formatNumber(user.totalWeight)}
+                              </p>
+                              <p className="hidden md:block text-[9px] font-mono text-white/20 uppercase tracking-widest mt-1">Authority</p>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                        </AccordionTrigger>
+
+                        <AccordionContent className="px-4 md:px-6 pb-6">
+                          <div className="pt-4 border-t border-white/5 space-y-6">
+                            {/* Detailed Stats Grid */}
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                              <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5">
+                                <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Vault Balance</p>
+                                <p className="text-sm font-black text-white font-mono">{formatNumber(user.totalLocked)}</p>
+                              </div>
+                              <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5">
+                                <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Divine Rewards</p>
+                                <p className="text-sm font-black text-white font-mono">{formatNumber(user.totalRewardsEarned)}</p>
+                              </div>
+                              <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5">
+                                <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Active Covenants</p>
+                                <p className="text-sm font-black text-white font-mono">{user.activeLocksCount}</p>
+                              </div>
+                              <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5">
+                                <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Global Percentile</p>
+                                <p className="text-sm font-black text-white font-mono">Top {((user.rank / totalUsers) * 100).toFixed(1)}%</p>
+                              </div>
+                            </div>
+
+                            {/* Action Buttons & Badges */}
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                              {/* Achievement Badges */}
+                              <div className="flex flex-wrap gap-2">
+                                {getAchievementBadges(user).map((badge, idx) => (
+                                  <div key={idx} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[9px] font-mono text-white/60">
+                                    <span>{badge.icon}</span>
+                                    <span className="uppercase tracking-widest">{badge.name}</span>
+                                  </div>
+                                ))}
+                              </div>
+
+                              <div className="flex items-center gap-3">
+                                <button 
+                                  onClick={() => copyAddress(user.address)} 
+                                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-[9px] font-mono text-white/40 hover:text-white transition-all uppercase tracking-widest"
+                                >
+                                  {copiedAddress === user.address ? <CheckCircle className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                  {copiedAddress === user.address ? 'Copied' : 'Copy Address'}
+                                </button>
+                                <a 
+                                  href={`https://otter.pulsechain.com/address/${user.address}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all"
+                                >
+                                  <Anchor className="w-4 h-4" />
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    );
+                  })}
+                </Accordion>
               </div>}
           </div>
         </div>

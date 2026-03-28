@@ -434,44 +434,44 @@ const Burn = () => {
           {/* Recent Activity and Burn Mechanics */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Burn Revelations Section */}
-            <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 md:p-8">
-              <h3 className="text-lg font-black text-white uppercase tracking-tighter mb-8 flex items-center gap-3 font-sans">
-                <Activity className="w-5 h-5 text-white/40" />
+            <div className="relative liquid-glass rounded-2xl border border-white/10 p-5 md:p-8">
+              <h3 className="text-lg font-black text-white uppercase tracking-tighter mb-6 flex items-center gap-3 font-sans">
+                <Activity className="w-4 h-4 text-white/40" />
                 LIVE REVELATIONS
               </h3>
-              <div className="backdrop-blur-xl bg-white/[0.01] rounded-2xl p-4 max-h-[500px] overflow-y-auto border border-white/[0.05] scrollbar-none">
-                <div className="space-y-4">
+              <div className="backdrop-blur-xl bg-white/[0.01] rounded-2xl p-2 md:p-4 max-h-[450px] overflow-y-auto border border-white/[0.05] scrollbar-none">
+                <div className="space-y-3">
                   {recentNotifications.length > 0 ? (
                     recentNotifications.slice(0, 10).map((notification) => (
                       <div 
                         key={notification.id} 
-                        className="relative liquid-glass rounded-xl p-4 border border-white/[0.05] transition-all duration-300"
+                        className="relative liquid-glass rounded-xl p-3 md:p-4 border border-white/[0.05] transition-all duration-300"
                       >
-                        <div className="flex items-center justify-between mb-3">
-                          <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                        <div className="flex items-center justify-between mb-2">
+                          <span className={`text-[8px] font-mono px-2 py-0.5 rounded-full border ${
                             notification.type === 'penalty' 
                               ? 'border-red-500/30 text-red-400 bg-red-500/5' 
                               : 'border-white/20 text-white/60 bg-white/5'
                           }`}>
                             {notification.type === 'penalty' ? 'EXCISION' : 'COMBUSTION'}
                           </span>
-                          <span className="text-[10px] text-white/20 font-mono">
-                            {notification.timestamp.toLocaleTimeString()}
+                          <span className="text-[8px] text-white/20 font-mono">
+                            {notification.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
                         
-                        <div className="text-sm font-mono tracking-tight mb-3">
+                        <div className="text-[11px] md:text-sm font-mono tracking-tight mb-2">
                           <span className="text-white font-black">
                             {formatNumber(notification.amount)} ARK
                           </span>
-                          <span className="text-white/40"> consumed by </span>
+                          <span className="text-white/40"> by </span>
                           <button 
                             onClick={() => {
                               const originalBurn = burnHistory.find(b => b.txHash === notification.txHash);
                               const fullAddress = originalBurn?.wallet || notification.txHash;
                               window.open(`https://otter.pulsechain.com/address/${fullAddress}`, '_blank');
                             }}
-                            className="text-white/60 hover:text-white transition-colors underline decoration-white/20"
+                            className="text-white/60 hover:text-white transition-colors truncate max-w-[80px] inline-block align-bottom"
                           >
                             {notification.wallet}
                           </button>
@@ -479,10 +479,10 @@ const Burn = () => {
                         
                         <button 
                           onClick={() => window.open(`https://otter.pulsechain.com/tx/${notification.txHash}`, '_blank')}
-                          className="text-[9px] text-white/20 hover:text-white/40 transition-colors flex items-center gap-1 uppercase tracking-widest"
+                          className="text-[8px] text-white/20 hover:text-white/40 transition-colors flex items-center gap-1 uppercase tracking-widest"
                         >
-                          <ExternalLink className="w-3 h-3" />
-                          Verify on Ledger
+                          <ExternalLink className="w-2.5 h-2.5" />
+                          Verify
                         </button>
                       </div>
                     ))

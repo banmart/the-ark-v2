@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Flame, Users, Droplets, Lock, Database, Activity, Sparkles } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 const FeaturesSection = () => {
   const [pillarsPhase, setPillarsPhase] = useState(0);
@@ -148,150 +149,195 @@ const FeaturesSection = () => {
           </div>
         </div>
 
-        {/* ===== PREMIUM PILLAR CARDS GRID ===== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {pillars.map((pillar, index) => {
-            const IconComponent = pillar.icon;
-            const isActive = activePillar === pillar.id;
-            const revealDelay = 150 * index;
-            
-            return (
-              <div
-                key={pillar.id}
-                className={`relative group transition-all duration-700 ease-out ${
-                  pillarsPhase >= 2 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-12'
-                }`}
-                style={{ transitionDelay: `${revealDelay}ms` }}
-              >
-                {/* Outer glow ring */}
-                <div 
-                  className={`absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl ${
-                    isActive ? 'opacity-60' : ''
-                  }`}
-                  style={{ background: pillar.glowColor }}
-                />
-                
-                {/* Active pillar pulse ring */}
-                {isActive && (
+        {/* ===== PREMIUM PILLAR CARDS GRID/ACCORDION - Mobile First ===== */}
+        <div className={`transition-all duration-700 ease-out ${pillarsPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+          {/* Mobile Accordion */}
+          <div className="md:hidden">
+            <Accordion type="single" collapsible className="space-y-4">
+              {pillars.map((pillar) => {
+                const IconComponent = pillar.icon;
+                return (
+                  <AccordionItem 
+                    key={pillar.id} 
+                    value={`pillar-${pillar.id}`}
+                    className={`relative liquid-glass rounded-2xl border ${pillar.borderColor} overflow-hidden border-b-0`}
+                   >
+                    <AccordionTrigger className="hover:no-underline p-5 w-full">
+                      <div className="flex items-center justify-between w-full pr-4">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-2xl shrink-0 shadow-[0_0_15px_${pillar.glowColor}]`}>
+                            {pillar.emoji}
+                          </div>
+                          <div className="text-left">
+                            <p className={`text-sm font-black uppercase tracking-tighter ${pillar.textColor}`}>{pillar.title}</p>
+                            <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">[{pillar.subtitle}]</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-2xl font-black font-mono tracking-tighter ${pillar.textColor}`}>{pillar.percentage}</p>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-5 pb-6">
+                      <div className="pt-4 border-t border-white/5 space-y-4">
+                        <p className="text-xs text-white/60 leading-relaxed font-mono">
+                          {pillar.description}
+                        </p>
+                        <div className="flex items-center gap-2 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                          <Activity className={`w-3.5 h-3.5 ${pillar.textColor} animate-pulse`} />
+                          <span className={`text-[10px] font-mono uppercase tracking-widest ${pillar.textColor}`}>
+                            {pillar.liveMetric}
+                          </span>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {pillars.map((pillar, index) => {
+              const IconComponent = pillar.icon;
+              const isActive = activePillar === pillar.id;
+              const revealDelay = 150 * index;
+              
+              return (
+                <div
+                  key={pillar.id}
+                  className="relative group transition-all duration-700 ease-out"
+                  style={{ transitionDelay: `${revealDelay}ms` }}
+                >
+                  {/* Outer glow ring */}
                   <div 
-                    className="absolute -inset-2 rounded-2xl animate-pulse"
-                    style={{ 
-                      background: `linear-gradient(135deg, ${pillar.glowColor}, transparent)`,
-                      opacity: 0.3
-                    }}
+                    className={`absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl ${
+                      isActive ? 'opacity-60' : ''
+                    }`}
+                    style={{ background: pillar.glowColor }}
                   />
-                )}
-                
-                {/* Main card */}
-                <div className={`relative bg-white/[0.02] backdrop-blur-xl border rounded-2xl p-6 overflow-hidden transition-all duration-500 ${pillar.borderColor} ${pillar.borderHover} ${
-                  isActive ? 'border-opacity-80 shadow-2xl' : ''
-                } group-hover:-translate-y-1 group-hover:shadow-2xl`}>
                   
-                  {/* Top edge highlight */}
-                  <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                  
-                  {/* Gradient overlay on hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${pillar.gradient} opacity-0 group-hover:opacity-[0.05] transition-opacity duration-500 rounded-2xl`} />
-                  
-                  {/* Active pulse background */}
+                  {/* Active pillar pulse ring */}
                   {isActive && (
-                    <div className={`absolute inset-0 bg-gradient-to-br ${pillar.gradient} opacity-[0.03] animate-pulse rounded-2xl`} />
-                  )}
-
-                  {/* ===== STATUS BADGE ===== */}
-                  <div className="absolute top-3 right-3">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.03] backdrop-blur-sm border border-white/[0.06]">
-                      <div 
-                        className="w-1.5 h-1.5 rounded-full animate-pulse"
-                        style={{ 
-                          backgroundColor: pillar.glowColor.replace('0.4', '1'),
-                          boxShadow: `0 0 6px ${pillar.glowColor}`
-                        }}
-                      />
-                      <span className={`${pillar.textColor} font-mono text-[10px] tracking-wider`}>
-                        {pillar.status}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* ===== ICON SECTION ===== */}
-                  <div className="text-center mb-5 mt-2">
-                    <div className="relative inline-block">
-                      {/* Icon glow */}
-                      <div 
-                        className="absolute inset-0 rounded-full blur-xl opacity-40 group-hover:opacity-70 transition-opacity duration-500"
-                        style={{ background: pillar.glowColor }}
-                      />
-                      
-                      {/* Frosted icon container */}
-                      <div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] group-hover:scale-110 transition-transform duration-500">
-                        <span className="text-3xl drop-shadow-lg">{pillar.emoji}</span>
-                      </div>
-                      
-                      {/* Small icon badge */}
-                      <div className={`absolute -bottom-1 -right-1 w-6 h-6 flex items-center justify-center rounded-full bg-black/60 border ${pillar.borderColor}`}>
-                        <IconComponent className={`w-3 h-3 ${pillar.textColor}`} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ===== TITLE ===== */}
-                  <h3 className={`text-lg font-bold mb-1 text-center font-mono bg-gradient-to-r ${pillar.gradient} bg-clip-text text-transparent`}>
-                    {pillar.title}
-                  </h3>
-                  <div className="text-[11px] text-white/40 text-center mb-5 font-mono tracking-wide">
-                    [{pillar.subtitle}]
-                  </div>
-
-                  {/* ===== METRICS ===== */}
-                  <div className="text-center mb-5">
                     <div 
-                      className={`text-4xl font-black font-mono ${pillar.textColor}`}
-                      style={{ textShadow: `0 0 20px ${pillar.glowColor}` }}
-                    >
-                      {pillar.percentage}
-                    </div>
-                    <div className="text-xs text-white/50 font-mono mt-1">
-                      {pillar.detail}
-                    </div>
-                    {pillar.liveMetric && (
-                      <div className="text-[10px] text-white/30 font-mono mt-1">
-                        {pillar.liveMetric}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* ===== DESCRIPTION ===== */}
-                  <p className="text-white/60 text-center text-sm leading-relaxed mb-5">
-                    {pillar.description}
-                  </p>
-
-                  {/* ===== FOOTER ===== */}
-                  <div className="pt-4 border-t border-white/[0.06]">
-                    <div className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.04]">
-                      <Activity 
-                        className={`w-3 h-3 ${pillar.textColor} animate-pulse`}
-                        style={{ filter: `drop-shadow(0 0 4px ${pillar.glowColor})` }}
-                      />
-                      <span className={`${pillar.textColor} font-mono text-[10px] tracking-wider`}>
-                        COVENANT LAW ACTIVE
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Scan line effect on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden rounded-2xl">
-                    <div 
-                      className={`absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r ${pillar.gradient}`}
-                      style={{ animation: 'scan-line 2.5s ease-in-out infinite' }}
+                      className="absolute -inset-2 rounded-2xl animate-pulse"
+                      style={{ 
+                        background: `linear-gradient(135deg, ${pillar.glowColor}, transparent)`,
+                        opacity: 0.3
+                      }}
                     />
+                  )}
+                  
+                  {/* Main card */}
+                  <div className={`relative bg-white/[0.02] backdrop-blur-xl border rounded-2xl p-6 overflow-hidden transition-all duration-500 ${pillar.borderColor} ${pillar.borderHover} ${
+                    isActive ? 'border-opacity-80 shadow-2xl' : ''
+                  } group-hover:-translate-y-1 group-hover:shadow-2xl`}>
+                    
+                    {/* Top edge highlight */}
+                    <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    
+                    {/* Gradient overlay on hover */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${pillar.gradient} opacity-0 group-hover:opacity-[0.05] transition-opacity duration-500 rounded-2xl`} />
+                    
+                    {/* Active pulse background */}
+                    {isActive && (
+                      <div className={`absolute inset-0 bg-gradient-to-br ${pillar.gradient} opacity-[0.03] animate-pulse rounded-2xl`} />
+                    )}
+  
+                    {/* ===== STATUS BADGE ===== */}
+                    <div className="absolute top-3 right-3">
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.03] backdrop-blur-sm border border-white/[0.06]">
+                        <div 
+                          className="w-1.5 h-1.5 rounded-full animate-pulse"
+                          style={{ 
+                            backgroundColor: pillar.glowColor.replace('0.4', '1'),
+                            boxShadow: `0 0 6px ${pillar.glowColor}`
+                          }}
+                        />
+                        <span className={`${pillar.textColor} font-mono text-[10px] tracking-wider`}>
+                          {pillar.status}
+                        </span>
+                      </div>
+                    </div>
+  
+                    {/* ===== ICON SECTION ===== */}
+                    <div className="text-center mb-5 mt-2">
+                      <div className="relative inline-block">
+                        {/* Icon glow */}
+                        <div 
+                          className="absolute inset-0 rounded-full blur-xl opacity-40 group-hover:opacity-70 transition-opacity duration-500"
+                          style={{ background: pillar.glowColor }}
+                        />
+                        
+                        {/* Frosted icon container */}
+                        <div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] group-hover:scale-110 transition-transform duration-500">
+                          <span className="text-3xl drop-shadow-lg">{pillar.emoji}</span>
+                        </div>
+                        
+                        {/* Small icon badge */}
+                        <div className={`absolute -bottom-1 -right-1 w-6 h-6 flex items-center justify-center rounded-full bg-black/60 border ${pillar.borderColor}`}>
+                          <IconComponent className={`w-3 h-3 ${pillar.textColor}`} />
+                        </div>
+                      </div>
+                    </div>
+  
+                    {/* ===== TITLE ===== */}
+                    <h3 className={`text-lg font-bold mb-1 text-center font-mono bg-gradient-to-r ${pillar.gradient} bg-clip-text text-transparent`}>
+                      {pillar.title}
+                    </h3>
+                    <div className="text-[11px] text-white/40 text-center mb-5 font-mono tracking-wide">
+                      [{pillar.subtitle}]
+                    </div>
+  
+                    {/* ===== METRICS ===== */}
+                    <div className="text-center mb-5">
+                      <div 
+                        className={`text-4xl font-black font-mono ${pillar.textColor}`}
+                        style={{ textShadow: `0 0 20px ${pillar.glowColor}` }}
+                      >
+                        {pillar.percentage}
+                      </div>
+                      <div className="text-xs text-white/50 font-mono mt-1">
+                        {pillar.detail}
+                      </div>
+                      {pillar.liveMetric && (
+                        <div className="text-[10px] text-white/30 font-mono mt-1">
+                          {pillar.liveMetric}
+                        </div>
+                      )}
+                    </div>
+  
+                    {/* ===== DESCRIPTION ===== */}
+                    <p className="text-white/60 text-center text-sm leading-relaxed mb-5">
+                      {pillar.description}
+                    </p>
+  
+                    {/* ===== FOOTER ===== */}
+                    <div className="pt-4 border-t border-white/[0.06]">
+                      <div className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.04]">
+                        <Activity 
+                          className={`w-3 h-3 ${pillar.textColor} animate-pulse`}
+                          style={{ filter: `drop-shadow(0 0 4px ${pillar.glowColor})` }}
+                        />
+                        <span className={`${pillar.textColor} font-mono text-[10px] tracking-wider`}>
+                          COVENANT LAW ACTIVE
+                        </span>
+                      </div>
+                    </div>
+  
+                    {/* Scan line effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden rounded-2xl">
+                      <div 
+                        className={`absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r ${pillar.gradient}`}
+                        style={{ animation: 'scan-line 2.5s ease-in-out infinite' }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
