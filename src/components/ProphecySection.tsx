@@ -209,45 +209,6 @@ const ProphecySection = () => {
             <ProphecyModule key={prophecy.id} prophecy={prophecy} index={index} />
           ))}
         </div>
-
-        {/* Premium Status Display */}
-        <div className={`transition-all duration-1000 delay-500 ${phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="relative max-w-3xl mx-auto">
-            {/* Outer glow */}
-            <div className="absolute -inset-1 rounded-2xl bg-purple-500/20 blur-xl" />
-            
-            {/* Main container */}
-            <div className="relative bg-white/[0.02] backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-8 overflow-hidden">
-              {/* Top edge highlight */}
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              
-              {/* Header */}
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
-                </div>
-                <span className="text-2xl font-black bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent tracking-wider">
-                  COVENANT STATUS: ACTIVE
-                </span>
-              </div>
-              
-              {/* Status indicators */}
-              <div className="flex flex-wrap justify-center gap-4 mb-6">
-                {prophecies.map((p) => (
-                  <div key={p.id} className={`flex items-center gap-2 px-4 py-2 rounded-full bg-${p.color}-500/10 border border-${p.color}-500/20`}>
-                    <div className={`w-2 h-2 rounded-full bg-${p.color}-400 animate-pulse`} />
-                    <span className={`text-${p.color}-400 text-xs font-mono tracking-wider`}>{p.statusCode}</span>
-                  </div>
-                ))}
-              </div>
-              
-              {/* Message */}
-              <p className="text-white/60 font-mono text-sm text-center leading-relaxed">
-                The Sacred Covenant is upheld. Immutable laws active. The Ark of the Covenant preserves the legacy of true wealth.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* CSS Animations */}
