@@ -16,6 +16,7 @@ import FeaturesSection from '../FeaturesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
 import ProphecySection from '../ProphecySection';
+import CloudVideoSection from '../CloudVideoSection';
 import ChartSection from '../ChartSection';
 import Footer from '../Footer';
 
@@ -33,8 +34,8 @@ const PageLayout = memo(({ children }: PageLayoutProps) => {
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
 
   const { data: contractData, loading: contractLoading } = useContractData();
-  const { isConnected, account, plsBalance, arkBalance, isConnecting, handleConnectWallet } = useWalletContext();
-  const { fromAmount, toAmount, isLoading: swapLoading, slippage, canSwap, setFromAmount, handleSwap } = useSwapContext();
+  const { isConnected, account, plsBalance, arkBalance, tokenBalances, isConnecting, handleConnectWallet } = useWalletContext();
+  const { fromAmount, fromToken, toAmount, isLoading: swapLoading, slippage, canSwap, setFromAmount, setFromToken, handleSwap } = useSwapContext();
   const { showOnboarding, setShowOnboarding } = useOnboardingContext();
 
   // Preload background image (rule: bundle-preload)
@@ -120,14 +121,17 @@ const PageLayout = memo(({ children }: PageLayoutProps) => {
       {/* Swap Interface - Restoration */}
       <SwapSection 
         fromAmount={fromAmount}
+        fromToken={fromToken}
         toAmount={toAmount}
         plsBalance={plsBalance}
         arkBalance={arkBalance}
+        tokenBalances={tokenBalances}
         swapLoading={swapLoading}
         slippage={slippage}
         canSwap={canSwap}
         isConnected={isConnected}
         setFromAmount={setFromAmount}
+        setFromToken={setFromToken}
         handleSwap={handleSwap}
       />
 
@@ -142,6 +146,9 @@ const PageLayout = memo(({ children }: PageLayoutProps) => {
         contractData={contractData}
         contractLoading={contractLoading}
       />
+
+      {/* Atmospheric Cloud Section */}
+
 
       {/* Prophecy Section */}
       <ProphecySection />

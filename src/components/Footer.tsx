@@ -13,14 +13,31 @@ const Footer = () => {
         isOpen={isDisclaimerOpen} 
         onClose={() => setIsDisclaimerOpen(false)} 
       />
-      <footer className="relative py-12 md:py-20 px-4 sm:px-6 border-t border-white/5 overflow-hidden">
-        {/* Base black background */}
-        <div className="absolute inset-0 z-0 bg-black" />
+      <footer className="relative py-12 md:py-20 px-4 sm:px-6 border-t border-white/5 overflow-hidden liquid-glass">
+        {/* Cinematic Video Background */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover object-center scale-110 opacity-60"
+          >
+            <source src="/assets/videos/clouds-section.mp4" type="video/mp4" />
+          </video>
+          
+          {/* Cinematic Overlays & Vignette - Restored with Center Alignment */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.9)_100%)] contrast-125" />
+          
+          {/* Glass highlight overlay */}
+          <div className="absolute inset-0 bg-white/[0.01] pointer-events-none" />
+        </div>
 
-
-        {/* Main Glass Container */}
+        {/* Main Glass Container - Keeping the inner card for structure but making it fully transparent to let the footer glass show through */}
         <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="relative bg-white/[0.02] backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-6 sm:p-8 lg:p-10 overflow-hidden">
+          <div className="relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6 sm:p-8 lg:p-10 overflow-hidden shadow-2xl">
             {/* Top edge highlight */}
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
 

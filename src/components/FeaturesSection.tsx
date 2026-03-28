@@ -136,7 +136,7 @@ const FeaturesSection = () => {
           </div>
           
           {/* Premium gradient title */}
-          <h2 className="mb-4 bg-gradient-to-r from-cyan-300 via-teal-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(34,211,238,0.3)]">
+          <h2 className="mb-4 text-4xl md:text-6xl font-black tracking-tighter uppercase bg-gradient-to-r from-cyan-300 via-teal-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(34,211,238,0.3)]">
             THE FOUR COVENANT PILLARS
           </h2>
           

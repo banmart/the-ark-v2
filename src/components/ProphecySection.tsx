@@ -186,7 +186,7 @@ const ProphecySection = () => {
           </div>
           
           {/* Gradient title */}
-          <h2 className="text-white mb-6 tracking-tight">
+          <h2 className="mb-6 text-4xl md:text-6xl font-black tracking-tighter uppercase">
             <span className="bg-gradient-to-r from-purple-400 via-cyan-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
               SACRED REVELATIONS
             </span>

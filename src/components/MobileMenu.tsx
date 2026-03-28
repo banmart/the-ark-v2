@@ -77,9 +77,9 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
         style={{ background: 'transparent' }}
       >
         {/* ========== PREMIUM MULTI-LAYER BACKGROUND ========== */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 liquid-glass">
           {/* Base Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900/95 to-black"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-gray-900/40 to-black/40"></div>
           
           {/* Animated Gradient Orbs */}
           <div className="absolute inset-0 overflow-hidden">

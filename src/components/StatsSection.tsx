@@ -217,7 +217,7 @@ const StatsSection = memo(({
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Main Section Heading - Moved from Hero */}
         <div className={`text-center mb-24 transition-all duration-1000 ${showHeader ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <h2 className="text-white text-lg md:text-2xl font-black tracking-[0.6em] uppercase">
+          <h2 className="text-white text-4xl md:text-6xl font-black tracking-tighter uppercase">
             IMMUTABLE STATUTES OF WEALTH PRESERVATION
           </h2>
           <div className="mt-6 flex justify-center">
@@ -228,7 +228,7 @@ const StatsSection = memo(({
         {/* Protocol metrics header */}
         <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 transition-all duration-1000 ${showHeader ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="space-y-2">
-            <h3 className="text-white/40 tracking-[0.3em] font-mono text-[10px] md:text-xs uppercase">
+            <h3 className="text-white/40 tracking-tighter font-mono text-[10px] md:text-xs uppercase">
               COVENANT METRICS
             </h3>
             {/* Accent line */}

@@ -10,12 +10,30 @@ interface SwapQuote {
 
 class SwapService {
   private provider: ethers.JsonRpcProvider;
+  private erc20Abi = [
+    'function name() view returns (string)',
+    'function symbol() view returns (string)',
+    'function decimals() view returns (uint8)',
+    'function balanceOf(address) view returns (uint256)',
+    'function allowance(address owner, address spender) view returns (uint256)',
+    'function approve(address spender, uint256 amount) returns (bool)'
+  ];
   
   constructor() {
     this.provider = new ethers.JsonRpcProvider('https://rpc.pulsechain.com');
   }
 
-  async getSwapQuote(amountIn: string, slippage: number): Promise<SwapQuote | null> {
+  async getTokenDecimals(tokenAddress: string): Promise<number> {
+    try {
+      const token = new ethers.Contract(tokenAddress, ['function decimals() view returns (uint8)'], this.provider);
+      return await token.decimals();
+    } catch (error) {
+      console.warn('Error fetching decimals, defaulting to 18:', error);
+      return 18;
+    }
+  }
+
+  async getSwapQuote(amountIn: string, slippage: number, fromToken: string = 'PLS'): Promise<SwapQuote | null> {
     try {
       const router = new ethers.Contract(
         CONTRACT_ADDRESSES.PULSEX_V2_ROUTER,
@@ -23,12 +41,16 @@ class SwapService {
         this.provider
       );
 
-      const amountInWei = ethers.parseEther(amountIn);
-      const path = [CONTRACT_ADDRESSES.WPLS, CONTRACT_ADDRESSES.ARK_TOKEN];
+      const fromTokenAddress = fromToken === 'PLS' ? CONTRACT_ADDRESSES.WPLS : CONTRACT_ADDRESSES[fromToken as keyof typeof CONTRACT_ADDRESSES];
+      const decimals = fromToken === 'PLS' ? 18 : await this.getTokenDecimals(fromTokenAddress);
+      
+      const amountInWei = ethers.parseUnits(amountIn, decimals);
+      const path = [fromTokenAddress, CONTRACT_ADDRESSES.ARK_TOKEN];
 
       console.log('Getting swap quote for:', {
         amountIn,
-        amountInWei: amountInWei.toString(),
+        fromToken,
+        fromTokenAddress,
         path,
         router: CONTRACT_ADDRESSES.PULSEX_V2_ROUTER
       });
@@ -55,7 +77,8 @@ class SwapService {
     amountIn: string,
     slippage: number,
     signer: ethers.JsonRpcSigner,
-    recipient: string
+    recipient: string,
+    fromToken: string = 'PLS'
   ): Promise<any> {
     try {
       const router = new ethers.Contract(
@@ -64,8 +87,27 @@ class SwapService {
         signer
       );
 
-      const amountInWei = ethers.parseEther(amountIn);
-      const path = [CONTRACT_ADDRESSES.WPLS, CONTRACT_ADDRESSES.ARK_TOKEN];
+      const fromTokenAddress = fromToken === 'PLS' ? CONTRACT_ADDRESSES.WPLS : CONTRACT_ADDRESSES[fromToken as keyof typeof CONTRACT_ADDRESSES];
+      const decimals = fromToken === 'PLS' ? 18 : await this.getTokenDecimals(fromTokenAddress);
+      const amountInWei = ethers.parseUnits(amountIn, decimals);
+      const path = [fromTokenAddress, CONTRACT_ADDRESSES.ARK_TOKEN];
+
+      // Handle Approval for ERC20
+      if (fromToken !== 'PLS') {
+        const tokenContract = new ethers.Contract(
+          fromTokenAddress,
+          ['function approve(address spender, uint256 amount) returns (bool)', 'function allowance(address owner, address spender) view returns (uint256)'],
+          signer
+        );
+        
+        const allowance = await tokenContract.allowance(recipient, CONTRACT_ADDRESSES.PULSEX_V2_ROUTER);
+        if (allowance < amountInWei) {
+          console.log('Approving token...');
+          const approveTx = await tokenContract.approve(CONTRACT_ADDRESSES.PULSEX_V2_ROUTER, ethers.MaxUint256);
+          await approveTx.wait();
+          console.log('Approval confirmed');
+        }
+      }
 
       // Get expected output amount
       const amounts = await router.getAmountsOut(amountInWei, path);
@@ -78,26 +120,28 @@ class SwapService {
       // Set deadline to 20 minutes from now
       const deadline = Math.floor(Date.now() / 1000) + 1200;
 
-      console.log('Executing swap:', {
-        amountIn,
-        amountInWei: amountInWei.toString(),
-        amountOutMin: amountOutMin.toString(),
-        path,
-        recipient,
-        deadline
-      });
-
-      const tx = await router.swapExactETHForTokens(
-        amountOutMin,
-        path,
-        recipient,
-        deadline,
-        { value: amountInWei }
-      );
+      let tx;
+      if (fromToken === 'PLS') {
+        // Swap PLS for ARK
+        tx = await router.swapExactETHForTokensSupportingFeeOnTransferTokens(
+          amountOutMin,
+          path,
+          recipient,
+          deadline,
+          { value: amountInWei }
+        );
+      } else {
+        // Swap ERC20 for ARK
+        tx = await router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
+          amountInWei,
+          amountOutMin,
+          path,
+          recipient,
+          deadline
+        );
+      }
 
       console.log('Swap transaction sent:', tx.hash);
-      
-      // Wait for confirmation
       const receipt = await tx.wait();
       
       return {
@@ -113,21 +157,24 @@ class SwapService {
     }
   }
 
-  async checkPairExists(): Promise<boolean> {
+  async checkPairExists(fromToken: string = 'PLS'): Promise<boolean> {
     try {
+      const fromTokenAddress = fromToken === 'PLS' ? CONTRACT_ADDRESSES.WPLS : CONTRACT_ADDRESSES[fromToken as keyof typeof CONTRACT_ADDRESSES];
+      const decimals = fromToken === 'PLS' ? 18 : await this.getTokenDecimals(fromTokenAddress);
+      
       const router = new ethers.Contract(
         CONTRACT_ADDRESSES.PULSEX_V2_ROUTER,
         DEX_ROUTER_ABI,
         this.provider
       );
 
-      const amountInWei = ethers.parseEther('0.001'); // Small test amount
-      const path = [CONTRACT_ADDRESSES.WPLS, CONTRACT_ADDRESSES.ARK_TOKEN];
+      const amountInWei = ethers.parseUnits('0.001', decimals);
+      const path = [fromTokenAddress, CONTRACT_ADDRESSES.ARK_TOKEN];
 
       await router.getAmountsOut(amountInWei, path);
       return true;
     } catch (error) {
-      console.warn('ARK/WPLS pair might not exist or have liquidity:', error);
+      console.warn(`Pair for ${fromToken} might not exist or have liquidity:`, error);
       return false;
     }
   }

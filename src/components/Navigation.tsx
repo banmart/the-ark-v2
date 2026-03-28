@@ -38,7 +38,7 @@ const Navigation = ({
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 font-sans ${isScrolled ? 'bg-black/60 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'}`}>
+    <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 font-sans ${isScrolled ? 'liquid-glass border-b border-white/5' : 'bg-transparent'}`}>
       <div className="mx-auto px-6 md:px-[120px] py-[20px] flex justify-between items-center transition-all duration-500">
         
         {/* Left Side: Logo & Status Indicators */}
@@ -118,7 +118,7 @@ const Navigation = ({
 
       {/* Mobile Menu Layer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-black/95 backdrop-blur-2xl border-t border-white/10 p-8 flex flex-col gap-8 animate-fade-in shadow-2xl">
+        <div className="lg:hidden absolute top-full left-0 w-full liquid-glass border-t border-white/10 p-8 flex flex-col gap-8 animate-fade-in shadow-2xl">
           {menuItems.map((item) => (
             <Link 
               key={item.label}

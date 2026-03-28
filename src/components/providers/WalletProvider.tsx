@@ -8,6 +8,7 @@ interface WalletContextType {
   account: string | null;
   plsBalance: string;
   arkBalance: string;
+  tokenBalances: Record<string, string>;
   isConnecting: boolean;
   handleConnectWallet: () => Promise<void>;
 }
@@ -32,6 +33,7 @@ export const WalletProvider = ({ children }: WalletProviderProps) => {
     account,
     plsBalance,
     arkBalance,
+    tokenBalances,
     isConnecting,
     connectWallet,
   } = useWallet();
@@ -58,6 +60,7 @@ export const WalletProvider = ({ children }: WalletProviderProps) => {
     account,
     plsBalance,
     arkBalance,
+    tokenBalances,
     isConnecting,
     handleConnectWallet,
   };

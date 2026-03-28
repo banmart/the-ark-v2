@@ -9,7 +9,7 @@ export const NETWORKS = {
       symbol: 'PLS',
       decimals: 18,
     },
-    rpcUrls: ['https://xtailgacbmhdtdxnqjdv.supabase.co/functions/v1/rpc-proxy'],
+    rpcUrls: ['https://rpc.pulsechain.com'],
     blockExplorerUrls: ['https://scan.pulsechain.com/'],
   },
 };
@@ -22,6 +22,8 @@ export const CONTRACT_ADDRESSES = {
   WPLS: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27',
   USDC: '0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07',
   DAI: '0xefD766cCb38EaF1dfd701853BFCe31359239F305',
+  WETH: '0x02DcdD04e3F455D838cd1249292C58f3B79e3C3C',
+  WBTC: '0xb17D901469B9208B17d916112988A3FeD19b5cA1',
   ARK_DAI_PAIR: '',
   ARK_PLS_PAIR: '',
   BURN_ADDRESS: '0x0000000000000000000000000000000000000369',
@@ -193,6 +195,9 @@ export const ARK_TOKEN_ABI = [
 export const DEX_ROUTER_ABI = [
   'function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)',
   'function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)',
+  'function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)',
+  'function swapExactETHForTokensSupportingFeeOnTransferTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable',
+  'function swapExactTokensForTokensSupportingFeeOnTransferTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external',
   'function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts)',
   'function getAmountsIn(uint amountOut, address[] calldata path) external view returns (uint[] memory amounts)',
   'function addLiquidityETH(address token, uint amountTokenDesired, uint amountTokenMin, uint amountETHMin, address to, uint deadline) external payable returns (uint amountToken, uint amountETH, uint liquidity)',

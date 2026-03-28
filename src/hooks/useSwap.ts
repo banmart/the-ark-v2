@@ -6,6 +6,7 @@ import { swapService } from '../services/swapService';
 
 interface SwapState {
   fromAmount: string;
+  fromToken: string;
   toAmount: string;
   isLoading: boolean;
   slippage: number;
@@ -18,25 +19,26 @@ export const useSwap = () => {
   const { provider, signer, account, isConnected } = useWallet();
   const [swapState, setSwapState] = useState<SwapState>({
     fromAmount: '',
+    fromToken: 'PLS',
     toAmount: '',
     isLoading: false,
-    slippage: 2, // 2% default slippage
+    slippage: 1, // 1% default slippage
     priceImpact: 0,
     minimumReceived: '',
     pairExists: false,
   });
 
-  // Check if pair exists on mount
+  // Check if pair exists whenever fromToken changes
   useEffect(() => {
     const checkPair = async () => {
-      const exists = await swapService.checkPairExists();
+      const exists = await swapService.checkPairExists(swapState.fromToken);
       setSwapState(prev => ({ ...prev, pairExists: exists }));
     };
     checkPair();
-  }, []);
+  }, [swapState.fromToken]);
 
   // Calculate swap output using real DEX data
-  const calculateSwapOutput = useCallback(async (inputAmount: string) => {
+  const calculateSwapOutput = useCallback(async (inputAmount: string, token: string) => {
     if (!inputAmount || parseFloat(inputAmount) === 0) {
       setSwapState(prev => ({ 
         ...prev, 
@@ -48,9 +50,9 @@ export const useSwap = () => {
     }
 
     try {
-      console.log('Calculating swap output for:', inputAmount);
+      console.log('Calculating swap output for:', inputAmount, token);
       
-      const quote = await swapService.getSwapQuote(inputAmount, swapState.slippage);
+      const quote = await swapService.getSwapQuote(inputAmount, swapState.slippage, token);
       
       if (quote) {
         setSwapState(prev => ({ 
@@ -60,14 +62,12 @@ export const useSwap = () => {
           minimumReceived: quote.minimumReceived
         }));
       } else {
-        // Fallback if quote fails - use approximate calculation
-        const approximateRate = 6500; // Approximate PLS:ARK rate
-        const output = (parseFloat(inputAmount) * approximateRate).toString();
+        // Fallback if quote fails
         setSwapState(prev => ({ 
           ...prev, 
-          toAmount: output,
+          toAmount: '0.00',
           priceImpact: 0,
-          minimumReceived: (parseFloat(output) * (100 - swapState.slippage) / 100).toString()
+          minimumReceived: '0.00'
         }));
       }
     } catch (error) {
@@ -88,27 +88,19 @@ export const useSwap = () => {
     }
 
     if (!swapState.pairExists) {
-      throw new Error('ARK/WPLS pair not found on PulseX. Please check if liquidity exists.');
+      throw new Error(`${swapState.fromToken}/ARK pair not found on PulseX. Please check if liquidity exists.`);
     }
 
     setSwapState(prev => ({ ...prev, isLoading: true }));
 
     try {
-      console.log('Executing real swap:', {
-        fromAmount: swapState.fromAmount,
-        toAmount: swapState.toAmount,
-        slippage: swapState.slippage,
-        minimumReceived: swapState.minimumReceived,
-      });
-
       const result = await swapService.executeSwap(
         swapState.fromAmount,
         swapState.slippage,
         signer,
-        account
+        account,
+        swapState.fromToken
       );
-
-      console.log('Swap completed:', result);
 
       // Reset form after successful swap
       setSwapState(prev => ({
@@ -131,14 +123,22 @@ export const useSwap = () => {
   // Set input amount and calculate output
   const setFromAmount = (amount: string) => {
     setSwapState(prev => ({ ...prev, fromAmount: amount }));
-    calculateSwapOutput(amount);
+    calculateSwapOutput(amount, swapState.fromToken);
+  };
+
+  // Set source token
+  const setFromToken = (token: string) => {
+    setSwapState(prev => ({ ...prev, fromToken: token }));
+    if (swapState.fromAmount) {
+      calculateSwapOutput(swapState.fromAmount, token);
+    }
   };
 
   // Set slippage and recalculate if needed
   const setSlippage = (slippage: number) => {
     setSwapState(prev => ({ ...prev, slippage }));
     if (swapState.fromAmount) {
-      calculateSwapOutput(swapState.fromAmount);
+      calculateSwapOutput(swapState.fromAmount, swapState.fromToken);
     }
   };
 
@@ -151,6 +151,7 @@ export const useSwap = () => {
   return {
     ...swapState,
     setFromAmount,
+    setFromToken,
     setSlippage,
     executeSwap,
     canSwap,

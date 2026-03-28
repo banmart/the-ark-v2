@@ -3,32 +3,48 @@ import { ArrowUpDown, Zap, Shield, Activity, Database, Cpu, Info, Settings, Arro
 
 interface SwapSectionProps {
   fromAmount: string;
+  fromToken: string;
   toAmount: string;
   plsBalance: string;
   arkBalance: string;
+  tokenBalances: Record<string, string>;
   swapLoading: boolean;
   slippage: number;
   canSwap: boolean;
   isConnected: boolean;
   setFromAmount: (amount: string) => void;
+  setFromToken: (token: string) => void;
   setSlippage?: (amount: number) => void;
   handleSwap: () => void;
 }
 
 const SwapSection = ({
   fromAmount,
+  fromToken,
   toAmount,
   plsBalance,
   arkBalance,
+  tokenBalances,
   swapLoading,
   slippage,
   canSwap,
   isConnected,
   setFromAmount,
+  setFromToken,
   handleSwap
 }: SwapSectionProps) => {
   const [showSettings, setShowSettings] = useState(false);
   const [activeTab, setActiveTab] = useState('swap');
+
+  const tokens = [
+    { symbol: 'PLS', name: 'Pulse', color: 'bg-white/10' },
+    { symbol: 'USDC', name: 'USD Coin', color: 'bg-blue-500/20' },
+    { symbol: 'DAI', name: 'Dai Stablecoin', color: 'bg-yellow-500/20' },
+    { symbol: 'WETH', name: 'Wrapped Ether', color: 'bg-purple-500/20' },
+    { symbol: 'WBTC', name: 'Wrapped Bitcoin', color: 'bg-orange-500/20' },
+  ];
+
+  const currentBalance = fromToken === 'PLS' ? plsBalance : (tokenBalances[fromToken] || '0');
 
   return (
     <section id="swap" className="relative z-10 py-24 px-6 bg-black">
@@ -52,11 +68,13 @@ const SwapSection = ({
               </button>
             </div>
 
-            {/* From Input (PLS) */}
+            {/* From Input (Selected Token) */}
             <div className="space-y-4">
               <div className="flex justify-between items-end px-1">
-                <span className="text-[10px] text-white/20 font-black uppercase tracking-[0.3em] font-mono">SOURCE TENSION (PLS)</span>
-                <span className="text-[10px] text-white/60 font-mono tracking-widest uppercase">RESERVES: {parseFloat(plsBalance).toLocaleString()}</span>
+                <span className="text-[10px] text-white/20 font-black uppercase tracking-[0.3em] font-mono">SOURCE TENSION ({fromToken})</span>
+                <span className="text-[10px] text-white/60 font-mono tracking-widest uppercase">
+                  RESERVES: {parseFloat(currentBalance).toLocaleString()}
+                </span>
               </div>
               <div className="relative p-10 rounded-3xl bg-white/[0.02] border border-white/10 group/input hover:border-white/20 transition-all duration-500">
                 <div className="flex justify-between items-center gap-8">
@@ -67,9 +85,21 @@ const SwapSection = ({
                     placeholder="0.00"
                     className="w-full bg-transparent border-none text-5xl font-black text-white placeholder:text-white/5 focus:ring-0 p-0 font-mono tracking-tighter"
                   />
-                  <div className="flex items-center gap-4 px-6 py-3 bg-white/5 rounded-2xl border border-white/10">
-                    <div className="w-6 h-6 bg-white/10 rounded-full border border-white/20" />
-                    <span className="text-sm font-black text-white tracking-[0.2em] font-mono">PLS</span>
+                  
+                  {/* Token Dropdown Selector */}
+                  <div className="relative flex-shrink-0">
+                    <select
+                      value={fromToken}
+                      onChange={(e) => setFromToken(e.target.value)}
+                      className="appearance-none bg-white/5 border border-white/10 rounded-2xl px-6 py-3 pr-10 text-sm font-black text-white tracking-[0.2em] font-mono focus:outline-none focus:border-white/30 cursor-pointer hover:bg-white/10 transition-all"
+                    >
+                      {tokens.map((token) => (
+                        <option key={token.symbol} value={token.symbol} className="bg-neutral-900 text-white">
+                          {token.symbol}
+                        </option>
+                      ))}
+                    </select>
+                    <ArrowDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-white/40 pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -86,7 +116,7 @@ const SwapSection = ({
             <div className="space-y-4">
               <div className="flex justify-between items-end px-1">
                 <span className="text-[10px] text-white/20 font-black uppercase tracking-[0.3em] font-mono">REVELATION MAGNITUDE (ARK)</span>
-                <span className="text-[10px] text-white/60 font-mono tracking-widest uppercase">EXPECTED: {parseFloat(arkBalance).toLocaleString()}</span>
+                <span className="text-[10px] text-white/60 font-mono tracking-widest uppercase">EXPECTED: {parseFloat(toAmount || '0').toLocaleString()}</span>
               </div>
               <div className="relative p-10 rounded-3xl bg-white/5 border border-white/20">
                 <div className="flex justify-between items-center gap-8">
@@ -104,12 +134,12 @@ const SwapSection = ({
             {/* Metrics Info */}
             <div className="grid grid-cols-2 gap-4 pt-4">
               <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-                <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] mb-1 font-mono">Exchange</p>
-                <p className="text-xs text-white/60 font-mono italic">1 PLS = 0.00045 ARK</p>
+                <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] mb-1 font-mono">Current Pair</p>
+                <p className="text-xs text-white/60 font-mono italic">{fromToken} / ARK</p>
               </div>
               <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01]">
-                <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] mb-1 font-mono">Slip</p>
-                <p className="text-xs text-white/60 font-mono">0.05%</p>
+                <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] mb-1 font-mono">Slippage</p>
+                <p className="text-xs text-white/60 font-mono">{slippage}%</p>
               </div>
             </div>
 
@@ -129,7 +159,7 @@ const SwapSection = ({
                   <>
                     <Zap size={20} className="text-black group-hover/btn:scale-125 transition-transform duration-500" />
                     <span className="text-black font-black uppercase tracking-[0.4em] text-[10px] font-mono">
-                      {isConnected ? 'INITIATE RITUAL' : 'AWAKEN SOUL'}
+                      {isConnected ? (canSwap ? 'INITIATE RITUAL' : 'INSUFFICIENT LIQUIDITY') : 'AWAKEN SOUL'}
                     </span>
                   </>
                 )}

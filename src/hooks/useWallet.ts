@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
-import { NETWORKS } from '../utils/constants';
+import { NETWORKS, CONTRACT_ADDRESSES, ARK_TOKEN_ABI } from '../utils/constants';
 
 interface WalletState {
   isConnected: boolean;
@@ -10,6 +10,7 @@ interface WalletState {
   signer: ethers.JsonRpcSigner | null;
   plsBalance: string;
   arkBalance: string;
+  tokenBalances: Record<string, string>;
   chainId: string | null;
 }
 
@@ -21,6 +22,7 @@ export const useWallet = () => {
     signer: null,
     plsBalance: '0',
     arkBalance: '0',
+    tokenBalances: {},
     chainId: null,
   });
 
@@ -59,16 +61,40 @@ export const useWallet = () => {
   const updateBalances = async (provider: ethers.BrowserProvider, account: string) => {
     try {
       // Get PLS balance
-      const plsBalance = await provider.getBalance(account);
-      const formattedPlsBalance = ethers.formatEther(plsBalance);
+      const plsBalanceWei = await provider.getBalance(account);
+      const formattedPlsBalance = ethers.formatEther(plsBalanceWei);
 
-      // TODO: Get ARK balance from contract
-      const arkBalance = '0'; // Placeholder
+      // Get ARK balance
+      const arkContract = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
+      const arkBalanceWei = await arkContract.balanceOf(account);
+      const formattedArkBalance = ethers.formatEther(arkBalanceWei);
+
+      // Get other token balances (WPLS, USDC, DAI, WETH, WBTC)
+      const tokensToFetch = ['WPLS', 'USDC', 'DAI', 'WETH', 'WBTC'];
+      const newTokenBalances: Record<string, string> = {};
+      
+      const erc20Abi = ['function balanceOf(address) view returns (uint256)', 'function decimals() view returns (uint8)'];
+      
+      for (const symbol of tokensToFetch) {
+        try {
+          const address = CONTRACT_ADDRESSES[symbol as keyof typeof CONTRACT_ADDRESSES];
+          if (address) {
+            const contract = new ethers.Contract(address, erc20Abi, provider);
+            const balanceWei = await contract.balanceOf(account);
+            const decimals = await contract.decimals();
+            newTokenBalances[symbol] = ethers.formatUnits(balanceWei, decimals);
+          }
+        } catch (e) {
+          console.warn(`Error fetching balance for ${symbol}:`, e);
+          newTokenBalances[symbol] = '0';
+        }
+      }
 
       setWalletState(prev => ({
         ...prev,
         plsBalance: formattedPlsBalance,
-        arkBalance,
+        arkBalance: formattedArkBalance,
+        tokenBalances: newTokenBalances
       }));
     } catch (error) {
       console.error('Error updating balances:', error);
@@ -149,6 +175,7 @@ export const useWallet = () => {
       signer: null,
       plsBalance: '0',
       arkBalance: '0',
+      tokenBalances: {},
       chainId: null,
     });
   };
