@@ -51,7 +51,7 @@ const HeroSection = ({
           <source src="/assets/videos/ark------final-----01.mp4" type="video/mp4" />
         </video>
         {/* Black Overlay - Only on desktop for text readability */}
-        <div className="absolute inset-0 bg-black/50 hidden md:block" />
+        <div className="absolute inset-0 bg-black/50 hidden md:block z-[2]" />
         
         {/* Alpha Transition - Fading out the video bottom, now part of the video container */}
         <div className="absolute bottom-0 left-0 right-0 h-32 md:h-64 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none z-[5]" />
