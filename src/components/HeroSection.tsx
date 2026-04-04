@@ -58,36 +58,26 @@ const HeroSection = ({
       </div>
 
       {/* Hero Content - Adjusted padding for mobile/desktop layout switch */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-12 md:pt-[280px] pb-[102px] flex flex-col items-center text-center flex-grow">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-12 md:pt-[280px] pb-[102px] flex flex-col items-center text-center flex-grow group/hero">
         
-
-
-        {/* Heading with Gradient Fill - The Covenant Branding */}
-        <div className="mb-14 space-y-2 text-center">
-
-          <div className="flex flex-col items-center">
-            <h1 
-              className="text-[64px] md:text-[140px] font-black leading-[0.85] tracking-tighter"
-              style={{
-                background: 'linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.4) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                color: 'transparent'
-              }}
-            >
-              The ARK
-            </h1>
-            <h1 className="text-[32px] md:text-[54px] font-black leading-[0.85] tracking-tighter text-white uppercase italic mt-4">
-              ON PULSECHAIN
-            </h1>
+        {/* Heading & Subtitle cluster */}
+        <div className="transition-all duration-700 ease-out transform group-hover/hero:scale-[1.02]">
+          <div className="mb-14 space-y-2 text-center">
+            <div className="flex flex-col items-center">
+              <h1 className="text-[64px] md:text-[140px] font-black leading-[0.85] tracking-tighter hero-outline group-hover/hero:text-white group-hover/hero:[-webkit-text-stroke:1px_transparent]">
+                The ARK
+              </h1>
+              <h1 className="text-[32px] md:text-[54px] font-black leading-[0.85] tracking-tighter uppercase italic mt-4 hero-outline group-hover/hero:text-white group-hover/hero:[-webkit-text-stroke:1px_transparent]">
+                ON PULSECHAIN
+              </h1>
+            </div>
           </div>
-        </div>
 
-        {/* Subtitle - Covenant Context */}
-        <p className="max-w-[720px] text-[16px] md:text-[18px] font-normal text-white/70 leading-relaxed mb-12">
-          An advanced yield-optimizing ecosystem built on <strong>PulseChain</strong>. Maximize your digital assets through <strong>Automated Deflation</strong> and <strong>Strategic Rewards</strong>. Our protocol logic is designed for one thing: sustainable growth and deep liquidity.
-        </p>
+          {/* Subtitle - Covenant Context */}
+          <p className="max-w-[720px] text-[16px] md:text-[18px] font-normal text-white/70 md:text-white/30 md:group-hover/hero:text-white/80 leading-relaxed mb-12 transition-all duration-700">
+            An advanced yield-optimizing ecosystem built on <strong>PulseChain</strong>. Maximize your digital assets through <strong>Automated Deflation</strong> and <strong>Strategic Rewards</strong>. Our protocol logic is designed for one thing: sustainable growth and deep liquidity.
+          </p>
+        </div>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-6 mb-16">

@@ -82,3 +82,25 @@ h6 {
   font-weight: 400;
   font-style: normal;
 }
+
+/* Interactive Hero Outline Effect - Desktop only */
+@media (min-width: 768px) {
+  .hero-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hero-outline:hover {
+    color: white;
+    -webkit-text-stroke: 1px transparent;
+  }
+}
+
+/* Fallback/Mobile solid style */
+@media (max-width: 767px) {
+  .hero-outline {
+    color: white;
+    -webkit-text-stroke: 0;
+  }
+}
