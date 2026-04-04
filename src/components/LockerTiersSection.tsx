@@ -41,7 +41,7 @@ const LockerTiersSection = ({
       borderGlow: 'rgba(255, 255, 255, 0.05)',
       duration: '30-89 Days',
       multiplier: '1x',
-      features: ['Entry level blessing', 'Share in vault rewards', 'Bronze role in community', 'Protected from the flood'],
+      features: ['Protocol entry level', 'Share in vault rewards', 'Utility access enabled', 'Protected from dilution'],
       gradient: 'from-white/5 to-transparent',
       buttonGradient: 'from-white/10 to-white/5',
       status: 'INITIATE'
@@ -111,7 +111,7 @@ const LockerTiersSection = ({
       borderGlow: 'rgba(255, 255, 255, 0.3)',
       duration: '3-4 Years',
       multiplier: '5x',
-      features: ['5x rewards multiplier', 'Mythic inner circle', 'Exclusive protocol insights', 'Core governance member'],
+      features: ['5x rewards multiplier', 'Mythic priority access', 'Exclusive protocol insights', 'Core governance member'],
       gradient: 'from-white/5 to-transparent',
       buttonGradient: 'from-white/10 to-white/5',
       special: true,
@@ -126,7 +126,7 @@ const LockerTiersSection = ({
       borderGlow: 'rgba(251, 146, 60, 0.4)',
       duration: '4-5 Years',
       multiplier: '7x',
-      features: ['7x rewards multiplier', 'Legendary ARK status', 'Ultimate vault rewards', 'True Noah privileges', 'Lead the new world'],
+      features: ['7x rewards multiplier', 'Legendary ARK status', 'Ultimate vault rewards', 'Max governance weight', 'Premium ecosystem tier'],
       gradient: 'from-orange-500/10 via-red-500/5 to-transparent',
       buttonGradient: 'from-orange-500 to-red-500',
       special: true,
@@ -165,13 +165,10 @@ const LockerTiersSection = ({
             ${tier.special ? 'border-ark-gold-500/30' : 'border-white/5'}
             ${isActive ? 'border-white/20' : ''}`}
         >
-          {/* Top edge highlight */}
           <div className="absolute top-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           
-          {/* Quantum field background */}
           <div className={`absolute inset-0 bg-gradient-to-br ${tier.gradient} rounded-2xl opacity-60`} />
           
-          {/* Active pulse effect */}
           {isActive && (
             <div 
               className="absolute inset-0 rounded-2xl animate-pulse"
@@ -182,49 +179,7 @@ const LockerTiersSection = ({
             />
           )}
 
-          {/* Status badge */}
-          <div className="absolute top-4 right-4 flex items-center gap-2">
-            <div 
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.05] backdrop-blur-xl border border-white/[0.1]"
-            >
-              <div 
-                className="w-1.5 h-1.5 rounded-full animate-pulse"
-                style={{ backgroundColor: tier.glowColor.replace('0.4', '1').replace('0.5', '1') }}
-              />
-              <span className={`${tier.colorClass} font-mono text-[10px] tracking-wider`}>
-                {tier.status}
-              </span>
-            </div>
-          </div>
-
-          {/* Legendary badge */}
-          {tier.special && (
-            <div className="absolute top-4 left-4">
-              <div className="px-2.5 py-1 rounded-full bg-orange-500/10 backdrop-blur-xl border border-orange-500/30 animate-pulse">
-                <span className="text-orange-400 font-mono text-[10px] tracking-widest">✦ LEGENDARY</span>
-              </div>
-            </div>
-          )}
-
-          <div className="relative z-10 pt-6">
-            {/* Icon container */}
-            <div className="flex justify-center mb-5">
-              <div 
-                className={`relative w-20 h-20 rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] 
-                  flex items-center justify-center transition-all duration-500
-                  group-hover:scale-110 group-hover:border-white/20
-                  ${isActive ? 'animate-bounce' : ''}`}
-                style={{
-                  boxShadow: `0 0 30px ${tier.borderGlow}, inset 0 1px 0 0 rgba(255,255,255,0.1)`
-                }}
-              >
-                <span className={`text-5xl ${tier.special ? 'animate-pulse' : ''}`} style={{ filter: `drop-shadow(0 0 10px ${tier.glowColor})` }}>
-                  {tier.icon}
-                </span>
-              </div>
-            </div>
-
-            {/* Tier title */}
+          <div className="relative z-10 pt-4">
             <h3 className="text-center mb-1">
               <span 
                 className="text-xl font-black font-mono tracking-wider"
@@ -242,16 +197,14 @@ const LockerTiersSection = ({
               </span>
             </h3>
             
-            {/* Lock period badge */}
             <div className="flex justify-center mb-5">
               <div className="px-3 py-1.5 rounded-lg bg-white/[0.03] backdrop-blur border border-white/[0.08]">
-                <span className={`${tier.colorClass} font-mono text-xs tracking-wide opacity-80`}>
-                  LOCK: {tier.duration}
+                <span className={`${tier.colorClass} font-mono text-[10px] tracking-wide opacity-80 uppercase`}>
+                  PERIOD: {tier.duration}
                 </span>
               </div>
             </div>
 
-            {/* Multiplier display */}
             <div className="text-center mb-6">
               <div 
                 className="text-5xl font-black font-mono mb-1"
@@ -268,14 +221,13 @@ const LockerTiersSection = ({
                 {tier.multiplier}
               </div>
               <div className="text-white/40 font-mono text-[10px] tracking-[0.2em]">
-                REWARD MULTIPLIER
+                MULTIPLIER
               </div>
             </div>
             
-            {/* Features list */}
-            <ul className="space-y-2.5 mb-6">
-              {tier.features.map((feature, idx) => (
-                <li key={idx} className="flex items-start font-mono text-xs">
+            <ul className="space-y-2 mb-6">
+              {tier.features.slice(0, 3).map((feature, idx) => (
+                <li key={idx} className="flex items-start font-mono text-[10px]">
                   <span 
                     className="mr-2 mt-0.5"
                     style={{ 
@@ -285,16 +237,15 @@ const LockerTiersSection = ({
                   >
                     ▸
                   </span>
-                  <span className="text-white/70">{feature}</span>
+                  <span className="text-white/60 tracking-tight">{feature}</span>
                 </li>
               ))}
             </ul>
             
-            {/* CTA Button */}
             <Link 
               to="/locker" 
-              className={`block w-full py-3.5 rounded-xl text-center font-mono text-sm font-bold
-                transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5
+              className={`block w-full py-3 rounded-xl text-center font-mono text-[10px] font-black tracking-[0.2em] uppercase
+                transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]
                 ${tier.special ? 'text-white' : 'text-black'}`}
               style={{
                 background: tier.special 
@@ -303,24 +254,10 @@ const LockerTiersSection = ({
                 boxShadow: `0 10px 30px -10px ${tier.glowColor}`
               }}
             >
-              {tier.special ? '⚡ ASCEND TO LEGEND' : `ENTER ${tier.name} →`}
+              {tier.special ? '⚡ LOCK ASSETS' : `ENTER POSITION`}
             </Link>
-
-            {/* Footer status */}
-            <div className="mt-4 flex justify-center">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.05]">
-                <div 
-                  className="w-1.5 h-1.5 rounded-full animate-pulse"
-                  style={{ backgroundColor: tier.glowColor.replace('0.4', '0.8').replace('0.5', '0.8') }}
-                />
-                <span className="text-white/30 font-mono text-[9px] tracking-widest">
-                  TIER ACTIVE
-                </span>
-              </div>
-            </div>
           </div>
 
-          {/* Scan line effect */}
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden rounded-2xl">
             <div 
               className="absolute top-0 left-0 w-full h-[2px] animate-[tierScan_2s_ease-in-out_infinite]"
@@ -335,42 +272,21 @@ const LockerTiersSection = ({
   };
 
   return (
-    <section className="relative z-30 py-24 px-6 bg-black">
-
-      {/* === CONTENT === */}
-      <div className="max-w-7xl mx-auto relative z-10">
+    <section className="relative z-30 py-24 bg-black overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         
-        {/* Premium Header */}
-        <div className={`text-center mb-20 transition-all duration-1000 ${systemPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          
-          {/* Glassmorphism badge */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/[0.03] border border-white/10">
-              <Database className="w-4 h-4 text-white/40" />
-              <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">
-                Temporal Alignment
-              </span>
-              <div className="w-1.5 h-1.5 bg-white/20 rounded-full animate-pulse" />
-            </div>
-          </div>
-
-          {/* Premium title */}
+        <div className={`text-center mb-16 transition-all duration-1000 ${systemPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <h2 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
-            THE HIERARCHY OF KEEPERS
+            Locker Tiers
           </h2>
 
-          {/* Accent line */}
-          <div className="flex justify-center mb-8">
-            <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          </div>
-
-          <p className="text-white/50 text-base md:text-lg max-w-3xl mx-auto font-mono leading-relaxed">
-            The sacred progression of the Covenant. Ascend through the ranks of the Keepers by the merit of your commitment.
+          <p className="text-white/50 text-sm md:text-lg max-w-3xl mx-auto font-mono leading-relaxed">
+            Optimize capital efficiency through time-weighted liquidity locks. Select a duration to determine your yield multiplier and protocol governance influence.
           </p>
         </div>
 
-        {/* Tiers Grid/Accordion - Mobile First Compactness */}
-        <div className={`transition-all duration-1000 delay-500 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`relative transition-all duration-1000 delay-500 ${systemPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {/* Mobile View (Accordion) */}
           <div className="md:hidden">
             <Accordion type="single" collapsible className="space-y-4">
               {tiers.map((tier, index) => (
@@ -382,9 +298,6 @@ const LockerTiersSection = ({
                   <AccordionTrigger className="hover:no-underline p-5 w-full">
                     <div className="flex items-center justify-between w-full pr-4">
                       <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-2xl shrink-0">
-                          {tier.icon}
-                        </div>
                         <div className="text-left">
                           <p className="text-sm font-black text-white uppercase tracking-tighter">[{tier.name}]</p>
                           <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">{tier.duration}</p>
@@ -392,14 +305,13 @@ const LockerTiersSection = ({
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-black text-white font-mono tracking-tighter">{tier.multiplier}</p>
-                        <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Favored</p>
                       </div>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-5 pb-6">
                     <div className="pt-4 border-t border-white/5 space-y-6">
                       <ul className="space-y-3">
-                        {tier.features.map((feature, idx) => (
+                        {tier.features.slice(0, 3).map((feature, idx) => (
                           <li key={idx} className="flex items-start font-mono text-[11px] leading-tight">
                             <span className="mr-2 text-white/40">▸</span>
                             <span className="text-white/60">{feature}</span>
@@ -411,7 +323,7 @@ const LockerTiersSection = ({
                         className={`block w-full py-4 rounded-xl text-center font-mono text-xs font-black tracking-widest uppercase transition-all
                           ${tier.special ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white' : 'bg-white text-black'}`}
                       >
-                        {tier.special ? '⚡ ASCEND NOW' : `ENTER ${tier.name}`}
+                        {tier.special ? '⚡ LOCK ASSETS' : `ENTER POSITION`}
                       </Link>
                     </div>
                   </AccordionContent>
@@ -420,22 +332,44 @@ const LockerTiersSection = ({
             </Accordion>
           </div>
 
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {tiers.map((tier, index) => (
-              <div 
-                key={tier.name} 
-                className={`transition-all duration-700 ${systemPhase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} 
-                style={{ transitionDelay: `${index * 150}ms` }}
-              >
-                <TierCard tier={tier} index={index} />
+          {/* Desktop View (Infinite Scroller) */}
+          <div className="hidden md:block relative">
+            {/* Vertical Alpha Gradient Overlay */}
+            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent pointer-events-none z-20" />
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent pointer-events-none z-20" />
+            
+            {/* Infinite Scroller Container */}
+            <div 
+              className="relative overflow-hidden py-12"
+              style={{
+                maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+              }}
+            >
+              <div className="flex gap-6 animate-infinite-scroll hover:[animation-play-state:paused] w-max">
+                {[...tiers, ...tiers, ...tiers].map((tier, index) => (
+                  <div 
+                    key={`${tier.name}-${index}`} 
+                    className="flex-shrink-0 w-[320px]"
+                  >
+                    <TierCard tier={tier} index={index % tiers.length} />
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Keyframe animations */}
       <style>{`
+        @keyframes infinite-scroll {
+          from { transform: translateX(0); }
+          to { transform: translateX(-33.33%); }
+        }
+        .animate-infinite-scroll {
+          animation: infinite-scroll 40s linear infinite;
+        }
         @keyframes tierScan {
           0% { transform: translateY(-100%); opacity: 0; }
           50% { opacity: 1; }

@@ -49,8 +49,8 @@ const LockAmountInput = ({
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-        <label className="text-[10px] font-black font-mono tracking-[0.2em] text-white/40 uppercase">BINDING AMOUNT (ARK)</label>
-        <div className="text-[10px] font-black font-mono tracking-[0.2em] text-white uppercase">
+        <label className="text-xs font-black font-mono tracking-[0.2em] text-white/60 uppercase">BINDING AMOUNT (ARK)</label>
+        <div className="text-xs font-black font-mono tracking-[0.2em] text-white uppercase">
           TREASURY: {isConnected ? userArkBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '--'}
         </div>
       </div>
@@ -73,7 +73,7 @@ const LockAmountInput = ({
             key={pct}
             onClick={() => handlePercentageClick(pct / 100)}
             disabled={!isConnected || isProcessing || emergencyMode || contractPaused}
-            className="bg-white/5 border border-white/10 text-white font-black font-mono text-[10px] tracking-widest py-3 rounded-xl hover:bg-white hover:text-black transition-all duration-300 disabled:opacity-10 uppercase"
+            className="bg-white/5 border border-white/20 text-white font-black font-mono text-xs tracking-widest py-3 rounded-xl hover:bg-white hover:text-black transition-all duration-300 disabled:opacity-10 uppercase"
           >
             {pct === 100 ? 'MAX' : `${pct}%`}
           </button>

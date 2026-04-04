@@ -58,7 +58,7 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
     // Handle withdrawn/inactive locks first
     if (!lock.active) {
       return { 
-        label: 'SEVERED', 
+        label: 'WITHDRAWN', 
         colorRGB: '255, 255, 255',
         bgClass: 'bg-white/5 border-white/10 opacity-20'
       };
@@ -72,13 +72,13 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
     }
     if (lock.daysRemaining <= 7) {
       return { 
-        label: 'MATURING SOON', 
+        label: 'UNLOCKING SOON', 
         colorRGB: '255, 255, 255',
         bgClass: 'bg-white/5 border-white/20 text-white/60'
       };
     }
     return { 
-      label: 'BINDING', 
+      label: 'LOCKED', 
       colorRGB: '255, 255, 255',
       bgClass: 'bg-white/5 border-white/10 text-white/40'
     };
@@ -114,10 +114,10 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
                 </div>
                 <div className="text-left space-y-1">
                   <div className="text-2xl font-black text-white uppercase tracking-tighter">
-                    {lock.amount.toLocaleString()} <span className="text-xs text-white/20 ml-1">ARK</span>
+                    {lock.amount.toLocaleString()} <span className="text-sm text-white/40 ml-1">ARK</span>
                   </div>
-                  <div className="text-[10px] font-black font-mono tracking-[0.2em] text-white/40 uppercase">
-                    {tierInfo.name} SEAL • {lock.multiplier}
+                  <div className="text-xs font-black font-mono tracking-[0.2em] text-white/60 uppercase">
+                    {tierInfo.name} TIER • {lock.multiplier}
                   </div>
                 </div>
               </div>
@@ -128,11 +128,11 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
                   {statusInfo.label}
                 </Badge>
                 <div className="text-right space-y-1">
-                  <div className={`text-lg font-black uppercase tracking-tighter ${isUnlocked ? 'text-white' : 'text-white/40'}`}>
-                    {isUnlocked ? 'MATURED' : `${lock.daysRemaining} CYCLES`}
+                  <div className={`text-lg font-black uppercase tracking-tighter ${isUnlocked ? 'text-white' : 'text-white/60'}`}>
+                    {isUnlocked ? 'MATURED' : `${lock.daysRemaining} DAYS`}
                   </div>
-                  <div className="text-[9px] font-black font-mono tracking-widest text-white/20 uppercase">
-                    +{lock.totalRewardsEarned.toLocaleString()} TITHED
+                  <div className="text-xs font-black font-mono tracking-widest text-white/50 uppercase">
+                    +{lock.totalRewardsEarned.toLocaleString()} EARNED
                   </div>
                 </div>
               </div>
@@ -142,8 +142,8 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
           <AccordionContent className="relative z-10 px-4 sm:px-6 pb-6">
             {/* Progress Bar */}
             <div className="mb-12 px-2">
-              <div className="flex justify-between text-[10px] font-black font-mono tracking-widest text-white/20 mb-3 uppercase">
-                <span>BINDING COMPLETION</span>
+              <div className="flex justify-between text-xs font-black font-mono tracking-widest text-white/50 mb-3 uppercase">
+                <span>LOCK PROGRESS</span>
                 <span>{progress.toFixed(1)}%</span>
               </div>
               <div className="relative w-full bg-white/5 rounded-full h-1 overflow-hidden">
@@ -166,8 +166,8 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
                   className="bg-black/40 backdrop-blur-sm rounded-xl p-3 border border-white/[0.08] hover:border-white/[0.15] transition-all"
                 >
                   <div className="flex items-center mb-1.5">
-                    <item.icon className="w-4 h-4 text-gray-500 mr-2" />
-                    <span className="text-gray-400 text-sm">{item.label}</span>
+                    <item.icon className="w-4 h-4 text-white/40 mr-2" />
+                    <span className="text-white/60 text-sm">{item.label}</span>
                   </div>
                   <div className="text-white font-semibold">{item.value}</div>
                 </div>
@@ -185,8 +185,8 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
                         <AlertTriangle className="w-5 h-5 text-red-500" />
                       </div>
                       <div className="space-y-1">
-                        <span className="text-[10px] font-black font-mono tracking-widest text-red-500 uppercase">SEVERANCE PENALTY</span>
-                        <p className="text-[10px] text-white/40 font-mono uppercase">Protocol statutes apply</p>
+                        <span className="text-[10px] font-black font-mono tracking-widest text-red-500 uppercase">WITHDRAWAL PENALTY</span>
+                        <p className="text-xs text-white/60 font-mono uppercase">Standard protocol rules apply</p>
                       </div>
                     </div>
                     <div className="text-right">
@@ -220,7 +220,7 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
                   ) : (
                     <>
                       <TrendingUp className="w-4 h-4" />
-                      COLLECT TITHES
+                      CLAIM REWARDS
                     </>
                   )}
                 </button>
@@ -238,17 +238,17 @@ const CompactLockPosition = ({ lock, onUnlock, onClaim, processingUnlock, proces
                   {processingUnlock === lock.id ? (
                     <>
                       <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                      SEALING...
+                      PROCESSING...
                     </>
                   ) : isUnlocked ? (
                     <>
                       <Zap className="w-4 h-4" />
-                      RELEASE TO ORIGIN
+                      UNSTAKE ASSETS
                     </>
                   ) : (
                     <>
                       <AlertTriangle className="w-4 h-4" />
-                      SEVER BOND (-{penalty.penaltyRate.toFixed(1)}%)
+                      EXIT EARLY (-{penalty.penaltyRate.toFixed(1)}%)
                     </>
                   )}
                 </button>

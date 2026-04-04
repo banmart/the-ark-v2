@@ -60,40 +60,40 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
   const statCards = [
     {
       icon: Lock,
-      label: 'Covenant Total',
+      label: 'Protocol Total',
       value: protocolStats.totalLockedTokens.toLocaleString(),
       unit: 'ARK',
       colorRGB: '255, 255, 255',
     },
     {
       icon: Lock,
-      label: 'Your Bound Amount',
+      label: 'Your Locked Amount',
       value: displayStats.totalLocked.toLocaleString(),
       unit: 'ARK',
       colorRGB: '255, 255, 255',
       extra: (
-        <div className="text-[10px] font-mono font-bold tracking-widest text-white/20 mt-2 uppercase">
-          <span className="text-white/60">{displayStats.readyToUnlockCount}</span> RELEASED • 
-          <span className="text-white/60 ml-1">{displayStats.inProgressCount}</span> BINDING
+        <div className="text-xs font-mono font-bold tracking-widest text-white/50 mt-2 uppercase">
+          <span className="text-white/70">{displayStats.readyToUnlockCount}</span> UNLOCKED • 
+          <span className="text-white/70 ml-1">{displayStats.inProgressCount}</span> LOCKED
         </div>
       )
     },
     {
       icon: TrendingUp,
-      label: 'Total Tithes',
+      label: 'Total Rewards',
       value: displayStats.totalRewardsEarned.toLocaleString(),
       unit: 'ARK',
       colorRGB: '255, 255, 255',
     },
     {
       icon: BarChart3,
-      label: 'Covenant Share',
+      label: 'Protocol Share',
       value: protocolStats?.totalLockedTokens ? formatTokenPoolShare(displayStats.totalLocked, protocolStats.totalLockedTokens) : '0.00%',
       unit: 'OF TOTAL',
       colorRGB: '255, 255, 255',
       extra: (
-        <div className="text-[10px] font-mono font-bold tracking-widest text-white/20 mt-2 uppercase">
-          STRENGTH: {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00%'}
+        <div className="text-xs font-mono font-bold tracking-widest text-white/50 mt-2 uppercase">
+          WEIGHT: {totalProtocolWeight > 0 ? formatPoolSharePercentage(displayStats.userWeight, totalProtocolWeight) : '0.00%'}
         </div>
       )
     }
@@ -101,7 +101,6 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
 
   return (
     <div className="space-y-8">
-      {/* Premium Demo Mode Banner */}
       {/* Premium Demo Mode Banner */}
       {!isConnected && (
         <div className="relative group">
@@ -112,12 +111,12 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
                   <Wallet className="w-6 h-6 text-white/40" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">TEMPORARY REVELATION</h3>
-                  <p className="text-[10px] text-white/20 font-mono tracking-[0.2em] uppercase">VIEWING PROTOCOL METRICS IN OBSERVER MODE</p>
+                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">PROTOCOL OBSERVER</h3>
+                  <p className="text-xs text-white/50 font-mono tracking-[0.2em] uppercase">VIEWING METRICS IN READ-ONLY MODE</p>
                 </div>
               </div>
-              <p className="text-[10px] text-white/40 font-mono uppercase tracking-widest text-center md:text-right max-w-xs leading-relaxed">
-                Connect your soul to the Ark to view your actual standing and claim your deserved tithes.
+              <p className="text-xs text-white/60 font-mono uppercase tracking-widest text-center md:text-right max-w-xs leading-relaxed">
+                Connect your wallet to the ARK Protocol to view your actual standing and claim your accumulated rewards.
               </p>
             </div>
           </div>
@@ -191,11 +190,11 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
               </div>
               <div className="space-y-2">
                 <h2 className="text-3xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
-                  UNCLAIMED TITHES
+                  UNCLAIMED REWARDS
                   <Sparkles className="w-4 h-4 text-white/20" />
                 </h2>
-                <p className="text-[10px] font-mono text-white/20 tracking-[0.2em] uppercase">
-                  FROM PROTOCOL FEES • ARK POOL: {protocolStats.rewardPool.toLocaleString()}
+                <p className="text-xs font-mono text-white/50 tracking-[0.2em] uppercase">
+                  FROM PROTOCOL FEES • REWARD POOL: {protocolStats.rewardPool.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -214,7 +213,7 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
               ) : (
                 <>
                   <Coins className="w-3 h-3" />
-                  CLAIM TITHES
+                  CLAIM REWARDS
                 </>
               )}
             </button>
@@ -223,7 +222,7 @@ const UserStatsSection = ({ isConnected }: UserStatsSectionProps) => {
           {/* Reward Amount */}
           <div className="relative z-10 flex items-center gap-6 mt-12 bg-white/[0.03] border border-white/5 rounded-2xl p-8">
             <div className="text-5xl md:text-7xl font-black text-white tracking-tighter">
-              {displayRewards.toLocaleString()} <span className="text-xl md:text-2xl text-white/20 font-mono tracking-widest ml-4">ARK</span>
+              {displayRewards.toLocaleString()} <span className="text-xl md:text-2xl text-white/40 font-mono tracking-widest ml-4">ARK</span>
             </div>
             {!isConnected && (
               <div className="bg-white/10 border border-white/20 rounded-md px-3 py-1">

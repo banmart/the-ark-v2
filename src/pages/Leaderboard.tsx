@@ -96,46 +96,46 @@ const Leaderboard = () => {
   };
   const getArkTier = (totalWeight: number) => {
     if (totalWeight >= 800000) return {
-      name: 'ARCH-KEEPER',
-      icon: '⚜️',
+      name: 'TIER 0: ALPHA',
+      icon: '💎',
       color: 'white',
       glow: 'white',
-      description: 'Supreme Custodian'
+      description: 'Maximum Protocol Weight'
     };
     if (totalWeight >= 500000) return {
-      name: 'HIGH SENTINEL',
-      icon: '⚔️',
+      name: 'TIER 1: PRIME',
+      icon: '⚡',
       color: 'white',
       glow: 'white',
-      description: 'The Inner Circle'
+      description: 'Prime Participant'
     };
     if (totalWeight >= 300000) return {
-      name: 'WARDEN',
+      name: 'TIER 2: ELITE',
       icon: '🛡️',
       color: 'white',
       glow: 'white',
-      description: 'Statute Defender'
+      description: 'High Weight Stake'
     };
     if (totalWeight >= 150000) return {
-      name: 'ACOLYTE',
-      icon: '🕯️',
+      name: 'TIER 3: CORE',
+      icon: '💠',
       color: 'white',
       glow: 'white',
-      description: 'Vow Follower'
+      description: 'Core Protocol Member'
     };
     if (totalWeight >= 15000) return {
-      name: 'INITIATE',
-      icon: '📜',
+      name: 'TIER 4: MEMBER',
+      icon: '📊',
       color: 'white',
       glow: 'white',
-      description: 'Newly Bound'
+      description: 'Active Participant'
     };
     return {
-      name: 'OUTCAST',
+      name: 'TIER 5: ENTRY',
       icon: '🌑',
       color: 'white',
       glow: 'white',
-      description: 'Unbound Soul'
+      description: 'Initial Stake'
     };
   };
   const getRankIcon = (rank: number, totalWeight: number) => {
@@ -166,7 +166,7 @@ const Leaderboard = () => {
   const getAchievementBadges = (user: any) => {
     const badges = [];
     if (user.totalWeight >= 800000) badges.push({
-      name: 'Noah',
+      name: 'Pioneer',
       color: 'orange',
       icon: '⚡'
     });
@@ -190,22 +190,22 @@ const Leaderboard = () => {
   const getSortLabel = (criteria: string) => {
     switch (criteria) {
       case 'weight':
-        return 'Ark Authority';
+        return 'Yield Weight';
       case 'locked':
-        return 'Vault Holdings';
+        return 'Vault Balance';
       case 'rewards':
-        return 'Divine Rewards';
+        return 'Protocol Rewards';
       case 'activeLocks':
-        return 'Active Covenants';
+        return 'Active Locks';
       default:
-        return 'Ark Authority';
+        return 'Yield Weight';
     }
   };
 
   const getSortLabelMobile = (criteria: string) => {
     switch (criteria) {
       case 'weight':
-        return 'Authority';
+        return 'Weight';
       case 'locked':
         return 'Vault';
       case 'rewards':
@@ -213,29 +213,24 @@ const Leaderboard = () => {
       case 'activeLocks':
         return 'Locks';
       default:
-        return 'Authority';
+        return 'Weight';
     }
   };
-  return <BaseLayout>
+  return <BaseLayout fixed={true}>
       <div className="min-h-screen bg-transparent text-white">
-        {/* Quantum ARK Header */}
+        {/* Protocol Leaderboard Header */}
         <div className="relative">
           <div className="relative z-10 text-center py-24 px-6">
-            <div className="inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
-              <div className="w-1.5 h-1.5 bg-white/40 rounded-full animate-pulse"></div>
-              <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">[HIERARCHY STATUS]</span>
-            </div>
-
             <div className="mb-12">
               <h1 className="text-5xl md:text-8xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
-                THE ASCENSION
+                Leaderboard
               </h1>
-              <div className="w-48 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto" />
+
             </div>
 
             <div className="max-w-2xl mx-auto mb-16">
               <p className="text-white/40 text-lg md:text-xl font-mono leading-relaxed uppercase tracking-tighter italic">
-                Descend the hierarchy of the Keepers. Only the most consecrated shall inherit the protection of the Ark.
+                Track the global distribution of the protocol. Monitor staker positions, vault depth, and yield weightings across the network.
               </p>
             </div>
           </div>
@@ -249,7 +244,7 @@ const Leaderboard = () => {
                 <div className="flex items-center gap-4">
                   <Users className="w-5 h-5 text-white/40" />
                   <div>
-                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Keepers</p>
+                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Participants</p>
                     <p className="text-xl font-black text-white font-mono">{totalUsers}</p>
                   </div>
                 </div>
@@ -259,7 +254,7 @@ const Leaderboard = () => {
                 <div className="flex items-center gap-4">
                   <Star className="w-5 h-5 text-white/40" />
                   <div>
-                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">The Consecrated</p>
+                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Top Participants</p>
                     <p className="text-xl font-black text-white font-mono">{Math.min(users.length, 50)}</p>
                   </div>
                 </div>
@@ -279,7 +274,7 @@ const Leaderboard = () => {
                 <div className="flex items-center gap-4">
                   <Lock className="w-5 h-5 text-white/40" />
                   <div>
-                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Sanctified Vault</p>
+                    <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Total Vaulted</p>
                     <p className="text-xl font-black text-white font-mono">{formatNumber(protocolStats.totalLockedTokens)}</p>
                   </div>
                 </div>
@@ -288,7 +283,7 @@ const Leaderboard = () => {
           </div>
         </div>
 
-        {/* Divine Ascension Controls */}
+        {/* Search Controls */}
         <div className="px-6 mb-16">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-2 md:flex md:flex-wrap gap-4 justify-center">
@@ -309,7 +304,7 @@ const Leaderboard = () => {
           </div>
         </div>
 
-        {/* Divine Search Portal */}
+        {/* Participant Search Portal */}
         <div className="px-6">
           <div className="max-w-6xl mx-auto">
             <Card className="liquid-glass border-cyan-500/30 mb-8 relative overflow-hidden">
@@ -317,18 +312,18 @@ const Leaderboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-cyan-400 font-mono tracking-wider">
                   <Search className="w-5 h-5" />
-                  [DIVINE SEEKER PROTOCOL]
+                  [PARTICIPANT SEARCH]
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="flex flex-col sm:flex-row gap-2 mb-4">
-                  <Input placeholder="Enter divine address to locate..." value={searchAddress} onChange={e => setSearchAddress(e.target.value)} className="bg-black/50 border-cyan-500/30 text-white font-mono placeholder:text-gray-500 text-sm" />
+                  <Input placeholder="Enter wallet address to locate..." value={searchAddress} onChange={e => setSearchAddress(e.target.value)} className="bg-black/50 border-cyan-500/30 text-white font-mono placeholder:text-gray-500 text-sm" />
                   <div className="flex gap-2">
                     <Button onClick={handleSearch} disabled={searchLoading || !searchAddress} className="bg-gradient-to-r from-cyan-500 to-teal-600 text-black font-mono tracking-wide hover:scale-105 transition-transform px-4 py-2 text-xs sm:text-sm flex-1 sm:flex-none">
-                      {searchLoading ? 'SEEKING...' : 'DIVINE SEEK'}
+                      {searchLoading ? 'SEARCHING...' : 'SEARCH'}
                     </Button>
                     {isConnected && <Button onClick={handleFindMyRank} disabled={searchLoading} variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 font-mono tracking-wide px-4 py-2 text-xs sm:text-sm flex-1 sm:flex-none">
-                        MY ASCENSION
+                        MY RANKING
                       </Button>}
                   </div>
                 </div>
@@ -352,7 +347,7 @@ const Leaderboard = () => {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-gray-400 font-mono">Divine Authority</p>
+                          <p className="text-sm text-gray-400 font-mono">Yield Weight</p>
                           <p className="font-bold text-purple-400 text-lg">{formatNumber(searchResult.totalWeight)}</p>
                         </div>
                       </div>
@@ -409,11 +404,11 @@ const Leaderboard = () => {
 
                             {/* Main Stat (Visible on Mobile) */}
                             <div className="text-right">
-                              <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest md:hidden mb-0.5">Authority</p>
+                              <p className="text-xs font-mono text-white/50 uppercase tracking-widest md:hidden mb-0.5">Weight</p>
                               <p className="text-sm md:text-xl font-black text-white font-mono tracking-tighter">
                                 {formatNumber(user.totalWeight)}
                               </p>
-                              <p className="hidden md:block text-[9px] font-mono text-white/20 uppercase tracking-widest mt-1">Authority</p>
+                              <p className="hidden md:block text-xs font-mono text-white/50 uppercase tracking-widest mt-1">Weight</p>
                             </div>
                           </div>
                         </AccordionTrigger>
@@ -423,15 +418,15 @@ const Leaderboard = () => {
                             {/* Detailed Stats Grid */}
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                               <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5">
-                                <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Vault Balance</p>
+                                <p className="text-xs font-mono text-white/50 uppercase tracking-widest mb-1">Vault Balance</p>
                                 <p className="text-sm font-black text-white font-mono">{formatNumber(user.totalLocked)}</p>
                               </div>
                               <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5">
-                                <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Divine Rewards</p>
+                                <p className="text-xs font-mono text-white/50 uppercase tracking-widest mb-1">Protocol Rewards</p>
                                 <p className="text-sm font-black text-white font-mono">{formatNumber(user.totalRewardsEarned)}</p>
                               </div>
                               <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5">
-                                <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Active Covenants</p>
+                                <p className="text-xs font-mono text-white/50 uppercase tracking-widest mb-1">Active Locks</p>
                                 <p className="text-sm font-black text-white font-mono">{user.activeLocksCount}</p>
                               </div>
                               <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5">

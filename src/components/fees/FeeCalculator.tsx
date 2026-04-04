@@ -73,13 +73,13 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
             <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/10">
               <Calculator className="w-5 h-5 text-white/60" />
             </div>
-            <h3 className="text-xl font-black text-white uppercase tracking-tighter font-sans">Statute Calculator</h3>
+            <h3 className="text-xl font-black text-white uppercase tracking-tighter font-sans">Protocol Calculator</h3>
           </div>
 
           <div className="space-y-6">
             {/* Volume Input */}
             <div>
-              <Label htmlFor="volume" className="text-[10px] text-white/40 font-mono uppercase tracking-widest mb-3 block">Daily Trading Volume (ARK)</Label>
+              <Label htmlFor="volume" className="text-xs text-white/50 font-mono uppercase tracking-widest mb-3 block">Daily Trading Volume (ARK)</Label>
               <div className="relative">
                 <Input
                   id="volume"
@@ -102,7 +102,7 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
 
             {/* Preset Buttons */}
             <div>
-              <Label className="text-[10px] text-white/40 font-mono uppercase tracking-widest mb-3 block">Statute Scenarios</Label>
+              <Label className="text-xs text-white/50 font-mono uppercase tracking-widest mb-3 block">Volume Scenarios</Label>
               <div className="flex flex-wrap gap-2">
                 {presetVolumes.map((preset) => (
                   <Button
@@ -134,53 +134,53 @@ const FeeCalculator = ({ currentVolume, feeMetrics }: FeeCalculatorProps) => {
             <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/10">
               <Zap className="w-5 h-5 text-white/60" />
             </div>
-            <h3 className="text-xl font-black text-white uppercase tracking-tighter font-sans">Covenant Projections</h3>
+            <h3 className="text-xl font-black text-white uppercase tracking-tighter font-sans">Locker Projections</h3>
           </div>
 
           <div className="space-y-6">
             {/* Daily Fees Breakdown */}
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-white/[0.01] border border-white/5 hover:border-white/10 transition-colors">
-                <p className="text-[9px] text-white/30 font-mono uppercase tracking-widest mb-1">Sacred Burn</p>
-                <p className="font-bold text-white font-mono text-sm">{formatAmount(calculations.fees.burn)} <span className="text-[10px] text-white/20">ARK</span></p>
+                <p className="text-xs text-white/40 font-mono uppercase tracking-widest mb-1">Burn</p>
+                <p className="font-bold text-white font-mono text-sm">{formatAmount(calculations.fees.burn)} <span className="text-xs text-white/40">ARK</span></p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.01] border border-white/5 hover:border-white/10 transition-colors">
-                <p className="text-[9px] text-white/30 font-mono uppercase tracking-widest mb-1">Council Fund</p>
-                <p className="font-bold text-white font-mono text-sm">{formatAmount(calculations.fees.dao)} <span className="text-[10px] text-white/20">ARK</span></p>
+                <p className="text-xs text-white/40 font-mono uppercase tracking-widest mb-1">DAO</p>
+                <p className="font-bold text-white font-mono text-sm">{formatAmount(calculations.fees.dao)} <span className="text-xs text-white/40">ARK</span></p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.01] border border-white/5 hover:border-white/10 transition-colors">
-                <p className="text-[9px] text-white/30 font-mono uppercase tracking-widest mb-1">Eternal Liq.</p>
-                <p className="font-bold text-white font-mono text-sm">{formatAmount(calculations.fees.liquidity)} <span className="text-[10px] text-white/20">ARK</span></p>
+                <p className="text-xs text-white/40 font-mono uppercase tracking-widest mb-1">Liquidity</p>
+                <p className="font-bold text-white font-mono text-sm">{formatAmount(calculations.fees.liquidity)} <span className="text-xs text-white/40">ARK</span></p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.01] border border-white/5 hover:border-white/10 transition-colors">
-                <p className="text-[9px] text-white/30 font-mono uppercase tracking-widest mb-1">Vault Rewards</p>
-                <p className="font-bold text-white font-mono text-sm">{formatAmount(calculations.fees.locker)} <span className="text-[10px] text-white/20">ARK</span></p>
+                <p className="text-xs text-white/40 font-mono uppercase tracking-widest mb-1">Rewards</p>
+                <p className="font-bold text-white font-mono text-sm">{formatAmount(calculations.fees.locker)} <span className="text-xs text-white/40">ARK</span></p>
               </div>
             </div>
 
             {/* Total Daily */}
             <div className="p-5 rounded-xl bg-white/[0.02] border border-white/10 flex justify-between items-center group/total">
-              <span className="text-[10px] text-white/40 font-mono uppercase tracking-[0.2em]">Total Daily Sacrifice</span>
-              <span className="text-xl font-black text-white font-mono tracking-tighter group-hover:text-ark-gold-400 transition-colors">
-                {formatAmount(calculations.fees.total)} <span className="text-xs text-white/20">ARK</span>
+              <span className="text-xs text-white/50 font-mono uppercase tracking-[0.2em]">Total Fees Generated</span>
+              <span className="text-xl font-black text-white font-mono tracking-tighter group-hover:text-white transition-colors">
+                {formatAmount(calculations.fees.total)} <span className="text-xs text-white/40">ARK</span>
               </span>
             </div>
 
             {/* Projections */}
             <div className="space-y-4 pt-2">
-              <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Temporal Projections</h4>
+              <h4 className="text-xs font-mono text-white/50 uppercase tracking-[0.2em]">Temporal Projections</h4>
               <div className="grid grid-cols-3 gap-4">
-                <div className="p-3 rounded-lg bg-white/[0.01] border border-white/5 text-center">
-                  <p className="text-[9px] text-white/20 font-mono uppercase tracking-wider mb-1">Weekly</p>
-                  <p className="font-bold text-white/80 font-mono text-xs">{formatAmount(calculations.projections.weekly)}</p>
+                 <div className="p-3 rounded-lg bg-white/[0.01] border border-white/5 text-center">
+                  <p className="text-xs text-white/40 font-mono uppercase tracking-wider mb-1">Weekly</p>
+                  <p className="font-bold text-white font-mono text-xs">{formatAmount(calculations.projections.weekly)}</p>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-white/[0.01] border border-white/5">
-                  <p className="text-[9px] text-white/20 font-mono uppercase tracking-wider mb-1">Monthly</p>
-                  <p className="font-bold text-white/80 font-mono text-xs">{formatAmount(calculations.projections.monthly)}</p>
+                  <p className="text-xs text-white/40 font-mono uppercase tracking-wider mb-1">Monthly</p>
+                  <p className="font-bold text-white font-mono text-xs">{formatAmount(calculations.projections.monthly)}</p>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-white/[0.01] border border-white/5">
-                  <p className="text-[9px] text-white/20 font-mono uppercase tracking-wider mb-1">Yearly</p>
-                  <p className="font-bold text-white/80 font-mono text-xs">{formatAmount(calculations.projections.yearly)}</p>
+                  <p className="text-xs text-white/40 font-mono uppercase tracking-wider mb-1">Yearly</p>
+                  <p className="font-bold text-white font-mono text-xs">{formatAmount(calculations.projections.yearly)}</p>
                 </div>
               </div>
             </div>

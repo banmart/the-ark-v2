@@ -40,7 +40,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       unlockTime: Date.now() / 1000 - 86400 * 2, // FINISHED - ready to unlock
       lockPeriod: 86400 * 90,
       tier: 0,
-      tierName: 'Initiate',
+      tierName: 'Bronze',
       totalRewardsEarned: 2500,
       active: true,
       multiplier: '1.2x',
@@ -53,7 +53,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       unlockTime: Date.now() / 1000 + 86400 * 60,
       lockPeriod: 86400 * 180,
       tier: 1,
-      tierName: 'Acolyte',
+      tierName: 'Silver',
       totalRewardsEarned: 8750,
       active: true,
       multiplier: '2.0x',
@@ -66,7 +66,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       unlockTime: Date.now() / 1000 + 86400 * 3,
       lockPeriod: 86400 * 90,
       tier: 0,
-      tierName: 'Initiate',
+      tierName: 'Bronze',
       totalRewardsEarned: 4200,
       active: true,
       multiplier: '1.2x',
@@ -89,11 +89,13 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
       // Tier filter
       if (filters.tier !== 'all') {
         const tierNames: Record<string, string> = {
-          'initiate': 'Initiate',
-          'acolyte': 'Acolyte',
-          'warden': 'Warden',
-          'sentinel': 'Sentinel',
-          'arch-keeper': 'Arch-Keeper'
+          'bronze': 'Bronze',
+          'silver': 'Silver',
+          'gold': 'Gold',
+          'diamond': 'Diamond',
+          'platinum': 'Platinum',
+          'mythic': 'Mythic',
+          'legendary': 'Legendary'
         };
         if (lock.tierName !== tierNames[filters.tier]) return false;
       }
@@ -247,8 +249,8 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                   <Lock className="w-6 h-6 text-white/40" />
                 </div>
                 <div className="space-y-1">
-                  <h2 className="text-2xl font-black text-white uppercase tracking-tighter">COVENANT SEALS</h2>
-                  <p className="text-[10px] text-white/20 font-mono tracking-[0.2em] uppercase">[MANAGEMENT HUB]</p>
+                  <h2 className="text-2xl font-black text-white uppercase tracking-tighter">ACTIVE LOCKS</h2>
+                  <p className="text-xs text-white/50 font-mono tracking-[0.2em] uppercase">[MANAGEMENT HUB]</p>
                 </div>
               </div>
               
@@ -258,12 +260,12 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                   <div className="flex items-center gap-2 px-6 py-2 bg-white/5 border border-white/20 rounded-xl">
                     <CheckCircle className="w-3 h-3 text-white/60" />
                     <span className="text-[10px] font-black font-mono text-white/60 tracking-widest uppercase">
-                      {readyToUnlockCount} SEALS READY
+                      {readyToUnlockCount} POSITIONS MATURED
                     </span>
                   </div>
                 )}
-                <div className={`flex items-center gap-2 px-6 py-2 rounded-xl border font-mono text-[10px] font-black tracking-widest uppercase bg-white/5 border-white/10 text-white/20`}>
-                  EARLY_BREAK: {earlyUnlockSettings.enabled ? 'PERMITTED' : 'FORBIDDEN'}
+                <div className={`flex items-center gap-2 px-6 py-2 rounded-xl border font-mono text-xs font-black tracking-widest uppercase bg-white/5 border-white/20 text-white/50`}>
+                  EARLY_EXIT: {earlyUnlockSettings.enabled ? 'PERMITTED' : 'FORBIDDEN'}
                 </div>
               </div>
             </div>
@@ -287,7 +289,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                     <Lock className="w-12 h-12 text-gray-500" />
                   </div>
                 </div>
-                <div className="text-gray-400 mb-2 text-lg">No locks match your filters</div>
+                <div className="text-white/60 mb-2 text-lg">No locks match your filters</div>
                 <div className="text-sm text-gray-500">Try adjusting your filter criteria</div>
               </div>
             ) : displayLocks.length === 0 ? (
@@ -298,7 +300,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                     <Lock className="w-12 h-12 text-cyan-400" />
                   </div>
                 </div>
-                <div className="text-gray-400 mb-2 text-lg">No active locks found</div>
+                <div className="text-white/60 mb-2 text-lg">No active locks found</div>
                 <div className="text-sm text-gray-500">Lock some tokens to start earning multiplied rewards</div>
               </div>
             ) : (

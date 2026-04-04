@@ -9,9 +9,10 @@ import Footer from '../Footer';
 
 interface BaseLayoutProps {
   children: React.ReactNode;
+  fixed?: boolean;
 }
 
-const BaseLayout = ({ children }: BaseLayoutProps) => {
+const BaseLayout = ({ children, fixed = false }: BaseLayoutProps) => {
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
 
   const {
@@ -52,7 +53,7 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
       />
 
       {/* Animated Background System */}
-      <AnimatedBackground />
+      <AnimatedBackground fixed={fixed} />
 
       {/* Navigation */}
       <Navigation 

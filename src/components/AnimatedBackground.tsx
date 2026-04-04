@@ -1,8 +1,8 @@
 import React from 'react';
 
-const AnimatedBackground = () => {
+const AnimatedBackground = ({ fixed = false }: { fixed?: boolean }) => {
   return (
-    <div className="absolute top-0 left-0 right-0 h-[60vh] md:h-[90vh] z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    <div className={`${fixed ? 'fixed' : 'absolute'} top-0 left-0 right-0 h-[60vh] md:h-[90vh] z-0 pointer-events-none overflow-hidden`} aria-hidden="true">
       <video
         autoPlay
         loop

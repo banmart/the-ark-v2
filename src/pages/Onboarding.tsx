@@ -95,7 +95,7 @@ const Onboarding = () => {
 
   return (
     <div className="h-[100dvh] flex flex-col bg-black text-white relative overflow-hidden overscroll-none font-sans">
-      <PremiumBackground />
+      <PremiumBackground fixed={true} />
 
       {/* Premium Top Navigation Bar */}
       <div className="relative z-20 flex-shrink-0 bg-black/40 backdrop-blur-xl border-b border-white/5">
@@ -114,7 +114,7 @@ const Onboarding = () => {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-[10px] font-black font-mono tracking-[0.3em] text-white/40 uppercase">
-                  [SYSTEM.RECRUITMENT]
+                  [SYSTEM.ONBOARDING]
                 </h1>
                 <p className="text-xs font-bold text-white tracking-tight">Onboarding Protocol</p>
               </div>
@@ -125,7 +125,7 @@ const Onboarding = () => {
             {isLoading && (
               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
                 <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
-                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">Oracle Thinking</span>
+                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">PROCESSING</span>
               </div>
             )}
             {hasMessages && (
@@ -148,19 +148,18 @@ const Onboarding = () => {
             <div className="flex flex-col items-center justify-center min-h-[70vh] text-center animate-fade-up">
               <div className="mb-12">
                 <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10 mb-8 backdrop-blur-sm">
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-                  <span className="text-[10px] font-mono text-white/40 tracking-[0.3em] uppercase">Initiation Sequence</span>
+                  <span className="text-[10px] font-mono text-white/40 tracking-[0.2em] uppercase">SYSTEM INITIALIZATION</span>
                 </div>
 
                 <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase leading-[0.9]">
-                  Welcome to <br />
-                  <span className="text-white">The Sanctuary ⚓</span>
+                  Ready to <br />
+                  <span className="text-white">Get Setup For ARK?</span>
                 </h2>
                 
-                <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto mb-8" />
+
                 
-                <p className="text-white/50 text-base md:text-lg max-w-lg mx-auto leading-relaxed font-mono uppercase tracking-tighter italic">
-                  Complete these sacred steps to hold the Ark. Where does your journey begin?
+                <p className="text-white/50 text-sm md:text-base max-w-lg mx-auto leading-relaxed font-mono uppercase tracking-tighter">
+                  Identify your current status below to generate a step-by-step protocol integration walkthrough.
                 </p>
               </div>
 

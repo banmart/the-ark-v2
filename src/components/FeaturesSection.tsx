@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flame, Users, Droplets, Lock, Database, Activity, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useIsMobile } from '../hooks/use-mobile';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
@@ -30,75 +30,66 @@ const FeaturesSection = () => {
   const pillars = [
     {
       id: 0,
-      icon: Flame,
-      emoji: '🔥',
-      title: 'SACRED BURN',
-      subtitle: 'Statute of Sacrifice',
+      title: 'BURN',
+      subtitle: 'Dynamic Burn System',
       percentage: '1%',
-      detail: 'Eternal Deflation',
-      description: 'The Covenant mandates the perpetual sacrifice of tokens. 1% of every transaction is cast into the void, ensuring the scarcity and sanctity of the remaining supply.',
+      detail: 'Protocol Burn',
+      description: 'The ARK Protocol is built for scarcity. 1% of every transaction is permanently removed from circulation, systematically reducing supply over time on PulseChain.',
       color: 'red',
-      status: 'STATUTE ACTIVE',
-      gradient: 'from-red-500 to-orange-500',
+      gradient: 'from-pink-500 to-red-500',
       glowColor: 'rgba(239, 68, 68, 0.4)',
       borderColor: 'border-red-500/30',
       borderHover: 'hover:border-red-500/60',
       textColor: 'text-red-400',
-      liveMetric: 'Sacrifice rate engaged'
+      liveMetric: 'Reducing Supply'
     },
     {
       id: 1,
-      icon: Users,
-      emoji: '🏛️',
-      title: 'ARK TREASURY',
-      subtitle: 'Covenant Governance',
+      title: 'DAO',
+      subtitle: 'Strategic Reserves',
       percentage: '1%',
-      detail: 'Sacred Fund',
-      description: '1% flows into the Ark Treasury, a sovereign fund governed by the Keepers of the Covenant to expand the reach of the statutes and protect the sanctuary.',
+      detail: 'Ecosystem Growth',
+      description: '1% flows into the multi-sig Treasury to ensure long-term protocol viability. Funds are utilized for strategic buy-backs, development, and market expansions.',
       color: 'blue',
-      status: 'ADMINISTERING',
+
       gradient: 'from-blue-500 to-cyan-500',
       glowColor: 'rgba(59, 130, 246, 0.4)',
       borderColor: 'border-blue-500/30',
       borderHover: 'hover:border-blue-500/60',
       textColor: 'text-blue-400',
-      liveMetric: 'Treasury stewardship'
+      liveMetric: 'Treasury Expansion'
     },
     {
       id: 2,
-      icon: Droplets,
-      emoji: '💧',
-      title: 'ETERNAL LIQUIDITY',
-      subtitle: 'Fluid Equilibrium',
+      title: 'LIQUIDITY',
+      subtitle: 'Price Floor Support',
       percentage: '4%',
-      detail: 'Sacred Balance',
-      description: 'The Covenant ensures the Ark remains buoyant in any storm. 4% of each transaction is forged into liquidity, maintaining the unbreakable balance of the ecosystem.',
+      detail: 'Automated LP',
+      description: '4% of all volume is automatically converted into PLS/ARK liquidity. This continuous injection strengthens the price floor and depth, enabling high-volume trading.',
       color: 'purple',
-      status: 'STABILIZING',
+
       gradient: 'from-purple-500 to-pink-500',
       glowColor: 'rgba(168, 85, 247, 0.4)',
       borderColor: 'border-purple-500/30',
       borderHover: 'hover:border-purple-500/60',
       textColor: 'text-purple-400',
-      liveMetric: 'Equilibrium control'
+      liveMetric: 'Liquidity Depth'
     },
     {
       id: 3,
-      icon: Lock,
-      emoji: '📜',
-      title: 'VAULT COVENANT',
-      subtitle: 'Sacred Rewards',
+      title: 'LOCKER REWARDS',
+      subtitle: 'Participant Rewards',
       percentage: '4%',
-      detail: 'Keeper Incentives',
-      description: 'The most faithful Keepers who lock their assets within the Vault are rewarded through the Covenant. Experience multiplied favor as your commitment grows.',
+      detail: 'Staking Dividends',
+      description: '4% is distributed to protocol participants who lock their assets. A dynamic reward structure ensures that committed holders receive the highest yield multipliers.',
       color: 'green',
-      status: 'KEEPERS REWARDED',
+
       gradient: 'from-green-500 to-teal-500',
       glowColor: 'rgba(34, 197, 94, 0.4)',
       borderColor: 'border-green-500/30',
       borderHover: 'hover:border-green-500/60',
       textColor: 'text-green-400',
-      liveMetric: 'Covenant rewards active'
+      liveMetric: 'Yield Generation'
     }
   ];
 
@@ -129,24 +120,14 @@ const FeaturesSection = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ===== PREMIUM HEADER ===== */}
         <div className={`text-center mb-20 transition-all duration-1000 ${pillarsPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Glassmorphism badge */}
-          <div className="inline-flex items-center justify-center gap-2 px-4 py-2 mb-6 rounded-full bg-white/[0.03] backdrop-blur-md border border-white/[0.08] shadow-lg">
-            <Database className="w-3 h-3 text-cyan-400 animate-pulse" />
-            <span className="text-cyan-400/80 font-mono text-xs tracking-[0.2em]">[COVENANT LOGIC SCAN]</span>
-            <Database className="w-3 h-3 text-cyan-400 animate-pulse" />
-          </div>
-          
           {/* Premium gradient title */}
           <h2 className="mb-4 text-4xl md:text-6xl font-black tracking-tighter uppercase bg-gradient-to-r from-cyan-300 via-teal-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(34,211,238,0.3)]">
-            THE FOUR COVENANT PILLARS
+            The ARK Game Theory
           </h2>
           
-          {/* Accent line */}
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-cyan-500/50" />
-            <Sparkles className="w-4 h-4 text-cyan-400/60" />
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-cyan-500/50" />
-          </div>
+          <p className="text-white/50 text-base md:text-lg max-w-2xl mx-auto font-mono leading-relaxed mt-6">
+            A strategic 10% protocol fee is applied to all ARK transactions. This automated mechanism fuels the deflationary engine, funds governance initiatives, stabilizes liquidity, and powers the reward distribution for long-term stakeholders.
+          </p>
         </div>
 
         {/* ===== PREMIUM PILLAR CARDS GRID/ACCORDION - Mobile First ===== */}
@@ -155,7 +136,6 @@ const FeaturesSection = () => {
           <div className="md:hidden">
             <Accordion type="single" collapsible className="space-y-4">
               {pillars.map((pillar) => {
-                const IconComponent = pillar.icon;
                 return (
                   <AccordionItem 
                     key={pillar.id} 
@@ -164,14 +144,9 @@ const FeaturesSection = () => {
                    >
                     <AccordionTrigger className="hover:no-underline p-5 w-full">
                       <div className="flex items-center justify-between w-full pr-4">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-2xl shrink-0 shadow-[0_0_15px_${pillar.glowColor}]`}>
-                            {pillar.emoji}
-                          </div>
-                          <div className="text-left">
-                            <p className={`text-sm font-black uppercase tracking-tighter ${pillar.textColor}`}>{pillar.title}</p>
-                            <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">[{pillar.subtitle}]</p>
-                          </div>
+                        <div className="text-left">
+                          <p className={`text-sm font-black uppercase tracking-tighter ${pillar.textColor}`}>{pillar.title}</p>
+                          <p className="text-[10px] font-mono text-white/40 tracking-widest uppercase">[{pillar.subtitle}]</p>
                         </div>
                         <div className="text-right">
                           <p className={`text-2xl font-black font-mono tracking-tighter ${pillar.textColor}`}>{pillar.percentage}</p>
@@ -184,7 +159,6 @@ const FeaturesSection = () => {
                           {pillar.description}
                         </p>
                         <div className="flex items-center gap-2 p-3 rounded-lg bg-white/[0.02] border border-white/5">
-                          <Activity className={`w-3.5 h-3.5 ${pillar.textColor} animate-pulse`} />
                           <span className={`text-[10px] font-mono uppercase tracking-widest ${pillar.textColor}`}>
                             {pillar.liveMetric}
                           </span>
@@ -200,7 +174,6 @@ const FeaturesSection = () => {
           {/* Desktop Grid */}
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {pillars.map((pillar, index) => {
-              const IconComponent = pillar.icon;
               const isActive = activePillar === pillar.id;
               const revealDelay = 150 * index;
               
@@ -245,42 +218,9 @@ const FeaturesSection = () => {
                       <div className={`absolute inset-0 bg-gradient-to-br ${pillar.gradient} opacity-[0.03] animate-pulse rounded-2xl`} />
                     )}
   
-                    {/* ===== STATUS BADGE ===== */}
-                    <div className="absolute top-3 right-3">
-                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.03] backdrop-blur-sm border border-white/[0.06]">
-                        <div 
-                          className="w-1.5 h-1.5 rounded-full animate-pulse"
-                          style={{ 
-                            backgroundColor: pillar.glowColor.replace('0.4', '1'),
-                            boxShadow: `0 0 6px ${pillar.glowColor}`
-                          }}
-                        />
-                        <span className={`${pillar.textColor} font-mono text-[10px] tracking-wider`}>
-                          {pillar.status}
-                        </span>
-                      </div>
-                    </div>
+
   
-                    {/* ===== ICON SECTION ===== */}
-                    <div className="text-center mb-5 mt-2">
-                      <div className="relative inline-block">
-                        {/* Icon glow */}
-                        <div 
-                          className="absolute inset-0 rounded-full blur-xl opacity-40 group-hover:opacity-70 transition-opacity duration-500"
-                          style={{ background: pillar.glowColor }}
-                        />
-                        
-                        {/* Frosted icon container */}
-                        <div className="relative w-16 h-16 flex items-center justify-center rounded-full bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] group-hover:scale-110 transition-transform duration-500">
-                          <span className="text-3xl drop-shadow-lg">{pillar.emoji}</span>
-                        </div>
-                        
-                        {/* Small icon badge */}
-                        <div className={`absolute -bottom-1 -right-1 w-6 h-6 flex items-center justify-center rounded-full bg-black/60 border ${pillar.borderColor}`}>
-                          <IconComponent className={`w-3 h-3 ${pillar.textColor}`} />
-                        </div>
-                      </div>
-                    </div>
+                    <div className="pt-4" />
   
                     {/* ===== TITLE ===== */}
                     <h3 className={`text-lg font-bold mb-1 text-center font-mono bg-gradient-to-r ${pillar.gradient} bg-clip-text text-transparent`}>
@@ -313,26 +253,9 @@ const FeaturesSection = () => {
                       {pillar.description}
                     </p>
   
-                    {/* ===== FOOTER ===== */}
-                    <div className="pt-4 border-t border-white/[0.06]">
-                      <div className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.04]">
-                        <Activity 
-                          className={`w-3 h-3 ${pillar.textColor} animate-pulse`}
-                          style={{ filter: `drop-shadow(0 0 4px ${pillar.glowColor})` }}
-                        />
-                        <span className={`${pillar.textColor} font-mono text-[10px] tracking-wider`}>
-                          COVENANT LAW ACTIVE
-                        </span>
-                      </div>
-                    </div>
+
   
-                    {/* Scan line effect on hover */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden rounded-2xl">
-                      <div 
-                        className={`absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r ${pillar.gradient}`}
-                        style={{ animation: 'scan-line 2.5s ease-in-out infinite' }}
-                      />
-                    </div>
+
                   </div>
                 </div>
               );

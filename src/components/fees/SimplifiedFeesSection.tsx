@@ -97,15 +97,14 @@ const SimplifiedFeesSection = () => {
           </div>
 
           <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
-            COVENANT REVELATIONS
+            SYSTEM PERFORMANCE
           </h2>
           
           <div className="flex justify-center mb-8">
-            <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           </div>
 
           <p className="text-white/50 text-base md:text-lg max-w-2xl mx-auto font-mono leading-relaxed">
-            The immutable ledger of the Ark. Real-time collection and distribution of sacred fees across the four pillars of the Covenant.
+            The live protocol ledger. Real-time tracking of fee collection and automated distribution across the core protocol subsystems.
           </p>
         </motion.div>
 

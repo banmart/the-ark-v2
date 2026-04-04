@@ -67,7 +67,7 @@ const HeroSection = ({
 
           <div className="flex flex-col items-center">
             <h1 
-              className="text-[64px] md:text-[120px] font-black leading-[0.85] tracking-tighter"
+              className="text-[64px] md:text-[140px] font-black leading-[0.85] tracking-tighter"
               style={{
                 background: 'linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.4) 100%)',
                 WebkitBackgroundClip: 'text',
@@ -76,45 +76,45 @@ const HeroSection = ({
                 color: 'transparent'
               }}
             >
-              THE ARK
+              The ARK
             </h1>
-            <h1 className="text-[54px] md:text-[96px] font-black leading-[0.85] tracking-tighter text-white uppercase italic">
-              COVENANT
+            <h1 className="text-[32px] md:text-[54px] font-black leading-[0.85] tracking-tighter text-white uppercase italic mt-4">
+              ON PULSECHAIN
             </h1>
           </div>
         </div>
 
         {/* Subtitle - Covenant Context */}
         <p className="max-w-[720px] text-[16px] md:text-[18px] font-normal text-white/70 leading-relaxed mb-12">
-          An unbreakable digital contract inscribed upon the PulseChain. The Covenant of The Ark safeguards your wealth through sacred deflationary laws, perpetual reflections, and the immutable protection of the Vault.
+          An advanced yield-optimizing ecosystem built on <strong>PulseChain</strong>. Maximize your digital assets through <strong>Automated Deflation</strong> and <strong>Strategic Rewards</strong>. Our protocol logic is designed for one thing: sustainable growth and deep liquidity.
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-6 mb-16">
           {/* Main CTA - Wallet Connect style */}
           <div className="relative group">
-            <div className="absolute -inset-[0.6px] bg-white rounded-full pointer-events-none opacity-100" />
+            <div className="absolute -inset-[0.6px] bg-cyan-400 rounded-full pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity" />
             <button 
               onClick={handleConnectWallet}
               disabled={isConnecting}
-              className="relative px-[36px] py-[14px] bg-white rounded-full flex items-center justify-center transition-all hover:bg-neutral-100 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+              className="relative px-[36px] py-[14px] bg-black rounded-full flex items-center justify-center transition-all hover:bg-neutral-900 active:scale-95 shadow-[0_0_20px_rgba(34,211,238,0.2)] border border-cyan-400/50"
             >
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-radial from-white to-transparent blur-[2px]" />
-              <span className="text-[15px] font-bold text-black uppercase tracking-wide">
-                {isConnected ? (account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connected') : (isConnecting ? 'Connecting...' : 'Connect Wallet')}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-radial from-cyan-400 to-transparent blur-[2px]" />
+              <span className="text-[15px] font-bold text-white uppercase tracking-wide">
+                {isConnected ? (account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connected') : (isConnecting ? 'Connecting...' : 'Launch Protocol')}
               </span>
             </button>
           </div>
 
           {/* Contract Address Pill */}
           <div className="relative group">
-            <div className="absolute -inset-[0.6px] bg-white/20 rounded-full pointer-events-none opacity-100 border border-white/10" />
+            <div className="absolute -inset-[0.6px] bg-white/10 rounded-full pointer-events-none opacity-100 border border-white/5" />
             <button 
               onClick={handleCopy}
               className="relative px-[24px] py-[14px] bg-black/40 backdrop-blur-xl rounded-full flex items-center gap-3 transition-all hover:bg-white/5 active:scale-95"
             >
               <div className="flex flex-col items-start">
-                <span className="text-white/30 text-[9px] uppercase font-mono tracking-widest">Contract</span>
+                <span className="text-white/30 text-[9px] uppercase font-mono tracking-widest">Protocol Address</span>
                 <span className="text-white/80 font-mono text-xs">{contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</span>
               </div>
               <div className="p-1.5 rounded-lg bg-white/5">
@@ -124,12 +124,10 @@ const HeroSection = ({
           </div>
         </div>
       </div>
-
-
-
+      
       {/* Scroll indicator */}
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-30 z-10">
-        <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">Protocol Metrics</span>
+        <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">System Metrics</span>
         <ChevronDown size={16} className="text-white/60" />
       </div>
     </section>

@@ -15,9 +15,7 @@ import SimplifiedFeesSection from '../fees/SimplifiedFeesSection';
 import FeaturesSection from '../FeaturesSection';
 import ContractTransparencySection from '../ContractTransparencySection';
 import LockerTiersSection from '../LockerTiersSection';
-import ProphecySection from '../ProphecySection';
 import CloudVideoSection from '../CloudVideoSection';
-import ChartSection from '../ChartSection';
 import Footer from '../Footer';
 
 interface PageLayoutProps {
@@ -150,14 +148,8 @@ const PageLayout = memo(({ children }: PageLayoutProps) => {
       {/* Atmospheric Cloud Section */}
 
 
-      {/* Prophecy Section */}
-      <ProphecySection />
-
       {/* Render children if provided */}
       {children}
-
-      {/* Market Surveillance Chart */}
-      <ChartSection />
 
       {/* Footer */}
       <Footer />

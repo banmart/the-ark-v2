@@ -37,40 +37,40 @@ const EnhancedProtocolStats = () => {
 
   const stats = [
     {
-      title: 'Sanctified Tokens',
+      title: 'Locked Supply',
       value: protocolStats.totalLockedTokens,
       unit: 'ARK',
       emoji: '🏛️',
       icon: Lock,
       colorRGB: '255, 255, 255',
-      description: 'Total tokens bound to the Covenant',
+      description: 'Total tokens currently locked in the protocol',
     },
     {
-      title: 'Current Keepers',
+      title: 'Active Lockers',
       value: protocolStats.totalActiveLockers,
       unit: 'Users',
       emoji: '👥',
       icon: Users,
       colorRGB: '255, 255, 255',
-      description: 'Unique souls with active seals',
+      description: 'Unique addresses with active lock positions',
     },
     {
-      title: 'Ritual Pool',
+      title: 'Reward Pool',
       value: protocolStats.rewardPool,
       unit: 'ARK',
       emoji: '💰',
       icon: DollarSign,
       colorRGB: '255, 255, 255',
-      description: 'Tokens available for the consecrated',
+      description: 'Tokens available for distribution to lockers',
     },
     {
-      title: 'Total Consecrated',
+      title: 'Total Distributed',
       value: protocolStats.totalRewardsDistributed,
       unit: 'ARK',
       emoji: '📈',
       icon: TrendingUp,
       colorRGB: '255, 255, 255',
-      description: 'Lifetime rewards distributed to Keepers',
+      description: 'Lifetime rewards paid to protocol participants',
     }
   ];
 
@@ -98,7 +98,7 @@ const EnhancedProtocolStats = () => {
               </div>
               <div className="space-y-1">
                 <h2 className="text-2xl font-black text-white uppercase tracking-tighter">PROTOCOL METRICS</h2>
-                <p className="text-[10px] text-white/20 font-mono tracking-[0.2em] uppercase">[STATION-01 LIVE FEED]</p>
+                <p className="text-xs text-white/50 font-mono tracking-[0.2em] uppercase">[STATION-01 LIVE FEED]</p>
               </div>
             </div>
             
@@ -110,11 +110,11 @@ const EnhancedProtocolStats = () => {
                   : 'bg-white/5 border-white/10 text-white/40'
               }`}>
                 {emergencyMode ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
-                {emergencyMode ? 'EXCLUSION_ACTIVE' : 'COVENANT_STABLE'}
+                {emergencyMode ? 'EXCLUSION_ACTIVE' : 'PROTOCOL_STABLE'}
               </div>
               
-              <div className={`flex items-center gap-2 px-6 py-2 rounded-xl border font-mono text-[10px] font-black tracking-widest uppercase bg-white/5 border-white/10 text-white/40`}>
-                EARLY_UNSEAL: {earlyUnlockSettings.enabled ? 'PERMITTED' : 'FORBIDDEN'}
+              <div className={`flex items-center gap-2 px-6 py-2 rounded-xl border font-mono text-xs font-black tracking-widest uppercase bg-white/5 border-white/20 text-white/50`}>
+                EARLY_UNLOCK: {earlyUnlockSettings.enabled ? 'PERMITTED' : 'FORBIDDEN'}
               </div>
             </div>
           </div>
@@ -204,9 +204,9 @@ const EnhancedProtocolStats = () => {
               <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] font-mono">
                 [STATUTE MAINTENANCE]
               </h3>
-              <p className="text-[10px] text-white/20 font-mono uppercase tracking-widest leading-relaxed max-w-xl">
-                Administrate the return of matured tokens to their origin. This ritual processes up to 50 expired seals in the current cycle.
-              </p>
+              <p className="text-xs text-white/50 font-mono uppercase tracking-widest leading-relaxed max-w-xl">
+                 Administrate the return of matured tokens to their origin. This maintenance processes up to 50 expired lock positions in the current cycle.
+               </p>
             </div>
             <button
               onClick={handleForceUnlockMatured}

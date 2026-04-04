@@ -35,13 +35,13 @@ const LockButton = ({
   // Single-step flow (no approval needed)
   if (!needsApproval) {
     const getButtonText = () => {
-      if (!isConnected) return 'AWAKEN SOUL';
-      if (isProcessing) return 'BINDING...';
-      if (emergencyMode) return 'STATION_LOCKED';
-      if (contractPaused) return 'COVENANT_PAUSED';
-      if (!isValidDuration) return 'INVALID_MATURITY';
-      if (hasInsufficientBalance) return 'TREASURY_EXHAUSTED';
-      return `BIND ${amount.toLocaleString()} ARK`;
+      if (!isConnected) return 'CONNECT WALLET';
+      if (isProcessing) return 'STAKING...';
+      if (emergencyMode) return 'LOCKDOWN_ACTIVE';
+      if (contractPaused) return 'PROTOCOL_PAUSED';
+      if (!isValidDuration) return 'INVALID_DURATION';
+      if (hasInsufficientBalance) return 'INSUFFICIENT_BALANCE';
+      return `STAKE ${amount.toLocaleString()} ARK`;
     };
 
     return (
@@ -87,7 +87,7 @@ const LockButton = ({
             <>
               {isProcessing && <Loader2 className="w-3 h-3 animate-spin" />}
               <Shield className="w-4 h-4" />
-              AUTHORIZE TITHE
+              AUTHORIZE ASSETS
             </>
           )}
         </button>
@@ -104,7 +104,7 @@ const LockButton = ({
         >
           {isProcessing && currentStep === 2 && <Loader2 className="w-3 h-3 animate-spin" />}
           <Shield className="w-4 h-4" />
-          BIND TO THE ARK
+          STAKE IN LOCKER
         </button>
       </div>
 

@@ -79,20 +79,16 @@ const DAO = () => {
   };
 
   return (
-    <BaseLayout>
+    <BaseLayout fixed={true}>
       <div className="max-w-5xl mx-auto px-4 pb-20 space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4 mb-16 px-4">
-          <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
-            <Shield className="w-4 h-4 text-white/40" />
-            <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">Executive Governance</span>
-          </div>
+        <div className="text-center py-24 px-6 mb-16">
           <h1 className="text-5xl md:text-8xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
-            THE COUNCIL CHAMBER
+            The ARK DAO
           </h1>
-          <div className="w-48 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto mb-8" />
+
           <p className="text-white/50 text-base md:text-xl max-w-3xl mx-auto font-mono leading-relaxed uppercase tracking-tighter italic">
-            Governance by the high Keepers of the Statutes. Deliberate on the evolution of the Covenant and administer the Ark Treasury.
+            Decentralized decision-making by protocol participants. Vote on development proposals and manage the communal Treasury funds.
           </p>
         </div>
 
@@ -105,7 +101,7 @@ const DAO = () => {
               </div>
               <div>
                 <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Treasury</p>
-                <p className="text-xl font-black text-white font-mono">${treasuryBalance} <span className="text-[10px] text-white/20">USDC</span></p>
+                <p className="text-xl font-black text-white font-mono">${treasuryBalance} <span className="text-xs text-white/50">USDC</span></p>
               </div>
             </div>
           </div>
@@ -116,7 +112,7 @@ const DAO = () => {
                 <Vote className="w-5 h-5 text-white/60" />
               </div>
               <div>
-                <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Decrees</p>
+                <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Proposals</p>
                 <p className="text-xl font-black text-white font-mono">{totalProposals}</p>
               </div>
             </div>
@@ -130,7 +126,7 @@ const DAO = () => {
               <div>
                 <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Your Status</p>
                 <p className="text-[10px] font-black text-white font-mono uppercase tracking-widest">
-                  {!isConnected ? 'Disconnected' : isTopLocker ? 'Council Member' : 'Initiate'}
+                  {!isConnected ? 'Disconnected' : isTopLocker ? 'Voter' : 'Participant'}
                 </p>
               </div>
             </div>
@@ -282,7 +278,7 @@ const ProposalCard = ({ proposal, userVote, isTopLocker, isConnected, account, a
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-[9px] md:text-[10px] font-mono text-white/20 uppercase tracking-[0.2em]">DECREE #{p.proposalID}</span>
+              <span className="text-xs font-mono text-white/50 uppercase tracking-[0.2em]">PROPOSAL #{p.proposalID}</span>
               <span className={`text-[9px] md:text-[10px] font-mono px-2 py-0.5 rounded-full border ${
                 p.state === 0 ? 'border-white/30 text-white/80' : 
                 p.state === 1 ? 'border-red-500/20 text-red-400' : 'border-green-500/20 text-green-400'
@@ -313,8 +309,8 @@ const ProposalCard = ({ proposal, userVote, isTopLocker, isConnected, account, a
 
         {/* Indicators Row */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
-          <p className="text-[8px] md:text-[9px] font-mono text-white/20 uppercase tracking-[0.3em]">
-            ORIGIN: {p.proposer.slice(0, 6)}...{p.proposer.slice(-4)}
+          <p className="text-xs font-mono text-white/50 uppercase tracking-[0.3em]">
+            PROPOSER: {p.proposer.slice(0, 6)}...{p.proposer.slice(-4)}
           </p>
           
           <div className="flex items-center gap-4 text-[9px] font-mono uppercase tracking-widest">
@@ -362,7 +358,7 @@ const ProposalCard = ({ proposal, userVote, isTopLocker, isConnected, account, a
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/5">
               <CheckCircle2 className="w-3 h-3 text-emerald-400" />
               <span className="text-[10px] font-mono text-white/60 uppercase tracking-widest">
-                {userVote.support === 1 ? 'Aligned' : 'Opposed'}
+                {userVote.support === 1 ? 'Voted For' : 'Voted Against'}
               </span>
             </div>
           )}
@@ -372,7 +368,7 @@ const ProposalCard = ({ proposal, userVote, isTopLocker, isConnected, account, a
               disabled={actionLoading}
               className="w-full py-4 bg-white text-black font-black font-mono text-[10px] uppercase hover:scale-[1.02] transition-all"
             >
-              Exert Claim
+              Claim Funds
             </button>
           )}
         </div>

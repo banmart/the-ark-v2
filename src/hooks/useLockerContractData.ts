@@ -42,11 +42,19 @@ interface EarlyUnlockSettings {
 }
 
 export const useLockerContractData = (userAddress?: string) => {
-  const [protocolStats, setProtocolStats] = useState<ProtocolStats>({
-    totalLockedTokens: 0,
-    totalRewardsDistributed: 0,
-    totalActiveLockers: 0,
-    rewardPool: 0
+  const [protocolStats, setProtocolStats] = useState<ProtocolStats>(() => {
+    const cached = localStorage.getItem('ark-protocol-metrics');
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch (e) { return { totalLockedTokens: 0, totalRewardsDistributed: 0, totalActiveLockers: 0, rewardPool: 0 }; }
+    }
+    return {
+      totalLockedTokens: 0,
+      totalRewardsDistributed: 0,
+      totalActiveLockers: 0,
+      rewardPool: 0
+    };
   });
 
   const [userStats, setUserStats] = useState<UserStats>({
@@ -68,7 +76,7 @@ export const useLockerContractData = (userAddress?: string) => {
     rewardShare: 5000
   });
   const [emergencyUnlockTime, setEmergencyUnlockTime] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(!protocolStats.totalLockedTokens);
   const [error, setError] = useState<string | null>(null);
 
   const fetchProtocolStats = async () => {
@@ -91,12 +99,15 @@ export const useLockerContractData = (userAddress?: string) => {
       const totalActiveLockers = parseInt(totalLockers.toString());
       const rewardPoolAmount = parseFloat(ethers.formatEther(rewardPool));
 
-      setProtocolStats({
+      const newStats = {
         totalLockedTokens,
         totalRewardsDistributed,
         totalActiveLockers,
         rewardPool: rewardPoolAmount
-      });
+      };
+
+      setProtocolStats(newStats);
+      localStorage.setItem('ark-protocol-metrics', JSON.stringify(newStats));
 
       setTotalProtocolWeight(parseFloat(ethers.formatEther(protocolWeight)));
       setEmergencyMode(config.emergencyMode);
@@ -107,13 +118,6 @@ export const useLockerContractData = (userAddress?: string) => {
         penaltyRate: parseInt(config.earlyUnlockPenalty.toString()),
         burnShare: parseInt(config.penaltyBurnShare.toString()),
         rewardShare: parseInt(config.penaltyRewardShare.toString())
-      });
-
-      console.log('Protocol dashboard fetched:', {
-        totalLockedTokens,
-        totalRewardsDistributed,
-        totalActiveLockers,
-        rewardPool: rewardPoolAmount
       });
     } catch (err: any) {
       console.error('Error fetching protocol stats:', err);
@@ -171,15 +175,6 @@ export const useLockerContractData = (userAddress?: string) => {
         return total;
       }, 0);
       setUserWeight(weight);
-
-      console.log('User dashboard fetched:', {
-        totalLocked,
-        totalRewardsEarned,
-        pendingRewards: pending,
-        activeLocksCount,
-        locks: locks.length,
-        userWeight: weight
-      });
     } catch (err: any) {
       console.error('Error fetching user data:', err);
       setError(err.message || 'Failed to fetch user data');
@@ -228,11 +223,10 @@ export const useLockerContractData = (userAddress?: string) => {
   };
 
   useEffect(() => {
-    fetchContractData();
-    
-    const interval = setInterval(fetchContractData, 30000);
-    
-    return () => clearInterval(interval);
+    // Only fetch automatically if we don't have cached data or if address changed
+    if (!protocolStats.totalLockedTokens || userAddress) {
+      fetchContractData();
+    }
   }, [userAddress]);
 
   return {

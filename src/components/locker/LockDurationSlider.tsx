@@ -12,11 +12,13 @@ interface LockDurationSliderProps {
 }
 
 const TIER_PRESETS = [
-  { name: 'Initiate', icon: 'I', multiplier: '1.2x', label: '30-89 DAYS', minDays: 30, maxDays: 89, color: '255, 255, 255' },
-  { name: 'Acolyte', icon: 'II', multiplier: '2.0x', label: '90-179 DAYS', minDays: 90, maxDays: 179, color: '255, 255, 255' },
-  { name: 'Warden', icon: 'III', multiplier: '3.5x', label: '180-364 DAYS', minDays: 180, maxDays: 364, color: '255, 255, 255' },
-  { name: 'Sentinel', icon: 'IV', multiplier: '6.0x', label: '1-2 YEARS', minDays: 365, maxDays: 729, color: '255, 255, 255' },
-  { name: 'Arch-Keeper', icon: 'V', multiplier: '10.0x', label: '2+ YEARS', minDays: 730, maxDays: 1826, color: '255, 255, 255' },
+  { name: 'Bronze', icon: '🥉', multiplier: '1x', label: '30-89 DAYS', minDays: 30, maxDays: 89, color: '255, 255, 255' },
+  { name: 'Silver', icon: '🥈', multiplier: '1.5x', label: '90-179 DAYS', minDays: 90, maxDays: 179, color: '255, 255, 255' },
+  { name: 'Gold', icon: '🥇', multiplier: '2x', label: '180-364 DAYS', minDays: 180, maxDays: 364, color: '255, 255, 255' },
+  { name: 'Diamond', icon: '💎', multiplier: '3x', label: '1-2 YEARS', minDays: 365, maxDays: 729, color: '255, 255, 255' },
+  { name: 'Platinum', icon: '⭐', multiplier: '4x', label: '2-3 YEARS', minDays: 730, maxDays: 1094, color: '255, 255, 255' },
+  { name: 'Mythic', icon: '🔮', multiplier: '5.5x', label: '3-5 YEARS', minDays: 1095, maxDays: 1825, color: '255, 255, 255' },
+  { name: 'Legendary', icon: '⚡', multiplier: '7x', label: '5+ YEARS', minDays: 1826, maxDays: 1826, color: '255, 215, 0' },
 ];
 
 const LockDurationSlider = ({ 
@@ -36,8 +38,8 @@ const LockDurationSlider = ({
 
   return (
     <div>
-      <label className="text-[10px] font-black font-mono tracking-[0.2em] text-white/40 uppercase mb-4 block">SELECTION OF MATURITY</label>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <label className="text-xs font-black font-mono tracking-[0.2em] text-white/60 uppercase mb-4 block">SELECTION OF MATURITY</label>
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-3">
         {TIER_PRESETS.map((tier, i) => {
           const isActive = activeIndex === i;
           return (
@@ -47,7 +49,7 @@ const LockDurationSlider = ({
               disabled={disabled}
               onClick={() => setLockDuration(tier.minDays)}
               className={`
-                relative group rounded-2xl p-6 text-center transition-all duration-300
+                relative group rounded-2xl p-4 md:p-6 text-center transition-all duration-300
                 border backdrop-blur-3xl overflow-hidden
                 disabled:opacity-10 disabled:cursor-not-allowed
                 ${isActive 
@@ -57,7 +59,7 @@ const LockDurationSlider = ({
               `}
             >
               <div className="relative z-10 space-y-3">
-                <div className={`text-xl font-black font-mono transition-colors ${isActive ? 'text-black' : 'text-white/20'}`}>
+                <div className={`text-xl font-black font-mono transition-colors ${isActive ? 'text-black' : 'text-white/40'}`}>
                   {tier.icon}
                 </div>
                 <div className="space-y-1">
@@ -68,7 +70,7 @@ const LockDurationSlider = ({
                     {tier.multiplier}
                   </div>
                 </div>
-                <div className={`text-[8px] font-black font-mono tracking-widest transition-colors uppercase ${isActive ? 'text-black/40' : 'text-white/20'}`}>
+                <div className={`text-[8px] font-black font-mono tracking-widest transition-colors uppercase ${isActive ? 'text-black/40' : 'text-white/40'}`}>
                   {tier.label}
                 </div>
               </div>

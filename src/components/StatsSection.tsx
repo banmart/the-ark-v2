@@ -37,8 +37,6 @@ const StatCard = memo(({
         group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]
         group-hover:-translate-y-2
       `}>
-        {/* Top edge highlight highlight */}
-        <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
@@ -64,8 +62,6 @@ const StatCard = memo(({
           </p>
         </div>
         
-        {/* Bottom accent line */}
-        <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent group-hover:via-white/10 transition-all duration-500" />
       </div>
     </div>
   );
@@ -154,54 +150,54 @@ const StatsSection = memo(({
       {
         id: 'marketCap',
         icon: DollarSign,
-        label: 'MARKET COVENANT',
+        label: 'MARKET CAP',
         value: hasData ? `$${formatNumber(arkData.marketCap)}` : null,
-        subtitle: `${arkData?.dataSource || 'ARK/PLS PulseX'} • Inscribed Value`,
+        subtitle: `PulseX Liquidity • Protocol Value`,
         placeholder: '$---.--M',
         accentColor: 'gold'
       },
       {
         id: 'price',
         icon: TrendingUp,
-        label: 'SACRED TENTH',
+        label: 'PRICE',
         value: hasData ? `$${arkData.price.toFixed(6)}` : null,
-        subtitle: `${arkData?.dataSource || 'ARK/PLS PulseX'} • Oracle Feed`,
+        subtitle: `PulseChain Oracle • Live Feed`,
         placeholder: '$--.----',
         accentColor: 'emerald'
       },
       {
         id: 'tvl',
         icon: Layers,
-        label: 'VAULTED SANCTITY',
+        label: 'TVL',
         value: protocolStats.totalLockedTokens ? `${formatTVL(protocolStats.totalLockedTokens)} ARK` : null,
-        subtitle: 'Tokens Bound by Covenant',
+        subtitle: 'Total Value Locked in Ecosystem',
         placeholder: '---.--M',
         accentColor: 'white'
       },
       {
         id: 'totalSupply',
         icon: Coins,
-        label: 'ETERNAL SUPPLY',
+        label: 'MAX SUPPLY',
         value: hasData ? formatNumber(arkData.totalSupply) : null,
-        subtitle: 'Statute Maxima',
+        subtitle: 'Hard-Coded Supply Cap',
         placeholder: '---.--B',
         accentColor: 'violet'
       },
       {
         id: 'circulating',
         icon: Activity,
-        label: 'THE FAITHFUL',
+        label: 'HOLDERS',
         value: hasData ? formatNumber(arkData.circulatingSupply) : null,
-        subtitle: 'Tokens in active stewardship',
+        subtitle: 'Active On-Chain Wallets',
         placeholder: '---.--B',
         accentColor: 'amber'
       },
       {
         id: 'burned',
         icon: Flame,
-        label: 'SACRIFICED',
+        label: 'TOTAL BURNED',
         value: hasData ? formatNumber(arkData.burnedTokens) : null,
-        subtitle: 'Purified through the Void',
+        subtitle: 'Total Tokens Deflated',
         placeholder: '---.--M',
         accentColor: 'orange'
       }
@@ -218,21 +214,30 @@ const StatsSection = memo(({
         {/* Main Section Heading - Moved from Hero */}
         <div className={`text-center mb-24 transition-all duration-1000 ${showHeader ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <h2 className="text-white text-4xl md:text-6xl font-black tracking-tighter uppercase">
-            IMMUTABLE STATUTES OF WEALTH PRESERVATION
+            Stats
           </h2>
-          <div className="mt-6 flex justify-center">
-            <div className="h-px w-24 bg-white/20" />
-          </div>
         </div>
 
-        {/* Protocol metrics header */}
-        <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 transition-all duration-1000 ${showHeader ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        {/* Premium Card Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mb-12">
+          {statsCards.map((stat, index) => (
+            <StatCard 
+              key={stat.id} 
+              stat={stat} 
+              index={index} 
+              isVisible={isVisible} 
+            />
+          ))}
+        </div>
+
+        {/* Protocol metrics header - Moved below cards */}
+        <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all duration-1000 ${showHeader ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="space-y-2">
             <h3 className="text-white/40 tracking-tighter font-mono text-[10px] md:text-xs uppercase">
-              COVENANT METRICS
+              NETWORK ANALYTICS
             </h3>
-            {/* Accent line */}
-            <div className="h-px w-32 bg-gradient-to-r from-ark-gold-400/60 via-ark-gold-500/30 to-transparent" />
+            {/* Accent line removed per previous request */}
+
             {arkData && (
               <div className="flex items-center gap-2 text-sm text-white/40 font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-ark-gold-500/60 animate-pulse" />
@@ -258,18 +263,6 @@ const StatsSection = memo(({
             <RefreshCw className={`h-4 w-4 transition-transform duration-700 ${arkLoading ? 'animate-spin' : 'group-hover:rotate-180'}`} />
             <span className="text-sm font-medium tracking-wide">Refresh</span>
           </button>
-        </div>
-
-        {/* Premium Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-          {statsCards.map((stat, index) => (
-            <StatCard 
-              key={stat.id} 
-              stat={stat} 
-              index={index} 
-              isVisible={isVisible} 
-            />
-          ))}
         </div>
       </div>
     </section>

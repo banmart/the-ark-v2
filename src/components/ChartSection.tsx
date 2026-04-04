@@ -9,28 +9,29 @@ const ChartSection = memo(() => {
     <section id="chart" className="relative z-10 py-24 px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">
-              <Activity className="w-3 h-3 text-cyan-400 animate-pulse" />
-              <span className="text-[10px] font-mono text-cyan-400 tracking-[0.2em] uppercase">Real-time Oracle Feed</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase font-sans">
-              MARKET <span className="text-white/40 italic">SURVEILLANCE</span>
-            </h2>
-            <p className="text-white/40 font-mono text-sm max-w-xl">
-              Precision tracking of the Ark’s valuation across the PulseChain. Every fluctuation is recorded in the immutable ledgers of the Covenant.
-            </p>
+        <div className="text-center mb-16 space-y-6 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+            <Activity className="w-3 h-3 text-cyan-400 animate-pulse" />
+            <span className="text-[10px] font-mono text-cyan-400 tracking-[0.2em] uppercase">Real-time Oracle Feed</span>
           </div>
           
-          <div className="flex gap-4">
+          <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase font-sans">
+            Historic Price Chart
+          </h2>
+          
+          <p className="text-white/40 font-mono text-sm">
+            Real-time analytics and historic price performance of ARK on the PulseChain network. 
+            Monitor ecosystem growth and market liquidity depth directly from the protocol interface.
+          </p>
+          
+          <div className="flex justify-center pt-4">
             <a 
               href={`https://dexscreener.com/pulsechain/${ARK_TOKEN}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/5 transition-all group"
             >
-              <span className="font-mono text-xs uppercase tracking-widest text-white/60 group-hover:text-white">View on DexScreener</span>
+              <span className="font-mono text-xs uppercase tracking-widest text-white/60 group-hover:text-white">External Terminal</span>
               <ExternalLink className="w-4 h-4 text-white/40 group-hover:text-cyan-400" />
             </a>
           </div>
@@ -83,15 +84,15 @@ const ChartSection = memo(() => {
             {/* Terminal Bottom Info */}
             <div className="bg-white/[0.03] border-t border-white/10 px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="flex flex-col">
-                <span className="text-[10px] font-mono text-white/20 uppercase tracking-tighter">Status</span>
+                <span className="text-xs font-mono text-white/50 uppercase tracking-tighter">Status</span>
                 <span className="text-xs font-mono text-emerald-400 uppercase tracking-widest">Synced</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-mono text-white/20 uppercase tracking-tighter">Latency</span>
+                <span className="text-xs font-mono text-white/50 uppercase tracking-tighter">Latency</span>
                 <span className="text-xs font-mono text-white/60 uppercase tracking-widest">~250ms</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-mono text-white/20 uppercase tracking-tighter">Authority</span>
+                <span className="text-xs font-mono text-white/50 uppercase tracking-tighter">Authority</span>
                 <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest">The Oracle</span>
               </div>
               <div className="flex flex-col">

@@ -247,7 +247,7 @@ const Burn = () => {
   return (
     <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
       {/* Premium Background */}
-      <PremiumBackground />
+      <PremiumBackground fixed={true} />
 
       {/* Navigation */}
       <div className="relative z-20">
@@ -257,21 +257,16 @@ const Burn = () => {
       <div className="relative z-10 pt-24">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           {/* Premium Hero Header */}
-          <div className="flex flex-col items-center text-center space-y-4 mb-16">
-            <div className="inline-flex items-center gap-2 mb-2 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
-              <Flame className="w-4 h-4 text-ark-gold-400 animate-pulse" />
-              <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">Sacred Combustion</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-8xl font-black mb-4 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
-              STATUTE OF COMBUSTION
+          <div className="flex flex-col items-center text-center py-24 px-6 mb-16">
+            <h1 className="text-5xl md:text-8xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
+              The ARK Burn
             </h1>
             
-            <div className="w-48 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8" />
+
 
             <div className="max-w-2xl mx-auto mb-10">
               <p className="text-white/50 text-base md:text-xl font-mono leading-relaxed uppercase tracking-tighter italic">
-                The immutable deflationary engine. Every transaction feeds the sacrificial pyre, securing the sanctity of the Covenant.
+                Our protocol's automated scarcity engine. Every transaction contributes to the deflationary cycle, enhancing the value of the remaining supply.
               </p>
             </div>
             
@@ -313,7 +308,7 @@ const Burn = () => {
               <div className="flex flex-col space-y-8 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
                 <div className="text-center lg:text-left">
                   <h3 className="text-xl font-black text-white uppercase tracking-tighter mb-2 font-sans">
-                    {timeframes.find(t => t.value === selectedTimeframe)?.label} REVELATIONS
+                    {timeframes.find(t => t.value === selectedTimeframe)?.label} ACTIVITY
                   </h3>
                   <div className="w-12 h-px bg-white/20 mx-auto lg:mx-0" />
                 </div>
@@ -323,15 +318,15 @@ const Burn = () => {
                     <p className="text-xl font-black text-white font-mono">{timeframeStats.totalBurns}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Purified</p>
+                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Removed</p>
                     <p className="text-xl font-black text-white font-mono">{formatNumber(timeframeStats.totalAmount)}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Keepers</p>
+                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Holders</p>
                     <p className="text-xl font-black text-white font-mono">{timeframeStats.uniqueWallets}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Avg Pulse</p>
+                    <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Avg Burn</p>
                     <p className="text-xl font-black text-white font-mono">{formatNumber(timeframeStats.avgBurnSize)}</p>
                   </div>
                 </div>
@@ -351,15 +346,15 @@ const Burn = () => {
                 <div className="w-1.5 h-1.5 bg-red-500/50 rounded-full animate-pulse" />
               </div>
               <div className="space-y-1">
-                <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Early Excision</p>
+                <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest">Early Withdrawal</p>
                 <div className="flex items-baseline gap-2">
                   <p className="text-xl font-black text-white font-mono">
                     {burnHistory?.filter(b => b.type === 'penalty').reduce((sum, b) => sum + b.amount, 0) ? 
                       formatNumber(burnHistory.filter(b => b.type === 'penalty').reduce((sum, b) => sum + b.amount, 0)) : '0'}
                   </p>
-                  <span className="text-[10px] text-white/20 font-mono">ARK</span>
+                  <span className="text-xs text-white/50 font-mono">ARK</span>
                 </div>
-                <p className="text-[9px] text-white/20 font-mono">Penalty Extraction</p>
+                <p className="text-xs text-white/50 font-mono">Penalty Extraction</p>
               </div>
             </div>
 
@@ -377,9 +372,9 @@ const Burn = () => {
                   <p className="text-xl font-black text-white font-mono">
                     {contractData?.liquidityData?.lpTokensBurned ? formatNumber(Number(contractData.liquidityData.lpTokensBurned)) : '0'}
                   </p>
-                  <span className="text-[10px] text-white/20 font-mono">LP</span>
+                  <span className="text-xs text-white/50 font-mono">LP</span>
                 </div>
-                <p className="text-[9px] text-white/20 font-mono">Permanent Sanctity</p>
+                <p className="text-xs text-white/50 font-mono">Permanent Liquidity</p>
               </div>
             </div>
           </div>
@@ -387,11 +382,11 @@ const Burn = () => {
           {/* Premium Main Burn Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-8">
             {[
-              { label: 'Total Sacrificed', value: burnMetrics ? formatNumber(burnMetrics.totalBurned) : '0', unit: 'ARK' },
-              { label: 'Combustion Rate', value: burnMetrics ? burnMetrics.burnRate.toFixed(1) : '0', unit: '/hr' },
-              { label: 'Pyre Efficiency', value: burnMetrics ? burnMetrics.efficiency.toFixed(1) : '0', unit: '%' },
-              { label: 'Active Spirits', value: timeframeStats.uniqueWallets.toString(), unit: 'KEEPERS' },
-              { label: 'Covenant Purity', value: burnPercentage.toFixed(3), unit: '%' }
+              { label: 'Total Burned', value: burnMetrics ? formatNumber(burnMetrics.totalBurned) : '0', unit: 'ARK' },
+              { label: 'Burn Rate', value: burnMetrics ? burnMetrics.burnRate.toFixed(1) : '0', unit: '/hr' },
+              { label: 'Burn Efficiency', value: burnMetrics ? burnMetrics.efficiency.toFixed(1) : '0', unit: '%' },
+              { label: 'Active Wallets', value: timeframeStats.uniqueWallets.toString(), unit: 'USERS' },
+              { label: 'Deflation Progress', value: burnPercentage.toFixed(3), unit: '%' }
             ].map((stat, index) => (
               <div key={stat.label} className="relative liquid-glass rounded-2xl border border-white/10 p-6 transition-all duration-300 hover:border-white/20">
                 <div className="space-y-1">
@@ -400,7 +395,7 @@ const Burn = () => {
                     <p className="text-xl font-black text-white font-mono tracking-tighter">
                       {stat.value}
                     </p>
-                    <span className="text-[10px] text-white/20 font-mono">{stat.unit}</span>
+                    <span className="text-xs text-white/50 font-mono">{stat.unit}</span>
                   </div>
                 </div>
               </div>
@@ -437,7 +432,7 @@ const Burn = () => {
             <div className="relative liquid-glass rounded-2xl border border-white/10 p-5 md:p-8">
               <h3 className="text-lg font-black text-white uppercase tracking-tighter mb-6 flex items-center gap-3 font-sans">
                 <Activity className="w-4 h-4 text-white/40" />
-                LIVE REVELATIONS
+                LIVE BURN FEED
               </h3>
               <div className="backdrop-blur-xl bg-white/[0.01] rounded-2xl p-2 md:p-4 max-h-[450px] overflow-y-auto border border-white/[0.05] scrollbar-none">
                 <div className="space-y-3">
@@ -453,7 +448,7 @@ const Burn = () => {
                               ? 'border-red-500/30 text-red-400 bg-red-500/5' 
                               : 'border-white/20 text-white/60 bg-white/5'
                           }`}>
-                            {notification.type === 'penalty' ? 'EXCISION' : 'COMBUSTION'}
+                            {notification.type === 'penalty' ? 'PENALTY' : 'TRANSACTION'}
                           </span>
                           <span className="text-[8px] text-white/20 font-mono">
                             {notification.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -489,7 +484,7 @@ const Burn = () => {
                   ) : (
                     <div className="text-center py-20 opacity-20">
                       <Activity className="w-8 h-8 mx-auto mb-4" />
-                      <p className="text-[10px] font-mono tracking-widest uppercase">Waiting for Revelations...</p>
+                      <p className="text-[10px] font-mono tracking-widest uppercase">Awaiting burn data...</p>
                     </div>
                   )}
                 </div>
@@ -499,14 +494,16 @@ const Burn = () => {
             {/* Premium Burn Mechanics Info */}
             <div className="relative liquid-glass rounded-2xl border border-white/10 p-6 md:p-8">
               <h3 className="text-lg font-black text-white uppercase tracking-tighter mb-8 flex items-center gap-3 font-sans">
-                <Info className="w-5 h-5 text-white/40" />
-                THE STATUTES
+                <Activity className="w-5 h-5 text-white/40" />
+                PROTOCOL PARAMETERS
               </h3>
               <div className="space-y-6">
                 {[
-                  { title: 'Combustion Protocol', desc: '1% of every transaction is purified by fire', val: '1%' },
-                  { title: 'Liquidity Covenant', desc: '4% is sealed within the Eternal Pool', val: '4%' },
-                  { title: 'Sacrificial Penalties', desc: '50% of breach penalties are consumed', val: '50%' }
+                  { title: 'Deflationary Mechanism', desc: '1% of volume is systematically burned', val: '1%' },
+                  { title: 'Liquidity Provision', desc: '4% is paired and added to the PLS/ARK pool', val: '4%' },
+                  { title: 'Participant Yield', desc: '4% distributed to protocol stakers', val: '4%' },
+                  { title: 'Treasury Allocation', desc: '1% for development and strategic growth', val: '1%' },
+                  { title: 'Early Unlocking Fee', desc: '50% fee for withdrawals before lock expiry', val: '50%' }
                 ].map((mechanic) => (
                   <div key={mechanic.title} className="group/statute">
                     <div className="flex justify-between items-start mb-2">
@@ -518,7 +515,6 @@ const Burn = () => {
                       </div>
                       <span className="text-xs font-black text-white/60 font-mono">{mechanic.val}</span>
                     </div>
-                    <div className="w-full h-px bg-white/10 group-hover/statute:bg-white/20 transition-colors" />
                   </div>
                 ))}
               </div>

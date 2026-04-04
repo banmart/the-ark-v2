@@ -4,6 +4,8 @@ import EnhancedLockInterface from './EnhancedLockInterface';
 import EnhancedUserDashboard from './EnhancedUserDashboard';
 import EnhancedProtocolStats from './EnhancedProtocolStats';
 import UserStatsSection from './UserStatsSection';
+import TierLegend from './TierLegend';
+import CompactTierDisplay from './CompactTierDisplay';
 
 interface LockerOperationsProps {
   isConnected: boolean;
@@ -12,11 +14,6 @@ interface LockerOperationsProps {
 const LockerOperations = ({ isConnected }: LockerOperationsProps) => {
   return (
     <div className="max-w-6xl mx-auto px-6 pb-20 space-y-8">
-      {/* Enhanced Protocol Stats */}
-      <div className="animate-fade-in">
-        <EnhancedProtocolStats />
-      </div>
-
       {/* User Stats & Pending Rewards */}
       <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
         <UserStatsSection isConnected={isConnected} />

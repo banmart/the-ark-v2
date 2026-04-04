@@ -25,17 +25,17 @@ const EmergencyStatus = ({ emergencyMode, contractPaused }: EmergencyStatusProps
             <div className="flex-1 text-center md:text-left">
               <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20">
                 <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
-                <span className="text-red-500 font-mono text-[10px] font-black tracking-[0.3em] uppercase">CRITICAL STATUTE</span>
+                <span className="text-red-500 font-mono text-[10px] font-black tracking-[0.3em] uppercase">SYSTEM RESTRICTION</span>
               </div>
               
               <h4 className="text-2xl font-black text-white tracking-tighter uppercase mb-2 font-sans">
-                {emergencyMode ? 'COVENANT EXCLUSION ACTIVE' : 'STATUTES SUSPENDED'}
+                {emergencyMode ? 'EMERGENCY_LOCKDOWN_ACTIVE' : 'PROTOCOL_OPERATIONS_PAUSED'}
               </h4>
               
               <p className="text-white/40 font-mono text-xs uppercase tracking-widest leading-relaxed">
                 {emergencyMode 
-                  ? 'Protocol-wide emergency protocols engaged. All new seals disabled by decree.' 
-                  : 'Covenant operations temporarily suspended for administrative validation.'}
+                  ? 'Protocol security measures active. All asset integration functions currently disabled.' 
+                  : 'Protocol operations temporarily suspended for administrative technical validation.'}
               </p>
             </div>
           </div>

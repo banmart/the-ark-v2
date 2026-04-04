@@ -38,7 +38,7 @@ const LockerContent = () => {
     <>
       <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
         {/* Premium Background */}
-        <PremiumBackground />
+        <PremiumBackground fixed={true} />
 
         {/* Navigation */}
         <div className="relative z-20">
@@ -60,12 +60,6 @@ const LockerContent = () => {
             contractPaused={contractPaused} 
           />
 
-          {/* Tier Legend */}
-          <TierLegend />
-
-          {/* Compact Tier Display */}
-          <CompactTierDisplay />
-
           {/* Operations */}
           <LockerOperations isConnected={isConnected} />
 
@@ -76,16 +70,16 @@ const LockerContent = () => {
               <div className="text-center mb-12 animate-fade-up">
                 <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full bg-white/[0.03] border border-white/10">
                   <div className="w-1.5 h-1.5 bg-white/40 rounded-full animate-pulse"></div>
-                  <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">[STATION LOGS]</span>
+                  <span className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase">[SYSTEM LOGS]</span>
                 </div>
                 
                 <h3 className="text-4xl md:text-5xl font-black mb-8 bg-gradient-to-r from-white via-white/80 to-white/40 bg-clip-text text-transparent tracking-tighter uppercase font-sans">
-                  The Immutable Ledger
+                  PROTOCOL VERIFICATION
                 </h3>
                 
                 <div className="flex items-center justify-center gap-3 px-4 py-2 bg-white/[0.02] border border-white/5 rounded-xl inline-flex mx-auto">
                   <div className="w-1.5 h-1.5 bg-green-500/50 rounded-full"></div>
-                  <span className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Verified via PulseChain Covenant</span>
+                  <span className="text-[10px] font-mono text-white/40 tracking-widest uppercase">Verified on PulseChain Mainnet</span>
                 </div>
               </div>
               

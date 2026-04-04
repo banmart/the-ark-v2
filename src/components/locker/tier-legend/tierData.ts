@@ -19,88 +19,102 @@ export interface Tier {
 
 export const tiers: Tier[] = [
   {
-    name: 'OUTCAST',
-    icon: '🌑',
+    name: 'BRONZE',
+    icon: '🥉',
     color: 'white',
     multiplier: '1x',
-    duration: '< 30d',
-    description: 'Unbound and unshielded',
-    details: {
-      rewards: 'Base ritual share',
-      community: 'Unverified status',
-      features: 'No flood protection',
-      governance: 'No voice'
-    }
-  },
-  {
-    name: 'INITIATE',
-    icon: '📜',
-    color: 'white',
-    multiplier: '1.2x',
     duration: '30-89d',
-    description: 'First seal bound',
+    description: 'Protocol Entry Tier',
     details: {
-      rewards: '1.2x ritual multiplier',
-      community: 'Initial covenant role',
-      features: 'First-layer protection',
-      governance: 'Observer status'
+      rewards: 'Base Yield Multiplier',
+      community: 'Standard Governance Status',
+      features: 'Protocol Protection Phase 1',
+      governance: 'Limited Voting Weight'
     }
   },
   {
-    name: 'ACOLYTE',
-    icon: '🕯️',
+    name: 'SILVER',
+    icon: '🥈',
+    color: 'white',
+    multiplier: '1.5x',
+    duration: '90-179d',
+    description: 'Elevated Yield Participation',
+    details: {
+      rewards: '1.5x Yield Multiplier',
+      community: 'Established Governance Status',
+      features: 'Enhanced Reward Pool Access',
+      governance: 'Full Voter Eligibility'
+    }
+  },
+  {
+    name: 'GOLD',
+    icon: '🥇',
     color: 'white',
     multiplier: '2x',
-    duration: '90-364d',
-    description: 'Devoted to the creed',
+    duration: '180-364d',
+    description: 'Strategic Lock Maturity',
     details: {
-      rewards: '2x ritual multiplier',
-      community: 'Acolyte privileges',
-      features: 'Standard vault access',
-      governance: 'Limited voting rights'
+      rewards: '2x Yield Multiplier',
+      community: 'Core Contributor Status',
+      features: 'Priority Reward Distribution',
+      governance: 'Standard Proposal Voting'
     }
   },
   {
-    name: 'WARDEN',
-    icon: '🛡️',
+    name: 'DIAMOND',
+    icon: '💎',
     color: 'white',
-    multiplier: '3.5x',
+    multiplier: '3x',
     duration: '1-2y',
-    description: 'Statute defender',
+    description: 'High-Efficiency Liquidity',
     details: {
-      rewards: '3.5x ritual multiplier',
-      community: 'Warden status',
-      features: 'Exclusive vault access',
-      governance: 'Full voting rights'
+      rewards: '3x Yield Multiplier',
+      community: 'Premium Locker Status',
+      features: 'VIP Incentive Access',
+      governance: 'Advanced Governance Weight'
     }
   },
   {
-    name: 'SENTINEL',
-    icon: '⚔️',
+    name: 'PLATINUM',
+    icon: '⭐',
+    color: 'white',
+    multiplier: '4x',
+    duration: '2-3y',
+    description: 'Elite Capital Alignment',
+    details: {
+      rewards: '4x Yield Multiplier',
+      community: 'Protocol Elite Role',
+      features: 'Maximum Reward Depth',
+      governance: 'Strategic Influence Access'
+    }
+  },
+  {
+    name: 'MYTHIC',
+    icon: '🔮',
     color: 'white',
     multiplier: '5.5x',
-    duration: '2-4y',
-    description: 'Inner circle protector',
+    duration: '3-5y',
+    description: 'Maximum Protocol Synergies',
     details: {
-      rewards: '5.5x ritual multiplier',
-      community: 'Sentinel elite status',
-      features: 'Council communication',
-      governance: 'Proposal creation'
+      rewards: '5.5x Yield Multiplier',
+      community: 'Director Level Influence',
+      features: 'Ultimate Reward Tiers',
+      governance: 'Council Level Voting weight'
     }
   },
   {
-    name: 'ARCH-KEEPER',
-    icon: '⚜️',
-    color: 'white',
-    multiplier: '10x',
+    name: 'LEGENDARY',
+    icon: '⚡',
+    color: 'gold',
+    multiplier: '7x',
     duration: '5y+',
-    description: 'Supreme custodian',
+    description: 'Total Protocol Integration',
     special: true,
     details: {
-      rewards: '10x ritual multiplier',
-      community: 'Supreme inner circle',
-      features: 'Ultimate vault protection',
-      governance: 'Council leadership'
+      rewards: '7x Yield Multiplier',
+      community: 'Infinite Legend Tier',
+      features: 'Total Yield Supremacy',
+      governance: 'Core Protocol Steering Power'
     }
   }
 ];

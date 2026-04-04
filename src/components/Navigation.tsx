@@ -45,7 +45,7 @@ const Navigation = ({
         <div className="flex items-center gap-[60px]">
           {/* Logo with Minimalist Style */}
           <Link to="/" className="group relative flex items-center">
-            <span className="relative text-white text-[24px] font-black tracking-tighter uppercase whitespace-nowrap">THE ARK</span>
+            <span className="relative text-white text-[24px] font-black tracking-tighter uppercase whitespace-nowrap">The ARK</span>
           </Link>
 
           {/* Status Indicators - Desktop Only */}
@@ -55,7 +55,7 @@ const Navigation = ({
                 <div className="w-1 h-1 bg-white rounded-full" />
                 <div className="absolute inset-0 w-1 h-1 bg-white rounded-full animate-ping opacity-40" />
               </div>
-              <span className="text-[9px] font-black text-white/40 tracking-[0.3em] font-mono uppercase">PROTOCOL_LIVE</span>
+              <span className="text-[9px] font-black text-white/40 tracking-[0.3em] font-mono uppercase">NETWORK_LIVE</span>
             </div>
             
             <div className="flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-xl">
@@ -98,7 +98,7 @@ const Navigation = ({
                 ) : (
                   <>
                     <span className="text-[11px] font-black uppercase tracking-[0.3em] font-mono">
-                      {isConnecting ? 'DETECTING...' : 'AWAKEN SOUL'}
+                      {isConnecting ? 'CONNECTING...' : 'CONNECT WALLET'}
                     </span>
                   </>
                 )}

@@ -57,51 +57,38 @@ const getProvider = () => {
 };
 
 export function ARKDataProvider({ children }: { children: ReactNode }) {
-  // Lazy state initialization (rule: rerender-lazy-state-init)
-  const [data, setData] = useState<ARKData | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Initial state from localStorage (rule: rerender-lazy-state-init)
+  const [data, setData] = useState<ARKData | null>(() => {
+    const cached = localStorage.getItem('ark-protocol-stats');
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        return { ...parsed, lastUpdated: new Date(parsed.lastUpdated) };
+      } catch (e) { return null; }
+    }
+    return null;
+  });
+
+  const [loading, setLoading] = useState(!data);
   const [error, setError] = useState<string | null>(null);
   const fetchingRef = useRef(false);
   const initialFetchDone = useRef(false);
 
   const fetchMarketData = useCallback(async () => {
-    const now = Date.now();
-    
-    // Check cache (rule: js-cache-function-results)
-    if (marketCache && (now - marketCache.cachedAt) < MARKET_CACHE_TTL) {
-      console.log('Using cached market data');
-      return marketCache.data;
-    }
-    
-    console.log('Fetching fresh market data...');
     const priceData = await dexPriceService.getLivePrice();
-    
-    const result = {
+    return {
       price: priceData.price,
       priceChange24h: priceData.priceChange24h,
       volume24h: priceData.volume24h,
       liquidity: priceData.liquidity,
       dataSource: priceData.dataSource
     };
-    
-    marketCache = { data: result, cachedAt: now };
-    return result;
   }, []);
 
   const fetchBlockchainData = useCallback(async () => {
-    const now = Date.now();
-    
-    // Check cache (rule: js-cache-function-results)
-    if (blockchainCache && (now - blockchainCache.cachedAt) < BLOCKCHAIN_CACHE_TTL) {
-      console.log('Using cached blockchain data');
-      return blockchainCache.data;
-    }
-    
-    console.log('Fetching fresh blockchain data...');
     const provider = getProvider();
     const arkToken = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
 
-    // Parallel fetch for maximum speed (rule: async-parallel)
     const [totalSupply, decimals, burnData, holderCount] = await Promise.all([
       arkToken.totalSupply(),
       arkToken.decimals(),
@@ -113,16 +100,13 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
     const burnedTokensNum = parseFloat(burnData.totalBurned);
     const circulatingSupplyNum = totalSupplyFormatted - burnedTokensNum;
 
-    const result = {
+    return {
       totalSupply: totalSupplyFormatted,
       circulatingSupply: circulatingSupplyNum,
       burnedTokens: burnedTokensNum,
       holders: holderCount,
       dailyBurnRate: burnData.dailyBurnRate
     };
-
-    blockchainCache = { data: result, cachedAt: now };
-    return result;
   }, []);
 
   const fetchData = useCallback(async (forceRefresh = false) => {
@@ -132,24 +116,17 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
     try {
       setError(null);
       
-      // For non-initial fetches, don't show loading (rule: rerender-transitions)
-      if (!initialFetchDone.current) {
+      // Show loading if no data or if manually refreshing
+      if (!initialFetchDone.current && (!data || forceRefresh)) {
         setLoading(true);
       }
 
-      // Clear cache if force refresh
-      if (forceRefresh) {
-        marketCache = null;
-        blockchainCache = null;
-      }
-
-      // Fetch both in parallel (rule: async-parallel)
+      // Parallel fetch for speed
       const [marketData, blockchainData] = await Promise.all([
         fetchMarketData(),
         fetchBlockchainData()
       ]);
 
-      // Calculate market cap
       const marketCap = blockchainData.circulatingSupply * marketData.price;
 
       const newData: ARKData = {
@@ -169,56 +146,27 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
       };
 
       setData(newData);
+      localStorage.setItem('ark-protocol-stats', JSON.stringify(newData));
       initialFetchDone.current = true;
-      console.log('ARK data updated successfully');
     } catch (err: any) {
       console.error('Error fetching ARK data:', err);
       setError(err.message || 'Failed to fetch data');
-      
-      // Mark data as stale on error if we have existing data (rule: rerender-functional-setstate)
       setData(prev => prev ? { ...prev, isStale: true } : null);
     } finally {
       setLoading(false);
       fetchingRef.current = false;
     }
-  }, [fetchMarketData, fetchBlockchainData]);
+  }, [fetchMarketData, fetchBlockchainData, data]);
 
-  // Warm up edge functions on mount (rule: bundle-preload)
+  // Initial fetch only if no data
   useEffect(() => {
-    // Non-blocking warm-up (rule: async-defer-await)
-    fetch('https://xtailgacbmhdtdxnqjdv.supabase.co/functions/v1/rpc-proxy', {
-      method: 'OPTIONS'
-    }).catch(() => {}); // Ignore errors
-  }, []);
+    if (!data) {
+      fetchData();
+    }
+  }, [fetchData, data]);
 
-  // Initial fetch
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  // Background refresh removed as per request for manual only
 
-  // Background refresh intervals with primitive dependencies (rule: rerender-dependencies)
-  useEffect(() => {
-    const marketInterval = setInterval(() => {
-      const now = Date.now();
-      const cacheAge = marketCache ? now - marketCache.cachedAt : Infinity;
-      if (cacheAge >= MARKET_CACHE_TTL) {
-        fetchData();
-      }
-    }, MARKET_CACHE_TTL);
-
-    const blockchainInterval = setInterval(() => {
-      const now = Date.now();
-      const cacheAge = blockchainCache ? now - blockchainCache.cachedAt : Infinity;
-      if (cacheAge >= BLOCKCHAIN_CACHE_TTL) {
-        fetchData();
-      }
-    }, BLOCKCHAIN_CACHE_TTL);
-
-    return () => {
-      clearInterval(marketInterval);
-      clearInterval(blockchainInterval);
-    };
-  }, [fetchData]);
 
   // Stable callback for refetch (rule: rerender-functional-setstate)
   const refetch = useCallback(async () => {

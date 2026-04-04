@@ -107,7 +107,7 @@ const FeeCard = ({
         </div>
 
         {/* Rate */}
-        <div className="text-[10px] text-white/20 font-mono uppercase tracking-widest">
+        <div className="text-xs text-white/50 font-mono uppercase tracking-widest">
           <span>{title} Rate: {(data.rate * 100).toFixed(2)}%</span>
         </div>
       </div>

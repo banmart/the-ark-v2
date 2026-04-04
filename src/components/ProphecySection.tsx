@@ -17,40 +17,40 @@ const ProphecySection = () => {
 
   const prophecies = [
     {
-      id: 'flood',
-      title: 'THE SACRED STATUTES',
-      emoji: '📜',
-      icon: Waves,
-      description: 'The Covenant is inscribed in immutable code. While the markets face the great liquidation flood, the Statutes ensure the Ark remains buoyant, preserving value through unbreakable logic.',
-      color: 'cyan',
-      glowColor: 'rgba(6, 182, 212, 0.4)',
-      gradientFrom: 'from-cyan-400',
-      gradientTo: 'to-teal-400',
-      statusCode: 'STATUTES ACTIVE'
-    },
-    {
-      id: 'chosen',
-      title: 'COVENANT LAW',
+      id: 'ultimatum',
+      title: 'THE ULTIMATUM',
       emoji: '⚖️',
-      icon: Zap,
-      description: 'The Law of the Ark is absolute. Every transaction nourishes the holders, as the Covenant mandates the redistribution of reflections to the faithful who guard the sanctuary.',
-      color: 'yellow',
-      glowColor: 'rgba(251, 191, 36, 0.4)',
-      gradientFrom: 'from-yellow-400',
-      gradientTo: 'to-orange-400',
-      statusCode: 'COVENANT ENGAGED'
+      icon: Shield,
+      description: 'The ultimate protection for the faithful. Breaking your Covenant lock early incurs a 50% "Excision" penalty. 25% is burned forever, and 25% is distributed to the loyal Keepers who remain on the Ark.',
+      color: 'red',
+      glowColor: 'rgba(239, 68, 68, 0.4)',
+      gradientFrom: 'from-pink-500',
+      gradientTo: 'to-rose-500',
+      statusCode: 'GAME THEORY ACTIVE'
     },
     {
-      id: 'newworld',
-      title: 'THE RESTORATION',
-      emoji: '🏛️',
-      icon: Bird,
-      description: 'Through the Ark, the true value of decentralized finance is restored. The Covenant marks the beginning of a new era, where the tablets of code govern a prospering digital kingdom.',
+      id: 'floor',
+      title: 'THE PRICE FLOOR',
+      emoji: '📈',
+      icon: Target,
+      description: 'Unlike standard tokens, the Ark builds its own depth. 4% of every buy and sell is hard-coded into the PLS/ARK liquidity pool. This ensures that as time passes, the Ark becomes increasingly difficult to sink.',
+      color: 'cyan',
+      glowColor: 'rgba(34, 211, 238, 0.4)',
+      gradientFrom: 'from-cyan-400',
+      gradientTo: 'to-blue-400',
+      statusCode: 'LIQUIDITY SEALED'
+    },
+    {
+      id: 'yield',
+      title: 'INC REWARDS',
+      emoji: '💎',
+      icon: Cpu,
+      description: 'By providing liquidity on PulseChain DEXs, the Ark captures INC (Incentive) rewards. These rewards are harvested and used to buy back ARK from the open market, further fueling the Statute of Combustion.',
       color: 'emerald',
       glowColor: 'rgba(16, 185, 129, 0.4)',
       gradientFrom: 'from-emerald-400',
       gradientTo: 'to-teal-400',
-      statusCode: 'RESTORATION INITIATED'
+      statusCode: 'YIELD ENGAGED'
     }
   ];
 

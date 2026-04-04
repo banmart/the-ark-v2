@@ -61,8 +61,8 @@ const LockPositionFilters = ({
             <Filter className="w-5 h-5 text-white/60" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-xl font-black text-white uppercase tracking-tighter">PROTOCOL QUERY</h3>
-            <p className="text-[10px] text-white/20 font-mono tracking-[0.2em] uppercase">[MANAGEMENT FILTERS]</p>
+            <h3 className="text-xl font-black text-white uppercase tracking-tighter">POSITION FILTERS</h3>
+            <p className="text-xs text-white/50 font-mono tracking-[0.2em] uppercase">[MANAGEMENT FILTERS]</p>
           </div>
           {hasActiveFilters && (
             <Badge className="bg-white/10 text-white/60 border-white/20 font-mono text-[10px] tracking-widest px-4 py-1.5 rounded-xl uppercase">
@@ -87,7 +87,7 @@ const LockPositionFilters = ({
           <div className="relative">
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/20" />
             <Input
-              placeholder="SEARCH BY MAGNITUDE OR STANDING..."
+              placeholder="SEARCH BY AMOUNT OR TIER..."
               value={filters.searchTerm}
               onChange={(e) => updateFilter('searchTerm', e.target.value)}
               className="pl-12 bg-white/5 border-white/10 text-white font-mono text-[10px] tracking-widest h-14 rounded-2xl focus:border-white/40 placeholder:text-white/10 uppercase"
@@ -98,15 +98,17 @@ const LockPositionFilters = ({
         {/* Tier Filter */}
         <Select value={filters.tier} onValueChange={(value) => updateFilter('tier', value)}>
           <SelectTrigger className="bg-white/5 border-white/10 text-white font-black font-mono text-[10px] tracking-widest h-14 px-6 rounded-2xl focus:ring-0 focus:border-white/40 transition-all uppercase">
-            <SelectValue placeholder="ALL STANDINGS" />
+            <SelectValue placeholder="ALL TIERS" />
           </SelectTrigger>
           <SelectContent className="bg-[#050505] border-white/10 text-white font-mono uppercase tracking-widest text-[10px]">
-            <SelectItem value="all">ALL STANDINGS</SelectItem>
-            <SelectItem value="initiate">I • INITIATE</SelectItem>
-            <SelectItem value="acolyte">II • ACOLYTE</SelectItem>
-            <SelectItem value="warden">III • WARDEN</SelectItem>
-            <SelectItem value="sentinel">IV • SENTINEL</SelectItem>
-            <SelectItem value="arch-keeper">V • ARCH-KEEPER</SelectItem>
+            <SelectItem value="all">ALL TIERS</SelectItem>
+            <SelectItem value="bronze">BRONZE</SelectItem>
+            <SelectItem value="silver">SILVER</SelectItem>
+            <SelectItem value="gold">GOLD</SelectItem>
+            <SelectItem value="diamond">DIAMOND</SelectItem>
+            <SelectItem value="platinum">PLATINUM</SelectItem>
+            <SelectItem value="mythic">MYTHIC</SelectItem>
+            <SelectItem value="legendary">LEGENDARY</SelectItem>
           </SelectContent>
         </Select>
 
@@ -117,9 +119,9 @@ const LockPositionFilters = ({
           </SelectTrigger>
           <SelectContent className="bg-[#050505] border-white/10 text-white font-mono uppercase tracking-widest text-[10px]">
             <SelectItem value="all">ALL STATUS</SelectItem>
-            <SelectItem value="ready">MATURED SEALS</SelectItem>
-            <SelectItem value="soon">MATURING SOON</SelectItem>
-            <SelectItem value="active">ACTIVE COVENANTS</SelectItem>
+            <SelectItem value="ready">MATURED POSITIONS</SelectItem>
+            <SelectItem value="soon">UNLOCKING SOON</SelectItem>
+            <SelectItem value="active">ACTIVE LOCKS</SelectItem>
           </SelectContent>
         </Select>
 
@@ -131,9 +133,9 @@ const LockPositionFilters = ({
           <SelectContent className="bg-[#050505] border-white/10 text-white font-mono uppercase tracking-widest text-[10px]">
             <SelectItem value="all">ALL TIME</SelectItem>
             <SelectItem value="ready">MATURED NOW</SelectItem>
-            <SelectItem value="week">&lt; 7 CYCLES</SelectItem>
-            <SelectItem value="month">&lt; 30 CYCLES</SelectItem>
-            <SelectItem value="long">&gt; 30 CYCLES</SelectItem>
+            <SelectItem value="week">&lt; 7 DAYS</SelectItem>
+            <SelectItem value="month">&lt; 30 DAYS</SelectItem>
+            <SelectItem value="long">&gt; 30 DAYS</SelectItem>
           </SelectContent>
         </Select>
 
@@ -145,9 +147,9 @@ const LockPositionFilters = ({
             </SelectTrigger>
             <SelectContent className="bg-[#050505] border-white/10 text-white font-mono uppercase tracking-widest text-[10px]">
               <SelectItem value="timeRemaining">TIME</SelectItem>
-              <SelectItem value="amount">MAGNITUDE</SelectItem>
-              <SelectItem value="tier">STANDING</SelectItem>
-              <SelectItem value="rewards">TITHES</SelectItem>
+              <SelectItem value="amount">AMOUNT</SelectItem>
+              <SelectItem value="tier">TIER</SelectItem>
+              <SelectItem value="rewards">REWARDS</SelectItem>
             </SelectContent>
           </Select>
 

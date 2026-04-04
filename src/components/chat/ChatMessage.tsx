@@ -39,7 +39,7 @@ const ChatMessage = ({ role, content, timestamp }: ChatMessageProps) => {
               prose-ul:my-6 prose-ol:my-6 
               prose-li:my-3 
               prose-headings:mt-8 prose-headings:mb-4 
-              prose-a:text-cyan-400 prose-a:font-bold prose-a:no-underline hover:prose-a:underline 
+              prose-a:text-cyan-400 prose-a:font-bold prose-a:underline prose-a:underline-offset-4 prose-a:decoration-cyan-400/50 hover:prose-a:decoration-cyan-400 
               prose-strong:text-white prose-strong:font-black
               prose-code:text-cyan-300 prose-code:bg-black/40 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
               prose-blockquote:border-cyan-500/50 prose-blockquote:bg-cyan-500/5 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg">

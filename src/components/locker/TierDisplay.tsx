@@ -20,11 +20,11 @@ const TierDisplay = ({ currentTier, lockAmount, lockDuration, CONTRACT_CONSTANTS
       
       <div className="relative z-10 flex items-center justify-between mb-8">
         <div className="space-y-1">
-          <div className="text-[10px] font-black font-mono tracking-[0.2em] text-white/40 uppercase">COVENANT STANDING</div>
+          <div className="text-xs font-black font-mono tracking-[0.2em] text-white/60 uppercase">COVENANT STANDING</div>
           <div className="text-2xl font-black text-white uppercase tracking-tighter">
             {currentTier.name}
           </div>
-          <div className="text-[10px] font-black font-mono tracking-widest text-white/40 uppercase">
+          <div className="text-xs font-black font-mono tracking-widest text-white/50 uppercase">
             {(currentTier.multiplier / CONTRACT_CONSTANTS.BASIS_POINTS).toFixed(1)}X TITHING FACTOR
           </div>
         </div>
@@ -33,11 +33,11 @@ const TierDisplay = ({ currentTier, lockAmount, lockDuration, CONTRACT_CONSTANTS
       {lockAmount && (
         <div className="relative z-10 space-y-4 pt-8 border-t border-white/5">
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-black font-mono tracking-widest text-white/20 uppercase">BINDING STRENGTH</span>
+            <span className="text-xs font-black font-mono tracking-widest text-white/50 uppercase">BINDING STRENGTH</span>
             <span className="text-2xl font-black text-white tracking-tighter">{estimatedWeight.toFixed(0)}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-black font-mono tracking-widest text-white/20 uppercase">STABILITY PERIOD</span>
+            <span className="text-xs font-black font-mono tracking-widest text-white/50 uppercase">STABILITY PERIOD</span>
             <span className="text-[10px] font-black font-mono tracking-widest text-white uppercase">{currentTier.minDays}-{currentTier.maxDays} CYCLES</span>
           </div>
         </div>

@@ -52,7 +52,7 @@ const PenaltyCalculatorCard = ({
           <CheckCircle className="w-4 h-4" />
           <span className="text-[10px] font-black font-mono tracking-widest uppercase">STABILITY SECURED</span>
         </div>
-        <p className="text-[10px] text-white/20 font-mono mt-2 uppercase tracking-widest">
+        <p className="text-[10px] text-white/60 font-mono mt-2 uppercase tracking-widest">
           This bond has matured. Releasing it now incurs zero penalties.
         </p>
       </div>
@@ -67,22 +67,22 @@ const PenaltyCalculatorCard = ({
             <Calculator className="w-4 h-4" />
           </div>
           <div className="space-y-0.5">
-            <span className="text-[10px] font-black font-mono tracking-widest uppercase block">SEVERANCE PROJECTION</span>
-            <p className="text-[8px] text-white/20 font-mono uppercase tracking-[0.2em]">Based on current protocol statutes</p>
+            <span className="text-xs font-black font-mono tracking-widest uppercase block">SEVERANCE PROJECTION</span>
+            <p className="text-xs text-white/50 font-mono uppercase tracking-[0.2em]">Based on current protocol statutes</p>
           </div>
         </div>
         
         <div className="flex items-center gap-6">
           <div className="text-right">
-            <div className="text-[10px] font-black font-mono tracking-widest text-white/20 uppercase mb-1">PROMINENT LOSS</div>
+            <div className="text-xs font-black font-mono tracking-widest text-white/50 uppercase mb-1">PROMINENT LOSS</div>
             <div className="text-lg font-black text-white tracking-tighter">
-              {penaltyInfo ? `-${penaltyInfo.penaltyAmount.toFixed(0)}` : '--'} <span className="text-[10px] text-white/40">ARK</span>
+              {penaltyInfo ? `-${penaltyInfo.penaltyAmount.toFixed(0)}` : '--'} <span className="text-xs text-white/60">ARK</span>
             </div>
           </div>
           <div className="text-right border-l border-white/5 pl-6">
-            <div className="text-[10px] font-black font-mono tracking-widest text-white/20 uppercase mb-1">RECOVERABLE</div>
+            <div className="text-xs font-black font-mono tracking-widest text-white/50 uppercase mb-1">RECOVERABLE</div>
             <div className="text-lg font-black text-white tracking-tighter">
-              {penaltyInfo ? penaltyInfo.userReceives.toFixed(0) : '--'} <span className="text-[10px] text-white/40">ARK</span>
+              {penaltyInfo ? penaltyInfo.userReceives.toFixed(0) : '--'} <span className="text-xs text-white/60">ARK</span>
             </div>
           </div>
         </div>

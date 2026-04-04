@@ -1,8 +1,8 @@
 import React from 'react';
 
-const PremiumBackground = () => {
+const PremiumBackground = ({ fixed = false }: { fixed?: boolean }) => {
   return (
-    <div className="absolute top-0 left-0 right-0 h-[70vh] md:h-[100vh] z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    <div className={`${fixed ? 'fixed' : 'absolute'} top-0 left-0 right-0 h-[70vh] md:h-[100vh] z-0 pointer-events-none overflow-hidden`} aria-hidden="true">
       <video
         autoPlay
         loop
