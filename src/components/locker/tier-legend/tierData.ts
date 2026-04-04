@@ -92,11 +92,11 @@ export const tiers: Tier[] = [
     name: 'MYTHIC',
     icon: '🔮',
     color: 'white',
-    multiplier: '5.5x',
-    duration: '3-5y',
+    multiplier: '5x',
+    duration: '3-4y',
     description: 'Maximum Protocol Synergies',
     details: {
-      rewards: '5.5x Yield Multiplier',
+      rewards: '5x Yield Multiplier',
       community: 'Director Level Influence',
       features: 'Ultimate Reward Tiers',
       governance: 'Council Level Voting weight'
@@ -107,7 +107,7 @@ export const tiers: Tier[] = [
     icon: '⚡',
     color: 'gold',
     multiplier: '7x',
-    duration: '5y+',
+    duration: '4-5y',
     description: 'Total Protocol Integration',
     special: true,
     details: {

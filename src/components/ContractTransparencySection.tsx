@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Shield, Lock, Target, Zap, Database, Activity, Cpu, Info } from 'lucide-react';
 import { CONTRACT_CONSTANTS } from '../utils/constants';
 import AutoLiquidityMeter from './AutoLiquidityMeter';
+import { useARKData } from '../contexts/ARKDataContext';
+
 interface ContractTransparencySectionProps {
   contractData: any;
   contractLoading: boolean;
 }
+
 const ContractTransparencySection = ({
   contractData,
   contractLoading
 }: ContractTransparencySectionProps) => {
+  const { data: arkData } = useARKData();
   const [liquidityPhase, setLiquidityPhase] = useState(0);
   useEffect(() => {
     // Cinematic reveal sequence
@@ -75,10 +79,10 @@ const ContractTransparencySection = ({
                 AUTO-LIQUIDITY ENGINE
               </h3>
               <AutoLiquidityMeter 
-                currentAccumulation={75000}
-                threshold={100000}
+                currentAccumulation={arkData?.liquidityFeeTotal || 0}
+                threshold={arkData?.swapThreshold || 50000}
                 loading={contractLoading}
-                isThresholdReached={false}
+                isThresholdReached={(arkData?.liquidityFeeTotal || 0) >= (arkData?.swapThreshold || 50000)}
                 isPendingSwap={false}
                 lastSwapTimestamp={Date.now() - 24 * 60 * 60 * 1000}
                 estimatedNextSwap={Date.now() + 6 * 60 * 60 * 1000}
@@ -96,7 +100,7 @@ const ContractTransparencySection = ({
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300 font-mono text-sm">OWNERSHIP:</span>
-                  <span className="text-green-400 font-mono text-sm">RENOUNCED</span>
+                  <span className="text-white font-mono text-sm uppercase">ACTIVE</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300 font-mono text-sm">LIQUIDITY:</span>
@@ -124,7 +128,7 @@ const ContractTransparencySection = ({
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300 font-mono text-sm">HOLDERS:</span>
-                  <span className="text-purple-400 font-mono text-sm">{contractLoading ? '...' : '892'}</span>
+                  <span className="text-purple-400 font-mono text-sm">{contractLoading ? '...' : (contractData?.holders?.toLocaleString() || '892')}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300 font-mono text-sm">SUPPLY:</span>
@@ -142,16 +146,20 @@ const ContractTransparencySection = ({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-400 mb-2">3%</div>
-                <div className="text-sm text-gray-300 font-mono">BUY TAX</div>
+                <div className="text-3xl font-bold text-white mb-2">10%</div>
+                <div className="text-sm text-gray-300 font-mono">PROTOCOL TAX</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-400 mb-2">3%</div>
-                <div className="text-sm text-gray-300 font-mono">SELL TAX</div>
+                <div className="text-3xl font-bold text-ark-gold-400 mb-2">
+                  {arkData?.swapThreshold ? arkData.swapThreshold.toLocaleString() : '50,000'}
+                </div>
+                <div className="text-sm text-gray-300 font-mono">SWAP THRESHOLD</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-cyan-400 mb-2">100M</div>
-                <div className="text-sm text-gray-300 font-mono">MAX TX</div>
+                <div className="text-3xl font-bold text-cyan-400 mb-2">
+                  {arkData?.totalSupply ? (arkData.totalSupply / 1000000000).toFixed(0) + 'B' : '1B'}
+                </div>
+                <div className="text-sm text-gray-300 font-mono">TOTAL SUPPLY</div>
               </div>
             </div>
           </div>
@@ -163,8 +171,8 @@ const ContractTransparencySection = ({
               <span className="text-green-400 font-mono text-lg font-bold">SECURITY VERIFIED</span>
             </div>
             <p className="text-gray-300 font-mono text-sm leading-relaxed">
-              Contract ownership renounced • Liquidity permanently locked • No hidden functions • 
-              Full transparency • Community verified • Audit completed
+              Standard ERC-20 Implementation • Liquidity Permanently Locked • Secure Automated Swap Mechanism • 
+              Full On-Chain Transparency • 10% Automated Protocol Fee (1% Burn, 1% DAO, 4% Liquidity, 4% Rewards)
             </p>
           </div>
         </div>

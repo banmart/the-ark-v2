@@ -17,8 +17,8 @@ const TIER_PRESETS = [
   { name: 'Gold', icon: '🥇', multiplier: '2x', label: '180-364 DAYS', minDays: 180, maxDays: 364, color: '255, 255, 255' },
   { name: 'Diamond', icon: '💎', multiplier: '3x', label: '1-2 YEARS', minDays: 365, maxDays: 729, color: '255, 255, 255' },
   { name: 'Platinum', icon: '⭐', multiplier: '4x', label: '2-3 YEARS', minDays: 730, maxDays: 1094, color: '255, 255, 255' },
-  { name: 'Mythic', icon: '🔮', multiplier: '5.5x', label: '3-5 YEARS', minDays: 1095, maxDays: 1825, color: '255, 255, 255' },
-  { name: 'Legendary', icon: '⚡', multiplier: '7x', label: '5+ YEARS', minDays: 1826, maxDays: 1826, color: '255, 215, 0' },
+  { name: 'Mythic', icon: '🔮', multiplier: '5x', label: '3-4 YEARS', minDays: 1095, maxDays: 1459, color: '255, 255, 255' },
+  { name: 'Legendary', icon: '⚡', multiplier: '7x', label: '4-5 YEARS', minDays: 1460, maxDays: 1826, color: '255, 215, 0' },
 ];
 
 const LockDurationSlider = ({ 

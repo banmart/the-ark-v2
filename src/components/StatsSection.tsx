@@ -187,9 +187,9 @@ const StatsSection = memo(({
         id: 'circulating',
         icon: Activity,
         label: 'HOLDERS',
-        value: hasData ? formatNumber(arkData.circulatingSupply) : null,
+        value: hasData ? formatNumber(arkData.holders) : null,
         subtitle: 'Active On-Chain Wallets',
-        placeholder: '---.--B',
+        placeholder: '---.--K',
         accentColor: 'amber'
       },
       {

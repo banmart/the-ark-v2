@@ -18,7 +18,7 @@ interface EnhancedLockInterfaceProps {
   isConnected: boolean;
 }
 
-const MINIMUM_LOCK_AMOUNT = 20000;
+const MINIMUM_LOCK_AMOUNT = 10000;
 
 const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
   const {

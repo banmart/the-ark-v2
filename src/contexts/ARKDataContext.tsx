@@ -20,6 +20,12 @@ interface ARKData {
   holders: number;
   dailyBurnRate: number;
   
+  // Contract State
+  liquidityFeeTotal: number;
+  lockerFeeTotal: number;
+  daoFeeTotal: number;
+  swapThreshold: number;
+  
   // Meta
   lastUpdated: Date;
   isStale: boolean;
@@ -89,11 +95,15 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
     const provider = getProvider();
     const arkToken = new ethers.Contract(CONTRACT_ADDRESSES.ARK_TOKEN, ARK_TOKEN_ABI, provider);
 
-    const [totalSupply, decimals, burnData, holderCount] = await Promise.all([
+    const [totalSupply, decimals, burnData, holderCount, liquidityFeeTotal, lockerFeeTotal, daoFeeTotal, swapThreshold] = await Promise.all([
       arkToken.totalSupply(),
       arkToken.decimals(),
       blockchainDataService.calculateBurnRate(),
-      blockchainDataService.calculateHolderCount()
+      blockchainDataService.calculateHolderCount(),
+      arkToken.liquidityFeeTotal(),
+      arkToken.lockerFeeTotal(),
+      arkToken.daoFeeTotal(),
+      arkToken.swapThreshold()
     ]);
 
     const totalSupplyFormatted = parseFloat(ethers.formatUnits(totalSupply, decimals));
@@ -105,7 +115,11 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
       circulatingSupply: circulatingSupplyNum,
       burnedTokens: burnedTokensNum,
       holders: holderCount,
-      dailyBurnRate: burnData.dailyBurnRate
+      dailyBurnRate: burnData.dailyBurnRate,
+      liquidityFeeTotal: parseFloat(ethers.formatUnits(liquidityFeeTotal, decimals)),
+      lockerFeeTotal: parseFloat(ethers.formatUnits(lockerFeeTotal, decimals)),
+      daoFeeTotal: parseFloat(ethers.formatUnits(daoFeeTotal, decimals)),
+      swapThreshold: parseFloat(ethers.formatUnits(swapThreshold, decimals))
     };
   }, []);
 
@@ -141,6 +155,10 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
         burnedTokens: blockchainData.burnedTokens,
         holders: blockchainData.holders,
         dailyBurnRate: blockchainData.dailyBurnRate,
+        liquidityFeeTotal: blockchainData.liquidityFeeTotal,
+        lockerFeeTotal: blockchainData.lockerFeeTotal,
+        daoFeeTotal: blockchainData.daoFeeTotal,
+        swapThreshold: blockchainData.swapThreshold,
         lastUpdated: new Date(),
         isStale: false
       };

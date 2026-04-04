@@ -49,7 +49,7 @@ const FeaturesSection = () => {
       subtitle: 'Strategic Reserves',
       percentage: '1%',
       detail: 'Ecosystem Growth',
-      description: '1% flows into the multi-sig Treasury to ensure long-term protocol viability. Funds are utilized for strategic buy-backs, development, and market expansions.',
+      description: '1% is automatically converted to USDC and sent to the ARK DAO Treasury to ensure long-term protocol viability. Funds are utilized for strategic buy-backs, development, and market expansions.',
       color: 'blue',
 
       gradient: 'from-blue-500 to-cyan-500',
@@ -65,7 +65,7 @@ const FeaturesSection = () => {
       subtitle: 'Price Floor Support',
       percentage: '4%',
       detail: 'Automated LP',
-      description: '4% of all volume is automatically converted into PLS/ARK liquidity. This continuous injection strengthens the price floor and depth, enabling high-volume trading.',
+      description: '4% of all volume is automatically converted into PLS/ARK liquidity once the 50,000 ARK threshold is met. This continuous injection strengthens the price floor and depth, enabling high-volume trading.',
       color: 'purple',
 
       gradient: 'from-purple-500 to-pink-500',

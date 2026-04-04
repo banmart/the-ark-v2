@@ -168,16 +168,21 @@ export const ARK_TOKEN_ABI = [
   
   // Admin functions
   'function updateFees(uint256 _liquidityFee, uint256 _lockerFee, uint256 _burnFee, uint256 _daoFee)',
-  'function updateSwapThreshold(uint256 amount)',
+  'function updateSwappingThreshold(uint256 amount)',
   'function excludedWalletFromFee(address wallet, bool status)',
-  'function updateLiquidityPair(address pair, bool status)',
-  'function setARKLocker(address newAddress)',
+  'function updateLiquidityPair(address newPair, bool value)',
+  'function setARKLocker(address newLocker)',
+  'function setARKDAO(address newDAO)',
   'function distributeLockerRewards()',
   'function sendDAORewards()',
   'function recoverPLS()',
-  'function recoverTokens(address tokenAddress, uint256 amount)',
+  'function recoverTokens(address token)',
   
   // State variables
+  'function liquidityFeeTotal() view returns (uint256)',
+  'function lockerFeeTotal() view returns (uint256)',
+  'function daoFeeTotal() view returns (uint256)',
+  'function swapThreshold() view returns (uint256)',
   'function isExcludedFromFee(address) view returns (bool)',
   'function isLiquidityPair(address) view returns (bool)',
   'function owner() view returns (address)',
