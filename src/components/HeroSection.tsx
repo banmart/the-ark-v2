@@ -101,7 +101,7 @@ const HeroSection = ({
             >
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-radial from-cyan-400 to-transparent blur-[2px]" />
               <span className="text-[15px] font-bold text-white uppercase tracking-wide">
-                {isConnected ? (account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connected') : (isConnecting ? 'Connecting...' : 'Launch Protocol')}
+                {isConnected ? (account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connected') : (isConnecting ? 'Connecting...' : 'Connect Wallet')}
               </span>
             </button>
           </div>
