@@ -19,7 +19,8 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#CD7F32',
     icon: '⛵',
     minDays: 30,
-    maxDays: 89
+    maxDays: 89,
+    label: '30 DAYS'
   },
   {
     name: 'Silver',
@@ -28,7 +29,8 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#C0C0C0',
     icon: '🛡️',
     minDays: 90,
-    maxDays: 179
+    maxDays: 179,
+    label: '90 DAYS'
   },
   {
     name: 'Gold',
@@ -37,7 +39,8 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#FFD700',
     icon: '👑',
     minDays: 180,
-    maxDays: 364
+    maxDays: 364,
+    label: '180 DAYS'
   },
   {
     name: 'Diamond',
@@ -46,7 +49,8 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#B9F2FF',
     icon: '💎',
     minDays: 365,
-    maxDays: 729
+    maxDays: 729,
+    label: '1 YEAR'
   },
   {
     name: 'Platinum',
@@ -55,7 +59,8 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#E5E4E2',
     icon: '⭐',
     minDays: 730,
-    maxDays: 1094
+    maxDays: 1094,
+    label: '2 YEARS'
   },
   {
     name: 'Mythic',
@@ -64,7 +69,8 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#9B59B6',
     icon: '🔮',
     minDays: 1095,
-    maxDays: 1459
+    maxDays: 1459,
+    label: '3 YEARS'
   },
   {
     name: 'Legendary',
@@ -73,7 +79,8 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#FF6B35',
     icon: '⚡',
     minDays: 1460,
-    maxDays: 1460
+    maxDays: 1460,
+    label: '4 YEARS'
   }
 ];
 

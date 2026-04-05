@@ -31,6 +31,7 @@ export interface LockTierInfo {
   icon: string;
   minDays: number;
   maxDays: number;
+  label?: string;
 }
 
 export interface UserStats {
