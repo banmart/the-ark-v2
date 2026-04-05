@@ -141,8 +141,8 @@ const NebulaBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full -z-10 pointer-events-none opacity-50 transition-opacity duration-1000"
-      style={{ filter: 'blur(30px) brightness(1.2)' }}
+      className="fixed inset-0 w-full h-full -z-10 pointer-events-none opacity-80 transition-opacity duration-1000"
+      style={{ filter: 'blur(20px) brightness(1.1)' }}
     />
   );
 };

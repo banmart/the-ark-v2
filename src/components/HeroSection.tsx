@@ -34,8 +34,8 @@ const HeroSection = ({
       <div 
         className="relative md:absolute inset-0 z-0 w-full h-[50vh] md:h-full overflow-hidden bg-transparent"
         style={{
-          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)',
-          maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)'
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
         }}
       >
         {/* Cinematic Placeholder / Fallback Image */}
@@ -56,8 +56,7 @@ const HeroSection = ({
         >
           <source src="/videos/ark------final-----01.mp4" type="video/mp4" />
         </video>
-        {/* Black Overlay - Subtle on desktop for visibility of global background */}
-        <div className="absolute inset-0 bg-black/30 hidden md:block z-[2]" />
+        {/* Black Overlay removed for better transparency blend */}
         
         {/* Bottom fade removed in favor of alpha mask */}
       </div>
@@ -139,10 +138,10 @@ const HeroSection = ({
         </div>
       </div>
       
-      {/* Scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-30 z-10">
-        <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">System Metrics</span>
-        <ChevronDown size={16} className="text-white/60" />
+      {/* Scroll indicator - Centered at bottom */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-70 z-20">
+        <span className="text-white/60 font-mono text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+        <ChevronDown size={20} className="text-primary/80" />
       </div>
     </section>
   );
