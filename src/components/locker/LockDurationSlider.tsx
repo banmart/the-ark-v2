@@ -12,13 +12,13 @@ interface LockDurationSliderProps {
 }
 
 const TIER_PRESETS = [
-  { name: 'Bronze', icon: '🥉', multiplier: '1x', label: '30-89 DAYS', minDays: 30, maxDays: 89, color: '255, 255, 255' },
-  { name: 'Silver', icon: '🥈', multiplier: '1.5x', label: '90-179 DAYS', minDays: 90, maxDays: 179, color: '255, 255, 255' },
-  { name: 'Gold', icon: '🥇', multiplier: '2x', label: '180-364 DAYS', minDays: 180, maxDays: 364, color: '255, 255, 255' },
-  { name: 'Diamond', icon: '💎', multiplier: '3x', label: '1-2 YEARS', minDays: 365, maxDays: 729, color: '255, 255, 255' },
-  { name: 'Platinum', icon: '⭐', multiplier: '4x', label: '2-3 YEARS', minDays: 730, maxDays: 1094, color: '255, 255, 255' },
-  { name: 'Mythic', icon: '🔮', multiplier: '5x', label: '3-4 YEARS', minDays: 1095, maxDays: 1459, color: '255, 255, 255' },
-  { name: 'Legendary', icon: '⚡', multiplier: '7x', label: '4-5 YEARS', minDays: 1460, maxDays: 1826, color: '255, 215, 0' },
+  { name: 'Bronze', icon: '🥉', multiplier: '1.0x', label: '30 DAYS', minDays: 30, maxDays: 89, color: '255, 255, 255' },
+  { name: 'Silver', icon: '🥈', multiplier: '1.5x', label: '90 DAYS', minDays: 90, maxDays: 179, color: '255, 255, 255' },
+  { name: 'Gold', icon: '🥇', multiplier: '2.0x', label: '180 DAYS', minDays: 180, maxDays: 364, color: '255, 255, 255' },
+  { name: 'Diamond', icon: '💎', multiplier: '3.0x', label: '1 YEAR', minDays: 365, maxDays: 729, color: '255, 255, 255' },
+  { name: 'Platinum', icon: '⭐', multiplier: '4.0x', label: '2 YEARS', minDays: 730, maxDays: 1094, color: '255, 255, 255' },
+  { name: 'Mythic', icon: '🔮', multiplier: '5.0x', label: '3 YEARS', minDays: 1095, maxDays: 1459, color: '255, 255, 255' },
+  { name: 'Legendary', icon: '⚡', multiplier: '7.0x', label: '4 YEARS', minDays: 1460, maxDays: 1460, color: '255, 215, 0' },
 ];
 
 const LockDurationSlider = ({ 

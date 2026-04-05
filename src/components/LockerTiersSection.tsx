@@ -272,7 +272,7 @@ const LockerTiersSection = ({
   };
 
   return (
-    <section className="relative z-30 py-24 bg-black overflow-hidden">
+    <section className="relative z-30 py-24 bg-transparent overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         
         <div className={`text-center mb-16 transition-all duration-1000 ${systemPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -332,11 +332,8 @@ const LockerTiersSection = ({
             </Accordion>
           </div>
 
-          {/* Desktop View (Infinite Scroller) */}
           <div className="hidden md:block relative">
-            {/* Vertical Alpha Gradient Overlay */}
-            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent pointer-events-none z-20" />
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent pointer-events-none z-20" />
+            {/* Vertical Alpha Gradient Overlays removed for transparency */}
             
             {/* Infinite Scroller Container */}
             <div 

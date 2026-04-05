@@ -115,7 +115,7 @@ const FeaturesSection = () => {
   };
 
   return (
-    <section id="features" className="relative z-30 py-24 px-6 bg-black">
+    <section id="features" className="relative z-30 py-24 px-6 bg-transparent">
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ===== PREMIUM HEADER ===== */}

@@ -44,10 +44,10 @@ const StatCard = memo(({
           <div className="relative p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] group-hover:border-white/[0.1] transition-all duration-500">
             <Icon className={`h-6 w-6 ${accentClasses.icon} transition-all duration-500 group-hover:scale-110`} />
             {/* Icon glow */}
-            <div className={`absolute inset-0 rounded-xl ${accentClasses.icon} opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-500`} />
+            <div className={`absolute inset-0 rounded-xl ${accentClasses.icon} opacity-0 group-hover:opacity-40 blur-md transition-opacity duration-500`} />
           </div>
           
-          <p className="text-xs text-white/60 font-mono tracking-[0.2em] uppercase">
+          <p className={`text-xs ${accentClasses.icon} font-mono tracking-[0.2em] uppercase`}>
             {stat.label}
           </p>
         </div>
@@ -72,12 +72,12 @@ StatCard.displayName = 'StatCard';
 // Hoist static accent classes outside component (rule: rendering-hoist-jsx)
 const getAccentClasses = (color: string) => {
   const colors: Record<string, { icon: string; glow: string; border: string }> = {
-    gold: { icon: 'text-ark-gold-400', glow: 'shadow-ark-gold-500/20', border: 'group-hover:border-ark-gold-500/40' },
+    gold: { icon: 'text-primary', glow: 'shadow-primary/20', border: 'group-hover:border-primary/40' },
     emerald: { icon: 'text-emerald-400', glow: 'shadow-emerald-500/20', border: 'group-hover:border-emerald-500/40' },
     white: { icon: 'text-white/80', glow: 'shadow-white/20', border: 'group-hover:border-white/40' },
-    violet: { icon: 'text-purple-400', glow: 'shadow-purple-500/20', border: 'group-hover:border-purple-500/40' },
-    amber: { icon: 'text-ark-gold-400', glow: 'shadow-ark-gold-400/20', border: 'group-hover:border-ark-gold-400/40' },
-    orange: { icon: 'text-ark-gold-600', glow: 'shadow-ark-gold-600/20', border: 'group-hover:border-ark-gold-600/40' }
+    violet: { icon: 'text-secondary', glow: 'shadow-secondary/20', border: 'group-hover:border-secondary/40' },
+    amber: { icon: 'text-accent', glow: 'shadow-accent/20', border: 'group-hover:border-accent/40' },
+    orange: { icon: 'text-orange-400', glow: 'shadow-orange-500/20', border: 'group-hover:border-orange-500/40' }
   };
   return colors[color] || colors.gold;
 };
@@ -209,7 +209,7 @@ const StatsSection = memo(({
   const showHeader = statsPhase >= 1;
 
   return (
-    <section id="stats" className="relative z-30 py-24 md:py-32 px-4 md:px-6 bg-black">
+    <section id="stats" className="relative z-30 py-24 md:py-32 px-4 md:px-6 bg-transparent">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Main Section Heading - Moved from Hero */}
         <div className={`text-center mb-24 transition-all duration-1000 ${showHeader ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
@@ -253,11 +253,11 @@ const StatsSection = memo(({
             className="group flex items-center gap-2 px-4 py-2.5 
               bg-white/[0.03] backdrop-blur-xl 
               border border-white/[0.08] rounded-xl
-              text-ark-gold-400/80 hover:text-ark-gold-300
-              hover:bg-white/[0.06] hover:border-ark-gold-500/30
+              text-primary/80 hover:text-primary
+              hover:bg-white/[0.06] hover:border-primary/30
               transition-all duration-500 ease-out
               shadow-lg shadow-black/20
-              hover:shadow-ark-gold-500/10" 
+              hover:shadow-primary/10" 
             disabled={arkLoading}
           >
             <RefreshCw className={`h-4 w-4 transition-transform duration-700 ${arkLoading ? 'animate-spin' : 'group-hover:rotate-180'}`} />

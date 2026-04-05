@@ -29,9 +29,15 @@ const HeroSection = ({
   };
 
   return (
-    <section className="relative w-full min-h-screen bg-black overflow-hidden flex flex-col font-sans">
+    <section className="relative w-full min-h-screen bg-transparent overflow-hidden flex flex-col font-sans">
       {/* Hero Video Container - Relative on mobile (above content), Absolute on desktop (background) */}
-      <div className="relative md:absolute inset-0 z-0 w-full h-[50vh] md:h-full overflow-hidden bg-black">
+      <div 
+        className="relative md:absolute inset-0 z-0 w-full h-[50vh] md:h-full overflow-hidden bg-transparent"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)'
+        }}
+      >
         {/* Cinematic Placeholder / Fallback Image */}
         <img 
           src="/assets/images/the-ark-ship.jpg" 
@@ -48,13 +54,12 @@ const HeroSection = ({
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoadedMetadata={(e) => (e.currentTarget.playbackRate = 0.5)}
         >
-          <source src="/assets/videos/ark------final-----01.mp4" type="video/mp4" />
+          <source src="/videos/ark------final-----01.mp4" type="video/mp4" />
         </video>
-        {/* Black Overlay - Only on desktop for text readability */}
-        <div className="absolute inset-0 bg-black/50 hidden md:block z-[2]" />
+        {/* Black Overlay - Subtle on desktop for visibility of global background */}
+        <div className="absolute inset-0 bg-black/30 hidden md:block z-[2]" />
         
-        {/* Alpha Transition - Fading out the video bottom, now part of the video container */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 md:h-64 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none z-[5]" />
+        {/* Bottom fade removed in favor of alpha mask */}
       </div>
 
       {/* Hero Content - Adjusted padding for mobile/desktop layout switch */}
@@ -101,13 +106,13 @@ const HeroSection = ({
           <div className="flex flex-col sm:flex-row items-center gap-6 mb-16">
             {/* Main CTA - Wallet Connect style */}
             <div className="relative group">
-              <div className="absolute -inset-[0.6px] bg-cyan-400 rounded-full pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute -inset-[0.6px] bg-primary rounded-full pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity" />
               <button 
                 onClick={handleConnectWallet}
                 disabled={isConnecting}
-                className="relative px-[36px] py-[14px] bg-black rounded-full flex items-center justify-center transition-all hover:bg-neutral-900 active:scale-95 shadow-[0_0_20px_rgba(34,211,238,0.2)] border border-cyan-400/50"
+                className="relative px-[36px] py-[14px] bg-black rounded-full flex items-center justify-center transition-all hover:bg-neutral-900 active:scale-95 shadow-[0_0_20px_hsl(var(--primary)/0.2)] border border-primary/50"
               >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-radial from-cyan-400 to-transparent blur-[2px]" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-radial from-primary to-transparent blur-[2px]" />
                 <span className="text-[15px] font-bold text-white uppercase tracking-wide">
                   {isConnected ? (account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connected') : (isConnecting ? 'Connecting...' : 'Connect Wallet')}
                 </span>

@@ -48,7 +48,7 @@ const SwapSection = ({
   const currentBalance = fromToken === 'PLS' ? plsBalance : (tokenBalances[fromToken] || '0');
 
   return (
-    <section id="swap" className="relative z-10 py-24 px-6 bg-black">
+    <section id="swap" className="relative z-10 py-24 px-6 bg-transparent">
       <div className="max-w-xl mx-auto relative group">
         
         {/* Main Swap Card - LIQUID GLASS */}
@@ -61,7 +61,7 @@ const SwapSection = ({
               onClick={() => setIsExpanded(!isExpanded)}
             >
               <div className="space-y-1">
-                <h3 className="text-3xl md:text-3xl font-black text-white uppercase tracking-tighter group-hover/header:text-ark-gold-400 transition-colors">EXCHANGE FOR ARK</h3>
+                <h3 className="text-3xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent uppercase tracking-tighter group-hover/header:opacity-80 transition-opacity">EXCHANGE FOR ARK</h3>
                 <p className="text-[10px] text-white/40 font-mono tracking-[0.3em] uppercase">[STATION-01 INTERFACE]</p>
               </div>
 
@@ -154,8 +154,8 @@ const SwapSection = ({
                           <div className="text-5xl font-black text-white font-mono tracking-tighter">
                             {toAmount || '0.00'}
                           </div>
-                          <div className="flex items-center gap-4 px-6 py-3 bg-white text-black rounded-2xl">
-                            <div className="w-6 h-6 bg-black rounded-full" />
+                          <div className="flex items-center gap-4 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-2xl shadow-[0_0_20px_rgba(34,211,238,0.3)]">
+                            <div className="w-6 h-6 bg-white/20 rounded-full backdrop-blur-sm" />
                             <span className="text-sm font-black tracking-[0.2em] font-mono">ARK</span>
                           </div>
                         </div>
@@ -178,18 +178,18 @@ const SwapSection = ({
                     <button
                       onClick={handleSwap}
                       disabled={swapLoading || !canSwap}
-                      className="w-full relative py-8 mt-10 bg-white hover:bg-neutral-200 disabled:opacity-5 disabled:grayscale transition-all duration-500 rounded-3xl overflow-hidden group/btn shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:shadow-[0_25px_60px_rgba(255,255,255,0.15)] active:scale-[0.98]"
+                      className="w-full relative py-8 mt-10 bg-gradient-to-r from-primary via-secondary to-accent hover:opacity-90 disabled:opacity-5 disabled:grayscale transition-all duration-500 rounded-3xl overflow-hidden group/btn shadow-[0_20px_50px_rgba(34,211,238,0.2)] hover:shadow-[0_25px_60px_rgba(155,135,245,0.3)] active:scale-[0.98]"
                     >
                       <div className="relative flex items-center justify-center gap-4">
                         {swapLoading ? (
                           <>
-                            <Cpu size={20} className="text-black animate-spin" />
-                            <span className="text-black font-black uppercase tracking-[0.4em] text-[10px] font-mono">PROCESSING SWAP...</span>
+                            <Cpu size={20} className="text-white animate-spin" />
+                            <span className="text-white font-black uppercase tracking-[0.4em] text-[10px] font-mono">PROCESSING SWAP...</span>
                           </>
                         ) : (
                           <>
-                            <Zap size={20} className="text-black group-hover/btn:scale-125 transition-transform duration-500" />
-                            <span className="text-black font-black uppercase tracking-[0.4em] text-[10px] font-mono">
+                            <Zap size={20} className="text-white group-hover/btn:scale-125 transition-transform duration-500" />
+                            <span className="text-white font-black uppercase tracking-[0.4em] text-[10px] font-mono">
                               {isConnected ? (canSwap ? 'EXECUTE SWAP' : 'INSUFFICIENT LIQUIDITY') : 'CONNECT WALLET'}
                             </span>
                           </>

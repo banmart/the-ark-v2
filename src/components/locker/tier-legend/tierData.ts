@@ -22,8 +22,8 @@ export const tiers: Tier[] = [
     name: 'BRONZE',
     icon: '🥉',
     color: 'white',
-    multiplier: '1x',
-    duration: '30-89d',
+    multiplier: '1.0x',
+    duration: '30d',
     description: 'Protocol Entry Tier',
     details: {
       rewards: 'Base Yield Multiplier',
@@ -37,7 +37,7 @@ export const tiers: Tier[] = [
     icon: '🥈',
     color: 'white',
     multiplier: '1.5x',
-    duration: '90-179d',
+    duration: '90d',
     description: 'Elevated Yield Participation',
     details: {
       rewards: '1.5x Yield Multiplier',
@@ -50,11 +50,11 @@ export const tiers: Tier[] = [
     name: 'GOLD',
     icon: '🥇',
     color: 'white',
-    multiplier: '2x',
-    duration: '180-364d',
+    multiplier: '2.0x',
+    duration: '180d',
     description: 'Strategic Lock Maturity',
     details: {
-      rewards: '2x Yield Multiplier',
+      rewards: '2.0x Yield Multiplier',
       community: 'Core Contributor Status',
       features: 'Priority Reward Distribution',
       governance: 'Standard Proposal Voting'
@@ -64,11 +64,11 @@ export const tiers: Tier[] = [
     name: 'DIAMOND',
     icon: '💎',
     color: 'white',
-    multiplier: '3x',
-    duration: '1-2y',
+    multiplier: '3.0x',
+    duration: '1 Year',
     description: 'High-Efficiency Liquidity',
     details: {
-      rewards: '3x Yield Multiplier',
+      rewards: '3.0x Yield Multiplier',
       community: 'Premium Locker Status',
       features: 'VIP Incentive Access',
       governance: 'Advanced Governance Weight'
@@ -78,11 +78,11 @@ export const tiers: Tier[] = [
     name: 'PLATINUM',
     icon: '⭐',
     color: 'white',
-    multiplier: '4x',
-    duration: '2-3y',
+    multiplier: '4.0x',
+    duration: '2 Years',
     description: 'Elite Capital Alignment',
     details: {
-      rewards: '4x Yield Multiplier',
+      rewards: '4.0x Yield Multiplier',
       community: 'Protocol Elite Role',
       features: 'Maximum Reward Depth',
       governance: 'Strategic Influence Access'
@@ -92,11 +92,11 @@ export const tiers: Tier[] = [
     name: 'MYTHIC',
     icon: '🔮',
     color: 'white',
-    multiplier: '5x',
-    duration: '3-4y',
+    multiplier: '5.0x',
+    duration: '3 Years',
     description: 'Maximum Protocol Synergies',
     details: {
-      rewards: '5x Yield Multiplier',
+      rewards: '5.0x Yield Multiplier',
       community: 'Director Level Influence',
       features: 'Ultimate Reward Tiers',
       governance: 'Council Level Voting weight'
@@ -106,12 +106,12 @@ export const tiers: Tier[] = [
     name: 'LEGENDARY',
     icon: '⚡',
     color: 'gold',
-    multiplier: '7x',
-    duration: '4-5y',
+    multiplier: '7.0x',
+    duration: '4 Years',
     description: 'Total Protocol Integration',
     special: true,
     details: {
-      rewards: '7x Yield Multiplier',
+      rewards: '7.0x Yield Multiplier',
       community: 'Infinite Legend Tier',
       features: 'Total Yield Supremacy',
       governance: 'Core Protocol Steering Power'

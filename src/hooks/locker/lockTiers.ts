@@ -3,7 +3,7 @@ import { LockTierInfo, ContractConstants } from './types';
 
 export const DEFAULT_CONSTANTS: ContractConstants = {
   MIN_LOCK_DURATION: 30,
-  MAX_LOCK_DURATION: 1826,
+  MAX_LOCK_DURATION: 1460,
   BASIS_POINTS: 10000,
   EARLY_UNLOCK_PENALTY: 5000,
   MAX_EARLY_PENALTY: 7500,
@@ -14,11 +14,11 @@ export const DEFAULT_CONSTANTS: ContractConstants = {
 export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTierInfo[] => [
   {
     name: 'Bronze',
-    minDuration: 1,
+    minDuration: 30,
     multiplier: 10000,
     color: '#CD7F32',
     icon: '⛵',
-    minDays: CONTRACT_CONSTANTS.MIN_LOCK_DURATION,
+    minDays: 30,
     maxDays: 89
   },
   {
@@ -73,7 +73,7 @@ export const createLockTiers = (CONTRACT_CONSTANTS: ContractConstants): LockTier
     color: '#FF6B35',
     icon: '⚡',
     minDays: 1460,
-    maxDays: 1826
+    maxDays: 1460
   }
 ];
 

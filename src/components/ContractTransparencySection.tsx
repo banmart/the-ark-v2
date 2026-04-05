@@ -39,7 +39,7 @@ const ContractTransparencySection = ({
       setTimeout(() => setLiquidityPhase(phase), delay);
     });
   }, []);
-  return <section className="relative z-30 py-8 px-6 bg-gradient-to-b from-black/10 to-black/30">
+  return <section className="relative z-30 py-24 px-6 bg-transparent">
       {/* Quantum Field Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -57,7 +57,7 @@ const ContractTransparencySection = ({
         {/* System Header */}
         <div className={`text-center mb-16 transition-all duration-1000 ${liquidityPhase >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="flex items-center justify-center mb-4">
-            <Shield className="w-8 h-8 text-cyan-400 mr-3" />
+            <Shield className="w-8 h-8 text-primary mr-3" />
             <h2 className="text-white">
               CONTRACT TRANSPARENCY
             </h2>
@@ -71,11 +71,11 @@ const ContractTransparencySection = ({
         <div className={`transition-all duration-1000 delay-500 ${liquidityPhase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {/* Auto-Liquidity Engine */}
-            <div className="bg-black/40 backdrop-blur-xl border-2 border-cyan-500/30 rounded-xl p-8 hover:scale-105 transition-all duration-500 overflow-hidden hover:border-cyan-500/60">
+            <div className="bg-black/40 backdrop-blur-xl border-2 border-primary/30 rounded-xl p-8 hover:scale-105 transition-all duration-500 overflow-hidden hover:border-primary/60">
               <div className="flex items-center justify-center mb-6">
-                <Target className="w-12 h-12 text-cyan-400" />
+                <Target className="w-12 h-12 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-4 text-cyan-400 text-center font-mono">
+              <h3 className="text-xl font-bold mb-4 text-primary text-center font-mono">
                 AUTO-LIQUIDITY ENGINE
               </h3>
               <AutoLiquidityMeter 
@@ -139,10 +139,10 @@ const ContractTransparencySection = ({
           </div>
 
           {/* Swap Settings Display */}
-          <div className="bg-black/20 backdrop-blur-xl border border-cyan-500/20 rounded-xl p-8 mb-8">
+          <div className="bg-black/20 backdrop-blur-xl border border-primary/20 rounded-xl p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
-              <Info className="w-6 h-6 text-cyan-400" />
-              <h3 className="text-xl font-bold text-cyan-400 font-mono">CONTRACT SETTINGS</h3>
+              <Info className="w-6 h-6 text-primary" />
+              <h3 className="text-xl font-bold text-primary font-mono">CONTRACT SETTINGS</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
@@ -150,13 +150,13 @@ const ContractTransparencySection = ({
                 <div className="text-sm text-gray-300 font-mono">PROTOCOL TAX</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-ark-gold-400 mb-2">
+                <div className="text-3xl font-bold text-secondary mb-2">
                   {arkData?.swapThreshold ? arkData.swapThreshold.toLocaleString() : '50,000'}
                 </div>
                 <div className="text-sm text-gray-300 font-mono">SWAP THRESHOLD</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-cyan-400 mb-2">
+                <div className="text-3xl font-bold text-primary mb-2">
                   {arkData?.totalSupply ? (arkData.totalSupply / 1000000000).toFixed(0) + 'B' : '1B'}
                 </div>
                 <div className="text-sm text-gray-300 font-mono">TOTAL SUPPLY</div>

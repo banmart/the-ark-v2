@@ -115,7 +115,7 @@ export const LOCK_TIERS = {
 // Locker contract constants matching the smart contract
 export const LOCKER_CONSTANTS = {
   MIN_LOCK_DURATION_DAYS: 30,
-  MAX_LOCK_DURATION_DAYS: 1826,
+  MAX_LOCK_DURATION_DAYS: 1460,
   BASIS_POINTS: 10000,
   EARLY_UNLOCK_PENALTY: 5000,
   MAX_EARLY_PENALTY: 7500,
