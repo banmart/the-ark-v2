@@ -147,7 +147,7 @@ const EnhancedLockInterface = ({ isConnected }: EnhancedLockInterfaceProps) => {
       {/* Main card with premium styling */}
       <div className="relative group">
         {/* Outer glow ring */}
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/30 via-teal-500/30 to-cyan-500/30 rounded-2xl blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute -inset-0.5 bg-white/5 rounded-2xl blur-sm opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
         
         {/* Card container */}
         <div className="relative z-10 liquid-glass border border-white/10 rounded-2xl p-8 md:p-12 transition-all duration-500 overflow-hidden backdrop-blur-3xl">

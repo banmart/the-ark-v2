@@ -94,7 +94,7 @@ const Onboarding = () => {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-black text-white relative overflow-hidden overscroll-none font-sans">
+    <div className="h-[100dvh] flex flex-col bg-transparent text-white relative overflow-hidden overscroll-none font-sans">
       <PremiumBackground fixed={true} />
 
       {/* Premium Top Navigation Bar */}

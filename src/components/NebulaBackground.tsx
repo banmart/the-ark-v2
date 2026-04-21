@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const NebulaBackground = () => {
+const NebulaBackground = ({ className }: { className?: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -17,66 +17,53 @@ const NebulaBackground = () => {
       }
     `;
 
+    // Subtle monochrome dot-grid pattern with gentle animated breathing
     const fragmentShaderSource = `
       precision highp float;
       uniform float u_time;
       uniform vec2 u_resolution;
 
-      // Noise function
-      float noise(vec2 p) {
-        return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
       }
 
       float smoothNoise(vec2 p) {
         vec2 i = floor(p);
         vec2 f = fract(p);
         f = f * f * (3.0 - 2.0 * f);
-        float a = noise(i);
-        float b = noise(i + vec2(1.0, 0.0));
-        float c = noise(i + vec2(0.0, 1.0));
-        float d = noise(i + vec2(1.0, 1.0));
-        return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-      }
-
-      float fbm(vec2 p) {
-        float total = 0.0;
-        float amplitude = 0.5;
-        for (int i = 0; i < 5; i++) {
-          total += smoothNoise(p) * amplitude;
-          p *= 2.0;
-          amplitude *= 0.5;
-        }
-        return total;
+        return mix(
+          mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+          mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+          f.y
+        );
       }
 
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
-        float t = u_time * 0.1;
-        
-        // Animated coordinate system
-        vec2 p = uv * 3.0;
-        p += fbm(p + t) * 0.5;
-        
-        float n = fbm(p);
-        
-        // Colors from reference image
-        vec3 cyan = vec3(0.0, 0.65, 0.9);   // #0EA5E9
-        vec3 purple = vec3(0.6, 0.4, 0.9);   // #9b87f5
-        vec3 magenta = vec3(0.85, 0.2, 0.9); // #D946EF
-        
-        // Create color layers based on noise
-        vec3 color = mix(cyan, purple, n);
-        color = mix(color, magenta, fbm(p + vec2(t * 0.5, t)));
-        
-        // Darken and fade with distance from center
-        float dist = length(uv - 0.5);
-        float mask = smoothstep(0.0, 1.0, 1.0 - dist * 1.5);
-        
-        // Enhance contrast and apply noise density
-        color *= n * n * 1.5;
-        color *= mask * 0.4; // Faded as requested
-        
-        gl_FragColor = vec4(color, 1.0);
+        float t = u_time * 0.08;
+
+        // Grid parameters
+        float gridScale = 28.0;
+        vec2 grid = fract(uv * gridScale) - 0.5;
+
+        // Dot radius — vary slightly per cell using noise
+        vec2 cell = floor(uv * gridScale);
+        float n = smoothNoise(cell * 0.18 + t * 0.4);
+        float radius = 0.08 + n * 0.06;
+
+        // Soft circular dot
+        float dist = length(grid);
+        float dotShape = 1.0 - smoothstep(radius - 0.02, radius + 0.02, dist);
+
+        // Global breathing fade
+        float breathe = 0.5 + 0.5 * sin(t * 1.2 + smoothNoise(cell * 0.05) * 6.28);
+
+        // Vignette: fade toward edges
+        float vignette = 1.0 - smoothstep(0.3, 0.85, length(uv - 0.5) * 1.4);
+
+        float alpha = dotShape * breathe * vignette * 0.13;
+
+        gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
       }
     `;
 
@@ -104,6 +91,10 @@ const NebulaBackground = () => {
     gl.linkProgram(program);
     gl.useProgram(program);
 
+    // Enable alpha blending so dots sit lightly on top of the black background
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
@@ -118,11 +109,14 @@ const NebulaBackground = () => {
     let animationFrameId: number;
 
     const render = (time: number) => {
-      time *= 0.001; // Convert to seconds
-      
+      time *= 0.001;
+
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       gl.viewport(0, 0, canvas.width, canvas.height);
+
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
 
       gl.uniform1f(timeUniformAddress, time);
       gl.uniform2f(resolutionUniformAddress, canvas.width, canvas.height);
@@ -141,8 +135,7 @@ const NebulaBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full -z-10 pointer-events-none opacity-80 transition-opacity duration-1000"
-      style={{ filter: 'blur(20px) brightness(1.1)' }}
+      className={className ?? 'fixed inset-0 w-full h-full -z-10 pointer-events-none'}
     />
   );
 };

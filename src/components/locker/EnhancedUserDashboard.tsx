@@ -295,9 +295,9 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
             ) : displayLocks.length === 0 ? (
               <div className="text-center py-12">
                 <div className="relative inline-block mb-4">
-                  <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl"></div>
-                  <div className="relative p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-full">
-                    <Lock className="w-12 h-12 text-cyan-400" />
+                  <div className="absolute inset-0 bg-white/10 rounded-full blur-xl"></div>
+                  <div className="relative p-4 bg-white/5 border border-white/20 rounded-full">
+                    <Lock className="w-12 h-12 text-white/40" />
                   </div>
                 </div>
                 <div className="text-white/60 mb-2 text-lg">No active locks found</div>
@@ -371,7 +371,7 @@ const EnhancedUserDashboard = ({ isConnected }: EnhancedUserDashboardProps) => {
                               href="#" 
                               onClick={e => { e.preventDefault(); goToPage(page); }}
                               isActive={currentPage === page}
-                              className={`bg-black/40 border-white/[0.1] text-white hover:bg-cyan-500/20 ${currentPage === page ? 'bg-cyan-500/20 border-cyan-500/40' : ''}`}
+                              className={`bg-black/40 border-white/[0.1] text-white hover:bg-white/10 ${currentPage === page ? 'bg-white/10 border-white/30' : ''}`}
                             >
                               {page}
                             </PaginationLink>
