@@ -44,7 +44,12 @@ const Navigation = ({
         {/* Left Side: Logo & Status Indicators */}
         <div className="flex items-center gap-[60px]">
           {/* Logo with Minimalist Style */}
-          <Link to="/" className="group relative flex items-center">
+          <Link to="/" className="group relative flex items-center gap-3">
+            <img 
+              src="/assets/images/ark-logo-final.webp" 
+              alt="The ARK Logo" 
+              className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+            />
             <span className="relative text-white text-[24px] font-black tracking-tighter uppercase whitespace-nowrap">The ARK</span>
           </Link>
 

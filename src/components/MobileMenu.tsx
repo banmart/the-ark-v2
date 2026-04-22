@@ -138,7 +138,12 @@ const MobileMenu = ({ handleConnectWallet, isConnecting, isConnected, account }:
               {/* Brand with Glassmorphism */}
               <div className="relative">
                 <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 rounded-xl blur-lg opacity-60"></div>
-                <div className="relative px-3 py-1.5 bg-white/[0.03] backdrop-blur-sm border border-white/[0.05] rounded-lg">
+                <div className="relative flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] backdrop-blur-sm border border-white/[0.05] rounded-lg">
+                  <img 
+                    src="/assets/images/ark-logo-final.webp" 
+                    alt="ARK Logo" 
+                    className="w-6 h-6 object-contain"
+                  />
                   <span className="text-xl michroma-regular text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">
                     ARK
                   </span>

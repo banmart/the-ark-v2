@@ -57,7 +57,12 @@ const Footer = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
               {/* Premium Brand Section */}
               <div className="space-y-6 lg:col-span-1">
-                <div className="text-3xl font-black text-white tracking-tighter uppercase whitespace-nowrap">
+                <div className="flex items-center gap-4 text-3xl font-black text-white tracking-tighter uppercase whitespace-nowrap">
+                  <img 
+                    src="/assets/images/ark-logo-final.webp" 
+                    alt="The ARK Logo" 
+                    className="w-10 h-10 object-contain opacity-80"
+                  />
                   The ARK
                 </div>
                 
