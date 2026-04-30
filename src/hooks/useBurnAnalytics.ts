@@ -13,13 +13,9 @@ export interface BurnTransaction {
 
 export interface BurnMetrics {
   dailyBurnAmount: number;
-  weeklyBurnAmount: number;
-  monthlyBurnAmount: number;
   totalBurned: number;
   burnRate: number; // tokens burned per hour
   efficiency: number; // actual vs theoretical burn percentage
-  averageTransactionBurn: number;
-  transactionCount24h: number;
 }
 
 export interface BurnProjection {
@@ -88,13 +84,9 @@ export const useBurnAnalytics = (volume24h?: number) => {
       
       const metrics: BurnMetrics = {
         dailyBurnAmount: actualDailyBurn,
-        weeklyBurnAmount: actualDailyBurn * 7, // Estimate based on daily
-        monthlyBurnAmount: actualDailyBurn * 30, // Estimate based on daily
         totalBurned: feeMetrics.feesCollected.burn.totalCollected,
         burnRate: actualDailyBurn / 24, // Burns per hour
         efficiency: feeMetrics.efficiency.burn,
-        averageTransactionBurn: volume > 0 ? actualDailyBurn / (volume / 1000) : 0, // Estimate avg tx burn
-        transactionCount24h: Math.floor(volume / 1000) // Rough estimate
       };
 
       setBurnMetrics(metrics);
@@ -114,13 +106,6 @@ export const useBurnAnalytics = (volume24h?: number) => {
   useEffect(() => {
     if (volume24h && volume24h > 0) {
       fetchBurnAnalytics(volume24h);
-
-      // Update every 30 seconds for real-time data
-      const interval = setInterval(() => {
-        fetchBurnAnalytics(volume24h);
-      }, 30000);
-
-      return () => clearInterval(interval);
     }
   }, [volume24h]);
 

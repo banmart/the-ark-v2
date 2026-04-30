@@ -40,19 +40,6 @@ interface ARKDataContextValue {
 
 const ARKDataContext = createContext<ARKDataContextValue | undefined>(undefined);
 
-// Cache TTLs
-const MARKET_CACHE_TTL = 60 * 1000; // 1 minute
-const BLOCKCHAIN_CACHE_TTL = 3 * 60 * 1000; // 3 minutes
-
-// Cached data store (module-level for cross-request caching - rule: server-cache-lru)
-interface CacheEntry<T> {
-  data: T;
-  cachedAt: number;
-}
-
-let marketCache: CacheEntry<any> | null = null;
-let blockchainCache: CacheEntry<any> | null = null;
-
 // Lazy provider initialization (rule: rerender-lazy-state-init)
 let providerInstance: ethers.JsonRpcProvider | null = null;
 const getProvider = () => {
@@ -79,17 +66,6 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const fetchingRef = useRef(false);
   const initialFetchDone = useRef(false);
-
-  const fetchMarketData = useCallback(async () => {
-    const priceData = await dexPriceService.getLivePrice();
-    return {
-      price: priceData.price,
-      priceChange24h: priceData.priceChange24h,
-      volume24h: priceData.volume24h,
-      liquidity: priceData.liquidity,
-      dataSource: priceData.dataSource
-    };
-  }, []);
 
   const fetchBlockchainData = useCallback(async () => {
     const provider = getProvider();
@@ -137,7 +113,7 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
 
       // Parallel fetch for speed
       const [marketData, blockchainData] = await Promise.all([
-        fetchMarketData(),
+        dexPriceService.getLivePrice(),
         fetchBlockchainData()
       ]);
 
@@ -174,7 +150,7 @@ export function ARKDataProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       fetchingRef.current = false;
     }
-  }, [fetchMarketData, fetchBlockchainData, data]);
+  }, [fetchBlockchainData, data]);
 
   // Initial fetch only if no data
   useEffect(() => {

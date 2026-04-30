@@ -191,14 +191,10 @@ class BlockchainDataService {
         }
       }
       
-      // Add some base holders estimate
-      const baseHolders = 12000;
-      const eventBasedHolders = holderSet.size;
-      
-      return baseHolders + eventBasedHolders;
+      return holderSet.size;
     } catch (error) {
       console.error('Error calculating holder count:', error);
-      return 12347; // Fallback
+      return 0; // Fallback
     }
   }
 
@@ -223,33 +219,16 @@ class BlockchainDataService {
     } catch (error) {
       console.error('Error calculating burn rate:', error);
       return {
-        totalBurned: '1500000',
-        dailyBurnRate: 1250
+        totalBurned: '0',
+        dailyBurnRate: 0
       };
     }
   }
 
   generateHistoricalData(days: number = 30): HistoricalMetrics[] {
-    const data: HistoricalMetrics[] = [];
-    const now = Date.now();
-    
-    for (let i = days - 1; i >= 0; i--) {
-      const timestamp = now - (i * 24 * 60 * 60 * 1000);
-      
-      // Generate realistic progression based on current data
-      const dayFactor = (days - i) / days;
-      const randomFactor = 0.95 + Math.random() * 0.1;
-      
-      data.push({
-        timestamp,
-        burnedTokens: Math.floor(1200000 + (dayFactor * 300000) * randomFactor),
-        holders: Math.floor(11000 + (dayFactor * 1400) * randomFactor),
-        totalTransactions: Math.floor(45000 + (dayFactor * 8000) * randomFactor),
-        volume: Math.floor(150000 + Math.random() * 400000)
-      });
-    }
-    
-    return data;
+    // Note: In a production environment, this should fetch real historical data.
+    // Speculative random data generation removed as per Karpathy Guidelines.
+    return [];
   }
 
   async getVolumeData(): Promise<{ volume24h: number; volumeChange: number }> {
@@ -296,18 +275,9 @@ class BlockchainDataService {
       // Extrapolate to 24h based on 2h sample
       let volume24h = recentVolume * 12;
       
-      // If no DEX volume found, use base estimate
-      if (volume24h === 0) {
-        const baseVolume = 250000;
-        const randomVariation = (Math.random() - 0.5) * 0.4;
-        volume24h = baseVolume * (1 + randomVariation);
-      }
-      
-      const volumeChange = (Math.random() - 0.5) * 0.3; // ±15% change
-      
       const result = {
         volume24h: Math.max(0, volume24h),
-        volumeChange: volumeChange * 100
+        volumeChange: 0 // Implement real calculation when historical data is available
       };
       
       // Cache the result
@@ -317,7 +287,7 @@ class BlockchainDataService {
     } catch (error) {
       console.error('Error calculating volume data:', error);
       return {
-        volume24h: 250000,
+        volume24h: 0,
         volumeChange: 0
       };
     }
